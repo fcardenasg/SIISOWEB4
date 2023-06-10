@@ -25,7 +25,7 @@ export const Url = {
     EmpleadoId: 'api/Empleado/id',
 
     Reintegro: 'api/Reintegro',
-    ReintegroExcel: 'api/Reintegro/GenerateExcel',
+    ReintegroExcel: 'api/Reintegro/excel',
     ReintegroId: 'api/Reintegro/id',
     ReintegroGenerarList: 'api/Reintegro/lista-chekeo',
 
@@ -59,23 +59,20 @@ export const Url = {
     SGSST: 'api/SistemaGestion',
     SGSSTId: 'api/SistemaGestion/id',
 
+    /* RIESGO HISTORIA LABORAL */
     RiesgoHistoriaLaboral: 'api/RiesgoHistoriaLaboral',
     RiesgoHistoriaLaboralId: 'api/RiesgoHistoriaLaboral/id',
-    RHLByChargeHistorico: 'api/RiesgoHistoriaLaboral/GetAllByChargeHistorico',
-    RHLByHistorico: 'api/RiesgoHistoriaLaboral/GetAllByHistorico',
-    RHLByChargeAdvance: 'api/RiesgoHistoriaLaboral/GetAllByChargeAdvance',
-    ReportRHL: 'api/RiesgoHistoriaLaboral/GetAllRHL',
-    RHLDeleteAndInsertRisk: 'api/RiesgoHistoriaLaboral/DeleteAndInsertRisk',
+    RHLByChargeAdvance: 'api/RiesgoHistoriaLaboral/all-charge-advance',
+    ReportRHL: 'api/RiesgoHistoriaLaboral/all-reporte-rhl',
+    RHLDeleteAndInsertRisk: 'api/RiesgoHistoriaLaboral/delete-insert-risk',
 
-    RiesgoHistoriaLaboralEmpresa_GetDataExploracion: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetDataExploracion',
-
+    
     RiesgoHistoriaLaboralEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas',
     RiesgoHistoriaLaboralIdEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/id',
-    RHLByChargeHistoricoEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByChargeHistorico',
-    RHLByHistoricoEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByHistorico',
-    RHLByChargeAdvanceEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllByChargeAdvance',
-    RHLOEDeleteAndInsertRisk: 'api/RiesgoHistoriaLaboralOtrasEmpresas/DeleteAndInsertRisk',
-    ReportRHLOE: 'api/RiesgoHistoriaLaboralOtrasEmpresas/GetAllRHL',
+    RHLByChargeAdvanceEmpresa: 'api/RiesgoHistoriaLaboralOtrasEmpresas/all-charge-advance',
+    RHLOEDeleteAndInsertRisk: 'api/RiesgoHistoriaLaboralOtrasEmpresas/delete-insert-risk',
+    ReportRHLOE: 'api/RiesgoHistoriaLaboralOtrasEmpresas/all-reporte-rhl',
+    RiesgoHistoriaLaboralEmpresa_GetDataExploracion: 'api/RiesgoHistoriaLaboralOtrasEmpresas/get-data-exploracion',
 
     Proveedor: 'api/Proveedor',
     ProveedorId: 'api/Proveedor/id',
@@ -111,32 +108,30 @@ export const Url = {
     Asesorias: 'api/Asesorias',
     AsesoriasAll: 'api/Asesorias/all',
     AsesoriasId: 'api/Asesorias/id',
-    /* AsesoriasGetAllByTipoAtencion: 'api/Asesorias/GetAllByTipoAtencion',
-    AsesoriasGetAllByTipoAtencion2: 'api/Asesorias/GetAllByTipoAtencion2', */
-
 
     OrdenesEPP: 'api/OrdenesEPP',
     OrdenesEPPId: 'api/OrdenesEPP/id',
-
 
     ConceptosIND: 'api/ConceptosIND',
     ConceptosINDId: 'api/ConceptosIND/id',
 
     RegistroTaxi: 'api/RegistroTaxi',
-    RegistroTaxiExcel: 'api/RegistroTaxi/GenerateExcel',
+    RegistroTaxiExcel: 'api/RegistroTaxi/excel',
     RegistroTaxiId: 'api/RegistroTaxi/id',
 
     Solicitudes: 'api/Solicitudes',
+    SolicitudesExcel: 'api/Solicitudes/excel',
     SolicitudesId: 'api/Solicitudes/id',
 
     SolicitudDetalle: 'api/SolicitudDetalle',
+    SolicitudDetalleId: 'api/SolicitudDetalle/id',
     SolicitudDetallePendiente: 'api/SolicitudDetalle/pendiente-respuesta',
 
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',
 
     Accidentalidad: 'api/Accidentalidad',
-    AccidentalidadExcel: 'api/Accidentalidad/GenerateExcel',
+    AccidentalidadExcel: 'api/Accidentalidad/excel',
     AccidentalidadId: 'api/Accidentalidad/id',
 
     HistoriaLaboral: 'api/HistoriaLaboral',
@@ -181,11 +176,11 @@ export const Url = {
     NotaEnfermeriaId: 'api/NotaEnfermeria/id',
 
     MedicinaLaboral: 'api/MedicinaLaboralX',
-    MedicinaLaboralExcel: 'api/MedicinaLaboralX/GenerateExcel',
+    MedicinaLaboralExcel: 'api/MedicinaLaboralX/excel',
     MedicinaLaboralId: 'api/MedicinaLaboralX/id',
 
     AusentismoLaboral: 'api/AusentismoLaboral',
-    AusentismoLaboralExcel: 'api/AusentismoLaboral/GenerateExcel',
+    AusentismoLaboralExcel: 'api/AusentismoLaboral/excel',
     AusentismoLaboral_Documento: 'api/AusentismoLaboral/GetAllByDocumento',
     AusentismoLaboral_NumDia: 'api/AusentismoLaboral/GetAllNumeroDia',
     AusentismoLaboralId: 'api/AusentismoLaboral/id',

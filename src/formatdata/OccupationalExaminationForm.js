@@ -34,7 +34,7 @@ export function PostOccupationalExamination(
     cardioRS = false, gastrointestinalRS = false, genitoUrinarioRS = false, osteoRS = false, neuroRS = false, pielRS = false,
     psiquiatricoRS = false, observacionRS = "",
 
-    taSentadoEF = "", taAcostadoEF = "", pulsoEF = 0, fcef = 0, fref = 0, temperaturaEF = 0, pesoEF = 0, tallaEF = 0, imcef = 0,
+    taSentadoEF = "", taAcostadoEF = "", pulsoEF = 0, fcef = 0, fref = 0, temperaturaEF = 0, pesoEF = "", tallaEF = 0, imcef = 0,
     clasificacionEF = "", idBiotipoEF = DefaultValue.SINREGISTRO_GLOBAL,
 
     estadoNitricionalEF = false, pielFaneraEF = false, craneoEF = false, parpadoEF = false, conjuntivasEF = false, corniasEF = false,
@@ -244,7 +244,7 @@ export function PutOccupationalExamination(id,
     cardioRS = false, gastrointestinalRS = false, genitoUrinarioRS = false, osteoRS = false, neuroRS = false, pielRS = false,
     psiquiatricoRS = false, observacionRS = "",
 
-    taSentadoEF = "", taAcostadoEF = "", pulsoEF = 0, fcef = 0, fref = 0, temperaturaEF = 0, pesoEF = 0, tallaEF = 0, imcef = 0,
+    taSentadoEF = "", taAcostadoEF = "", pulsoEF = 0, fcef = 0, fref = 0, temperaturaEF = 0, pesoEF = "", tallaEF = 0, imcef = 0,
     clasificacionEF = "", idBiotipoEF = DefaultValue.SINREGISTRO_GLOBAL,
 
     estadoNitricionalEF = false, pielFaneraEF = false, craneoEF = false, parpadoEF = false, conjuntivasEF = false, corniasEF = false,

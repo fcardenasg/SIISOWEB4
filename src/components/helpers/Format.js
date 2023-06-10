@@ -1425,6 +1425,31 @@ function NumeroDias(fechaInicio, fechaFin) {
     } else return 0
 }
 
+function NumeroDiaSolicitudes(fechaInicio, fechaFin) {
+    if (fechaInicio !== null && fechaFin !== null) {
+
+        if (new Date(fechaInicio) >= new Date()) {
+            var fechaIni = new Date(fechaInicio);
+            var fechaFinn = new Date(fechaFin);
+
+            var milisegundosDia = 24 * 60 * 60 * 1000;
+            var milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
+            var diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
+
+            return diasTranscurridos + 1;
+        } else {
+            var fechaIni = new Date();
+            var fechaFinn = new Date(fechaFin);
+
+            var milisegundosDia = 24 * 60 * 60 * 1000;
+            var milisegundosTranscurridos = Math.abs(fechaIni.getTime() - fechaFinn.getTime());
+            var diasTranscurridos = Math.round(milisegundosTranscurridos / milisegundosDia);
+
+            return diasTranscurridos + 1;
+        }
+    } else return 0
+}
+
 export {
     FormatDate,
     ViewFormat,
@@ -1439,5 +1464,6 @@ export {
     PuntajeFr,
     FrFuma,
     FrLdl_FrRelacion,
-    NumeroDias
+    NumeroDias,
+    NumeroDiaSolicitudes
 }

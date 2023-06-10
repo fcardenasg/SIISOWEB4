@@ -225,7 +225,14 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     <TableBody>
 
                                         {lsWorkHistoryOtherCompany.map((row) => (
-                                            <RowCompany key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteEmpresa} />
+                                            <RowCompany
+                                                key={row.id}
+                                                row={row}
+                                                getAllWorkHistory={getAllWorkHistory}
+                                                getSumaRiesgo={getSumaRiesgo}
+                                                documento={documento}
+                                                handleDelete={handleDeleteEmpresa}
+                                            />
                                         ))}
 
                                     </TableBody>
@@ -346,7 +353,14 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                                     </TableHead>
                                     <TableBody>
                                         {lsWorkHistory.map((row) => (
-                                            <RowDLTD key={row.id} getAllWorkHistory={getAllWorkHistory} getSumaRiesgo={getSumaRiesgo} documento={documento} row={row} handleDelete={handleDeleteDLTD} />
+                                            <RowDLTD
+                                                key={row.id}
+                                                row={row}
+                                                getAllWorkHistory={getAllWorkHistory}
+                                                getSumaRiesgo={getSumaRiesgo}
+                                                documento={documento}
+                                                handleDelete={handleDeleteDLTD}
+                                            />
                                         ))}
                                     </TableBody>
                                 </Table>

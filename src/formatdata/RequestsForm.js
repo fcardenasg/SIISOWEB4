@@ -1,18 +1,18 @@
-export function PostRequests(documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+export function PostRequests(documento, fechaReciboDLTD, usuarioReciboDLTD, correoRecibioDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
     telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
     usuarioModifico, fechaModifico, archivoSolicitado) {
     return {
-        documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+        documento, fechaReciboDLTD, usuarioReciboDLTD, correoRecibioDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
         telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
         usuarioModifico, fechaModifico, archivoSolicitado
     };
 }
 
-export function PutRequests(id, documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+export function PutRequests(id, documento, fechaReciboDLTD, usuarioReciboDLTD, correoRecibioDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
     telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
     usuarioModifico, fechaModifico, archivoSolicitado) {
     return {
-        id, documento, fechaReciboDLTD, usuarioReciboDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
+        id, documento, fechaReciboDLTD, usuarioReciboDLTD, correoRecibioDLTD, fechaRecibido, fechaLimiteRespuesta, direccion, correo,
         telefono, observacion, fechaEntrega, metodoUtilizado, numeroGuia, entidadSolicitante, usuarioRegistro, fechaRegistro,
         usuarioModifico, fechaModifico, archivoSolicitado
     };

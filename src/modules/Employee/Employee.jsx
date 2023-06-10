@@ -25,7 +25,7 @@ import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { TitleButton, CodCatalogo, ValidationMessage, DefaultValue } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage, DefaultValue, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
@@ -339,7 +339,7 @@ const Employee = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(`${Message.RegistroNoGuardado}`);
         }
     };
 

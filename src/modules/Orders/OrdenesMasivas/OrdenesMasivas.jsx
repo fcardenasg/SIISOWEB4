@@ -154,47 +154,6 @@ const OrdenesMasivas = () => {
         } catch (err) { }
     };
 
-    const handleClickEnviarMasivo = async () => {
-        try {
-            /* setLoading(true); */
-            console.log("lsOrdenesEmpleado => ", lsOrdenesEmpleado);
-
-            for (let index = 0; index < lsOrdenesEmpleado.length; index++) {
-                var element = lsOrdenesEmpleado[index];
-
-                var lsDataReport = await GetByIdOrders(element.id);
-                var lsDataReportParaclinico = await GetAllOrdersParaclinicos(element.id);
-                var lsDataUser = await GetByMail(user.nameuser);
-                var dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
-
-                var Correo = {
-                    Documento: element.documento,
-                    Correo: element.correoEmpleado,
-                    Adjunto: dataPDFTwo.file64
-                }
-
-                setLsArchivos([...lsArchivos, Correo]);
-            }
-
-            console.log("Datos masivos => ", lsArchivos);
-
-            /* setTimeout(() => {
-                async function enviarReporte() {
-                    const result = await SendParaclinicalExams(lsArchivos);
-                    if (result.status === 200) {
-                        setErrorMessage(result.data);
-                        setOpenSuccess(true);
-                        setTimeout(() => {
-                            setLoading(false);
-                        }, 500);
-                    }
-                }
-
-                enviarReporte();
-            }, 1000); */
-        } catch (err) { }
-    };
-
     const handleDelete = async (index, idOrden) => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
@@ -469,14 +428,6 @@ const OrdenesMasivas = () => {
                                 <AnimateButton>
                                     <Button disabled={desabilitarSave} variant="contained" fullWidth onClick={handleClick}>
                                         {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={handleClickEnviarMasivo}>
-                                        {TitleButton.EnvioMasivo}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

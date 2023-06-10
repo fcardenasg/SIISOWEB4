@@ -30,29 +30,22 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { NumeroDias, ViewFormat } from 'components/helpers/Format';
+import { NumeroDiaSolicitudes, ViewFormat } from 'components/helpers/Format';
 import { TitleButton, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllRequests, DeleteRequests } from 'api/clients/RequestsClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
-import { generateReportRequests } from './ReportRequests';
-import { GetByIdRequests } from "api/clients/RequestsClient";
-import { GetByMail } from 'api/clients/UserClient';
-import useAuth from 'hooks/useAuth';
+import ReplyIcon from '@mui/icons-material/Reply';
 import ViewPDF from 'components/components/ViewPDF';
 import config from 'config';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import Chip from 'ui-component/extended/Chip';
+import GenerateExcel from './GenerateExcel';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -217,12 +210,12 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListRequests = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState(0);
     const [lsRequests, setLsRequests] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [openReport, setOpenReport] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -236,9 +229,9 @@ const ListRequests = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllRequests(0, 0);
-            setLsRequests(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllRequests();
+            setLsRequests(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) { }
     }
 
@@ -278,16 +271,6 @@ const ListRequests = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleClickReport = async () => {
-        try {
-            setOpenReport(true);
-            const lsDataReport = await GetByIdRequests(idCheck);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReportRequests(lsDataReport.data, lsDataUser.data);
-            setDataPDF(dataPDFTwo);
-        } catch (err) { }
     };
 
     const handleSelectAllClick = (event) => {
@@ -357,6 +340,7 @@ const ListRequests = () => {
     return (
         <MainCard title="Lista De Solicitudes" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} />
 
             <ControlModal
                 title={Message.VistaReporte}
@@ -384,57 +368,38 @@ const ListRequests = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="LISTA DE SOLICITUDES">
-                                    <ExcelSheet data={lsRequests} name="Requests">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fechaRecibo)} />
-                                        <ExcelColumn label="Documento" value="documentoPeticion" />
-                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Sede" value="nameSede" />
-                                        <ExcelColumn label="Cargo" value="nameCargoOficio" />
-                                        <ExcelColumn label="Celular" value="telefono" />
-                                        <ExcelColumn label="Área" value="nameArea" />
-                                        <ExcelColumn label="Tipo de solicitud" value="nameTipoSolicitud" />
-                                        <ExcelColumn label="Responsable" value="nameResponsableRespuesta" />
-                                        <ExcelColumn label="Fecha limite de respuesta" value={(fe) => ViewFormat(fe.fechaLimiteRespuesta)} />
-                                        <ExcelColumn label="Fecha de respuesta" value={(fe) => ViewFormat(fe.fechaRespuesta)} />
-                                        <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de registro" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha que modifica" value="fechaModifico" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
 
-                            <Grid item xs={2}>
-                                <Tooltip title="Impresión" onClick={handleClickReport}>
+                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={3}>
+                                <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
                                     <IconButton size="large">
-                                        <PrintIcon />
+                                        <IconFileExport />
                                     </IconButton>
                                 </Tooltip>
                             </Grid>
 
-                            <Grid item xs={4}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                            <Grid item xs={3}>
+                                <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/requests/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
-                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                            <Grid item xs={3}>
+                                <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate(config.defaultPath)}>
                                     {TitleButton.Cancelar}
                                 </Button>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <Tooltip title="Responder Solicitudes">
+                                    <Button fullWidth variant="contained" size="large" startIcon={<ReplyIcon />}
+                                        onClick={() => navigate("/requests/reply")}>
+                                        Responder
+                                    </Button>
+                                </Tooltip>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -523,7 +488,11 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.lsResponsable}
+                                                <Chip
+                                                    size="small"
+                                                    label={row.cantidadSolicitudes === 1 ? `${row.cantidadSolicitudes} SOLICITUD` : `${row.cantidadSolicitudes} SOLICITUDES`}
+                                                    chipcolor={row.cantidadSolicitudes === 0 ? 'error' : 'success'}
+                                                />
                                             </Typography>
                                         </TableCell>
 
@@ -538,7 +507,7 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: {NumeroDias(row.fechaRecibido, row.fechaLimiteRespuesta)}
+                                                {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: {NumeroDiaSolicitudes(row.fechaRecibido, row.fechaLimiteRespuesta)}
                                             </Typography>
                                         </TableCell>
 

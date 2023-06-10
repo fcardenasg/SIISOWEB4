@@ -14,16 +14,16 @@ import * as yup from 'yup';
 import { ValidationMessage } from 'components/helpers/Enums';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdRequests, InsertRequests } from 'api/clients/RequestsClient';
+import { GetByIdRequests, UpdateRequestss } from 'api/clients/RequestsClient';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostRequests } from 'formatdata/RequestsForm';
+import { PutRequests } from 'formatdata/RequestsForm';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
@@ -38,7 +38,8 @@ import Cargando from 'components/loading/Cargando';
 
 const validationSchema = yup.object().shape({
     fechaReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
-    usuarioReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`)
+    usuarioReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
+    correoRecibioDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const UpdateRequests = () => {
@@ -111,6 +112,14 @@ const UpdateRequests = () => {
                     setLsDataRequiest(serverData.data);
                     setDocumento(serverData.data.documento);
                     setDataPDF(serverData.data.archivoSolicitado);
+                    setFechaInicio(serverData.data.fechaRecibido);
+                    setFechaFin(serverData.data.fechaLimiteRespuesta);
+
+                    setDatosEmpleado({
+                        direccion: serverData.data.direccion,
+                        correo: serverData.data.correo,
+                        telefono: serverData.data.telefono
+                    });
 
                     const event = {
                         target: { value: serverData.data.documento }
@@ -136,17 +145,17 @@ const UpdateRequests = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, FormatDate(fechaInicio),
+            const DataToInsert = PutRequests(id, documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, datos.correoRecibioDLTD, FormatDate(fechaInicio),
                 FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion,
                 FormatDate(datos.fechaEntrega), datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, user.nameuser, null, null,
                 null, dataPDF);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await InsertRequests(DataToInsert);
-                    if (result.status === 200) {
+                    const result = await UpdateRequestss(DataToInsert);
+                    if (result.status === 200)
                         setOpenSuccess(true);
-                    }
+
                 } else {
                     setOpenError(true);
                     setErrorMessage(Message.ErrorNoHayDatos);
@@ -165,7 +174,7 @@ const UpdateRequests = () => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -181,7 +190,7 @@ const UpdateRequests = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Ordenes Individuales"
+                            title="Actualizar Solicitudes"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -209,7 +218,7 @@ const UpdateRequests = () => {
                                 <Grid item xs={6}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsDataRequiest.fechaReciboDLTD}
+                                            defaultValue={lsDataRequiest.usuarioReciboDLTD}
                                             fullWidth
                                             label="Recibido por"
                                             name="usuarioReciboDLTD"
@@ -218,14 +227,27 @@ const UpdateRequests = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue={lsDataRequiest.correoRecibioDLTD}
+                                            fullWidth
+                                            label="Correo DLTD"
+                                            name="correoRecibioDLTD"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.correoRecibioDLTD}
+                                        />
+                                    </FormProvider>
+                                </Grid>
                             </Grid>
                         </SubCard>
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <SubCard darkTitle title={<Typography variant="h4">Departamento De Salud E Higiene</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Área De Salud Ocupacional E Higiene</Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputDatePick
                                             onChange={handleFechaInicio}
@@ -236,7 +258,7 @@ const UpdateRequests = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={6}>
+                                <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputDatePick
                                             onChange={(e) => setFechaFin(e.target.value)}

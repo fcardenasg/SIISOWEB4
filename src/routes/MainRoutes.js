@@ -56,9 +56,12 @@ const ListCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/
 const CabRegistration = Loadable(lazy(() => import('modules/CabRegistration/CabRegistration')));
 const UpdateCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/UpdateCabRegistration')));
 
-const ListRequests = Loadable(lazy(() => import('modules/Requests/ListRequests')));
-const Requests = Loadable(lazy(() => import('modules/Requests/Requests')));
-const UpdateRequests = Loadable(lazy(() => import('modules/Requests/UpdateRequests')));
+const ListRequests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/ListRequests')));
+const Requests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/Requests')));
+const UpdateRequests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/UpdateRequests')));
+
+const ListRequestsView = Loadable(lazy(() => import('modules/Requests/RequestsView/ListRequestsView')));
+const RequestAnswered = Loadable(lazy(() => import('modules/Requests/RequestsView/RequestAnswered')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -446,6 +449,16 @@ const MainRoutes = {
         {
             path: '/requests/update/:id',
             element: <UpdateRequests />
+        },
+
+        /* Render de vista de respuesta a solicitudes */
+        {
+            path: '/requests/reply',
+            element: <ListRequestsView />
+        },
+        {
+            path: '/requests/reply/update/:id',
+            element: <RequestAnswered />
         },
 
         /* Render de Pruebas de Alcohol y Droga */

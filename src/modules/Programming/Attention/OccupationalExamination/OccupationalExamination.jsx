@@ -109,7 +109,7 @@ const tabsOption = [
 const calculateImc = (peso, talla) => {
     try {
         if (peso !== "" || talla !== "") {
-            var imcFinal = peso / Math.pow(talla, 2);
+            var imcFinal = Number(peso) / Math.pow(talla, 2);
             var imc = imcFinal.toFixed(1);
 
             var clasificacion = '';

@@ -445,7 +445,7 @@ const Emo = ({
         try {
             setTalla(event.target.value);
             var talla = event.target.value;
-            var imcFinal = peso / Math.pow(talla, 2);
+            var imcFinal = Number(peso) / Math.pow(talla, 2);
             setIMC(imcFinal.toFixed(1));
 
             if (imcFinal < 18.4) {

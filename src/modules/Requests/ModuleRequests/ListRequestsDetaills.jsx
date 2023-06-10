@@ -34,13 +34,14 @@ import { DeleteRequestsDetaills, GetAllRequestsDetaillsByIdSolicitud, InsertRequ
 import { PostRequestsDetalle } from 'formatdata/RequestsForm';
 import InputText from 'components/input/InputText';
 import Chip from 'ui-component/extended/Chip';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const validationSchema = yup.object().shape({
     idTipoSolicitud: yup.string().required(`${ValidationMessage.Requerido}`),
     idAreaRespuesta: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
-const ListRequestsDetaills = ({ lsEmployee, idSolicitud, setDisabledButton }) => {
+const ListRequestsDetaills = ({ lsEmployee, idSolicitud }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -81,11 +82,6 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud, setDisabledButton }) =>
             const lsServer = await GetAllRequestsDetaillsByIdSolicitud(idSolicitud);
             if (lsServer.status === 200) {
                 setLsOrdenesParaclinicos(lsServer.data);
-                /* if (lsServer.data.length !== 0) {
-                    setDisabledButton(true);
-                } else {
-                    setDisabledButton(false);
-                } */
             }
         } catch (error) { }
     }
@@ -177,11 +173,13 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud, setDisabledButton }) =>
                                             <TableCell>
                                                 <Grid container spacing={2}>
                                                     <Grid item xs={6}>
-                                                        <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                                                            <IconButton color="error" size="small">
-                                                                <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                                                            </IconButton>
-                                                        </Tooltip>
+                                                        <AnimateButton>
+                                                            <Tooltip disabled={row.estadoRespuesta ? true : false} title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                                                <IconButton color="error" size="small">
+                                                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </AnimateButton>
                                                     </Grid>
                                                 </Grid>
                                             </TableCell>

@@ -55,13 +55,13 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text('DATOS DEL REGISTRO', 7, 37);
     doc.text('INFORMACIÓN DE ASESORÍA', 7, 85);
     doc.text('DESCRIPCIÓN DE LA ASESORÍA', 7, 105);
-    doc.text('RECOMENDACIONES', 7, 155);
+    doc.text('RECOMENDACIONES', 7, 165);
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
 
     /* CUADRO DATOS */
-    doc.line(5, 32, 5, 200); /* IZQUIERDA */
+    doc.line(5, 32, 5, 220); /* IZQUIERDA */
     doc.line(5, 32, marXR, 32); /* HORI ONE */
     doc.line(5, 39, marXR, 39); /* HORI TWO  */
 
@@ -71,12 +71,12 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.line(5, 100, marXR, 100); /* HORI FIVE */
     doc.line(5, 108, marXR, 108); /* HORI SIX */
 
-    doc.line(5, 150, marXR, 150); /* HORI SEVEN */
-    doc.line(5, 158, marXR, 158); /* HORI OCHO */
+    doc.line(5, 160, marXR, 160); /* HORI SEVEN */
+    doc.line(5, 168, marXR, 168); /* HORI OCHO */
 
-    doc.line(5, 200, marXR, 200); /* HORI ULTIMA */
+    doc.line(5, 220, marXR, 220); /* HORI ULTIMA */
     doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
-    doc.line(marXR, 32, marXR, 200); /* DERECHA */
+    doc.line(marXR, 32, marXR, 220); /* DERECHA */
 
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
@@ -123,9 +123,9 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     /* DESCRIPCIONES DE TEXTO */
     doc.setFontSize(9);
     doc.text(`${lsDataReport.motivo}`, 7, 112, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.recomendaciones}`, 7, 162, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport.recomendaciones}`, 7, 175, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    getFirma(doc, lsDataUser)
+    getFirma(doc, lsDataUser, 15);
 }
 
 export function generateReportOtherAdvice(lsDataReport = [], lsDataUser) {

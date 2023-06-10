@@ -37,7 +37,8 @@ import ListRequestsDetaills from './ListRequestsDetaills';
 
 const validationSchema = yup.object().shape({
     fechaReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
-    usuarioReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`)
+    usuarioReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
+    correoRecibioDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
 const Requests = () => {
@@ -129,17 +130,16 @@ const Requests = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, FormatDate(fechaInicio),
-                FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion,
-                FormatDate(datos.fechaEntrega), datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, user.nameuser, null, null,
-                null, dataPDF);
+            const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, datos.correoRecibioDLTD, FormatDate(fechaInicio),
+                FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion, FormatDate(datos.fechaEntrega),
+                datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, user.nameuser, null, null, null, dataPDF);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
                     const result = await InsertRequests(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
-                        setResult(result.data.id);
+                        setResult(result.data);
                     }
                 } else {
                     setOpenError(true);
@@ -203,14 +203,26 @@ const Requests = () => {
                                     />
                                 </FormProvider>
                             </Grid>
+
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        fullWidth
+                                        label="Correo DLTD"
+                                        name="correoRecibioDLTD"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.correoRecibioDLTD}
+                                    />
+                                </FormProvider>
+                            </Grid>
                         </Grid>
                     </SubCard>
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                    <SubCard darkTitle title={<Typography variant="h4">Departamento De Salud E Higiene</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Área De Salud Ocupacional E Higiene</Typography>}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputDatePick
                                         onChange={handleFechaInicio}
@@ -221,7 +233,7 @@ const Requests = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputDatePick
                                         onChange={(e) => setFechaFin(e.target.value)}

@@ -82,6 +82,7 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                                     {diferen === 'COMPANY' ? null :
                                         <TableCell>{historyRow.nameGradoSinEPP}</TableCell>
                                     }
+
                                     {diferen === 'COMPANY' ? null :
                                         <TableCell>{historyRow.nameGradoConEPP}</TableCell>
                                     }
