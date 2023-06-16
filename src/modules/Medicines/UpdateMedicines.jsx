@@ -8,6 +8,8 @@ import {
     useMediaQuery
 } from '@mui/material';
 
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -18,12 +20,19 @@ import { PutMedicamentos } from 'formatdata/MedicinesForm';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import InputSwitch from 'components/input/InputSwitch';
-import { TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdMedicines, UpdateMediciness } from 'api/clients/MedicinesClient';
+import InputCheckBox from 'components/input/InputCheckBox';
+
+const validationSchema = yup.object().shape({
+    codigo: yup.string().required(ValidationMessage.Requerido),
+    descripcion: yup.string().required(ValidationMessage.Requerido),
+    idUnidad: yup.string().required(ValidationMessage.Requerido),
+    stopMinimo: yup.string().required(ValidationMessage.Requerido),
+});
 
 const UpdateMedicines = () => {
     const { user } = useAuth();
@@ -32,9 +41,8 @@ const UpdateMedicines = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const [existencia, setExistencia] = useState(false);
-    const [medicines, setMedicines] = useState([]);
-    const [lsSupplier, setLsSupplier] = useState([]);
+    const [lsMedicines, setLsMedicines] = useState([]);
+    const [lsUnidad, setLsUnidad] = useState([]);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -42,17 +50,15 @@ const UpdateMedicines = () => {
     async function GetAll() {
         try {
             const lsServerSupplierId = await GetByIdMedicines(id);
-            if (lsServerSupplierId.status === 200) {
-                setMedicines(lsServerSupplierId.data);
-                setExistencia(lsServerSupplierId.data.existencia);
-            }
+            if (lsServerSupplierId.status === 200)
+                setLsMedicines(lsServerSupplierId.data);
 
-            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.UNIDAD);
-            var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
+            const lsServerUnidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.UNIDAD);
+            var resultUnidad = lsServerUnidad.data.entities.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
-            setLsSupplier(resultSupplier);
+            setLsUnidad(resultUnidad);
         } catch (error) {
         }
     }
@@ -61,14 +67,14 @@ const UpdateMedicines = () => {
         GetAll();
     }, [])
 
-    const methods = useForm();
-    /* { resolver: yupResolver(validationSchema) } */
-    const { handleSubmit, errors } = methods;
+    const methods = useForm(
+        { resolver: yupResolver(validationSchema) }
+    );
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutMedicamentos(id, datos.codigo, datos.descripcion, datos.idUnidad, datos.cantidad,
-                existencia, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToUpdate = PutMedicamentos(id, datos.codigo, datos.descripcion, datos.idUnidad, datos.stopMinimo, datos.estado, user.nameuser);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateMediciness(DataToUpdate);
@@ -87,19 +93,19 @@ const UpdateMedicines = () => {
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            {medicines.length != 0 ? (
+            {lsMedicines.length != 0 ? (
                 <Fragment>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={medicines.codigo}
+                                    defaultValue={lsMedicines.codigo}
                                     fullWidth
                                     disabled
                                     name="codigo"
                                     label="Código"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.codigo}
                                 />
                             </FormProvider>
                         </Grid>
@@ -107,12 +113,12 @@ const UpdateMedicines = () => {
                         <Grid item xs={12} md={6}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={medicines.descripcion}
+                                    defaultValue={lsMedicines.descripcion}
                                     fullWidth
                                     name="descripcion"
                                     label="Descripción"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.descripcion}
                                 />
                             </FormProvider>
                         </Grid>
@@ -120,12 +126,12 @@ const UpdateMedicines = () => {
                         <Grid item xs={12} md={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
-                                    defaultValue={medicines.idUnidad}
+                                    defaultValue={lsMedicines.idUnidad}
                                     name="idUnidad"
                                     label="Unidad"
-                                    options={lsSupplier}
+                                    options={lsUnidad}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.idUnidad}
                                 />
                             </FormProvider>
                         </Grid>
@@ -133,22 +139,25 @@ const UpdateMedicines = () => {
                         <Grid item xs={12} md={4}>
                             <FormProvider {...methods}>
                                 <InputText
-                                    defaultValue={medicines.cantidad}
+                                    defaultValue={lsMedicines.stopMinimo}
                                     fullWidth
-                                    name="cantidad"
-                                    label="Cantidad"
+                                    name="stopMinimo"
+                                    label="Stop Minimo"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.stopMinimo}
                                 />
                             </FormProvider>
                         </Grid>
 
                         <Grid item alignItems="center" xs={12} md={4}>
-                            <InputSwitch
-                                label="Existencia"
-                                onChange={(e) => setExistencia(e.target.checked)}
-                                checked={existencia}
-                            />
+                            <FormProvider {...methods}>
+                                <InputCheckBox
+                                    label="Estado"
+                                    name="estado"
+                                    size={30}
+                                    defaultValue={lsMedicines.estado}
+                                />
+                            </FormProvider>
                         </Grid>
                     </Grid>
 

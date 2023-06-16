@@ -61,7 +61,13 @@ const Requests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/Req
 const UpdateRequests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/UpdateRequests')));
 
 const ListRequestsView = Loadable(lazy(() => import('modules/Requests/RequestsView/ListRequestsView')));
-const RequestAnswered = Loadable(lazy(() => import('modules/Requests/RequestsView/RequestAnswered')));
+const ListAnsweredView = Loadable(lazy(() => import('modules/Requests/AnsweredView/ListAnsweredView')));
+const MenuRequests = Loadable(lazy(() => import('modules/Menu/MenuRequests')));
+
+const MenuMedicines = Loadable(lazy(() => import('modules/Menu/MenuMedicines')));
+
+const ListMedicinesEntry = Loadable(lazy(() => import('modules/MedicinesEntry/ListMedicinesEntry')));
+const MedicinesEntry = Loadable(lazy(() => import('modules/MedicinesEntry/MedicinesEntry')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -457,8 +463,40 @@ const MainRoutes = {
             element: <ListRequestsView />
         },
         {
-            path: '/requests/reply/update/:id',
-            element: <RequestAnswered />
+            path: '/requests/menu',
+            element: <MenuRequests />
+        },
+        {
+            path: '/requests/answered',
+            element: <ListAnsweredView />
+        },
+
+        /* Render de Medicamentos */
+        {
+            path: '/medicines/menu',
+            element: <MenuMedicines />
+        },
+
+        {
+            path: '/medicines-entry/list',
+            element: <ListMedicinesEntry />
+        },
+        {
+            path: '/medicines-entry/add',
+            element: <MedicinesEntry />
+        },
+
+        {
+            path: '/medicines/list',
+            element: <ListMedicines />
+        },
+        {
+            path: '/medicines/add',
+            element: <Medicines />
+        },
+        {
+            path: '/medicines/update/:id',
+            element: <UpdateMedicines />
         },
 
         /* Render de Pruebas de Alcohol y Droga */
@@ -491,19 +529,6 @@ const MainRoutes = {
         {
             path: '/otheradvice/update/:id',
             element: <UpdateOtherAdvice />
-        },
-        /* Render de Medicamentos */
-        {
-            path: '/medicines/list',
-            element: <ListMedicines />
-        },
-        {
-            path: '/medicines/add',
-            element: <Medicines />
-        },
-        {
-            path: '/medicines/update/:id',
-            element: <UpdateMedicines />
         },
         /* Render de ASESORÍAS PSICOLÓGICA */
         {

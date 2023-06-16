@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Button, Grid, InputAdornment, OutlinedInput, TablePagination, Typography } from '@mui/material';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CardRequestsView from './CardRequestsView';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
@@ -10,7 +9,8 @@ import { IconSearch } from '@tabler/icons';
 import { TitleButton } from 'components/helpers/Enums';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
-import { GetAllRequestsPendientes } from 'api/clients/RequestsClient';
+import { GetAllBySedeRequests } from 'api/clients/RequestsClient';
+import CardAnsweredView from './CardAnsweredView';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -35,7 +35,7 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const ListRequestsView = () => {
+const ListAnsweredView = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
 
@@ -60,7 +60,7 @@ const ListRequestsView = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameAreaRespuesta', 'nameTipoSolicitud', 'nameSede'];
+                const properties = ['id', 'nameEmpleado', 'documento', 'nameSede'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -85,12 +85,12 @@ const ListRequestsView = () => {
             setMessageAtencion('');
             setLsRequests([]);
 
-            await GetAllRequestsPendientes(user.idsede, false).then(response => {
+            await GetAllBySedeRequests(user.idsede).then(response => {
                 setLsRequests(response.data);
                 setRows(response.data);
 
                 if (response.data.length === 0)
-                    setMessageAtencion('No hay solicitudes para responder');
+                    setMessageAtencion('No hay solicitudes para revisar');
             });
         } catch (error) { }
     };
@@ -102,10 +102,10 @@ const ListRequestsView = () => {
     let usersResult = <></>;
 
     if (lsRequests.length !== 0) {
-        usersResult = stableSort(lsRequests, getComparator('asc', 'fechaRespuesta')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        usersResult = stableSort(lsRequests, getComparator('asc', 'documento')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((lsRequests, index) => (
                 <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
-                    <CardRequestsView key={index} getAll={getAll} lsRequests={lsRequests} />
+                    <CardAnsweredView key={index} getAll={getAll} lsRequests={lsRequests} />
                 </Grid>
             ));
     } else if (messageAtencion !== '') {
@@ -121,7 +121,7 @@ const ListRequestsView = () => {
             title={
                 <Grid container alignItems="center" spacing={gridSpacing}>
                     <Grid item xs={12} md={7.5}>
-                        <Typography variant="h3">Solicitudes Por Responder</Typography>
+                        <Typography variant="h3">Solicitudes Respondidas</Typography>
                     </Grid>
 
                     <Grid item xs={8} md={3}>
@@ -172,4 +172,4 @@ const ListRequestsView = () => {
     );
 };
 
-export default ListRequestsView;
+export default ListAnsweredView;

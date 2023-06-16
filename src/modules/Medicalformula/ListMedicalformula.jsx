@@ -69,12 +69,6 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'idRecetario',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'documento',
         numeric: false,
         label: 'Documento',
@@ -84,6 +78,12 @@ const headCells = [
         id: 'nameEmpleado',
         numeric: false,
         label: 'Nombre',
+        align: 'left'
+    },
+    {
+        id: 'nameTipoRemision',
+        numeric: false,
+        label: 'Tipo De Remisión',
         align: 'left'
     },
     {
@@ -187,7 +187,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -243,7 +243,7 @@ const ListMedicalFormula = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idRecetario', 'documento', 'nameEmpleado', 'medico', 'fecha'];
+                const properties = ['idRecetario', 'documento', 'nameEmpleado', 'medico', 'fecha', 'nameTipoRemision'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -427,17 +427,6 @@ const ListMedicalFormula = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.idRecetario)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
-                                        >
-                                            {row.idRecetario}
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.idRecetario)}
-                                            sx={{ cursor: 'pointer' }}
                                         >
                                             <Typography
                                                 variant="subtitle1"
@@ -459,6 +448,21 @@ const ListMedicalFormula = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {row.nameEmpleado}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.idRecetario)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.nameTipoRemision}
                                             </Typography>
                                         </TableCell>
 

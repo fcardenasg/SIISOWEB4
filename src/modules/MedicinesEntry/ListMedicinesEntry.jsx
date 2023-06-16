@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ControlModal from 'components/controllers/ControlModal';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -25,27 +24,27 @@ import {
     Typography,
     Button
 } from '@mui/material';
-
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import swal from 'sweetalert';
+import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
 import { visuallyHidden } from '@mui/utils';
+import { IconFileExport } from '@tabler/icons';
+
+import swal from 'sweetalert';
+import Chip from 'ui-component/extended/Chip';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { NumeroDiaSolicitudes, ViewFormat } from 'components/helpers/Format';
-import { TitleButton, Message } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllRequests, DeleteRequests } from 'api/clients/RequestsClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { IconFileExport } from '@tabler/icons';
+import ReactExport from "react-export-excel";
 
-import ReplyIcon from '@mui/icons-material/Reply';
-import ViewPDF from 'components/components/ViewPDF';
-import config from 'config';
-import Chip from 'ui-component/extended/Chip';
-import GenerateExcel from './GenerateExcel';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -72,35 +71,29 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'documento',
+        id: 'codigo',
         numeric: false,
-        label: 'Documento',
+        label: 'Código',
         align: 'left'
     },
     {
-        id: 'nameEmpleado',
+        id: 'descripcion',
         numeric: false,
-        label: 'Nombres',
+        label: 'Descripción',
         align: 'left'
     },
     {
-        id: 'lsSolicitudes',
+        id: 'cantidad',
         numeric: false,
-        label: 'Solicitudes',
+        label: 'Cantidad',
         align: 'left'
     },
     {
-        id: 'fechaLimiteRespuesta',
+        id: 'estado',
         numeric: false,
-        label: 'Fecha Limite de Respuesta y Días',
+        label: 'Estado',
         align: 'left'
-    },
-    {
-        id: 'nameSede',
-        numeric: false,
-        label: 'Sede',
-        align: 'left'
-    },
+    }
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -190,7 +183,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -209,34 +202,33 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListRequests = () => {
+const ListMedicinesEntry = () => {
     const navigate = useNavigate();
-    const [idCheck, setIdCheck] = useState(0);
-    const [lsRequests, setLsRequests] = useState([]);
+    const [lsMedicamentos, setLsMedicamentos] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
-    const [openReport, setOpenReport] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
+    const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('fecha');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
-    const [dataPDF, setDataPDF] = useState(null);
 
-    async function getAll() {
+    async function GetAll() {
         try {
-            const lsServer = await GetAllRequests();
-            setLsRequests(lsServer.data);
-            setRows(lsServer.data);
+            const lsServer = await GetAllMedicines();
+            if (lsServer.status === 200) {
+                setLsMedicamentos(lsServer.data);
+                setRows(lsServer.data);
+            }
         } catch (error) { }
     }
 
     useEffect(() => {
-        getAll();
+        GetAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -247,7 +239,7 @@ const ListRequests = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'nameSede'];
+                const properties = ['codigo', 'descripcion', 'cantidad'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -261,9 +253,9 @@ const ListRequests = () => {
                 }
                 return matches;
             });
-            setLsRequests(newRows);
+            setLsMedicamentos(newRows);
         } else {
-            setLsRequests(rows);
+            setLsMedicamentos(rows);
         }
     };
 
@@ -274,8 +266,9 @@ const ListRequests = () => {
     };
 
     const handleSelectAllClick = (event) => {
+
         if (event.target.checked) {
-            const newSelectedId = lsRequests.map((n) => n.id);
+            const newSelectedId = lsMedicamentos.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -314,42 +307,27 @@ const ListRequests = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteRequests(idCheck);
-
+                    const result = await DeleteMedicines(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
-                        setSelected([]);
-                        getAll();
                     }
+                    setSearch('');
+                    setSelected([]);
+                    GetAll();
                 } else
                     setSelected([]);
             });
-        } catch (error) { }
-    }
+        } catch (error) {
 
-    const handleClose = () => {
-        setOpenReport(false);
-        setSelected([]);
-        setIdCheck('');
-        setDataPDF(null);
+        }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRequests.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
     return (
-        <MainCard title="Lista De Solicitudes" content={false}>
+        <MainCard title="Lista de Medicamentos" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
-            <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} />
-
-            <ControlModal
-                title={Message.VistaReporte}
-                open={openReport}
-                onClose={handleClose}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -372,23 +350,42 @@ const ListRequests = () => {
                     <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
-                                    <IconButton size="large">
-                                        <IconFileExport />
-                                    </IconButton>
-                                </Tooltip>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename="Medicamentos">
+                                    <ExcelSheet data={lsMedicamentos} name="Medicamentos">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Código" value="codigo" />
+                                        <ExcelColumn label="Descripcion" value="descripcion" />
+                                        <ExcelColumn label="Unidad" value="nameUnidad" />
+                                        <ExcelColumn label="Stop Minimo" value="stopMinimo" />
+                                        <ExcelColumn label="Cantidad Comprada" value="cantidadComprada" />
+                                        <ExcelColumn label="Cantidad Consumida" value="cantidadConsumida" />
+                                        <ExcelColumn label="Existencia" value="existencia" />
+                                        <ExcelColumn label="Estado" value="estado" />
+
+                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
+                                        <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
+                                        <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
+                                    </ExcelSheet>
+                                </ExcelFile>
                             </Grid>
 
                             <Grid item xs={5}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/requests/add")}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/medicines-entry/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={5}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/requests/menu")}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/medicines/menu")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
@@ -405,13 +402,13 @@ const ListRequests = () => {
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsRequests.length}
+                        rowCount={lsMedicamentos.length}
                         theme={theme}
                         selected={selected}
                         onClick={handleDelete}
                     />
                     <TableBody>
-                        {stableSort(lsRequests, getComparator(order, orderBy))
+                        {stableSort(lsMedicamentos, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
 
@@ -423,12 +420,13 @@ const ListRequests = () => {
                                 return (
                                     <TableRow
                                         hover
+                                        role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={index}
                                         selected={isItemSelected}
                                     >
-                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -449,7 +447,7 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.documento}
+                                                {row.codigo}
                                             </Typography>
                                         </TableCell>
 
@@ -464,7 +462,7 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameEmpleado}
+                                                {row.descripcion}
                                             </Typography>
                                         </TableCell>
 
@@ -479,15 +477,7 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                <Chip
-                                                    size="small"
-                                                    label={`${row.solicitudesRespondidas} RESPONDIDAS DE ${row.solicitudesRespondidas + row.solicitudesSinResponder}`}
-
-                                                    chipcolor={
-                                                        row.solicitudesRespondidas === 0 ? 'error' : row.solicitudesRespondidas === (row.solicitudesRespondidas + row.solicitudesSinResponder)
-                                                            ? 'success' : 'warning'
-                                                    }
-                                                />
+                                                {row.existencia === null ? "NO HAY EXISTENCIA" : `${row.existencia} EXISTENTES`}
                                             </Typography>
                                         </TableCell>
 
@@ -502,27 +492,15 @@ const ListRequests = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: {NumeroDiaSolicitudes(row.fechaRecibido, row.fechaLimiteRespuesta)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameSede}
+                                                {row.estado === true ?
+                                                    <Chip label="ACTIVO" size="small" chipcolor="success" /> :
+                                                    <Chip label="INACTIVO" size="small" chipcolor="error" />
+                                                }
                                             </Typography>
                                         </TableCell>
 
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/requests/update/${row.id}`)}>
+                                            <Tooltip title="Actualizar" onClick={() => navigate(`/medicines/update/${row.id}`)}>
                                                 <IconButton size="large">
                                                     <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                 </IconButton>
@@ -547,7 +525,7 @@ const ListRequests = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsRequests.length}
+                count={lsMedicamentos.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -557,4 +535,4 @@ const ListRequests = () => {
     );
 };
 
-export default ListRequests;
+export default ListMedicinesEntry;

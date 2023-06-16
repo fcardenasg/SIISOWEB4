@@ -27,20 +27,6 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
         setOpen(true);
     };
 
-    const FormatArray = (medidasControl = '') => {
-        if (medidasControl != '') {
-            var arreglo = JSON.parse(medidasControl);
-
-            var dato = arreglo.map(element => {
-                var arregloString = "";
-                arregloString = element.label + `${arregloString} - `;
-                return arregloString;
-            });
-
-            return dato;
-        }
-    }
-
     return (
         <Fragment>
             <ModalRisk
@@ -62,7 +48,6 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                     <Table size="small" aria-label="purchases">
                         <TableHead>
                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-                                <TableCell>Consecutivo</TableCell>
                                 <TableCell>Clase</TableCell>
                                 {diferen === 'COMPANY' ? null : <TableCell>Grado sin EPP</TableCell>}
 
@@ -77,7 +62,6 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                         <TableBody>
                             {row.map((historyRow) => (
                                 <TableRow hover>
-                                    <TableCell>{historyRow.id}</TableCell>
                                     <TableCell>{historyRow.nameClase}</TableCell>
                                     {diferen === 'COMPANY' ? null :
                                         <TableCell>{historyRow.nameGradoSinEPP}</TableCell>
@@ -88,7 +72,7 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                                     }
 
                                     {diferen === 'COMPANY' ? null :
-                                        <TableCell>{FormatArray(historyRow.medidasControl)}</TableCell>
+                                        <TableCell>{historyRow.medidasControl}</TableCell>
                                     }
                                     <TableCell>{historyRow.anio}</TableCell>
                                     <TableCell>{historyRow.mes}</TableCell>

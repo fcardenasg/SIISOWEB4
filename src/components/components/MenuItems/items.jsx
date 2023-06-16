@@ -6,7 +6,9 @@ import {
   IconReportMedical,
   IconTool,
   IconStethoscope,
-  IconUsers
+  IconUsers,
+  IconFirstAidKit,
+  IconMessages
 } from '@tabler/icons';
 
 import ContactMailIcon from '@mui/icons-material/ContactMail';
@@ -15,6 +17,8 @@ import PrintIcon from '@mui/icons-material/Print';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { ColorDrummondltd } from 'themes/colors';
+
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 export const itemsMenu = [
   {
@@ -337,6 +341,60 @@ export const itemsAdministration = [
     icon: IconUsers,
     selected: true,
     url: '/rol/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+];
+
+export const itemsRequests = [
+  {
+    title: "Solicitudes",
+    subtitle: "",
+    icon: IconMessages,
+    selected: true,
+    url: '/requests/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Responder Solicitudes",
+    subtitle: "",
+    icon: IconMessages,
+    selected: true,
+    url: '/requests/reply',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Consultar Respuestas",
+    subtitle: "",
+    icon: IconMessages,
+    selected: true,
+    url: '/requests/answered',
+    color: ColorDrummondltd.RedDrummond
+  },
+];
+
+export const itemsMedicines = [
+  {
+    title: "Medicamentos",
+    subtitle: "",
+    icon: IconFirstAidKit,
+    selected: true,
+    url: '/medicines/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Entrada Medicamentos",
+    subtitle: "",
+    icon: IconFirstAidKit,
+    selected: true,
+    url: '/medicines-entry/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Salida Medicamentos",
+    subtitle: "",
+    icon: IconFirstAidKit,
+    selected: true,
+    url: '/medication-outlet/list',
     color: ColorDrummondltd.RedDrummond
   },
 ];

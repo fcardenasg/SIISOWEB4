@@ -3,6 +3,7 @@ import { getData, deleteData, postData, putData } from '../UtilInstance';
 
 /* SERVICIOS DE SOLICITUDES */
 export const GetAllRequests = async () => await getData(Url.Solicitudes);
+export const GetAllBySedeRequests = async (idSede) => await getData(Url.SolicitudesPorSede, { idSede });
 export const GetByIdRequests = async (id) => await getData(Url.SolicitudesId, { id });
 export const InsertRequests = async (requests) => await postData(Url.Solicitudes, requests);
 export const UpdateRequestss = async (requests) => await putData(Url.Solicitudes, requests);
@@ -11,8 +12,9 @@ export const GetExcelRequests = async (parametroExcel) => await postData(Url.Sol
 
 
 /* SERVICIOS DE DETALLES DE SOLICITUD */
-export const GetAllRequestsDetaillsByIdSolicitud = async (id) => await getData(Url.SolicitudDetalle, { id });
+export const GetAllRequestsDetaillsByIdSolicitud = async (idSolicitud) => await getData(Url.SolicitudDetalle, { idSolicitud });
 export const GetByIdRequestsDetaills = async (id) => await getData(Url.SolicitudDetalleId, { id });
+export const GetFileRequests = async (id) => await getData(Url.SolicitudDetalleFile, { id });
 export const InsertRequestsDetaills = async (solicitudDetalle) => await postData(Url.SolicitudDetalle, solicitudDetalle);
 export const UpdateRequestsDetaills = async (solicitudDetalle) => await putData(Url.SolicitudDetalle, solicitudDetalle);
 export const DeleteRequestsDetaills = async (idSolicitudDetalle) => await deleteData(Url.SolicitudDetalle, { idSolicitudDetalle });

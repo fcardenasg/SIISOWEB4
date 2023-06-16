@@ -261,7 +261,7 @@ EmployeeInfo.propTypes = {
     onChange: PropTypes.object,
 };
 
-const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onChange, handleDocumento }) => {
+const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onChange, handleDocumento, children = null }) => {
     const theme = useTheme();
 
     return (
@@ -321,6 +321,8 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                         </Accordion>
                     </Grid>
                 </Grid>
+
+                {children}
             </SubCard>
         </Fragment>
     );

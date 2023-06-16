@@ -99,22 +99,13 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
 
     const handleClick = async (datos) => {
         try {
-            var dato = "";
-            /* if (medicaControl.length != 0) {
-
-                dato = medicaControl.map(element => {
-                    var arregloString = "";
-                    arregloString = element.label + `${arregloString} - `;
-                    return arregloString;
-                });
-            } */
 
             const DataToInsertCOMPANY = PutWorkHistoryRiskDLTD(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
                 row.idCargo, row.idClase, row.idExposicion, row.gradoSinEPP, row.gradoConEPP, row.medidasControl, datos.anio, datos.mes,
                 row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             const DataToInsertDLTD = PutWorkHistoryRiskDLTD1(idRisk, row.idHistoriaLaboral, row.fecha, row.documento, row.idRiesgo,
-                row.idCargo, row.idClase, row.idExposicion, gradoSinEPP, gradoConEPP, JSON.stringify(medicaControl), dato,
+                row.idCargo, row.idClase, row.idExposicion, gradoSinEPP, gradoConEPP, JSON.stringify(medicaControl), medicaControl,
                 datos.anio, datos.mes, row.usuarioRegistro, row.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
             if (diferen === "DLTD") {

@@ -49,8 +49,10 @@ const Requests = () => {
 
     const [openReport, setOpenReport] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
+
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
     const [datosEmpleado, setDatosEmpleado] = useState({

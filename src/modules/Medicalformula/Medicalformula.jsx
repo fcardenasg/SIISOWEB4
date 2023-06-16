@@ -7,6 +7,8 @@ import {
     Typography
 } from '@mui/material';
 
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -26,7 +28,7 @@ import { GetByIdMedicalFormula } from 'api/clients/MedicalFormulaClient';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputSelect from 'components/input/InputSelect';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton'
 import SubCard from 'ui-component/cards/SubCard';
 
@@ -39,6 +41,12 @@ import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { FormatDate } from 'components/helpers/Format';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
+
+const validationSchema = yup.object().shape({
+    idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
+    idTipoRemision: yup.string().required(`${ValidationMessage.Requerido}`),
+    diagnostico: yup.string().required(`${ValidationMessage.Requerido}`)
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -67,8 +75,10 @@ const MedicalFormula = () => {
     const [lsTipoOrden, setLsTipoOrden] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
 
-    const methods = useForm();
-    const { handleSubmit, reset } = methods;
+    const methods = useForm({
+        resolver: yupResolver(validationSchema)
+    });
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -82,13 +92,13 @@ const MedicalFormula = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -133,10 +143,7 @@ const MedicalFormula = () => {
                 label: item.nombre
             }));
             setLsContingencia(resultContingencia);
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -241,6 +248,7 @@ const MedicalFormula = () => {
                                         label="Tipo de Orden"
                                         options={lsTipoOrden}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoRemision}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -252,6 +260,7 @@ const MedicalFormula = () => {
                                         label="Contingencia"
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idContingencia}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -278,6 +287,7 @@ const MedicalFormula = () => {
                                         label="Diagnóstico"
                                         options={lsDx1}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.diagnostico}
                                     />
                                 </FormProvider>
                             </Grid>

@@ -26,8 +26,8 @@ export function PostRequestsDetalle(idSolicitud, idTipoSolicitud, idAreaRespuest
     };
 }
 
-export function PutRequestsDetalle(id, idUsuarioResponde, usuarioModifico, fechaModifico, estadoRespuesta, archivoSolicitado) {
+export function PutRequestsDetalle(id, idUsuarioResponde, usuarioModifico, archivoSolicitado) {
     return {
-        id, idUsuarioResponde, usuarioModifico, fechaModifico, estadoRespuesta, archivoSolicitado
+        id, idUsuarioResponde, usuarioModifico, archivoSolicitado
     };
 }

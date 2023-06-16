@@ -7,7 +7,7 @@ const ViewPDF = ({ dataPDF }) => {
             {dataPDF !== null ?
                 <object type="application/pdf"
                     data={dataPDF}
-                    width="1400"
+                    width="850"
                     height="500"
                 /> : <Cargando />
             }

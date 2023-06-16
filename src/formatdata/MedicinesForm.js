@@ -1,15 +1,13 @@
-export function PostMedicamentos(codigo, descripcion, idUnidad, cantidad, existencia,
-    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+export function PostMedicamentos(codigo, descripcion, idUnidad, stopMinimo, cantidadComprada, cantidadConsumida, existencia,
+    estado, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
     return {
-        codigo, descripcion, idUnidad, cantidad, existencia,
-        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+        codigo, descripcion, idUnidad, stopMinimo, cantidadComprada, cantidadConsumida, existencia,
+        estado, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
     };
 }
 
-export function PutMedicamentos(id, codigo, descripcion, idUnidad, cantidad, existencia,
-    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
+export function PutMedicamentos(id, codigo, descripcion, idUnidad, stopMinimo, estado, usuarioModifico) {
     return {
-        id, codigo, descripcion, idUnidad, cantidad, existencia,
-        usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+        id, codigo, descripcion, idUnidad, stopMinimo, estado, usuarioModifico
     };
 }

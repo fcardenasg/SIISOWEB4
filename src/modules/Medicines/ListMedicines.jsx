@@ -74,7 +74,7 @@ const headCells = [
         id: 'codigo',
         numeric: false,
         label: 'Código',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'descripcion',
@@ -89,9 +89,9 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'existencia',
+        id: 'estado',
         numeric: false,
-        label: 'Existencia',
+        label: 'Estado',
         align: 'left'
     }
 ];
@@ -183,7 +183,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -219,10 +219,10 @@ const ListMedicines = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllMedicines(0, 0);
+            const lsServer = await GetAllMedicines();
             if (lsServer.status === 200) {
-                setLsMedicamentos(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                setLsMedicamentos(lsServer.data);
+                setRows(lsServer.data);
             }
         } catch (error) { }
     }
@@ -239,7 +239,7 @@ const ListMedicines = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codigo', 'descripcion', 'cantidad', 'existencia'];
+                const properties = ['codigo', 'descripcion', 'cantidad'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -358,12 +358,16 @@ const ListMedicines = () => {
                                     </Tooltip>
                                 } filename="Medicamentos">
                                     <ExcelSheet data={lsMedicamentos} name="Medicamentos">
-                                        <ExcelColumn label="ID" value="id" />
+                                        <ExcelColumn label="Id" value="id" />
                                         <ExcelColumn label="Código" value="codigo" />
-                                        <ExcelColumn label="Descripción" value="descripción" />
-                                        <ExcelColumn label="Unidad" value="idUnidad" />
-                                        <ExcelColumn label="Cantidad" value="cantidad" />
+                                        <ExcelColumn label="Descripcion" value="descripcion" />
+                                        <ExcelColumn label="Unidad" value="nameUnidad" />
+                                        <ExcelColumn label="Stop Minimo" value="stopMinimo" />
+                                        <ExcelColumn label="Cantidad Comprada" value="cantidadComprada" />
+                                        <ExcelColumn label="Cantidad Consumida" value="cantidadConsumida" />
                                         <ExcelColumn label="Existencia" value="existencia" />
+                                        <ExcelColumn label="Estado" value="estado" />
+
                                         <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                         <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
                                         <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
@@ -381,7 +385,7 @@ const ListMedicines = () => {
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/parameterization/menu")}>
+                                    onClick={() => navigate("/medicines/menu")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
@@ -438,13 +442,12 @@ const ListMedicines = () => {
                                             scope="row"
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
-                                            align="center"
                                         >
                                             <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                #{row.codigo}
+                                                {row.codigo}
                                             </Typography>
                                         </TableCell>
 
@@ -474,7 +477,7 @@ const ListMedicines = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.cantidad}
+                                                {row.existencia === null ? "NO HAY EXISTENCIA" : `${row.existencia} EXISTENTES`}
                                             </Typography>
                                         </TableCell>
 
@@ -489,9 +492,9 @@ const ListMedicines = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.existencia === true ?
-                                                    <Chip label="EXISTENCIA" size="small" chipcolor="success" /> :
-                                                    <Chip label="SIN EXISTENCIA" size="small" chipcolor="error" />
+                                                {row.estado === true ?
+                                                    <Chip label="ACTIVO" size="small" chipcolor="success" /> :
+                                                    <Chip label="INACTIVO" size="small" chipcolor="error" />
                                                 }
                                             </Typography>
                                         </TableCell>

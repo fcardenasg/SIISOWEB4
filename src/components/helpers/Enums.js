@@ -357,6 +357,7 @@ export const Message = {
     CorreoNoEnviado: 'No se pudo enviar el correo',
     SinCorreo: 'Este empleado no tiene correo registrado',
     VistaReporte: 'Vista De Reporte',
+    VistaArchivo: 'Vista De Archivo',
     Empleado: 'Vista De Reporte',
 
 

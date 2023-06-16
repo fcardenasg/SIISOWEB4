@@ -8,27 +8,26 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import useAuth from 'hooks/useAuth';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, ValidationMessage, CodCatalogo } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage, CodCatalogo, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { FormatDate } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostMedicamentos } from 'formatdata/MedicinesForm';
-import InputSwitch from 'components/input/InputSwitch';
 import { InsertMedicines } from 'api/clients/MedicinesClient';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 const validationSchema = yup.object().shape({
-    codigo: yup.string().required(`${ValidationMessage.Requerido}`),
-    descripcion: yup.string().required(`${ValidationMessage.Requerido}`),
-    idUnidad: yup.string().required(`${ValidationMessage.Requerido}`),
-    cantidad: yup.string().required(`${ValidationMessage.Requerido}`),
+    codigo: yup.string().required(ValidationMessage.Requerido),
+    descripcion: yup.string().required(ValidationMessage.Requerido),
+    idUnidad: yup.string().required(ValidationMessage.Requerido),
+    stopMinimo: yup.string().required(ValidationMessage.Requerido),
 });
 
 const Medicines = () => {
@@ -37,7 +36,6 @@ const Medicines = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [existencia, setExistencia] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -48,7 +46,7 @@ const Medicines = () => {
         resolver: yupResolver(validationSchema)
     });
 
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     async function GetAll() {
         try {
@@ -68,20 +66,19 @@ const Medicines = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostMedicamentos(datos.codigo, datos.descripcion, datos.idUnidad, datos.cantidad,
-                existencia, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostMedicamentos(datos.codigo, datos.descripcion, datos.idUnidad, datos.stopMinimo, undefined, undefined, undefined,
+                datos.estado, user.nameuser, undefined, undefined, undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertMedicines(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
                     reset();
-                    setExistencia(false);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage('No se pudo guardar el registro');
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -98,7 +95,7 @@ const Medicines = () => {
                             name="codigo"
                             label="Código"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.codigo}
                         />
                     </FormProvider>
                 </Grid>
@@ -110,7 +107,7 @@ const Medicines = () => {
                             name="descripcion"
                             label="Descripción"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.descripcion}
                         />
                     </FormProvider>
                 </Grid>
@@ -123,7 +120,7 @@ const Medicines = () => {
                             defaultValue=""
                             options={lsUnidad}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.idUnidad}
                         />
                     </FormProvider>
                 </Grid>
@@ -132,21 +129,25 @@ const Medicines = () => {
                     <FormProvider {...methods}>
                         <InputText
                             defaultValue=""
+                            type="number"
                             fullWidth
-                            name="cantidad"
-                            label="Cantidad"
+                            name="stopMinimo"
+                            label="Stop Minimo"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors.stopMinimo}
                         />
                     </FormProvider>
                 </Grid>
 
                 <Grid item alignItems="center" xs={12} md={4}>
-                    <InputSwitch
-                        label="Existencia"
-                        onChange={(e) => setExistencia(e.target.checked)}
-                        value={existencia}
-                    />
+                    <FormProvider {...methods}>
+                        <InputCheckBox
+                            label="Estado"
+                            name="estado"
+                            size={30}
+                            defaultValue={true}
+                        />
+                    </FormProvider>
                 </Grid>
             </Grid>
 
@@ -159,7 +160,7 @@ const Medicines = () => {
                             </Button>
                         </AnimateButton>
                     </Grid>
-                    
+
                     <Grid item xs={2}>
                         <AnimateButton>
                             <Button variant="outlined" fullWidth onClick={() => navigate("/medicines/list")}>

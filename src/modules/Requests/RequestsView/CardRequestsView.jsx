@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { MessageDelete } from 'components/alert/AlertAll';
 import { NumeroDiaSolicitudes, ViewFormat } from 'components/helpers/Format';
@@ -9,15 +8,13 @@ import { Button, Card, CardContent, CardMedia, Grid, Typography } from '@mui/mat
 
 import { MessageSuccess } from 'components/alert/AlertAll';
 import { ColorDrummondltd } from 'themes/colors';
-import useAuth from 'hooks/useAuth';
 import ReplyIcon from '@mui/icons-material/Reply';
 import Chip from 'ui-component/extended/Chip';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControlModal from 'components/controllers/ControlModal';
-import RequestAnswered from './RequestAnswered';
+import ModalRequestAnswered from './ModalRequestAnswered';
 
-const RequestsView = ({ lsRequests }) => {
-    const { user } = useAuth();
+const CardRequestsView = ({ lsRequests, getAll }) => {
     const theme = useTheme();
 
     const [colorCard, setColorCard] = useState('');
@@ -53,12 +50,12 @@ const RequestsView = ({ lsRequests }) => {
                 }}
             >
                 <ControlModal
-                    title={`RESPONDER SOLICITUDES DE ${lsRequests.nameTipoSolicitud}`}
+                    title={`RESPONDER SOLICITUD DE ${lsRequests.nameTipoSolicitud}`}
                     open={openRequests}
                     onClose={() => setOpenRequests(false)}
                     maxWidth="xs"
                 >
-                    <RequestAnswered idSolicitudDetalle={lsRequests.id} />
+                    <ModalRequestAnswered idSolicitudDetalle={lsRequests.id} getAllRefresh={getAll} />
                 </ControlModal>
 
                 <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
@@ -106,9 +103,9 @@ const RequestsView = ({ lsRequests }) => {
     );
 };
 
-RequestsView.propTypes = {
+CardRequestsView.propTypes = {
     lsRequests: PropTypes.object,
     onClickDelete: PropTypes.object
 };
 
-export default RequestsView;
+export default CardRequestsView;

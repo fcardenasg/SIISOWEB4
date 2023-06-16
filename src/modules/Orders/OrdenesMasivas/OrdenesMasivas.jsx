@@ -57,8 +57,6 @@ const OrdenesMasivas = () => {
     const [openReport, setOpenReport] = useState(false);
     const [lsTipoExamen, setLsTipoExamen] = useState([]);
 
-    const [lsArchivos, setLsArchivos] = useState([]);
-
     const [datosControlados, setDatosControlados] = useState({
         fecha: new Date(),
         tipoExamen: '',

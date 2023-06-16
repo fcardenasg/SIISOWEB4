@@ -163,10 +163,11 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud }) => {
                                             <TableCell component="th" scope="row">{row.nameTipoSolicitud}</TableCell>
                                             <TableCell>{row.nameAreaRespuesta}</TableCell>
                                             <TableCell>
-                                                {row.estadoRespuesta ?
-                                                    <Chip label="RESPONDIDA" size="small" chipcolor="success" /> :
-                                                    <Chip label="SIN RESPUESTA" size="small" chipcolor="error" />
-                                                }
+                                                <Chip
+                                                    size="small"
+                                                    label={row.estadoRespuesta ? 'RESPONDIDA' : 'SIN RESPUESTA'}
+                                                    chipcolor={row.estadoRespuesta ? 'success' : 'error'}
+                                                />
                                             </TableCell>
                                             <TableCell>{new Date(row.fechaRegistro).toLocaleString()}</TableCell>
 
