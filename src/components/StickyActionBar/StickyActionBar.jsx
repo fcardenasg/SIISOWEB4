@@ -14,7 +14,7 @@ import { TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ColorDrummondltd } from 'themes/colors';
 
-function StickyActionBar({ children, onClickSave, onClickReport, onClickOrderMedical, onClickUpdate,
+function StickyActionBar({ children, mainTitle = 'Actualizar o Guardar', titleButtonOne = TitleButton.Guardar, titleButtonTwo = TitleButton.Actualizar, onClickSave, onClickReport, onClickOrderMedical, onClickUpdate,
     showButton = false, disabledSave, disabledReport, disabledUpdate, ...others }) {
 
     return (
@@ -26,7 +26,7 @@ function StickyActionBar({ children, onClickSave, onClickReport, onClickOrderMed
                             <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
                                 <Grid item>
                                     <Typography variant="h5" sx={{ m: 0 }}>
-                                        ACTUALIZAR O GUARDAR
+                                        {mainTitle}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={4}>
@@ -34,14 +34,14 @@ function StickyActionBar({ children, onClickSave, onClickReport, onClickOrderMed
                                         <Grid item xs={6}>
                                             <AnimateButton>
                                                 <Button variant="contained" disabled={disabledSave} onClick={onClickSave} sx={{ background: ColorDrummondltd.RedDrummond }} color="error" fullWidth>
-                                                    {TitleButton.Guardar}
+                                                    {titleButtonOne}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>
                                         <Grid item xs={6}>
                                             <AnimateButton>
                                                 <Button variant="outlined" disabled={disabledUpdate} color="error" onClick={onClickUpdate} fullWidth>
-                                                    {TitleButton.Actualizar}
+                                                    {titleButtonTwo}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>

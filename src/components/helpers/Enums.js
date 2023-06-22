@@ -177,6 +177,9 @@ export const CodCatalogo = {
 
     TODAS_ASESORIAS: 137,
     LATERALIDAD: 82,
+
+    SITUACION_EMPLEADO: 214,
+    VISTO_BUENO: 215,
 }
 
 export const DefaultData = {
@@ -192,8 +195,6 @@ export const DefaultValue = {
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 2,
     OrdenadoPor_Reintegro_MedicoDLTD: 5180,
-
-
 
     ATENCION_ATENDIDO: 'ATENDIDO',
     ATENCION_PENDIENTE_ATENDIDO: 'PENDIENTE POR ATENCIÓN',
@@ -350,6 +351,7 @@ export const Message = {
 
     NoExisteDocumento: 'Este empleado no existe',
     ErrorDocumento: 'Por favor, ingrese un número de documento',
+
     ErrorDeDatos: 'Hubo un error al buscar los datos, vuelva a intentarlo',
     ErrorNoHayDatos: 'No hay datos buscados, vuelva a intentarlo',
 
@@ -358,9 +360,6 @@ export const Message = {
     SinCorreo: 'Este empleado no tiene correo registrado',
     VistaReporte: 'Vista De Reporte',
     VistaArchivo: 'Vista De Archivo',
-    Empleado: 'Vista De Reporte',
-
-
 }
 
 export const optionsDate = {

@@ -1,7 +1,7 @@
 import { Url } from '../instances/AuthRoute';
 import { getData, deleteData, postData, putData } from '../UtilInstance';
 
-export const GetAllOccupationalMedicine = async (page, pageSize) => await getData(Url.MedicinaLaboral, { page, pageSize });
+export const GetAllOccupationalMedicine = async () => await getData(Url.MedicinaLaboral);
 export const GetByIdOccupationalMedicine = async (id) => await getData(Url.MedicinaLaboralId, { id });
 
 export const GetExcelOccupationalMedicine = async (parametroExcel) => await postData(Url.MedicinaLaboralExcel, parametroExcel);

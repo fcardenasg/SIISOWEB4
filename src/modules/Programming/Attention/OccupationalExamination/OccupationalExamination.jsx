@@ -57,9 +57,9 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { PostOccupationalExamination, PutOccupationalExamination } from 'formatdata/OccupationalExaminationForm';
 import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
-import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 import Framingham from './Framingham';
 import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
@@ -1007,7 +1007,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose('PENDIENTE POR ATENCIÓN')}>
+                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
@@ -1015,7 +1015,7 @@ const OccupationalExamination = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose('ATENDIDO')}>
+                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
                                     {TitleButton.CerrarCaso}
                                 </Button>
                             </AnimateButton>

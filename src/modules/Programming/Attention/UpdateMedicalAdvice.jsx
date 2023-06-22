@@ -18,8 +18,8 @@ import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
-import { GetByIdAttention, UpdateAttentions, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutAttention, PutEstadoAtencion } from 'formatdata/AttentionForm';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion, ValidateIdRegistroAtencion } from 'api/clients/AttentionClient';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
@@ -38,8 +38,8 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -58,6 +58,7 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import SelectOnChange from 'components/input/SelectOnChange';
 import UpdateAttMedicalAdvice from './AttentionMedicalAdvice/UpdateAttMedicalAdvice';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -104,69 +105,89 @@ const UpdateMedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
+    const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
-    const [titleModal, setTitleModal] = useState('');
     const [listMedicalFormula, setListMedicalFormula] = useState(true);
     const [newMedicalFormula, setNewMedicalFormula] = useState(false);
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
-    const [numberId, setNumberId] = useState('');
-
-    const [textTipoAsesoria, setTextTipoAsesoria] = useState('');
-    const [textMotivo, setTextMotivo] = useState('');
-    const [lsSubmotivo, setLsSubmotivo] = useState([]);
-    const [lsCodigoMotivo, setLsCodigoMotivo] = useState([]);
-
-    const [errorMessage, setErrorMessage] = useState('');
-    const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
+    const [userEdit, setUserEdit] = useState(false);
 
-    const [lsAtencion, setLsAtencion] = useState([]);
+    const [idTipoAsesoria, setIdTipoAsesoria] = useState(undefined);
+    const [textMotivo, setTextMotivo] = useState(undefined);
+
+    const [numberId, setNumberId] = useState('');
+    const [titleModal, setTitleModal] = useState('');
+    const [lsSubmotivo, setLsSubmotivo] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const [lsCodigoMotivo, setLsCodigoMotivo] = useState([]);
     const [lsMotivo, setLsMotivo] = useState([]);
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
-    const [resultData, setResultData] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
+    const [resultData, setResultData] = useState(0);
 
-    const [userEdit, setUserEdit] = useState(false);
+    const [dataAttention, setDataAttention] = useState({});
+    const [lsAtencion, setLsAtencion] = useState({});
 
     const methods = useForm();
     const { handleSubmit } = methods;
 
-    async function getAll() {
-        try {
-            const lsServerAtencion = await GetByIdAttention(id);
-            if (lsServerAtencion.status === 200) {
-                const event = {
-                    target: { value: lsServerAtencion.data.documento }
+    useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
+                setLsMotivo(lsServerMotivo.data);
+                setLsCodigoMotivo(lsServerMotivo.data);
+
+                const lsServerAtencion = await GetByIdAttention(id);
+                if (lsServerAtencion.status === 200) {
+                    const event = {
+                        target: { value: lsServerAtencion.data.documento }
+                    }
+                    handleLoadingDocument(event);
+                    setLsAtencion(lsServerAtencion.data);
+                    setTextMotivo(lsServerAtencion.data.motivo);
+                    setDocumento(lsServerAtencion.data.documento);
+
+                    var lsResulCode = String(lsServerMotivo.data.filter(code => code.value === lsServerAtencion.data.motivo).map(code => code.codigo));
+                    var lsServerSubmotivo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+
+                    if (lsServerSubmotivo.status === 200) {
+                        var submotivo = lsServerSubmotivo.data.entities.map((item) => ({
+                            value: item.idCatalogo,
+                            label: item.nombre
+                        }));
+
+                        setLsSubmotivo(submotivo);
+                    }
                 }
-                handleLoadingDocument(event);
-                setLsAtencion(lsServerAtencion.data);
-                setDocumento(lsServerAtencion.data.documento);
-            }
 
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
+                const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+                setTipoAsesoria(lsServerTipoAsesoria.data);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
-            setLsCodigoMotivo(lsServerMotivo.data.entities);
-        } catch (error) { }
-    }
+
+                const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                if (lsServerValidate.status === 200) {
+                    setResultIdRegistroAtencion(lsServerValidate.data.estado);
+                    setResultData(lsServerValidate.data.id);
+                    setDataAttention(lsServerValidate.data.entities);
+                    setIdTipoAsesoria(lsServerValidate.data.entities.idTipoAsesoria);
+                }
+            } catch (error) { }
+        }
+
+        getAll();
+    }, []);
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -200,14 +221,10 @@ const UpdateMedicalAdvice = () => {
         } catch (error) { }
     }
 
-    useEffect(() => {
-        getAll();
-    }, [])
-
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(resultData.id);
+            const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
@@ -223,11 +240,11 @@ const UpdateMedicalAdvice = () => {
         try {
             setTextMotivo(event.target.value);
 
-            var lsResulCode = String(lsCodigoMotivo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
-            var lsSubmotivo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+            var lsResulCode = String(lsCodigoMotivo.filter(code => code.value === event.target.value).map(code => code.codigo));
+            var lsServerSubmotivo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
 
-            if (lsSubmotivo.status === 200) {
-                var submotivo = lsSubmotivo.data.entities.map((item) => ({
+            if (lsServerSubmotivo.status === 200) {
+                var submotivo = lsServerSubmotivo.data.entities.map((item) => ({
                     value: item.idCatalogo,
                     label: item.nombre
                 }));
@@ -239,17 +256,30 @@ const UpdateMedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA,
-                lsAtencion.sede, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                DefaultData.SINREGISTRO_GLOBAL, textTipoAsesoria, textMotivo, datos.idSubmotivo, DefaultData.SINREGISTRO_GLOBAL,
-                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.nameuser, FormatDate(new Date()),
-                '', FormatDate(new Date()));
+            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede, undefined, undefined,
+                undefined, undefined, idTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
+                user.nameuser, undefined, undefined, undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertAdvice(DataToUpdate);
-                if (result.status === 200) {
+            const result = await SaveAdvice(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
                     setOpenSuccess(true);
                     setResultData(result.data);
+
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                    if (lsServerValidate.status === 200) {
+                        setResultIdRegistroAtencion(lsServerValidate.data.estado);
+                        setResultData(lsServerValidate.data.id);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {
@@ -270,7 +300,7 @@ const UpdateMedicalAdvice = () => {
 
             <FullScreenDialog
                 open={openTemplate}
-                title="LISTADO DE PLANTILLA"
+                title="Listado De Plantilla"
                 handleClose={() => setOpenTemplate(false)}
             >
                 <ListPlantillaAll />
@@ -278,7 +308,7 @@ const UpdateMedicalAdvice = () => {
 
             <FullScreenDialog
                 open={openApuntesPersonales}
-                title="APUNTES PERSONALES"
+                title="Apuntes Personales"
                 handleClose={() => setOpenApuntesPersonales(false)}
             >
                 <ListPersonalNotesAll />
@@ -350,7 +380,7 @@ const UpdateMedicalAdvice = () => {
             </ControlModal>
 
             <DialogFormula
-                title="TIPO DE ORDEN"
+                title="Tipo De Orden"
                 open={openFormula}
                 handleCloseDialog={() => setOpenFormula(false)}
             >
@@ -367,7 +397,6 @@ const UpdateMedicalAdvice = () => {
             </DialogFormula>
 
             <Fragment>
-
                 <UpdateAttMedicalAdvice setUserEdit={setUserEdit} userEdit={userEdit}>
                     <Grid item xs={12}>
                         {timeWait ?
@@ -384,20 +413,28 @@ const UpdateMedicalAdvice = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard darkTitle title={<Typography variant="h4">Registrar La  atención</Typography>}>
+                                    <StickyActionBar
+                                        onClickSave={handleSubmit(handleClick)}
+                                        onClickUpdate={handleSubmit(handleClick)}
+                                        disabledUpdate={!resultIdRegistroAtencion}
+                                        disabledSave={resultIdRegistroAtencion}
+                                        showButton={false}
+                                        threshold={568}
+                                    >
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={FormatDate(lsAtencion.fecha)}
+                                                        defaultValue={lsAtencion.fecha}
                                                     />
                                                 </FormProvider>
                                             </Grid>
 
                                             <Grid item xs={6}>
                                                 <SelectOnChange
+                                                    disabled
                                                     name="idMotivo"
                                                     label="Motivo"
                                                     onChange={handleMotivo}
@@ -410,6 +447,8 @@ const UpdateMedicalAdvice = () => {
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
+                                                        disabled
+                                                        defaultValue={dataAttention.idSubmotivo}
                                                         name="idSubmotivo"
                                                         label="Submotivo"
                                                         options={lsSubmotivo}
@@ -418,18 +457,18 @@ const UpdateMedicalAdvice = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 5 : 6}>
+                                            <Grid item xs={idTipoAsesoria === DefaultValue.VIDEO_LLAMADA ? 5 : 6}>
                                                 <SelectOnChange
                                                     name="idTipoAsesoria"
                                                     label="Tipo de Asesoría"
-                                                    onChange={(e) => setTextTipoAsesoria(e?.target.value)}
-                                                    value={textTipoAsesoria}
+                                                    onChange={(e) => setIdTipoAsesoria(e?.target.value)}
+                                                    value={idTipoAsesoria}
                                                     options={tipoAsesoria}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </Grid>
 
-                                            {textTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
+                                            {idTipoAsesoria === DefaultValue.VIDEO_LLAMADA ?
                                                 <Grid item xs={1}>
                                                     <Tooltip title="Video llamada">
                                                         <Button color="error" sx={{ color: ColorDrummondltd.RedDrummond }}
@@ -442,13 +481,13 @@ const UpdateMedicalAdvice = () => {
                                             }
 
                                             <Grid item xs={12}>
-                                                <SubCard darkTitle title={<Typography variant="h4">Descripción De La consulta</Typography>}>
+                                                <SubCard darkTitle title={<Typography variant="h4">Descripción de la Consulta</Typography>}>
                                                     <Grid item xs={12}>
                                                         <FormProvider {...methods}>
                                                             <InputText
+                                                                defaultValue={dataAttention.motivo}
                                                                 multiline
                                                                 rows={20}
-                                                                defaultValue=""
                                                                 fullWidth
                                                                 name="observaciones"
                                                                 label="Descripción"
@@ -480,9 +519,9 @@ const UpdateMedicalAdvice = () => {
                                                     <Grid item xs={12} sx={{ pt: 2 }}>
                                                         <FormProvider {...methods}>
                                                             <InputText
+                                                                defaultValue={dataAttention.recomendaciones}
                                                                 multiline
                                                                 rows={4}
-                                                                defaultValue=""
                                                                 fullWidth
                                                                 name="recomendaciones"
                                                                 label="Recomendaciones"
@@ -515,23 +554,15 @@ const UpdateMedicalAdvice = () => {
                                         </Grid>
 
                                         <Grid container spacing={2} sx={{ pt: 4 }}>
-                                            <Grid item xs={2.4}>
+                                            <Grid item xs={2}>
                                                 <AnimateButton>
-                                                    <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                                        {TitleButton.Guardar}
-                                                    </Button>
-                                                </AnimateButton>
-                                            </Grid>
-
-                                            <Grid item xs={2.4}>
-                                                <AnimateButton>
-                                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                                    <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={handleClickReport}>
                                                         {TitleButton.Imprimir}
                                                     </Button>
                                                 </AnimateButton>
                                             </Grid>
 
-                                            <Grid item xs={2.4}>
+                                            <Grid item xs={2}>
                                                 <AnimateButton>
                                                     <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
                                                         {TitleButton.OrdenesMedicas}
@@ -539,23 +570,23 @@ const UpdateMedicalAdvice = () => {
                                                 </AnimateButton>
                                             </Grid>
 
-                                            <Grid item xs={2.4}>
+                                            <Grid item xs={2}>
                                                 <AnimateButton>
-                                                    <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
+                                                    <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
                                                         {TitleButton.Cancelar}
                                                     </Button>
                                                 </AnimateButton>
                                             </Grid>
 
-                                            <Grid item xs={2.4}>
+                                            <Grid item xs={2}>
                                                 <AnimateButton>
-                                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
+                                                    <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
                                                         {TitleButton.CerrarCaso}
                                                     </Button>
                                                 </AnimateButton>
                                             </Grid>
                                         </Grid>
-                                    </SubCard>
+                                    </StickyActionBar>
                                 </Grid>
                             </Grid> : <Cargando />
                         }

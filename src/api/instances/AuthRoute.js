@@ -16,6 +16,7 @@ export const Url = {
     RolId: 'api/Rol/id',
 
     Catalogo: 'api/Catalogo',
+    CatalogoCombo: 'api/Catalogo/combo',
     CatalogoId: 'api/Catalogo/id',
     GetAllByTipoCatalogo: 'api/Catalogo/GetAllByTipoCatalogo',
     GetAllBySubTipoCatalogo: 'api/Catalogo/GetAllBySubTipoCatalogo',
@@ -84,6 +85,7 @@ export const Url = {
     UsuariosEmail: 'api/Usuarios/email',
 
     RegistroAtencion: 'api/RegistroAtencion',
+    RegistroAtencionValidateAtencion: 'api/RegistroAtencion/validate-attention',
     UpdateEstadoRegistroAtencion: 'api/RegistroAtencion/UpdateEstadoRegistroAtencion',
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/GetAllAtencion',
     RegistroAtencionId: 'api/RegistroAtencion/id',

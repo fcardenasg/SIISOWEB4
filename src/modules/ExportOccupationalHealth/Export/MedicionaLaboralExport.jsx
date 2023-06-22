@@ -116,7 +116,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Pcl Final" value="pclFinal" />
                                         <ExcelColumn label="Instancia Final" value="instanciaFinal" />
                                         <ExcelColumn label="Fecha Calificación Pcl Final" value={(fe) => ViewFormat(fe.fechaCalificacionPclFinal)} />
-                                        <ExcelColumn label="Fecha Estructuración Pcl Final" value={(fe) => ViewFormat(fe.v)} />
+                                        <ExcelColumn label="Fecha Estructuración Pcl Final" value={(fe) => ViewFormat(fe.fechaEstructuracionPclFinal)} />
                                         <ExcelColumn label="Indemnizado" value="indemnizado" />
                                         <ExcelColumn label="Fecha Pago" value={(fe) => ViewFormat(fe.fechaPago)} />
                                         <ExcelColumn label="Entregado MIN" value="entregadoMin" />
@@ -151,7 +151,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Resumen SG" value="resumenSG" />
                                         <ExcelColumn label="ACC Sistema" value="accSistema" />
                                         <ExcelColumn label="Peligro Asociado Enfermedad" value="peligroAsociadoEnfermedad" />
-                                        <ExcelColumn label="Fecha Entrega Min" value={(fe) => ViewFormat(fe.fechaEntregaMin)} />
+                                        <ExcelColumn label="Fecha Entrega Min" value={(fe) => ViewFormat(fe.fechaEntregaMIN)} />
                                     </ExcelSheet>
                                 </ExcelFile> : null
                             }

@@ -45,8 +45,15 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { InsertarAntecente, PostAssistance, PutAssistance } from 'formatdata/AssistanceForm';
-import { GetAntecedente, GetByIdMedicalHistory, GetIdRegistroAtencionMedicalHistory, InsertMedicalHistory, UpdateMedicalHistorys, ValidateIdRegistroAtencionMedicalHistory } from 'api/clients/MedicalHistoryClient';
+import { PostAssistance, PutAssistance } from 'formatdata/AssistanceForm';
+import {
+    GetAntecedente,
+    GetByIdMedicalHistory,
+    GetIdRegistroAtencionMedicalHistory,
+    InsertMedicalHistory,
+    UpdateMedicalHistorys,
+    ValidateIdRegistroAtencionMedicalHistory
+} from 'api/clients/MedicalHistoryClient';
 import Cargando from 'components/loading/Cargando';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import { GetByMail } from 'api/clients/UserClient';

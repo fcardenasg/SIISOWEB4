@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 
 import Header from './Header';
 import Footer from './Footer';
-import Customization from 'layout/Customization';
 import AppBar from 'ui-component/extended/AppBar';
 import PaperHomePage from './Paper/PaperHomePage';
 
@@ -25,11 +24,9 @@ const SIAE = () => (
         <HeaderWrapper id="home">
             <AppBar />
             <Header />
-            {/* <PaperHomePage /> */}
         </HeaderWrapper>
 
         <Footer />
-        <Customization />
     </Fragment>
 )
 

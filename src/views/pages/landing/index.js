@@ -2,7 +2,6 @@ import { styled } from '@mui/material/styles';
 
 import Header from './Header';
 import Footer from './Footer';
-import Customization from 'layout/Customization';
 import AppBar from 'ui-component/extended/AppBar';
 import { Fragment } from 'react';
 
@@ -26,7 +25,6 @@ const Landing = () => (
         </HeaderWrapper>
 
         <Footer />
-        <Customization />
     </Fragment>
 );
 

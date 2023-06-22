@@ -7,3 +7,5 @@ export const GetByIdAdvice = async (id) => await getData(Url.AsesoriasId, { id }
 export const InsertAdvice = async (asesorias) => await postData(Url.Asesorias, asesorias);
 export const UpdateAdvices = async (asesorias) => await putData(Url.Asesorias, asesorias);
 export const DeleteAdvice = async (idAsesorias) => await deleteData(Url.Asesorias, { idAsesorias });
+
+export const SaveAdvice = async (asesorias) => await postData(Url.Asesorias, asesorias);

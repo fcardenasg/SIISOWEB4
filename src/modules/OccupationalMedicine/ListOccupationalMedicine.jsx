@@ -22,7 +22,8 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button
+    Button,
+    Fade,
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
@@ -37,7 +38,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { ViewFormat } from 'components/helpers/Format';
+import Chip from 'ui-component/extended/Chip';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -64,9 +65,9 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'cedula',
+        id: 'documento',
         numeric: false,
-        label: 'Cédula',
+        label: 'Documento',
         align: 'left'
     },
     {
@@ -76,25 +77,31 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'namePayStatus',
+        id: 'nameSituacionEmpleado',
         numeric: false,
         label: 'Situación Del Empleado',
         align: 'left'
     },
     {
-        id: 'nameOrigenInstanciaFinal', /* INSTANCIA FINAL */
+        id: 'nameOrigenFinal',
         numeric: false,
         label: 'Origen Final',
         align: 'left'
     },
     {
-        id: 'nameCodDx',
+        id: 'dx',
         numeric: false,
         label: 'DX',
         align: 'left'
     },
     {
-        id: 'fechaSistema',
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Usuario Registro',
+        align: 'left'
+    },
+    {
+        id: 'fechaRegistro',
         numeric: false,
         label: 'Fecha',
         align: 'left'
@@ -215,7 +222,7 @@ const ListOccupationalMedicine = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaSistema');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -224,9 +231,9 @@ const ListOccupationalMedicine = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllOccupationalMedicine(0, 0);
-            setOccupationalMedicine(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllOccupationalMedicine();
+            setOccupationalMedicine(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) { }
     }
 
@@ -242,7 +249,7 @@ const ListOccupationalMedicine = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'cedula', 'nameEmpleado', 'namePayStatus', 'nameOrigenInstanciaFinal', 'nameCodDx', 'fechaSistema'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameSituacionEmpleado', 'nameOrigenFinal', 'dx', 'usuarioRegistro', 'nameDx'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -348,6 +355,7 @@ const ListOccupationalMedicine = () => {
                             size="small"
                         />
                     </Grid>
+
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
@@ -422,7 +430,7 @@ const ListOccupationalMedicine = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.cedula}
+                                                    {row.documento}
                                                 </Typography>
                                             </TableCell>
 
@@ -452,7 +460,7 @@ const ListOccupationalMedicine = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.namePayStatus}
+                                                    {row.nameSituacionEmpleado}
                                                 </Typography>
                                             </TableCell>
 
@@ -467,7 +475,39 @@ const ListOccupationalMedicine = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameOrigenInstanciaFinal}
+                                                    {row.nameOrigenFinal}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Tooltip placement="top" TransitionComponent={Fade} title={row.nameDx === null ? 'SIN DX' : row.nameDx}>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        <Chip label={row.dx === null ? 'SIN DX' : row.dx} size="small" chipcolor="success" />
+                                                    </Typography>
+                                                </Tooltip>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.usuarioRegistro}
                                                 </Typography>
                                             </TableCell>
 
@@ -482,22 +522,7 @@ const ListOccupationalMedicine = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameCodDx}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {ViewFormat(row.fechaSistema)}
+                                                    {new Date(row.fechaRegistro).toLocaleString()}
                                                 </Typography>
                                             </TableCell>
 
@@ -534,7 +559,7 @@ const ListOccupationalMedicine = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </MainCard>
+        </MainCard >
     );
 };
 

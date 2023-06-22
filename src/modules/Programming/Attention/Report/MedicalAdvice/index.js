@@ -132,11 +132,11 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, 75, 95);
 
     doc.setFontSize(8);
-    doc.text('MOTIVO:', 145, 85);
-    doc.text(`${lsDataReport.nameMotivo}`, 160, 85);
-    doc.setFontSize(8);
-    doc.text('SUBMOTIVO:', 145, 95);
-    doc.text(`${lsDataReport.nameSubmotivo}`, 165, 95);
+    doc.text('MOTIVO:', 125, 85);
+    doc.text(`${lsDataReport.nameMotivo}`, 138, 85);
+
+    doc.text('SUBMOTIVO:', 125, 95);
+    doc.text(`${lsDataReport.nameSubmotivo}`, 145, 95);
 
 
     /* DESCRIPCIONES DE TEXTO */
