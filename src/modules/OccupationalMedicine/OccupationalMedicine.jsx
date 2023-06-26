@@ -369,53 +369,10 @@ const OccupationalMedicine = () => {
                         showButton={false}
                         threshold={510}
                     >
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputDatePicker
-                                    label="Fecha Estimada Inicio Caso"
-                                    name="fechaEstimadaInicioCaso"
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="vistoBueno"
-                                    label="Visto Bueno"
-                                    options={lsVistoBueno}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    type="number"
-                                    fullWidth
-                                    name="PclInstaFinal"
-                                    label="Pcl Instancia Final"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={3}>
-                            <FormProvider {...methods}>
-                                <InputDatePicker
-                                    label="Fecha Estructuración JRC"
-                                    name="fechaEstructuracionJRC"
-                                />
-                            </FormProvider>
-                        </Grid>
-
-
-
                         <Grid item xs={12}>
                             <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
                                                 label="Fecha De Registro"
@@ -425,7 +382,7 @@ const OccupationalMedicine = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4}>
+                                    <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="resumenCaso"
@@ -436,13 +393,23 @@ const OccupationalMedicine = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={4}>
+                                    <Grid item xs={3}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="situacionEmpleado"
                                                 label="Situación Del Empleado"
                                                 options={lsSituacionEmpleado}
                                                 size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estimada Inicio Caso"
+                                                name="fechaEstimadaInicioCaso"
+                                                defaultValue={null}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -919,6 +886,16 @@ const OccupationalMedicine = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructuración JRC"
+                                                name="fechaEstructuracionJRC"
+                                                defaultValue={null}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
                                 </Grid>
                             </Accordion>
                         </Grid>
@@ -1032,6 +1009,18 @@ const OccupationalMedicine = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                fullWidth
+                                                name="pclInstaFinal"
+                                                label="Pcl Instancia Final"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
                                 </Grid>
                             </Accordion>
                         </Grid>
@@ -1119,6 +1108,17 @@ const OccupationalMedicine = () => {
                                             value={diasDiferencia}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="vistoBueno"
+                                                label="Visto Bueno"
+                                                options={lsVistoBueno}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12}>

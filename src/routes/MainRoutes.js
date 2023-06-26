@@ -125,6 +125,8 @@ const OccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMed
 const UpdateOccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/UpdateOccupationalMedicine')));
 
 const ListWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/ListWorkAbsenteeism')));
+const HistoryWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/HistoryWA')));
+const ViewHistoryWA = Loadable(lazy(() => import('modules/WorkAbsenteeism/HistoryWA/ViewHistoryWA')));
 const WorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/WorkAbsenteeism')));
 const UpdateWorkAbsenteeism = Loadable(lazy(() => import('modules/WorkAbsenteeism/UpdateWorkAbsenteeism')));
 
@@ -650,6 +652,14 @@ const MainRoutes = {
         {
             path: '/work-absenteeism/update/:id',
             element: <UpdateWorkAbsenteeism />
+        },
+        {
+            path: '/work-absenteeism/history',
+            element: <HistoryWorkAbsenteeism />
+        },
+        {
+            path: '/work-absenteeism/history/:id',
+            element: <ViewHistoryWA />
         },
         /* Render de Items */
         {

@@ -36,6 +36,21 @@ import useAuth from 'hooks/useAuth';
 import Accordion from 'components/accordion/Accordion';
 import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
 
+const ColorCard = (numeroDias) => {
+    const theme = useTheme();
+
+    if (numeroDias >= 75 && numeroDias <= 90)
+        return theme.palette.warning.main;
+
+    if (numeroDias >= 90 && numeroDias <= 180)
+        return theme.palette.warning.dark;
+
+    if (numeroDias > 180)
+        return theme.palette.error.main;
+
+    return theme.palette.grey[400];
+}
+
 const WorkAbsenteeism = () => {
     const theme = useTheme();
     const { user } = useAuth();
@@ -78,7 +93,7 @@ const WorkAbsenteeism = () => {
     const [fechaExpedicion, setFechaExpedicion] = useState(null);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
-    const [fechaModifica, setFechaModifica] = useState(new Date());
+    const [fechaModifica, setFechaModifica] = useState(new Date().toLocaleString());
 
     const methods = useForm();
     const { handleSubmit, errors } = methods;
@@ -748,8 +763,7 @@ const WorkAbsenteeism = () => {
                                     primary="Total días acumulado en incapacidad"
                                     secondary={numeroDias}
                                     iconPrimary={AccountCircleTwoTone}
-                                    color={numeroDias >= 75 && numeroDias <= 90 ? theme.palette.warning.main : numeroDias >= 90 && numeroDias <= 180 ? theme.palette.warning.dark :
-                                        numeroDias > 180 ? theme.palette.error.main : theme.palette.grey[400]}
+                                    color={() => ColorCard(numeroDias)}
                                 />
                             </Grid>
                         </Grid>

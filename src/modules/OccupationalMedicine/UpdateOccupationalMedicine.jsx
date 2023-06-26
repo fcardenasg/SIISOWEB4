@@ -87,6 +87,7 @@ const OccupationalMedicine = () => {
     const [fechaCaliUltimaInstancia, setFechaCaliUltimaInstancia] = useState(null);
     const [fechaInvestigacion, setFechaInvestigacion] = useState(null);
     const [diasDiferencia, setDiasDiferencia] = useState(0);
+    const [lsVistoBueno, setLsVistoBueno] = useState([]);
 
     const methods = useForm();
     const { handleSubmit } = methods;
@@ -124,6 +125,11 @@ const OccupationalMedicine = () => {
                     setLsOccupationalMedicine(lsServerAtencion.data);
                     setLsSubsegmento(lsServerAtencion.data.subsegmento);
                     setTextDiagnostico(lsServerAtencion.data.codDx);
+
+                    setFechaCaliUltimaInstancia(lsServerAtencion.data.fechaCalificacionUltimaInstancia);
+                    setFechaInvestigacion(lsServerAtencion.data.fechaInvestigacion);
+                    setDiasDiferencia(lsServerAtencion.data.diferenciaDia);
+
                     const event = {
                         target: { value: lsServerAtencion.data.cedula }
                     }
@@ -173,6 +179,7 @@ const OccupationalMedicine = () => {
                 const lsServerInvestigacionEL = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_INVESTIGACION_EL);
                 const lsServerAsesorEl = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_ASESOREL);
                 const lsServerSituacionEmpleado = await GetByTipoCatalogoCombo(CodCatalogo.SITUACION_EMPLEADO);
+                const lsServerVistoBueno = await GetByTipoCatalogoCombo(CodCatalogo.VISTO_BUENO);
 
                 setLsRegion(lsServerRegion.data);
                 setLsJuntaCalificadaJRC(lsServerJuntaCalificadaJRC.data);
@@ -190,6 +197,7 @@ const OccupationalMedicine = () => {
                 setLsInvestigacionEL(lsServerInvestigacionEL.data);
                 setLsAsesorEL(lsServerAsesorEl.data);
                 setLsSituacionEmpleado(lsServerSituacionEmpleado.data);
+                setLsVistoBueno(lsServerVistoBueno.data);
 
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -376,7 +384,7 @@ const OccupationalMedicine = () => {
                                 <Grid item xs={12}>
                                     <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
                                         <Grid container spacing={2}>
-                                            <Grid item xs={4}>
+                                            <Grid item xs={3}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
                                                         label="Fecha De Registro"
@@ -386,7 +394,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={4}>
+                                            <Grid item xs={3}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
                                                         defaultValue={lsOccupationalMedicine.resumenCaso}
@@ -398,7 +406,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={4}>
+                                            <Grid item xs={3}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
                                                         defaultValue={lsOccupationalMedicine.situacionEmpleado}
@@ -406,6 +414,16 @@ const OccupationalMedicine = () => {
                                                         label="Situación Del Empleado"
                                                         options={lsSituacionEmpleado}
                                                         size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={3}>
+                                                <FormProvider {...methods}>
+                                                    <InputDatePicker
+                                                        defaultValue={lsOccupationalMedicine.fechaEstimadaInicioCaso}
+                                                        label="Fecha Estimada Inicio Caso"
+                                                        name="fechaEstimadaInicioCaso"
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -915,6 +933,16 @@ const OccupationalMedicine = () => {
                                                     />
                                                 </FormProvider>
                                             </Grid>
+
+                                            <Grid item xs={3}>
+                                                <FormProvider {...methods}>
+                                                    <InputDatePicker
+                                                        label="Fecha Estructuración JRC"
+                                                        name="fechaEstructuracionJRC"
+                                                        defaultValue={lsOccupationalMedicine.fechaEstructuracionJRC}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
                                         </Grid>
                                     </Accordion>
                                 </Grid>
@@ -1034,6 +1062,19 @@ const OccupationalMedicine = () => {
                                                     />
                                                 </FormProvider>
                                             </Grid>
+
+                                            <Grid item xs={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputText
+                                                        defaultValue={lsOccupationalMedicine.pclInstaFinal}
+                                                        type="number"
+                                                        fullWidth
+                                                        name="pclInstaFinal"
+                                                        label="Pcl Instancia Final"
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
                                         </Grid>
                                     </Accordion>
                                 </Grid>
@@ -1128,6 +1169,18 @@ const OccupationalMedicine = () => {
                                                 />
                                             </Grid>
 
+                                            <Grid item xs={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputSelect
+                                                        defaultValue={lsOccupationalMedicine.vistoBueno}
+                                                        name="vistoBueno"
+                                                        label="Visto Bueno"
+                                                        options={lsVistoBueno}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
@@ -1195,6 +1248,7 @@ const OccupationalMedicine = () => {
                                                     />
                                                 </FormProvider>
                                             </Grid>
+
                                         </Grid>
                                     </Accordion>
                                 </Grid>

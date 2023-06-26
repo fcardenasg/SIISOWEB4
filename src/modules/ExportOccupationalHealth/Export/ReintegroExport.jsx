@@ -48,7 +48,7 @@ const ReintegroExport = ({ sede, fechaInicio, fechaFin }) => {
                                 <ExcelFile element={
                                     <AnimateButton>
                                         <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                        Descargar Excel
+                                            Descargar Excel
                                         </Button>
                                     </AnimateButton>
                                 } filename="REINTEGRO">

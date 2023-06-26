@@ -1,14 +1,9 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
-    CardContent,
-    Grid,
-    IconButton,
-    InputAdornment,
     Table,
     TableBody,
     TableCell,
@@ -17,18 +12,10 @@ import {
     TablePagination,
     TableRow,
     TableSortLabel,
-    TextField,
-    Tooltip,
     Typography,
 } from '@mui/material';
 
 import { visuallyHidden } from '@mui/utils';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { GetAllTemplate } from 'api/clients/TemplateClient';
-
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import SearchIcon from '@mui/icons-material/Search';
 import { GetAllWorkAbsenteeismDocumento } from 'api/clients/WorkAbsenteeismClient';
 import { ViewFormat } from 'components/helpers/Format';
 
@@ -150,8 +137,8 @@ const HistoryWorkAbsenteeism = ({ documento, refresh }) => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServer = await GetAllWorkAbsenteeismDocumento(0, 0, documento);
-                setLsHistorialAusentismo(lsServer.data.entities);
+                const lsServer = await GetAllWorkAbsenteeismDocumento(documento);
+                setLsHistorialAusentismo(lsServer.data);
             } catch (error) { }
         }
 

@@ -221,7 +221,7 @@ const ListOccupationalMedicine = () => {
     const [occupationalMedicine, setOccupationalMedicine] = useState([]);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -249,7 +249,7 @@ const ListOccupationalMedicine = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameSituacionEmpleado', 'nameOrigenFinal', 'dx', 'usuarioRegistro', 'nameDx'];
+                const properties = ['id', 'documento', 'dx'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

@@ -1,5 +1,5 @@
-export function ParametrosExcel(sede, fechaInicio, fechaFin) {
+export function ParametrosExcel(sede, fechaInicio, fechaFin, documento, opcionFiltro) {
     return {
-        sede, fechaInicio, fechaFin
+        sede, fechaInicio, fechaFin, documento, opcionFiltro
     };
 }

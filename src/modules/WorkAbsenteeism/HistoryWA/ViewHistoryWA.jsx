@@ -12,15 +12,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ViewEmployee from 'components/views/ViewEmployee';
-import { PutWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate, NumeroDias } from 'components/helpers/Format';
-import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeism, UpdateWorkAbsenteeisms } from 'api/clients/WorkAbsenteeismClient';
+import { NumeroDias } from 'components/helpers/Format';
+import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
@@ -32,9 +31,9 @@ import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
 import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
+
 import Accordion from 'components/accordion/Accordion';
-import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
+import HistoryWorkAbsenteeism from '../HistoryWorkAbsenteeism';
 import Cargando from 'components/loading/Cargando';
 
 const ColorCard = (numeroDias) => {
@@ -52,9 +51,8 @@ const ColorCard = (numeroDias) => {
     return theme.palette.grey[400];
 }
 
-const UpdateWorkAbsenteeism = () => {
+const ViewHistoryWA = () => {
     const theme = useTheme();
-    const { user } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -102,10 +100,9 @@ const UpdateWorkAbsenteeism = () => {
     const [fechaExpedicion, setFechaExpedicion] = useState(null);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
-    const [fechaModifica, setFechaModifica] = useState(new Date());
 
     const methods = useForm();
-    const { handleSubmit, errors } = methods;
+    const { errors } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -117,6 +114,139 @@ const UpdateWorkAbsenteeism = () => {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
         }
+    }
+
+    async function getAll() {
+        try {
+            const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
+            var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
+                value: item.id,
+                label: item.nombre
+            }));
+            setLsSegmentoAgrupado(resultSegAgrupado);
+
+            const lsServerSubsegmento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
+            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsSubsegmento(resultSubsegmento);
+
+            const lsServerMunicipio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Municipio);
+            var resultMunicipio = lsServerMunicipio.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsMunicipioArreglo(resultMunicipio);
+
+            const lsServerCatalogoDatos = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CatalogoAusentismo);
+            var resultCatalogoDatos = lsServerCatalogoDatos.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCatalogoDatosInca(resultCatalogoDatos);
+
+            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
+            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsDeparta(resultDepartamento);
+            setCodigoFilterDpto(lsServerDepartamento.data.entities);
+
+            const lsServerIncapacidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_INC);
+            var resultIncapacidad = lsServerIncapacidad.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsIncapacidad(resultIncapacidad);
+
+            const lsServerTipoSoporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TISOPOR);
+            var resultTipoSoporte = lsServerTipoSoporte.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTipoSoporte(resultTipoSoporte);
+            setLsCodigoFilterTipoSoporte(lsServerTipoSoporte.data.entities);
+
+            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOATEN);
+            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTipoAtencion(resultTipoAtencion);
+
+            const lsServerRedExpide = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_REDEXP);
+            var resultRedExpide = lsServerRedExpide.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsRedExpide(resultRedExpide);
+
+            const lsServerCumplimientoRequisito = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
+            var resultCumplimientoRequisito = lsServerCumplimientoRequisito.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsCumplimientoRequisito(resultCumplimientoRequisito);
+
+            const lsServerTipoInca = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOINCA);
+            var resultTipoInca = lsServerTipoInca.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsTipoInca(resultTipoInca);
+
+            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_CONT);
+            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsContingencia(resultContingencia);
+
+            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_ESTCAS);
+            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsEstadoCaso(resultEstadoCaso);
+
+            const lsServerData = await GetByIdWorkAbsenteeism(id);
+            if (lsServerData.status === 200) {
+                setLsWorkAbsenteeism(lsServerData.data);
+
+                const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(lsServerData.data.cedula);
+                setNumeroDias(numeroDias1.data);
+
+                setDocumento(lsServerData.data.cedula);
+                const event = {
+                    target: { value: lsServerData.data.cedula }
+                }
+                handleLoadingDocument(event);
+
+                setFechaInicio(lsServerData.data.fechaInicio);
+                setFechaFin(lsServerData.data.fechaFin);
+                setFechaExpedicion(lsServerData.data.fechaExpedicion);
+                setDiasSinLaborar(lsServerData.data.diasSinLaborar);
+                setDepartaMedico(lsServerData.data.departamentoIPS);
+                setDeparta(lsServerData.data.departamento);
+                setTipoSoporte(lsServerData.data.idTipoSoporte);
+
+                if (lsServerData.data.dx !== "") {
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerData.data.dx);
+
+                    if (lsServerCie11.status === 200) {
+                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                            value: item.id,
+                            label: item.dx
+                        }));
+                        setLsCIE11(resultCie11);
+                    }
+
+                    setTextoDx(lsServerData.data.dx);
+                }
+            }
+        } catch (error) { }
     }
 
     const handleChangeDepartamentoIncapa = async (event) => {
@@ -223,183 +353,8 @@ const UpdateWorkAbsenteeism = () => {
     }
 
     useEffect(() => {
-        async function getData() {
-            try {
-                const lsServerData = await GetByIdWorkAbsenteeism(id);
-                if (lsServerData.status === 200) {
-                    setLsWorkAbsenteeism(lsServerData.data);
-
-                    const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(lsServerData.data.cedula);
-                    setNumeroDias(numeroDias1.data);
-
-                    setDocumento(lsServerData.data.cedula);
-                    const event = {
-                        target: { value: lsServerData.data.cedula }
-                    }
-                    handleLoadingDocument(event);
-
-                    setFechaInicio(lsServerData.data.fechaInicio);
-                    setFechaFin(lsServerData.data.fechaFin);
-                    setFechaExpedicion(lsServerData.data.fechaExpedicion);
-                    setDiasSinLaborar(lsServerData.data.diasSinLaborar);
-                    setDepartaMedico(lsServerData.data.departamentoIPS);
-                    setDeparta(lsServerData.data.departamento);
-                    setTipoSoporte(lsServerData.data.idTipoSoporte);
-
-                    if (lsServerData.data.dx !== "") {
-                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerData.data.dx);
-
-                        if (lsServerCie11.status === 200) {
-                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                                value: item.id,
-                                label: item.dx
-                            }));
-                            setLsCIE11(resultCie11);
-                        }
-
-                        setTextoDx(lsServerData.data.dx);
-                    }
-                }
-            } catch (error) { }
-        }
-
-        getData();
-    }, [id])
-
-    useEffect(() => {
-        async function getAll() {
-            try {
-                const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
-                var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-                setLsSegmentoAgrupado(resultSegAgrupado);
-
-                const lsServerSubsegmento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
-                var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsSubsegmento(resultSubsegmento);
-
-                const lsServerMunicipio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Municipio);
-                var resultMunicipio = lsServerMunicipio.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsMunicipioArreglo(resultMunicipio);
-
-                const lsServerCatalogoDatos = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CatalogoAusentismo);
-                var resultCatalogoDatos = lsServerCatalogoDatos.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsCatalogoDatosInca(resultCatalogoDatos);
-
-                const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
-                var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsDeparta(resultDepartamento);
-                setCodigoFilterDpto(lsServerDepartamento.data.entities);
-
-                const lsServerIncapacidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_INC);
-                var resultIncapacidad = lsServerIncapacidad.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsIncapacidad(resultIncapacidad);
-
-                const lsServerTipoSoporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TISOPOR);
-                var resultTipoSoporte = lsServerTipoSoporte.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsTipoSoporte(resultTipoSoporte);
-                setLsCodigoFilterTipoSoporte(lsServerTipoSoporte.data.entities);
-
-                const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOATEN);
-                var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsTipoAtencion(resultTipoAtencion);
-
-                const lsServerRedExpide = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_REDEXP);
-                var resultRedExpide = lsServerRedExpide.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsRedExpide(resultRedExpide);
-
-                const lsServerCumplimientoRequisito = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
-                var resultCumplimientoRequisito = lsServerCumplimientoRequisito.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsCumplimientoRequisito(resultCumplimientoRequisito);
-
-                const lsServerTipoInca = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOINCA);
-                var resultTipoInca = lsServerTipoInca.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsTipoInca(resultTipoInca);
-
-                const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_CONT);
-                var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsContingencia(resultContingencia);
-
-                const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_ESTCAS);
-                var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsEstadoCaso(resultEstadoCaso);
-            } catch (error) { }
-        }
-
         getAll();
     }, [])
-
-    const handleClick = async (datos) => {
-        try {
-            const municipio_DATAEmpresa = municipioControl == '' ? datos.ciudadExpedicion : municipioControl;
-            const categoria_DATA = catalogoIncapacidad == '' ? datos.idCategoria : catalogoIncapacidad;
-            const municipio_DATAMedico = municipioDatosMedico == '' ? datos.ciudadIPS : municipioDatosMedico;
-
-            const DataToInsert = PutWorkAbsenteeism(id, documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
-                municipio_DATAEmpresa, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
-                datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, DefaultValue.SINREGISTRO_GLOBAL, datos.segmento, tipoSoporte, categoria_DATA,
-
-                datos.proveedor, departamentoIPS, municipio_DATAMedico, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
-                datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
-
-                datos.observacion, user.nameuser, FormatDate(fechaModifica), user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
-                FormatDate(new Date()), user.nameuser);
-
-            if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateWorkAbsenteeisms(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-
-                    const numeroDias = await GetAllWorkAbsenteeismNumeroDia(documento);
-                    setNumeroDias(numeroDias.data);
-                } else {
-                    setErrorMessage(Message.RegistroNoGuardado);
-                    setOpenError(true);
-                }
-            }
-        } catch (error) {
-            setErrorMessage(Message.RegistroNoGuardado);
-            setOpenError(true);
-        }
-    };
 
     setTimeout(() => {
         if (lsWorkAbsenteeism.length !== 0)
@@ -823,29 +778,6 @@ const UpdateWorkAbsenteeism = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue={lsWorkAbsenteeism.usuarioModificacion}
-                                            fullWidth
-                                            disabled
-                                            name="usuarioModificacion"
-                                            label="Usuario Modifica"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                    <InputDatePick
-                                        label="Fecha de Modificicación"
-                                        value={fechaModifica}
-                                        disabled
-                                        onChange={(e) => setFechaModifica(e.target.value)}
-                                    />
-                                </Grid>
                             </Grid >
                         </SubCard >
                     </Grid >
@@ -889,15 +821,7 @@ const UpdateWorkAbsenteeism = () => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                                {TitleButton.Actualizar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/work-absenteeism/list")}>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/work-absenteeism/history")}>
                                                 {TitleButton.Cancelar}
                                             </Button>
                                         </AnimateButton>
@@ -912,4 +836,4 @@ const UpdateWorkAbsenteeism = () => {
     );
 };
 
-export default UpdateWorkAbsenteeism;
+export default ViewHistoryWA;

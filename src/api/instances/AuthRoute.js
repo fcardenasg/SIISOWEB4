@@ -183,10 +183,14 @@ export const Url = {
     MedicinaLaboralExcel: 'api/MedicinaLaboralX/excel',
     MedicinaLaboralId: 'api/MedicinaLaboralX/id',
 
+    AusentismoLaboralHistorico: 'api/AusentismoLaboralHistorico',
+    AusentismoLaboralHistoricoExcel: 'api/AusentismoLaboralHistorico/excel',
+    AusentismoLaboralHistoricoId: 'api/AusentismoLaboralHistorico/id',
+
     AusentismoLaboral: 'api/AusentismoLaboral',
     AusentismoLaboralExcel: 'api/AusentismoLaboral/excel',
-    AusentismoLaboral_Documento: 'api/AusentismoLaboral/GetAllByDocumento',
-    AusentismoLaboral_NumDia: 'api/AusentismoLaboral/GetAllNumeroDia',
+    AusentismoLaboral_Documento: 'api/AusentismoLaboral/getbydocumento',
+    AusentismoLaboral_NumDia: 'api/AusentismoLaboral/get-numerodia',
     AusentismoLaboralId: 'api/AusentismoLaboral/id',
 
     HistoriaClinicaOcupacional: 'api/HistoriaClinicaOcupacional',

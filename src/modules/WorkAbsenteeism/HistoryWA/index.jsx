@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Cargando from 'components/loading/Cargando';
+
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
-    Checkbox,
+    Fade,
     Grid,
     IconButton,
     InputAdornment,
@@ -19,29 +19,21 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    Toolbar,
     Tooltip,
     Typography,
-    Button,
-    Fade
 } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
 
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import swal from 'sweetalert';
-import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
-import { TitleButton } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
-
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
-import HistoryIcon from '@mui/icons-material/History';
-import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-
-import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { visuallyHidden } from '@mui/utils';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import SearchIcon from '@mui/icons-material/Search';
+import { ViewFormat } from 'components/helpers/Format';
+import { GetAllWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
 import Chip from 'ui-component/extended/Chip';
+import MainCard from 'ui-component/cards/MainCard';
+import { useNavigate } from 'react-router-dom';
+import { TitleButton } from 'components/helpers/Enums';
+import Cargando from 'components/loading/Cargando';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -117,7 +109,7 @@ const headCells = [
     }
 ];
 
-function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
+function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -125,22 +117,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={{ pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
-                {numSelected > 0 && (
-                    <TableCell padding="none" colSpan={8}>
-                        <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
-                    </TableCell>
-                )}
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -164,7 +140,7 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
                         </TableCell>
                     ))}
                 {numSelected <= 0 && (
-                    <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
+                    <TableCell sortDirection={false} align="center" sx={{ pr: 2 }}>
                         <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
                             Acción
                         </Typography>
@@ -177,57 +153,16 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
 
 EnhancedTableHead.propTypes = {
     theme: PropTypes.object,
-    selected: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
 };
 
-const EnhancedTableToolbar = ({ numSelected, onClick }) => (
-    <Toolbar
-        sx={{
-            p: 0,
-            pl: 1,
-            pr: 1,
-            ...(numSelected > 0 && {
-                color: (theme) => theme.palette.secondary.main
-            })
-        }}
-    >
-        {numSelected > 0 ? (
-            <Typography color="inherit" variant="h4">
-                {numSelected} {TitleButton.Seleccionadas}
-            </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
-        {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
-        )}
-    </Toolbar>
-);
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onClick: PropTypes.func
-};
-
-const ListWorkAbsenteeism = () => {
+const HistoryWorkAbsenteeism = () => {
     const navigate = useNavigate();
-    const [openDelete, setOpenDelete] = useState(false);
-    const [idCheck, setIdCheck] = useState('');
-    const [lsWorkAbsenteeism, setLsWorkAbsenteeism] = useState([]);
+
+    const [lsWorkAbsenteeismHistory, setLsWorkAbsenteeismHistory] = useState([]);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -238,15 +173,15 @@ const ListWorkAbsenteeism = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function getAll() {
-        try {
-            const lsServer = await GetAllWorkAbsenteeism();
-            setLsWorkAbsenteeism(lsServer.data);
-            setRows(lsServer.data);
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServer = await GetAllWorkAbsenteeismHistory();
+                setLsWorkAbsenteeismHistory(lsServer.data);
+                setRows(lsServer.data);
+            } catch (error) { }
+        }
+
         getAll();
     }, [])
 
@@ -258,7 +193,7 @@ const ListWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'cedula', 'fechaRegistro', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -272,9 +207,9 @@ const ListWorkAbsenteeism = () => {
                 }
                 return matches;
             });
-            setLsWorkAbsenteeism(newRows);
+            setLsWorkAbsenteeismHistory(newRows);
         } else {
-            setLsWorkAbsenteeism(rows);
+            setLsWorkAbsenteeismHistory(rows);
         }
     };
 
@@ -282,35 +217,6 @@ const ListWorkAbsenteeism = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-
-        if (event.target.checked) {
-            const newSelectedId = lsWorkAbsenteeism.map((n) => n.id_Inc);
-            setSelected(newSelectedId);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, id) => {
-        setIdCheck(id);
-
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -322,32 +228,13 @@ const ListWorkAbsenteeism = () => {
         setPage(0);
     };
 
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeismHistory.length) : 0;
 
-    const handleDelete = async () => {
-        try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeleteWorkAbsenteeism(idCheck);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                        setSelected([]);
-                        getAll();
-                    }
-                } else
-                    setSelected([]);
-            });
-        } catch (error) { }
-    }
-
-    const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeism.length) : 0;
 
     return (
-        <MainCard title={<Typography variant='h4'>Lista De Ausentismo Laboral</Typography>} content={false}>
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
-
+        <MainCard title={<Typography variant='h4'>Lista De Ausentismo Laboral Historico</Typography>} content={false}>
             <CardContent>
-                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             InputProps={{
@@ -363,85 +250,51 @@ const ListWorkAbsenteeism = () => {
                             size="small"
                         />
                     </Grid>
-                    
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
-                                    onClick={() => navigate("/work-absenteeism/history")}>
-                                    {TitleButton.Historico}
-                                </Button>
-                            </Grid>
 
-                            <Grid item xs={4}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/work-absenteeism/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/occupational-health/menu")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </Grid>
+                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
+                        <Grid item xs={12}>
+                            <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate("/work-absenteeism/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
                         </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
 
             <TableContainer>
-                {/* AQUÍ SE HACE PRELOAD */}
-                {lsWorkAbsenteeism.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsWorkAbsenteeismHistory.length == 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={lsWorkAbsenteeism.length}
+                            rowCount={lsWorkAbsenteeismHistory.length}
                             theme={theme}
                             selected={selected}
-                            onClick={handleDelete}
                         />
+
                         <TableBody>
-                            {stableSort(lsWorkAbsenteeism, getComparator(order, orderBy))
+                            {stableSort(lsWorkAbsenteeismHistory, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-
                                     if (typeof row === 'string') return null;
 
-                                    const isItemSelected = isSelected(row.id_Inc);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={index}
-                                            selected={isItemSelected}
                                         >
-
-                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id_Inc)}>
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={isItemSelected}
-                                                    inputProps={{
-                                                        'aria-labelledby': labelId
-                                                    }}
-                                                />
-                                            </TableCell>
-
                                             <TableCell
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
+                                                align="left"
                                             >
                                                 <Typography
                                                     variant="subtitle1"
@@ -455,8 +308,8 @@ const ListWorkAbsenteeism = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
+                                                align="left"
                                             >
                                                 <Typography
                                                     variant="subtitle1"
@@ -470,31 +323,25 @@ const ListWorkAbsenteeism = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
+                                                align="left"
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    <Tooltip placement="top" TransitionComponent={Fade} title={row.nameDx === null ? 'SIN DX' : row.nameDx}>
-                                                        <Typography
-                                                            variant="subtitle1"
-                                                            sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                        >
-                                                            <Chip label={row.dx === null ? 'SIN DX' : row.dx} size="small" chipcolor="success" />
-                                                        </Typography>
-                                                    </Tooltip>
-                                                </Typography>
+                                                <Tooltip placement="top" TransitionComponent={Fade} title={row.nameDx === null ? 'SIN DX' : row.nameDx}>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        <Chip label={row.dx === null ? 'SIN DX' : row.dx} size="small" chipcolor="success" />
+                                                    </Typography>
+                                                </Tooltip>
                                             </TableCell>
-
 
                                             <TableCell
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
+                                                align="left"
                                             >
                                                 <Typography
                                                     variant="subtitle1"
@@ -508,7 +355,6 @@ const ListWorkAbsenteeism = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
@@ -523,7 +369,6 @@ const ListWorkAbsenteeism = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
@@ -538,7 +383,6 @@ const ListWorkAbsenteeism = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
@@ -553,7 +397,6 @@ const ListWorkAbsenteeism = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
@@ -565,14 +408,15 @@ const ListWorkAbsenteeism = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
+                                                <Tooltip title="Ver mas..." onClick={() => navigate(`/work-absenteeism/history/${row.id_Inc}`)}>
                                                     <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     );
+
                                 })}
                             {emptyRows > 0 && (
                                 <TableRow
@@ -591,7 +435,7 @@ const ListWorkAbsenteeism = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsWorkAbsenteeism.length}
+                count={lsWorkAbsenteeismHistory.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -601,4 +445,4 @@ const ListWorkAbsenteeism = () => {
     );
 };
 
-export default ListWorkAbsenteeism;
+export default HistoryWorkAbsenteeism;

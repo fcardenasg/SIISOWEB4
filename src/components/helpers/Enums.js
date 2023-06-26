@@ -318,6 +318,7 @@ export const TitleButton = {
     EnviarCorreo: 'Enviar',
     AgregarOrden: 'Agregar',
     Editar: 'Editar',
+    Historico: 'Historico',
 }
 
 export const ValidationMessage = {

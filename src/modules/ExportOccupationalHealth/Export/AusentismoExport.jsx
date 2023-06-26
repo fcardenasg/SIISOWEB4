@@ -1,29 +1,38 @@
-import { useState } from 'react';
 import ReactExport from 'react-export-excel';
+import { useState } from 'react';
 import { Grid, Button } from '@mui/material';
 import { ViewFormatMesDiaAnio } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
-import { GetExcelWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
+import { GetExcelWorkAbsenteeism, GetExcelWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
+const AusentismoExport = ({ sede, fechaInicio, fechaFin, ausentismo = 0, documento = '', opcionFiltro }) => {
     const [lsData, setLsData] = useState([]);
     const [statusData, setStatusData] = useState(false);
 
     async function getDataForExport() {
         try {
-            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
-            const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
+            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, documento, opcionFiltro);
 
-            if (lsServerExcel.status === 200) {
-                setLsData(lsServerExcel.data);
-                setStatusData(true);
+            if (ausentismo === 0) {
+                const lsServerExcelNuevo = await GetExcelWorkAbsenteeism(parametros);
+
+                if (lsServerExcelNuevo.status === 200) {
+                    setLsData(lsServerExcelNuevo.data);
+                    setStatusData(true);
+                }
+            } else {
+                const lsServerExcelHistorico = await GetExcelWorkAbsenteeismHistory(parametros);
+
+                if (lsServerExcelHistorico.status === 200) {
+                    setLsData(lsServerExcelHistorico.data);
+                    setStatusData(true);
+                }
             }
-
         } catch (error) { }
     }
 
@@ -36,9 +45,7 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin }) => {
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <AnimateButton>
-                                <Button disabled={
-                                    fechaInicio === null ? true : fechaFin === null ? true : false
-                                } onClick={getDataForExport} size="large" variant="contained" fullWidth>
+                                <Button onClick={getDataForExport} size="large" variant="contained" fullWidth>
                                     Generar Exportación
                                 </Button>
                             </AnimateButton>

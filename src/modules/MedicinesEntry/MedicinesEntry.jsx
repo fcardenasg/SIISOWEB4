@@ -22,7 +22,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import EditIcon from '@mui/icons-material/Edit';
 
 import useAuth from 'hooks/useAuth';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { TitleButton, ValidationMessage, CodCatalogo, Message } from 'components/helpers/Enums';
@@ -30,12 +30,14 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostMedicamentos } from 'formatdata/MedicinesForm';
-import { GetAllMedicines, InsertMedicines } from 'api/clients/MedicinesClient';
+import { GetAllMedicines, GetByIdMedicines, InsertMedicines } from 'api/clients/MedicinesClient';
 import InputDatePicker from 'components/input/InputDatePicker';
 import SubCard from 'ui-component/cards/SubCard';
 import ControlModal from 'components/controllers/ControlModal';
 import EditMedicinesEntry from './EditMedicinesEntry';
 import { GetAllCompany } from 'api/clients/CompanyClient';
+import SelectOnChange from 'components/input/SelectOnChange';
+import InputOnChange from 'components/input/InputOnChange';
 
 const validationSchema = yup.object().shape({
     codigo: yup.string().required(ValidationMessage.Requerido),
@@ -67,7 +69,15 @@ const MedicinesEntry = () => {
     const [lsUnidad, setLsUnidad] = useState([]);
     const [lsSede, setLsSede] = useState([]);
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
+    const [medicamentos, setMedicamentos] = useState('');
     const [lsEmpresa, setLsEmpresa] = useState([]);
+
+    const [objetoMedicamentos, setObjetoMedicamentos] = useState({
+        medica: '',
+        unidad: '',
+        existencia: '',
+        cantidad: '',
+    });
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -75,42 +85,47 @@ const MedicinesEntry = () => {
 
     const { handleSubmit, formState: { errors }, reset } = methods;
 
-    async function getAll() {
-        try {
-            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
-            var resultSede = lsServerSede.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSede(resultSede);
-
-            const lsServerMedicamentos = await GetAllMedicines(0, 0);
-            var resultMedicamentos = lsServerMedicamentos.data.entities.map((item) => ({
-                value: item.id,
-                label: item.descripcion
-            }));
-            setLsMedicamentos(resultMedicamentos);
-
-            /* const lsServerEmpresa = await GetAllCompany(0, 0);
-            var resultEmpresa = lsServerEmpresa.data.entities.map((item) => ({
-                value: item.codigo,
-                label: item.descripcionSpa
-            }));
-            setLsEmpresa(resultEmpresa); */
-
-            const lsServerSupplier = await GetAllByTipoCatalogo(0, 0, CodCatalogo.UNIDAD);
-            var resultSupplier = lsServerSupplier.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsUnidad(resultSupplier);
-        } catch (error) {
-        }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
+                setLsSede(lsServerSede.data);
+
+                const lsServerMedicamentos = await GetAllMedicines();
+                var resultMedicamentos = lsServerMedicamentos.data.map((item) => ({
+                    value: item.id,
+                    label: `${item.codigo} - ${item.descripcion}`
+                }));
+                setLsMedicamentos(resultMedicamentos);
+
+                const lsServerEmpresa = await GetAllCompany(0, 0);
+                var resultEmpresa = lsServerEmpresa.data.entities.map((item) => ({
+                    value: item.codigo,
+                    label: item.descripcionSpa
+                }));
+                setLsEmpresa(resultEmpresa);
+
+                const lsServerUnidad = await GetByTipoCatalogoCombo(CodCatalogo.UNIDAD);
+                setLsUnidad(lsServerUnidad.data);
+            } catch (error) {
+            }
+        }
+
         getAll();
-    }, [])
+    }, []);
+
+    const handleChangeMedicamento = async (event) => {
+        setMedicamentos(event.target.value);
+
+        var objServerMedicamento = await GetByIdMedicines(event.target.value);
+
+        setObjetoMedicamentos({
+            medica: objServerMedicamento.data.descripcion,
+            unidad: objServerMedicamento.data.nameUnidad,
+            existencia: objServerMedicamento.data.existencia === null ? 0 : objServerMedicamento.data.existencia,
+            cantidad: (objServerMedicamento.data.cantidadComprada - objServerMedicamento.data.cantidadConsumida)
+        });
+    };
 
     const handleClick = async (datos) => {
         try {
@@ -163,10 +178,11 @@ const MedicinesEntry = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={4} lg={4}>
                         <FormProvider {...methods}>
-                            <InputSelect
+                            <SelectOnChange
                                 name="idMedicamento"
                                 label="Buscar medicamento"
-                                defaultValue=""
+                                onChange={handleChangeMedicamento}
+                                value={medicamentos}
                                 options={lsMedicamentos}
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.idUnidad}
@@ -176,9 +192,11 @@ const MedicinesEntry = () => {
 
                     <Grid item xs={12} md={4} lg={4}>
                         <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
+                            <InputOnChange
                                 fullWidth
+                                disabled
+                                onChange={(e) => setObjetoMedicamentos({ ...objetoMedicamentos, medica: e.target.value })}
+                                value={objetoMedicamentos.medica}
                                 name="stopMinimo"
                                 label="Medicamento"
                                 size={matchesXS ? 'small' : 'medium'}
@@ -189,10 +207,11 @@ const MedicinesEntry = () => {
 
                     <Grid item xs={12} md={4} lg={1.3}>
                         <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                type="number"
+                            <InputOnChange
                                 fullWidth
+                                disabled
+                                onChange={(e) => setObjetoMedicamentos({ ...objetoMedicamentos, unidad: e.target.value })}
+                                value={objetoMedicamentos.unidad}
                                 name="stopMinimo"
                                 label="Unidad"
                                 size={matchesXS ? 'small' : 'medium'}
@@ -203,10 +222,11 @@ const MedicinesEntry = () => {
 
                     <Grid item xs={12} md={4} lg={1.3}>
                         <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                type="number"
+                            <InputOnChange
                                 fullWidth
+                                disabled
+                                onChange={(e) => setObjetoMedicamentos({ ...objetoMedicamentos, existencia: e.target.value })}
+                                value={objetoMedicamentos.existencia}
                                 name="stopMinimo"
                                 label="Existencia"
                                 size={matchesXS ? 'small' : 'medium'}
@@ -217,10 +237,11 @@ const MedicinesEntry = () => {
 
                     <Grid item xs={12} md={4} lg={1.4}>
                         <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                type="number"
+                            <InputOnChange
                                 fullWidth
+                                disabled
+                                onChange={(e) => setObjetoMedicamentos({ ...objetoMedicamentos, cantidad: e.target.value })}
+                                value={objetoMedicamentos.cantidad}
                                 name="stopMinimo"
                                 label="Cantidad"
                                 size={matchesXS ? 'small' : 'medium'}
