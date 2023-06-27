@@ -1,7 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-
 import ViewCall from './ViewCall';
-
 import SubCard from 'ui-component/cards/SubCard';
 
 const UpdateAttMedicalAdvice = ({ children, setUserEdit, userEdit }) => {

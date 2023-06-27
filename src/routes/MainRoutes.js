@@ -73,10 +73,6 @@ const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/Psycholo
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
 
-const ListNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/ListNoteInfirmary')));
-const NoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/NoteInfirmary')));
-const UpdateNoteInfirmary = Loadable(lazy(() => import('modules/NoteInfirmary/UpdateNoteInfirmary')));
-
 const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalFormula')));
 const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/MedicalFormula')));
 const UpdateMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/UpdateMedicalFormula')));
@@ -356,19 +352,6 @@ const MainRoutes = {
         {
             path: '/medicaladvice/update/:id',
             element: <UpdateMedicalAdvice />
-        },
-        /* Render de NOTAS DE ENFERMERIA */
-        {
-            path: '/note-infirmary/list',
-            element: <ListNoteInfirmary />
-        },
-        {
-            path: '/note-infirmary/add',
-            element: <NoteInfirmary />
-        },
-        {
-            path: '/note-infirmary/update/:id',
-            element: <UpdateNoteInfirmary />
         },
         /* Render de FORMULAS MEDICAS */
         {

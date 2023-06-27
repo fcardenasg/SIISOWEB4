@@ -15,26 +15,26 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
 
     async function getDataForExport() {
         try {
-            const lsDataExport = await GetAllNoteInfirmary(0, 0);
+            const lsDataExport = await GetAllNoteInfirmary();
             if (lsDataExport.status === 200) {
                 var result = [];
 
                 if (sede === '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin)).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede !== '' && atencion === '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin) && notaEnfer.idSede === sede).map(datos => datos);
 
                     setLsData(result);
                 }
 
                 if (sede === '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin) && notaEnfer.idTipoAtencion === atencion)
                         .map(datos => datos);
 
@@ -42,7 +42,7 @@ const ExportInfirmary = ({ sede, atencion, fechaInicio, fechaFin }) => {
                 }
 
                 if (sede !== '' && atencion !== '') {
-                    result = lsDataExport.data.entities.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
+                    result = lsDataExport.data.filter(notaEnfer => FormatDate(notaEnfer.fecha) >= FormatDate(fechaInicio)
                         && FormatDate(notaEnfer.fecha) <= FormatDate(fechaFin) && notaEnfer.idSede === sede &&
                         notaEnfer.idTipoAtencion === atencion).map(datos => datos);
 

@@ -18,6 +18,8 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, ausentismo = 0, documen
         try {
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, documento, opcionFiltro);
 
+            console.log("Parametros => ", parametros);
+
             if (ausentismo === 0) {
                 const lsServerExcelNuevo = await GetExcelWorkAbsenteeism(parametros);
 

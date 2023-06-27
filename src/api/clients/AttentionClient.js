@@ -2,7 +2,7 @@ import { Url } from '../instances/AuthRoute';
 import { getData, deleteData, postData, putData } from '../UtilInstance';
 
 export const GetAllAttention = async () => await getData(Url.RegistroAtencion);
-export const GetAllAtencion = async (page, pageSize, atencion, idSede) => await getData(Url.RegistroAtencio_GetAllAtencion, { page, pageSize, atencion, idSede });
+export const GetAllAtencion = async (atencion, idSede) => await getData(Url.RegistroAtencio_GetAllAtencion, { atencion, idSede });
 export const GetByIdAttention = async (id) => await getData(Url.RegistroAtencionId, { id });
 export const InsertAttention = async (registroAtencion) => await postData(Url.RegistroAtencion, registroAtencion);
 export const DeleteAttention = async (idRegistroAtencion) => await deleteData(Url.RegistroAtencion, { idRegistroAtencion });

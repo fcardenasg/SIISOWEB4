@@ -87,7 +87,7 @@ export const Url = {
     RegistroAtencion: 'api/RegistroAtencion',
     RegistroAtencionValidateAtencion: 'api/RegistroAtencion/validate-attention',
     UpdateEstadoRegistroAtencion: 'api/RegistroAtencion/UpdateEstadoRegistroAtencion',
-    RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/GetAllAtencion',
+    RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/attention',
     RegistroAtencionId: 'api/RegistroAtencion/id',
 
     Paraclinicos: 'api/Paraclinicos',

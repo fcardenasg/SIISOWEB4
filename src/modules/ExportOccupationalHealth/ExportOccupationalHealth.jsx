@@ -225,6 +225,7 @@ const ExportOccupationalHealth = () => {
                                                 sede={sede}
                                                 ausentismo={ausentismo}
                                                 documento={documento}
+                                                opcionFiltro={opcionFiltro}
                                             /> : null
                             }
                         </Grid>

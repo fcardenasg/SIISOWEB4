@@ -24,10 +24,9 @@ import {
 } from '@mui/material';
 
 import { visuallyHidden } from '@mui/utils';
-import { GetAllTemplate } from 'api/clients/TemplateClient';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { TitleButton , Message} from 'components/helpers/Enums';
+import { TitleButton, Message } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllNoteInfirmary, GetByIdNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
 import { ViewFormat } from 'components/helpers/Format';
@@ -151,7 +150,6 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableInfirmary = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [lsNoteInfirmary, setLsNoteInfirmary] = useState([]);
     const [openReport, setOpenReport] = useState(false);
@@ -167,16 +165,15 @@ const TableInfirmary = () => {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
-                const lsServer = await GetAllNoteInfirmary(0, 0);
-                setLsNoteInfirmary(lsServer.data.entities);
-                setRows(lsServer.data.entities);
-            } catch (error) {
-            }
+                const lsServer = await GetAllNoteInfirmary();
+                setLsNoteInfirmary(lsServer.data);
+                setRows(lsServer.data);
+            } catch (error) { }
         }
 
-        GetAll();
+        getAll();
     }, []);
 
     const handleClickReport = async (id) => {

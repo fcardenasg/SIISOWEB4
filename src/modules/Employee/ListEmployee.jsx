@@ -303,7 +303,7 @@ const ListEmployee = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nombres', 'celular', 'email', 'nameSede', 'nameCompany'];
+                const properties = ['documento', 'nombres', 'celular', /* 'email', */ /* 'nameSede', */ /* 'nameCompany' */];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

@@ -8,10 +8,11 @@ import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
 import { GetAllAtencion } from 'api/clients/AttentionClient';
-import { DefaultValue, TitleButton } from 'components/helpers/Enums';
+import { DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import config from 'config';
+import Cargando from 'components/loading/Cargando';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -40,6 +41,7 @@ const ListProgramming = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
 
+    const [timeWait, setTimeWait] = useState(false);
     const [lsProgramming, setLsProgramming] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
@@ -83,19 +85,20 @@ const ListProgramming = () => {
 
     const getAll = async () => {
         try {
+            setTimeWait(false);
             setMessageAtencion('');
             setLsProgramming([]);
 
-            await GetAllAtencion(0, 0, DefaultValue.ATENCION_ATENDIDO, user.idsede).then(response => {
-                if (response.data === 'No hay Atenciones') {
-
-                    setMessageAtencion(response.data);
-
-                } else if (response.data.entities.length !== 0) {
-
-                    setLsProgramming(response.data.entities);
-                    setRows(response.data.entities);
-                } else { }
+            await GetAllAtencion(DefaultValue.ATENCION_ATENDIDO, user.idsede).then(response => {
+                if (response.data.length === 0) {
+                    setMessageAtencion(Message.NoRegistro);
+                } else if (response.data.length !== 0) {
+                    setTimeout(() => {
+                        setTimeWait(true);
+                        setLsProgramming(response.data);
+                        setRows(response.data);
+                    }, 1500);
+                }
             });
         } catch (error) { }
     };
@@ -106,7 +109,7 @@ const ListProgramming = () => {
 
     let usersResult = <></>;
 
-    if (lsProgramming.length !== 0) {
+    if (timeWait) {
         usersResult = stableSort(lsProgramming, getComparator('desc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((programming, index) => (
                 <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
@@ -118,7 +121,9 @@ const ListProgramming = () => {
             <Grid item xs={12} sm={6} lg={4}>
                 <Typography variant="h3">{messageAtencion}</Typography>
             </Grid>
-        )
+        );
+    } else {
+        usersResult = <Cargando />
     }
 
     return (

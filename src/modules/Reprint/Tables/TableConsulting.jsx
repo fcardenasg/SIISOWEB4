@@ -82,7 +82,7 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameTiAtencion',
+        id: 'nameTipoAtencion',
         numeric: false,
         label: 'Tipo Asesoria',
         align: 'left'
@@ -168,7 +168,7 @@ const TableConsulting = () => {
     const [dataPDF, setDataPDF] = useState(null);
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
                 const lsServer = await GetAllAdvice();
                 setLsConsulting(lsServer.data);
@@ -176,7 +176,7 @@ const TableConsulting = () => {
             } catch (error) { }
         }
 
-        GetAll();
+        getAll();
     }, []);
 
     const handleClickReport = async (id) => {
@@ -216,7 +216,7 @@ const TableConsulting = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameTiAtencion', 'fecha'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'fecha'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
