@@ -427,25 +427,19 @@ const UpdateAttention = () => {
         try {
             const motivoFinal = motivo === undefined ? datos.motivo : motivo;
 
-            const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, "", 0,
-                "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "",
-                lsDataAtencion.usuarioRegistro, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
+            const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, undefined,
+                lsDataAtencion.numeroHistoria, "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita,
+                talla, peso, imc, lsDataAtencion.usuarioCierreAtencion, lsDataAtencion.fechaDigitacion, lsDataAtencion.fechaCierreAtencion,
+                lsDataAtencion.duracion, lsDataAtencion.usuarioRegistro, undefined, user.nameuser, undefined);
 
-            if (documento !== '' && lsEmployee.length !== 0) {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await UpdateAttentions(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                    }
-                }
-            } else {
-                setOpenError(true);
-                setErrorMessage(`${Message.ErrorDocumento}`);
+            const result = await UpdateAttentions(DataToInsert);
+            if (result.status === 200) {
+                setOpenUpdate(true);
             }
+
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 

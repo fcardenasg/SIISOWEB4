@@ -39,12 +39,12 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import Cargando from 'components/loading/Cargando';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
 import config from 'config';
+import ReactExport from "react-export-excel";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;

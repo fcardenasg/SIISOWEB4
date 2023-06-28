@@ -54,6 +54,7 @@ import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ColorDrummondltd } from 'themes/colors';
 
 import config from 'config';
+import GenerateExcel from './GenerateExcel';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -247,6 +248,7 @@ const ListEmployee = () => {
     const [employee, setEmployee] = useState([]);
 
     const [idCheck, setIdCheck] = useState('');
+    const [openModal, setOpenModal] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -303,7 +305,7 @@ const ListEmployee = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nombres', 'celular', /* 'email', */ /* 'nameSede', */ /* 'nameCompany' */];
+                const properties = ['documento', 'nombres', 'celular', /* 'email', 'nameSede', 'nameCompany' */];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -394,6 +396,7 @@ const ListEmployee = () => {
     return (
         <MainCard title="Lista De Empleados" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} />
 
             <ControlModal
                 title={Message.VistaReporte}
@@ -425,58 +428,11 @@ const ListEmployee = () => {
                     <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Empleado">
-                                    <ExcelSheet data={employee} name="Empleado">
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombres" value="nombres" />
-                                        <ExcelColumn label="Fecha de Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
-                                        <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNaci)} />
-                                        <ExcelColumn label="Type" value="nameType" />
-                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                        <ExcelColumn label="Area" value="nameArea" />
-                                        <ExcelColumn label="Subarea" value="nameSubArea" />
-                                        <ExcelColumn label="Grupo" value="nameGrupo" />
-                                        <ExcelColumn label="Municipio de Nacimiento" value="nameMunicipioNacido" />
-                                        <ExcelColumn label="Departamento de Nacimiento" value="nameDptoNacido" />
-                                        <ExcelColumn label="Fecha de Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
-                                        <ExcelColumn label="Antiguedad" value={(fe) => GetEdad(fe.fechaContrato)} />
-                                        <ExcelColumn label="Roster Position" value="nameRosterPosition" />
-                                        <ExcelColumn label="Tipo de Contrato" value="nameTipoContrato" />
-                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                        <ExcelColumn label="Genero" value="nameGenero" />
-                                        <ExcelColumn label="Sede" value="nameSede" />
-                                        <ExcelColumn label="Dirección de Residencia" value="direccionResidencia" />
-                                        <ExcelColumn label="Municipio de Residencia" value="nameMunicipioResidencia" />
-                                        <ExcelColumn label="Departamento de Residencia" value="nameDptoResidencia" />
-                                        <ExcelColumn label="celular" value="celular" />
-                                        <ExcelColumn label="Eps" value="nameEps" />
-                                        <ExcelColumn label="Afp" value="nameAfp" />
-                                        <ExcelColumn label="Turno" value="nameTurno" />
-                                        <ExcelColumn label="Email" value="email" />
-                                        <ExcelColumn label="Teléfono de Contacto" value="telefonoContacto" />
-                                        <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
-                                        <ExcelColumn label="Empresa" value="nameCompany" />
-                                        <ExcelColumn label="Arl" value="nameArl" />
-                                        <ExcelColumn label="Contacto" value="contacto" />
-                                        <ExcelColumn label="Escolaridad" value="nameEscolaridad" />
-                                        <ExcelColumn label="Cesantias" value="nameCesantias" />
-                                        <ExcelColumn label="Rotation" value="rotation" />
-                                        <ExcelColumn label="PayStatus" value="namePayStatus" />
-                                        <ExcelColumn label="Fecha de terminación" value={(fe) => ViewFormat(fe.termDate)} />
-                                        <ExcelColumn label="Bandera" value="nameBandera" />
-                                        <ExcelColumn label="Ges" value="nameGes" />
-                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                        <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                        <ExcelColumn label="Fecha de Modificación" value={(fe) => ViewFormat(fe.fechaModifico)} />
-                                    </ExcelSheet>
-                                </ExcelFile>
+                                <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
+                                    <IconButton size="large">
+                                        <IconFileExport />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
 
                             <Grid item xs={2}>

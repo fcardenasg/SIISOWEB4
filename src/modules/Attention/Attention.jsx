@@ -18,7 +18,7 @@ import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAttention, InsertAttention } from 'api/clients/AttentionClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -46,16 +46,17 @@ const Attention = () => {
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [peso, setPeso] = useState(undefined);
+    const [talla, setTalla] = useState(undefined);
+    const [imc, setIMC] = useState('');
+
     const [documento, setDocumento] = useState('');
     const [sede, setSede] = useState('');
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [atencion, setAtencion] = useState('');
-    const [motivo, setMotivo] = useState(undefined);
+    const [motivo, setMotivo] = useState(null);
     const [documentoSolicita, setDocumentoSolicita] = useState(undefined);
     const [nombreSolicitante, setNombreSolicitante] = useState(undefined);
-    const [peso, setPeso] = useState(undefined);
-    const [talla, setTalla] = useState(undefined);
-    const [imc, setIMC] = useState("");
     const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
@@ -74,7 +75,7 @@ const Attention = () => {
     const [lsMotivoPsico, setLsMotivoPsico] = useState([]);
     const [lsMedicos, setLsMedicos] = useState([]);
     const [lsPsicologia, setLsPsicologia] = useState([]);
-    const [result, setResult] = useState([]);
+    const [result, setResult] = useState('');
 
     const methods = useForm();
 
@@ -83,15 +84,10 @@ const Attention = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
-                var resultSede = lsServerSede.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsSede(resultSede);
+                const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
+                setLsSede(lsServerSede.data);
 
                 const lsServerMedicos = await GetAllUser(0, 0);
-
                 var resultPsicologia = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_PSICOLOGIA)
                     .map((item) => ({
                         value: item.id,
@@ -106,42 +102,21 @@ const Attention = () => {
                     }));
                 setLsMedicos(resultMedico);
 
-                const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
-                var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsEstadoCaso(resultEstadoCaso);
+                const lsServerEstadoCaso = await GetByTipoCatalogoCombo(CodCatalogo.EstadoCaso);
+                setLsEstadoCaso(lsServerEstadoCaso.data);
 
-                const lsServerMotivoPsico = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoPsicologia);
-                var resultMotivoPsico = lsServerMotivoPsico.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsMotivoPsico(resultMotivoPsico);
+                const lsServerMotivoPsico = await GetByTipoCatalogoCombo(CodCatalogo.MotivoPsicologia);
+                setLsMotivoPsico(lsServerMotivoPsico.data);
 
-                const lsServerMotivoMedica = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
-                var resultMotivoMedica = lsServerMotivoMedica.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsMotivoMedica(resultMotivoMedica);
+                const lsServerMotivoMedica = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
+                setLsMotivoMedica(lsServerMotivoMedica.data);
 
-                const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAtencion);
-                var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsTipoAtencion(resultTipoAtencion);
-                setLsCodigoTipo(lsServerTipoAtencion.data.entities);
+                const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TipoAtencion);
+                setLsTipoAtencion(lsServerTipoAtencion.data);
+                setLsCodigoTipo(lsServerTipoAtencion.data);
 
-                const lsServerMotivoPAD = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PAD_MOTIVO);
-                var resultMotivoPAD = lsServerMotivoPAD.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsMotivoPAD(resultMotivoPAD);
-
+                const lsServerMotivoPAD = await GetByTipoCatalogoCombo(CodCatalogo.PAD_MOTIVO);
+                setLsMotivoPAD(lsServerMotivoPAD.data);
             } catch (error) { }
         }
 
@@ -178,7 +153,7 @@ const Attention = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAttention(result.id);
+            const lsDataReport = await GetByIdAttention(result);
             const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -226,7 +201,7 @@ const Attention = () => {
                 }
 
                 /* AQUÍ SE CARGAN LAS ATENCIONES DE ENFERMERIA */
-                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.value === event.target.value).map(code => code.codigo));
 
                 var lsGetTipoAtencionEnfermeria = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
                 if (lsGetTipoAtencionEnfermeria.status === 200) {
@@ -240,7 +215,7 @@ const Attention = () => {
                 setLsAtencion(arrayAtencion);
 
             } else {
-                var lsResulCode = String(lsCodigoTipo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+                var lsResulCode = String(lsCodigoTipo.filter(code => code.value === event.target.value).map(code => code.codigo));
 
                 var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
                 if (lsGetTipo.status === 200) {
@@ -332,43 +307,34 @@ const Attention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const motivoFinal = motivo === undefined ? datos.motivo : motivo;
+            const motivoFinal = motivo === null ? datos.motivo : motivo;
 
-            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, "", 0,
-                "PENDIENTE POR ATENCIÓN", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, '', FormatDate(new Date()), FormatDate(new Date()), "",
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, undefined, undefined,
+                "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, undefined,
+                undefined, undefined, undefined, user.nameuser, undefined, undefined, undefined);
 
-            if (lsEmployee.length === 0 && documento === '') {
+            if (sede === '') {
                 setOpenError(true);
-                setErrorMessage(Message.NoExisteDocumento);
-            } else
-                if (sede === '') {
-                    setOpenError(true);
-                    setErrorMessage('Por favor, seleccione una sede');
-                } else
-                    if (tipoAtencion === '') {
-                        setOpenError(true);
-                        setErrorMessage('Por favor, seleccione el tipo atención');
-                    } else
-                        if (atencion === '') {
-                            setOpenError(true);
-                            setErrorMessage('Por favor, seleccione la atención');
-                        } else {
-                            if (Object.keys(datos.length !== 0)) {
-                                const result = await InsertAttention(DataToInsert);
-                                if (result.status === 200) {
-                                    setOpenSuccess(true);
-                                    setTipoAtencion('');
-                                    setAtencion('');
-                                    setSede('');
-                                    reset();
-                                    setResult(result.data)
-                                    setDocumento('');
-                                    setLsEmployee([]);
-                                }
-                            }
-                        }
+                setErrorMessage('Por favor, seleccione una sede');
+            } else if (tipoAtencion === '') {
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione el tipo atención');
+            } else if (atencion === '') {
+                setOpenError(true);
+                setErrorMessage('Por favor, seleccione la atención');
+            } else {
+                const result = await InsertAttention(DataToInsert);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                    setTipoAtencion('');
+                    setAtencion('');
+                    setSede('');
+                    reset();
+                    setResult(result.data)
+                    setDocumento('');
+                    setLsEmployee([]);
+                }
+            }
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
@@ -426,7 +392,7 @@ const Attention = () => {
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={FormatDate(new Date())}
+                                        defaultValue={new Date()}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </FormProvider>
@@ -462,7 +428,7 @@ const Attention = () => {
                                     options={lsAtencion}
                                     onChange={(e) => {
                                         setAtencion(e.target.value);
-                                        setMotivo(undefined);
+                                        setMotivo(null);
                                     }}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
@@ -615,6 +581,7 @@ const Attention = () => {
                                                         <Grid item xs={3}>
                                                             <FormProvider {...methods}>
                                                                 <InputSelect
+                                                                    defaultValue={null}
                                                                     name="motivo"
                                                                     label="Motivo"
                                                                     options={lsMotivoMedica}
@@ -670,7 +637,7 @@ const Attention = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={result.length === 0 ? true : false} variant="contained" onClick={handleClickReport} fullWidth>
+                                        <Button disabled={result === '' ? true : false} variant="contained" onClick={handleClickReport} fullWidth>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

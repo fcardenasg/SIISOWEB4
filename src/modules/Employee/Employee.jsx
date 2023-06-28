@@ -114,7 +114,7 @@ const Employee = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            
         }
     }
 

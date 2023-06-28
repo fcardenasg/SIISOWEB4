@@ -22,6 +22,7 @@ export const Url = {
     GetAllBySubTipoCatalogo: 'api/Catalogo/GetAllBySubTipoCatalogo',
 
     Empleado: 'api/Empleado',
+    EmpleadoExcel: 'api/Empleado/excel',
     EmpleadoOrdenes: 'api/Empleado/buscar-ordenes',
     EmpleadoId: 'api/Empleado/id',
 

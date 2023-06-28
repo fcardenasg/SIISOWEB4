@@ -35,6 +35,13 @@ import { useNavigate } from 'react-router-dom';
 import { TitleButton } from 'components/helpers/Enums';
 import Cargando from 'components/loading/Cargando';
 
+import { IconFileExport } from '@tabler/icons';
+import ReactExport from "react-export-excel";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -60,19 +67,19 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'cedula',
+        id: 'documento',
         numeric: false,
         label: 'Documento',
         align: 'left'
     },
     {
-        id: 'nameEmpleado',
+        id: 'nombre',
         numeric: false,
         label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'dx',
+        id: 'cod_Dx',
         numeric: false,
         label: 'Dx Inicial',
         align: 'left'
@@ -193,7 +200,7 @@ const HistoryWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'cedula', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'documento', 'nombre', 'fechaRegistro', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -233,8 +240,9 @@ const HistoryWorkAbsenteeism = () => {
 
     return (
         <MainCard title={<Typography variant='h4'>Lista De Ausentismo Laboral Historico</Typography>} content={false}>
+
             <CardContent>
-                <Grid container spacing={2}>
+                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             InputProps={{
@@ -251,12 +259,79 @@ const HistoryWorkAbsenteeism = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <Grid item xs={12}>
-                            <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                onClick={() => navigate("/work-absenteeism/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={3}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename={`LISTA_DE_AUSENTISMO_${new Date().toLocaleString()}`}>
+                                    <ExcelSheet data={lsWorkAbsenteeismHistory} name="Registro De Ausentismo">
+                                        <ExcelColumn label="Id_Inc " value="id_Inc" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="IdEmpleado" value="idEmpleado" />
+                                        <ExcelColumn label="Nombre" value="nombre" />
+                                        <ExcelColumn label="DepartamentoResidencia" value="departamentoResidencia" />
+                                        <ExcelColumn label="MunicipioResidencia" value="municipioResidencia" />
+                                        <ExcelColumn label="TipoEmpleado" value="tipoEmpleado" />
+                                        <ExcelColumn label="TipoNomina" value="tipoNomina" />
+                                        <ExcelColumn label="Sede" value="sede" />
+                                        <ExcelColumn label="IdSede" value="idSede" />
+                                        <ExcelColumn label="Departamento" value="departamento" />
+                                        <ExcelColumn label="Area" value="area" />
+                                        <ExcelColumn label="Subarea" value="subarea" />
+                                        <ExcelColumn label="Grupo" value="grupo" />
+                                        <ExcelColumn label="GeneralPosition" value="generalPosition" />
+                                        <ExcelColumn label="Genero" value="genero" />
+                                        <ExcelColumn label="Eps" value="eps" />
+                                        <ExcelColumn label="Afp" value="afp" />
+                                        <ExcelColumn label="Turno" value="turno" />
+                                        <ExcelColumn label="Empresa" value="empresa" />
+                                        <ExcelColumn label="FechaExpedicion" value="dechaExpedicion" />
+                                        <ExcelColumn label="NroIncapacidad" value="nroIncapacidad" />
+                                        <ExcelColumn label="CiudadExpedicion" value="ciudadExpedicion" />
+                                        <ExcelColumn label="TipoIncapacidad" value="tipoIncapacidad" />
+                                        <ExcelColumn label="Contigencia" value="contigencia" />
+                                        <ExcelColumn label="EstadoCaso" value="estadoCaso" />
+                                        <ExcelColumn label="FechaInicio" value="dechaInicio" />
+                                        <ExcelColumn label="FechaFin" value="dechaFin" />
+                                        <ExcelColumn label="DiasSinLaborar" value="diasSinLaborar" />
+                                        <ExcelColumn label="Cod_Dx" value="cod_Dx" />
+                                        <ExcelColumn label="Dx" value="dx" />
+                                        <ExcelColumn label="NameSegmentoAgrupado" value="nameSegmentoAgrupado" />
+                                        <ExcelColumn label="Segmento" value="segmento" />
+                                        <ExcelColumn label="TipoSoporte" value="tipoSoporte" />
+                                        <ExcelColumn label="Categoria" value="categoria" />
+                                        <ExcelColumn label="Ciudad" value="ciudad" />
+                                        <ExcelColumn label="NombreProfesional" value="nombreProfesional" />
+                                        <ExcelColumn label="Especialidad" value="especialidad" />
+                                        <ExcelColumn label="RegistroProfesional" value="registroProfesional" />
+                                        <ExcelColumn label="TipoAtencion" value="tipoAtencion" />
+                                        <ExcelColumn label="CumplimientoRequisito" value="cumplimientoRequisito" />
+                                        <ExcelColumn label="Regimen" value="regimen" />
+                                        <ExcelColumn label="UsuarioRegistro" value="usuarioRegistro" />
+                                        <ExcelColumn label="FechaRegistro" value="dechaRegistro" />
+                                        <ExcelColumn label="UsuarioModifica" value="usuarioModifica" />
+                                        <ExcelColumn label="FechaModificación" value="dechaModificación" />
+
+                                        <ExcelColumn label="IPSExpide" value="iPSExpide" />
+
+                                        <ExcelColumn label="Observacion" value="observacion" />
+                                        <ExcelColumn label="ObservacionCumplimiento" value="observacionCumplimiento" />
+                                        <ExcelColumn label="HoraRegistro" value="horaRegistro" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
+
+                            <Grid item xs={9}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/work-absenteeism/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -300,7 +375,7 @@ const HistoryWorkAbsenteeism = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.cedula}
+                                                    {row.documento}
                                                 </Typography>
                                             </TableCell>
 
@@ -315,7 +390,7 @@ const HistoryWorkAbsenteeism = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameEmpleado}
+                                                    {row.nombre}
                                                 </Typography>
                                             </TableCell>
 
@@ -326,12 +401,12 @@ const HistoryWorkAbsenteeism = () => {
                                                 sx={{ cursor: 'pointer' }}
                                                 align="left"
                                             >
-                                                <Tooltip placement="top" TransitionComponent={Fade} title={row.nameDx === null ? 'SIN DX' : row.nameDx}>
+                                                <Tooltip placement="top" TransitionComponent={Fade} title={row.dx === null ? 'SIN DX' : row.dx}>
                                                     <Typography
                                                         variant="subtitle1"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        <Chip label={row.dx === null ? 'SIN DX' : row.dx} size="small" chipcolor="success" />
+                                                        <Chip label={row.cod_Dx === null ? 'SIN DX' : row.cod_Dx} size="small" chipcolor="success" />
                                                     </Typography>
                                                 </Tooltip>
                                             </TableCell>

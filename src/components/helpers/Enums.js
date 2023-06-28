@@ -319,6 +319,8 @@ export const TitleButton = {
     AgregarOrden: 'Agregar',
     Editar: 'Editar',
     Historico: 'Historico',
+    GenerarExcel: 'Generar Excel',
+    DescargarExcel: 'Descargar Excel',
 }
 
 export const ValidationMessage = {
