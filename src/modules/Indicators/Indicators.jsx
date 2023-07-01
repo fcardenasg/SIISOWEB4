@@ -14,17 +14,13 @@ import { TabList } from "@mui/lab";
 const Indicators = () => {
     const [value, setValue] = useState(1);
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
     return (
         <Fragment>
             <SubCard>
                 <Box sx={{ width: '100%', typography: 'body1' }}>
                     <TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <TabList variant="fullWidth" onChange={handleChange} aria-label="lab API tabs example">
+                            <TabList variant="fullWidth" onChange={(event, newValue) => setValue(newValue)} aria-label="lab API tabs example">
                                 <Tab value={1} icon={<BarChartIcon />} sx={{ color: ColorDrummondltd.RedDrummond }}
                                     iconPosition="start" label="Asesorías" />
 

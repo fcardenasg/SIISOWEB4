@@ -1,44 +1,207 @@
 import { useState } from 'react';
 import ReactExport from 'react-export-excel';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, useMediaQuery, Tooltip, IconButton } from '@mui/material';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import SelectOnChange from 'components/input/SelectOnChange';
+import { useTheme } from '@mui/material/styles';
+import { CodCatalogo, Message } from 'components/helpers/Enums';
+import { useEffect } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import InputDatePick from 'components/input/InputDatePick';
+import InputOnChange from 'components/input/InputOnChange';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import ControlModal from 'components/controllers/ControlModal';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
 import { GetExcelOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
+import { MessageError } from 'components/alert/AlertAll';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
+const lsFiltrarPor = [{ value: 0, label: 'DOCUMENTO' }, { value: 1, label: 'SEDE' }, { value: 2, label: 'RANGO DE FECHA' }]
+
+const MedicionaLaboralExport = () => {
+    const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const [sede, setSede] = useState(null);
+    const [filtrarPor, setFiltrarPor] = useState(0);
+    const [documento, setDocumento] = useState('');
+
+    const [lsEmployee, setLsEmployee] = useState([]);
+    const [lsSede, setLsSede] = useState([]);
     const [lsData, setLsData] = useState([]);
+
+    const [fechaInicio, setFechaInicio] = useState(null);
+    const [fechaFin, setFechaFin] = useState(null);
+
+    const [openModal, setOpenModal] = useState(false);
     const [statusData, setStatusData] = useState(false);
+
+    const handleDocumento = async (event) => {
+        try {
+            setDocumento(event?.target.value);
+
+            if (event.key === 'Enter') {
+                if (event?.target.value != "") {
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+
+                    if (lsServerEmployee.status === 200) {
+                        setLsEmployee(lsServerEmployee.data);
+                    }
+                } else { }
+            }
+        } catch (error) {
+            setLsEmployee([]);
+        }
+    }
+
+    useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
+                setLsSede(lsServerSede.data);
+            } catch (error) { }
+        }
+
+        getAll();
+    }, []);
 
     async function getDataForExport() {
         try {
-            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
+
+            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, documento);
             const lsServerExcel = await GetExcelOccupationalMedicine(parametros);
 
-            if (lsServerExcel.status === 200) {
+            if (lsServerExcel.data.message !== undefined) {
+                setOpenError(true);
+                setErrorMessage(lsServerExcel.data.message);
+            } else {
                 setLsData(lsServerExcel.data);
                 setStatusData(true);
             }
 
-        } catch (error) { }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.ExcelNoGenerado);
+        }
+    }
+
+    const handleFilter = async (event) => {
+        setSede(null);
+        setFechaInicio(null);
+        setFechaFin(null);
+        setDocumento('');
+
+        setFiltrarPor(event?.target.value);
     }
 
     return (
-        <Grid item xs={12} sx={{ textAlign: 'center' }}>
-            <Grid container spacing={3}>
-                <Grid item xs={0} md={3.5} />
+        <Grid item xs={12}>
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <ControlModal
+                title="Información Empleado"
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                maxWidth="lg"
+            >
+                <ViewEmployee
+                    title="Información del Empleado"
+                    disabled={true}
+                    key={lsEmployee.documento}
+                    documento={documento}
+                    onChange={(e) => setDocumento(e.target.value)}
+                    lsEmployee={lsEmployee}
+                    handleDocumento={handleDocumento}
+                />
+            </ControlModal>
+
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={6} lg={2}>
+                    <SelectOnChange
+                        name="filtrarPor"
+                        label="Filtrar por"
+                        value={filtrarPor}
+                        options={lsFiltrarPor}
+                        onChange={handleFilter}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={2}>
+                    <SelectOnChange
+                        disabled={filtrarPor === 0 || filtrarPor === 2 ? true : false}
+                        name="sede"
+                        label="Sede de Atención"
+                        value={sede}
+                        options={lsSede}
+                        onChange={(e) => setSede(e.target.value)}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={2}>
+                    <InputDatePick
+                        disabled={filtrarPor === 0 || filtrarPor === 1 ? true : false}
+                        label="Fecha Inicio"
+                        onChange={(e) => setFechaInicio(e.target.value)}
+                        value={fechaInicio}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={2}>
+                    <InputDatePick
+                        disabled={filtrarPor === 0 || filtrarPor === 1 ? true : false}
+                        label="Fecha Fin"
+                        onChange={(e) => setFechaFin(e.target.value)}
+                        value={fechaFin}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={3}>
+                    <InputOnChange
+                        disabled={filtrarPor === 1 || filtrarPor === 2 ? true : false}
+                        helperText="Dar enter para verificar el empleado"
+                        type="number"
+                        name="documento"
+                        label="Documento"
+                        value={documento}
+                        onChange={(e) => {
+                            setLsEmployee([]);
+                            setDocumento(e.target.value);
+                        }}
+                        onKeyDown={handleDocumento}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={1}>
+                    <AnimateButton>
+                        <Tooltip disabled={lsEmployee.length === 0 ? true : false} title="Verificar Empleado" onClick={() => setOpenModal(true)}>
+                            <IconButton size="large">
+                                <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                            </IconButton>
+                        </Tooltip>
+                    </AnimateButton>
+                </Grid>
+
 
                 <Grid item xs={12} md={5} sx={{ textAlign: 'center' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <AnimateButton>
-                                <Button disabled={
-                                    fechaInicio === null ? true : fechaFin === null ? true : false
-                                } onClick={getDataForExport} size="large" variant="contained" fullWidth>
+                                <Button onClick={getDataForExport} size="large" variant="contained" fullWidth>
                                     Generar Exportación
                                 </Button>
                             </AnimateButton>
@@ -52,7 +215,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                             Descargar Excel
                                         </Button>
                                     </AnimateButton>
-                                } filename="Medicina Laboral">
+                                } filename={`LISTA_DE_MEDICINA_LABORAL_${new Date().toLocaleString()}`}>
                                     <ExcelSheet data={lsData} name="Lista de Medicina Laboral">
                                         <ExcelColumn label="ID" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
@@ -137,7 +300,6 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Usuario" value="usuario" />
                                         <ExcelColumn label="Observaciones" value="observaciones" />
 
-
                                         <ExcelColumn label="Aplica" value="aplica" />
                                         <ExcelColumn label="Motivo Investigación Enfermedad Laboral" value="motivoIE" />
                                         <ExcelColumn label="Estado Enfermedad Laboral" value="estadoEnfermedadLaboral" />
@@ -158,10 +320,8 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-
-                <Grid item xs={0} md={3.5} />
             </Grid>
-        </Grid>
+        </Grid >
     );
 
 }

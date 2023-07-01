@@ -24,7 +24,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Transitions from 'ui-component/extended/Transitions';
 import useAuth from 'hooks/useAuth';
 import { MessageSuccess, MessageError, ParamDelete } from 'components/alert/AlertAll';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import InputSelect from 'components/input/InputSelect';
 import SubCard from 'ui-component/cards/SubCard';
@@ -58,19 +58,11 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud }) => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerTipoSolicitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_SOLICITUD_DEREPETICION);
-                var resultTipoSolicitud = lsServerTipoSolicitud.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsSolicitudes(resultTipoSolicitud);
+                const lsServerTipoSolicitud = await GetByTipoCatalogoCombo(CodCatalogo.TIPO_SOLICITUD_DEREPETICION);
+                setLsSolicitudes(lsServerTipoSolicitud.data);
 
-                const lsServerResponsable = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RESPONSABLE_RESPUESTA_DEREPETICION);
-                var resultResponsable = lsServerResponsable.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsResponsable(resultResponsable);
+                const lsServerResponsable = await GetByTipoCatalogoCombo(CodCatalogo.RESPONSABLE_RESPUESTA_DEREPETICION);
+                setLsResponsable(lsServerResponsable.data);
             } catch (error) { }
         }
 
@@ -80,6 +72,7 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud }) => {
     async function getAllListSolicitudes() {
         try {
             const lsServer = await GetAllRequestsDetaillsByIdSolicitud(idSolicitud);
+            
             if (lsServer.status === 200) {
                 setLsOrdenesParaclinicos(lsServer.data);
             }

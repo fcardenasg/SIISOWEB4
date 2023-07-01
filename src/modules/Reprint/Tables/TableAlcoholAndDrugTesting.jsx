@@ -151,7 +151,6 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableAlcoholAndDrugTesting = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [lsMedicalAttention, setLsMedicalAttention] = useState([]);
     const [openReport, setOpenReport] = useState(false);

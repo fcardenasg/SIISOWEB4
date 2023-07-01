@@ -54,7 +54,7 @@ const Attention = () => {
     const [sede, setSede] = useState('');
     const [tipoAtencion, setTipoAtencion] = useState('');
     const [atencion, setAtencion] = useState('');
-    const [motivo, setMotivo] = useState(null);
+    const [motivo, setMotivo] = useState(undefined);
     const [documentoSolicita, setDocumentoSolicita] = useState(undefined);
     const [nombreSolicitante, setNombreSolicitante] = useState(undefined);
     const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
@@ -307,7 +307,8 @@ const Attention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const motivoFinal = motivo === null ? datos.motivo : motivo;
+            const motivoFinal = motivo !== null ? motivo : datos.motivoMedica !== undefined ?
+                datos.motivoMedica : datos.motivoPsicologia !== undefined ? datos.motivoPsicologia : undefined;
 
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, undefined, undefined,
                 "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, undefined,
@@ -558,7 +559,7 @@ const Attention = () => {
                                                     <Grid item xs={3}>
                                                         <FormProvider {...methods}>
                                                             <InputSelect
-                                                                name="motivo"
+                                                                name="motivoPsicologica"
                                                                 label="Motivo"
                                                                 options={lsMotivoPsico}
                                                                 size={matchesXS ? 'small' : 'medium'}
@@ -581,8 +582,7 @@ const Attention = () => {
                                                         <Grid item xs={3}>
                                                             <FormProvider {...methods}>
                                                                 <InputSelect
-                                                                    defaultValue={null}
-                                                                    name="motivo"
+                                                                    name="motivoMedica"
                                                                     label="Motivo"
                                                                     options={lsMotivoMedica}
                                                                     size={matchesXS ? 'small' : 'medium'}

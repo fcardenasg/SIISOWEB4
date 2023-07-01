@@ -46,6 +46,15 @@ const setSession = (serviceToken) => {
     }
 };
 
+
+const setIdUsuario = (idusuariologueado) => {
+    if (idusuariologueado) {
+        window.localStorage.setItem('idusuariologueado', idusuariologueado);
+    } else {
+        window.localStorage.removeItem('idusuariologueado');
+    }
+};
+
 const setMessage = (mensaje) => {
     if (mensaje) {
         window.localStorage.setItem('mensaje', mensaje);
@@ -72,22 +81,23 @@ export const JWTProvider = ({ children }) => {
         const init = async () => {
             try {
                 const serviceToken = window.localStorage.getItem('serviceToken');
+                const idusuariologueado = window.localStorage.getItem('idusuariologueado');
 
                 if (serviceToken && verifyToken(serviceToken)) {
                     setSession(serviceToken);
-                    const response = await axios.get(`${Url.Base}${Url.Usuario}`);
-                    const { dataUser } = response.data;
+                    const response = await axios.get(`${Url.Base}api/Usuarios/id?id=${idusuariologueado}`);
+                    const { data } = response;
                     dispatch({
                         type: LOGIN,
                         payload: {
                             isLoggedIn: true,
                             user: {
-                                id: dataUser.id,
-                                email: dataUser.correo,
-                                nameuser: dataUser.nombreUsuario,
-                                namerol: dataUser.nombreRol,
-                                namesede: dataUser.nombreSede,
-                                idsede: dataUser.idSede
+                                id: data.id,
+                                email: data.correo,
+                                nameuser: data.nombreUsuario,
+                                namerol: data.nombreRol,
+                                namesede: data.nombreSede,
+                                idsede: data.idSede
                             }
                         }
                     });
@@ -123,6 +133,8 @@ export const JWTProvider = ({ children }) => {
             setSession(token);
             setMessage(message);
             setRenderMenu(JSON.stringify(dataUser.menu));
+            setIdUsuario(dataUser.id);
+
             dispatch({
                 type: LOGIN,
                 payload: {

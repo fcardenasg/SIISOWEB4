@@ -360,6 +360,7 @@ export const Message = {
 
     CampoRequerido: 'Este campo es requerido',
     CorreoNoEnviado: 'No se pudo enviar el correo',
+    ExcelNoGenerado: 'No se pudo generar el excel',
     SinCorreo: 'Este empleado no tiene correo registrado',
     VistaReporte: 'Vista De Reporte',
     VistaArchivo: 'Vista De Archivo',

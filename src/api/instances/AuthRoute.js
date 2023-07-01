@@ -9,6 +9,12 @@ export const Url = {
     ChangePassword: 'api/Login/ChangePassword',
     Usuario: 'api/Usuario',
 
+    Usuarios: 'api/Usuarios',
+    UsuariosCombo: 'api/Usuarios/combo',
+    UsuariosUpdateSede: 'api/Usuarios/UpdateSede',
+    UsuariosId: 'api/Usuarios/id',
+    UsuariosEmail: 'api/Usuarios/email',
+
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
 
@@ -79,13 +85,8 @@ export const Url = {
     Proveedor: 'api/Proveedor',
     ProveedorId: 'api/Proveedor/id',
 
-    Usuarios: 'api/Usuarios',
-    UsuariosCombo: 'api/Usuarios/combo',
-    UsuariosUpdateSede: 'api/Usuarios/UpdateSede',
-    UsuariosId: 'api/Usuarios/id',
-    UsuariosEmail: 'api/Usuarios/email',
-
     RegistroAtencion: 'api/RegistroAtencion',
+    RegistroAtencionExcel: 'api/RegistroAtencion/excel',
     RegistroAtencionValidateAtencion: 'api/RegistroAtencion/validate-attention',
     UpdateEstadoRegistroAtencion: 'api/RegistroAtencion/UpdateEstadoRegistroAtencion',
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/attention',

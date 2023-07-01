@@ -128,7 +128,9 @@ const OccupationalMedicine = () => {
 
                     setFechaCaliUltimaInstancia(lsServerAtencion.data.fechaCalificacionUltimaInstancia);
                     setFechaInvestigacion(lsServerAtencion.data.fechaInvestigacion);
-                    setDiasDiferencia(lsServerAtencion.data.diferenciaDia);
+
+                    var diasCalculados = NumeroDias(lsServerAtencion.data.fechaCalificacionUltimaInstancia, lsServerAtencion.data.fechaInvestigacion);
+                    setDiasDiferencia(diasCalculados);
 
                     const event = {
                         target: { value: lsServerAtencion.data.cedula }
@@ -145,14 +147,8 @@ const OccupationalMedicine = () => {
                             setLsDiagnistico(resultCie11);
                         }
                     }
-
-                    if (lsServerAtencion.data.urlDocumento !== "") {
-                        setFilePdf(lsServerAtencion.data.urlDocumento);
-                    }
-
-                    if (lsServerAtencion.data.pdfMinisterio !== "") {
-                        setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
-                    }
+                    setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
+                    setFilePdf(lsServerAtencion.data.urlDocumento);
                 }
             } catch (error) { }
         }

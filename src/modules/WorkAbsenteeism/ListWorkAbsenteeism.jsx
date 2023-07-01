@@ -230,7 +230,7 @@ const ListWorkAbsenteeism = () => {
     const [lsWorkAbsenteeism, setLsWorkAbsenteeism] = useState([]);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -363,7 +363,7 @@ const ListWorkAbsenteeism = () => {
                             size="small"
                         />
                     </Grid>
-                    
+
                     <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>

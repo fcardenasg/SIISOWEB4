@@ -39,6 +39,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import Chip from 'ui-component/extended/Chip';
+import { ViewFormat } from 'components/helpers/Format';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -249,7 +250,7 @@ const ListOccupationalMedicine = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'dx'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'dx'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -522,7 +523,7 @@ const ListOccupationalMedicine = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {new Date(row.fechaRegistro).toLocaleString()}
+                                                    {ViewFormat(row.fechaRegistro)}
                                                 </Typography>
                                             </TableCell>
 

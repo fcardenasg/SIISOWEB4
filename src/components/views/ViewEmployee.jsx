@@ -120,16 +120,16 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                         variant="standard"
                     />
 
-                    <Grid container alignItems="leftS" alignContent="center">
-                        <Grid item xs={6}>
-                            <Stack sx={{ pr: 2 }} alignItems="center" spacing={1}>
+                    <Grid container alignItems="leftS" alignContent="center" spacing={1}>
+                        <Grid item xs={5.5}>
+                            <Stack /* sx={{ pr: 2 }} */ alignItems="center" spacing={1}>
                                 <Typography variant="h3">
                                     {lsEmployee.nombres == null ? 'Digite Documento...' : lsEmployee.nombres}
                                 </Typography>
                             </Stack>
                         </Grid>
 
-                        <Grid item xs={2}>
+                        <Grid item xs={2.5}>
                             {lsEmployee.namePayStatus != null ?
                                 <Chip
                                     size="small"

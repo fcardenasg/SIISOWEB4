@@ -8,7 +8,8 @@ import {
   IconStethoscope,
   IconUsers,
   IconFirstAidKit,
-  IconMessages
+  IconMessages,
+  IconFileExport
 } from '@tabler/icons';
 
 import ContactMailIcon from '@mui/icons-material/ContactMail';
@@ -17,8 +18,6 @@ import PrintIcon from '@mui/icons-material/Print';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { ColorDrummondltd } from 'themes/colors';
-
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 export const itemsMenu = [
   {
@@ -395,6 +394,41 @@ export const itemsMedicines = [
     icon: IconFirstAidKit,
     selected: true,
     url: '/medication-outlet/list',
+    color: ColorDrummondltd.RedDrummond
+  },
+];
+
+export const itemsExcel = [
+  {
+    title: "Registro Atención",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'REGIS_ATEN',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Asesorías",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'ASESO',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Paraclínicos",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'PARACLINI',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Ordenes De Examen",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'ORDEN_EXAM',
     color: ColorDrummondltd.RedDrummond
   },
 ];
