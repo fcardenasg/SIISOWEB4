@@ -424,6 +424,30 @@ export const itemsExcel = [
     color: ColorDrummondltd.RedDrummond
   },
   {
+    title: "Atención Médica",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'ATEN_MEDI',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Emo",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'EMO',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Enfermería",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'ENFER',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
     title: "Ordenes De Examen",
     subtitle: "",
     icon: IconFileExport,

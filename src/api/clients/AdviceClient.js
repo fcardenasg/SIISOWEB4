@@ -8,4 +8,5 @@ export const InsertAdvice = async (asesorias) => await postData(Url.Asesorias, a
 export const UpdateAdvices = async (asesorias) => await putData(Url.Asesorias, asesorias);
 export const DeleteAdvice = async (idAsesorias) => await deleteData(Url.Asesorias, { idAsesorias });
 
+export const GetExcelAdvice = async (parametroExcel) => await postData(Url.AsesoriasExcel, parametroExcel);
 export const SaveAdvice = async (asesorias) => await postData(Url.Asesorias, asesorias);

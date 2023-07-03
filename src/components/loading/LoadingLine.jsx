@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useRef, useEffect } from 'react';
 
 import { withStyles } from '@mui/styles';

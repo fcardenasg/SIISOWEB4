@@ -7,5 +7,7 @@ export const InsertEvolutionNote = async (notaEvolucion) => await postData(Url.N
 export const UpdateEvolutionNotes = async (notaEvolucion) => await putData(Url.NotaEvolucion, notaEvolucion);
 export const DeleteEvolutionNote = async (idNotaEvolucion) => await deleteData(Url.NotaEvolucion, { idNotaEvolucion });
 
+export const GetExcelEvolutionNote = async (paraclinicos) => await postData(Url.NotaEvolucionExcel, paraclinicos);
+
 export const ValidateIdRegistroAtencionEvolutionNote = async (idRegistroAtencion) => await getData(Url.NotaEvolucion_ValidateIdRegistroAtencion, { idRegistroAtencion });
 export const GetIdRegistroAtencionEvolutionNote = async (idRegistroAtencion) => await getData(Url.NotaEvolucion_GetIdRegistroAtencion, { idRegistroAtencion });

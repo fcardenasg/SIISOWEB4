@@ -364,6 +364,7 @@ export const Message = {
     SinCorreo: 'Este empleado no tiene correo registrado',
     VistaReporte: 'Vista De Reporte',
     VistaArchivo: 'Vista De Archivo',
+    ErrorExcel: 'Error: No se pudo generar el Excel',
 }
 
 export const optionsDate = {

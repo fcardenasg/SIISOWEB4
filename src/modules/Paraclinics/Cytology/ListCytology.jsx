@@ -36,14 +36,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { ViewFormat } from 'components/helpers/Format';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
-import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import Cytology from './Cytology';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -194,7 +186,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -218,7 +210,6 @@ const ListCytology = () => {
     const [idCheck, setIdCheck] = useState('');
     const [cytology, setCytology] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
-    const [open, setOpen] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -234,9 +225,7 @@ const ListCytology = () => {
             const lsServer = await GetAllByTypeParaclinics(DefaultValue.PARACLINICO_CITOLOGIA);
             setCytology(lsServer.data);
             setRows(lsServer.data);
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -358,42 +347,16 @@ const ListCytology = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Citología">
-                                    <ExcelSheet data={cytology} name="Citología">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Fecha" value="fecha" />
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Motivo" value="nameMotivo" />
-                                        <ExcelColumn label="Conducta" value="nameConductaClasificacion" />
-                                        <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
-                                        <ExcelColumn label="Observaciones" value="observacion" />
-                                        <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
-
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/paraclinics/cytology/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/paraclinics/menu")}>
                                     {TitleButton.Cancelar}
@@ -553,14 +516,6 @@ const ListCytology = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            <FullScreenDialogs
-                open={open}
-                title="IMPRIMIR CITOLOGÍA"
-                handleClose={() => setOpen(false)}
-            >
-                <Cytology />
-            </FullScreenDialogs>
 
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}

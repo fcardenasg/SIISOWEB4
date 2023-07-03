@@ -9,17 +9,17 @@ import SelectOnChange from "components/input/SelectOnChange";
 import { ParametrosExcel } from "formatdata/ParametrosForm";
 import AnimateButton from "ui-component/extended/AnimateButton";
 import ReactExport from "react-export-excel";
-import { GetExcelAttention } from "api/clients/AttentionClient";
 import { ViewFormat } from "components/helpers/Format";
 import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
+import { GetExcelParaclinics } from "api/clients/ParaclinicsClient";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
+const ExcelParaclinico = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -47,7 +47,7 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
             setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
-            const lsServerExcel = await GetExcelAttention(parametros);
+            const lsServerExcel = await GetExcelParaclinics(parametros);
 
             if (lsServerExcel.status === 200) {
                 setLsDataExport(lsServerExcel.data);
@@ -115,12 +115,12 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
                                     Descargar Excel
                                 </Button>
                             </AnimateButton>
-                        } filename={`LISTA_DE_REGISTRO_ATENCIÓN_${new Date().toLocaleString()}`}>
-                            <ExcelSheet data={lsDataExport} name="Registro De Atención">
+                        } filename={`LISTA_DE_PARACLINICO_${new Date().toLocaleString()}`}>
+                            <ExcelSheet data={lsDataExport} name="Registro De Paraclinicos">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombres" value="nombres" />
-                                <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
+                                <ExcelColumn label="Fecha De Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
                                 <ExcelColumn label="Departamento" value="nameDepartamento" />
                                 <ExcelColumn label="Area" value="nameArea" />
                                 <ExcelColumn label="Grupo" value="nameGrupo" />
@@ -134,9 +134,13 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
                                 <ExcelColumn label="Empresa" value="empresa" />
                                 <ExcelColumn label="Oficio" value="nameOficio" />
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
+
                                 <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                <ExcelColumn label="Tipo De Atencion" value="nameTipoAtencion" />
-                                <ExcelColumn label="Atencion" value="nameAtencion" />
+                                <ExcelColumn label="Tipo De Paraclinico" value="idTipoParaclinico" />
+                                <ExcelColumn label="Motivo" value="motivo" />
+                                <ExcelColumn label="Conducta" value="conducta" />
+                                <ExcelColumn label="Conclusion" value="conclusion" />
+                                <ExcelColumn label="Proveedor" value="proveedor" />
                                 <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                 <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
@@ -150,4 +154,4 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
     );
 }
 
-export default ExcelRegistroAtencion;
+export default ExcelParaclinico;

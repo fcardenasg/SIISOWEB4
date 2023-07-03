@@ -37,14 +37,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { ViewFormat } from 'components/helpers/Format';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
-import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import RXTORAX from './RXTORAX';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -219,8 +211,6 @@ const ListRXTORAX = () => {
     const [idCheck, setIdCheck] = useState('');
     const [rxtorax, setRxtorax] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
-    const [open, setOpen] = useState(false);
-
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('fecha');
@@ -236,7 +226,7 @@ const ListRXTORAX = () => {
             setRxtorax(lsServer.data);
             setRows(lsServer.data);
         } catch (error) {
-            
+
         }
     }
 
@@ -331,7 +321,7 @@ const ListRXTORAX = () => {
                     setSelected([]);
             });
         } catch (error) {
-            
+
         }
     }
 
@@ -359,42 +349,16 @@ const ListRXTORAX = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="RXTORAX">
-                                    <ExcelSheet data={rxtorax} name="RXTORAX">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Fecha" value="fecha" />
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Motivo" value="nameMotivo" />
-                                        <ExcelColumn label="Conducta" value="nameConductaClasificacion" />
-                                        <ExcelColumn label="Conclusión" value="nameConclusion" />
-                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
-                                        <ExcelColumn label="Observaciones" value="observacion" />
-                                        <ExcelColumn label="Usuario de Creación" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de Creación" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Modificación" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha de Modificación" value="fechaModifico" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
-
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/paraclinics/rxtorax/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/paraclinics/menu")}>
                                     {TitleButton.Cancelar}
@@ -557,14 +521,6 @@ const ListRXTORAX = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            <FullScreenDialogs
-                open={open}
-                title="IMPRIMIR RX TORAX"
-                handleClose={() => setOpen(false)}
-            >
-                <RXTORAX />
-            </FullScreenDialogs>
 
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}

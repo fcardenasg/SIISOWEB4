@@ -1,5 +1,4 @@
 import { Fragment, useState } from 'react';
-
 import { Grid } from '@mui/material';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
@@ -9,7 +8,10 @@ import ViewExport from 'modules/ViewExport/ViewExport';
 
 const MenuExcel = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [tipoExcel, setTipoExcel] = useState('');
+    const [tipoExcel, setTipoExcel] = useState({
+        codigo: '',
+        titulo: ''
+    });
 
     const [itemsMenuButton, setItemsMenuButton] = useState([
         ...itemsExcel,
@@ -27,7 +29,7 @@ const MenuExcel = () => {
     };
 
     return (
-        // <iframe title="ReportsAsesorias - Distribución  de Asesorías por empleado" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=238fd8dc-95fe-4871-8d7b-320389428072&autoAuth=true&ctid=d8bc053e-1b95-4045-9e8c-0b3a5828dc9d" frameborder="0" allowFullScreen="true"></iframe>
+        //<iframe title="ReportsAsesorias - Distribución  de Asesorías por empleado" width="1140" height="541.25" src="https://app.powerbi.com/links/G3GfgRKt1W?ctid=d8bc053e-1b95-4045-9e8c-0b3a5828dc9d&pbi_source=linkShare" frameborder="0" allowFullScreen="true"></iframe>
         <Fragment>
             <Grid container sx={{ pb: 2 }} direction="column" justifyContent="flex-start" alignItems="flex-end">
                 <MenuItems items={itemsMenuButton} selectedItem={selectedItem} title="Agregar Opción" />
@@ -38,7 +40,7 @@ const MenuExcel = () => {
                     <Grid item xs={12} md={6} lg={3}>
                         <HoverSocialCard
                             secondary={item.title}
-                            onClick={() => { setOpenModal(true); setTipoExcel(item.url) }}
+                            onClick={() => { setOpenModal(true); setTipoExcel({ ...tipoExcel, codigo: item.url, titulo: item.title }) }}
                             primary={item.subtitle}
                             iconPrimary={item.icon}
                             color={item.color}

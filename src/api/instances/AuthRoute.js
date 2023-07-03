@@ -96,7 +96,7 @@ export const Url = {
     Paraclinicos_GetAllByDocumento: 'api/Paraclinicos/GetAllByDocumento',
     Paraclinicos_GetAllByDocumentoParacli: 'api/Paraclinicos/GetAllByDocumentoParacli',
     Paraclinicos_Por: 'api/Paraclinicos/listarpor-paraclinico',
-    Paraclinicos_Report: 'api/Paraclinicos/reporte',
+    ParaclinicosExcel: 'api/Paraclinicos/excel',
     ParaclinicosId: 'api/Paraclinicos/id',
 
     Ordenes: 'api/Ordenes',
@@ -110,6 +110,7 @@ export const Url = {
     Antecedente: 'api/Antecedente',
 
     Asesorias: 'api/Asesorias',
+    AsesoriasExcel: 'api/Asesorias/excel',
     AsesoriasAll: 'api/Asesorias/all',
     AsesoriasId: 'api/Asesorias/id',
 
@@ -168,12 +169,14 @@ export const Url = {
     Subsegment: 'api/Subsegmento',
 
     HistoriaClinica: 'api/HistoriaClinica',
+    HistoriaClinicaExcel: 'api/HistoriaClinica/excel',
     HistoriaClinicaId: 'api/HistoriaClinica/id',
     HistoriaClinicaAntecendete: 'api/HistoriaClinica/antecedente',
     HistoriaClinica_GetIdRegistroAtencion: 'api/HistoriaClinica/GetIdRegistroAtencion',
     HistoriaClinica_ValidateIdRegistroAtencion: 'api/HistoriaClinica/ValidateIdRegistroAtencion',
 
     NotaEvolucion: 'api/NotaEvolucion',
+    NotaEvolucionExcel: 'api/NotaEvolucion/excel',
     NotaEvolucionId: 'api/NotaEvolucion/id',
     NotaEvolucion_GetIdRegistroAtencion: 'api/NotaEvolucion/GetIdRegistroAtencion',
     NotaEvolucion_ValidateIdRegistroAtencion: 'api/NotaEvolucion/ValidateIdRegistroAtencion',

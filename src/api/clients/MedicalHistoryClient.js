@@ -8,5 +8,7 @@ export const InsertMedicalHistory = async (historiaClinica) => await postData(Ur
 export const UpdateMedicalHistorys = async (historiaClinica) => await putData(Url.HistoriaClinica, historiaClinica);
 export const DeleteMedicalHistory = async (idHistoriaClinica) => await deleteData(Url.HistoriaClinica, { idHistoriaClinica });
 
+export const GetExcelMedicalHistory = async (paraclinicos) => await postData(Url.HistoriaClinicaExcel, paraclinicos);
+
 export const ValidateIdRegistroAtencionMedicalHistory = async (idRegistroAtencion) => await getData(Url.HistoriaClinica_ValidateIdRegistroAtencion, { idRegistroAtencion });
 export const GetIdRegistroAtencionMedicalHistory = async (idRegistroAtencion) => await getData(Url.HistoriaClinica_GetIdRegistroAtencion, { idRegistroAtencion });
