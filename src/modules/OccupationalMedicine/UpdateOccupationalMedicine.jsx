@@ -14,7 +14,7 @@ import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
@@ -159,42 +159,6 @@ const OccupationalMedicine = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerRegion = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_REGION);
-                const lsServerJuntaCalificadaJRC = await GetByTipoCatalogoCombo(CodCatalogo.Departamento);
-                const lsServerInvestigado = await GetByTipoCatalogoCombo(CodCatalogo.Opciones_SINO);
-                const lsServerEntidadDondeEnvia = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_ENDON_EN);
-                const lsServerResumenCaso = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_RECASO);
-                const lsServerOrigenEPS = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_ORIGEN_EPS);
-                const lsServerOrigenARL = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_ORI_CA_ARL);
-                const lsServerInstanciaOrigen = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_INS_ORIGEN);
-                const lsServerLateralidad = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_LATERA);
-                const lsServerEntidadMotiEnvio = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_ENMO_EN);
-                const lsServerEstadoEnfermedadLaboral = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_ESTADO_ENFERMEDAD_LABORAL);
-                const lsServerPeligroAsociado = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_PELIGRO_ASOCIADO);
-                const lsServerResultadoOrigen = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_RESULTADO_EN_ORIGEN);
-                const lsServerInvestigacionEL = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_INVESTIGACION_EL);
-                const lsServerAsesorEl = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_ASESOREL);
-                const lsServerSituacionEmpleado = await GetByTipoCatalogoCombo(CodCatalogo.SITUACION_EMPLEADO);
-                const lsServerVistoBueno = await GetByTipoCatalogoCombo(CodCatalogo.VISTO_BUENO);
-
-                setLsRegion(lsServerRegion.data);
-                setLsJuntaCalificadaJRC(lsServerJuntaCalificadaJRC.data);
-                setLsInvestigado(lsServerInvestigado.data);
-                setLsEntidadDondeEnvia(lsServerEntidadDondeEnvia.data);
-                setLsResumenCaso(lsServerResumenCaso.data);
-                setLsOrigenEPS(lsServerOrigenEPS.data);
-                setLsOrigenARL(lsServerOrigenARL.data);
-                setLsInstanciaOrigen(lsServerInstanciaOrigen.data);
-                setLsLateralidad(lsServerLateralidad.data);
-                setLsEntidadMotiEnvio(lsServerEntidadMotiEnvio.data);
-                setLsEstadoEnfermedadLaboral(lsServerEstadoEnfermedadLaboral.data);
-                setLsPeligroAsociado(lsServerPeligroAsociado.data);
-                setLsResultadoOrigen(lsServerResultadoOrigen.data);
-                setLsInvestigacionEL(lsServerInvestigacionEL.data);
-                setLsAsesorEL(lsServerAsesorEl.data);
-                setLsSituacionEmpleado(lsServerSituacionEmpleado.data);
-                setLsVistoBueno(lsServerVistoBueno.data);
-
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
                     value: item.id,
@@ -215,6 +179,126 @@ const OccupationalMedicine = () => {
                     label: item.nombre
                 }));
                 setLsSubsegmento(resultSubsegmento);
+
+                const lsServerRegion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
+                var resultRegion = lsServerRegion.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsRegion(resultRegion);
+
+                const lsServerJuntaCalificadaJRC = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
+                var resultJuntaCalificadaJRC = lsServerJuntaCalificadaJRC.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsJuntaCalificadaJRC(resultJuntaCalificadaJRC);
+
+                const lsServerInvestigado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
+                var resultInvestigado = lsServerInvestigado.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsInvestigado(resultInvestigado);
+
+                const lsServerEntidadDondeEnvia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_ENDON_EN);
+                var resultEntidadDondeEnvia = lsServerEntidadDondeEnvia.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEntidadDondeEnvia(resultEntidadDondeEnvia);
+
+                const lsServerResumenCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_RECASO);
+                var resultResumenCaso = lsServerResumenCaso.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsResumenCaso(resultResumenCaso);
+
+                const lsServerOrigenEPS = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_ORIGEN_EPS);
+                var resultOrigenEPS = lsServerOrigenEPS.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsOrigenEPS(resultOrigenEPS);
+
+                const lsServerOrigenARL = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_ORI_CA_ARL);
+                var resultOrigenARL = lsServerOrigenARL.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsOrigenARL(resultOrigenARL);
+
+                const lsServerInstanciaOrigen = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_INS_ORIGEN);
+                var resultInstanciaOrigen = lsServerInstanciaOrigen.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsInstanciaOrigen(resultInstanciaOrigen);
+
+                const lsServerLateralidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_LATERA);
+                var resultLateralidad = lsServerLateralidad.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsLateralidad(resultLateralidad);
+
+                const lsServerEntidadMotiEnvio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_ENMO_EN);
+                var resultEntidadMotiEnvio = lsServerEntidadMotiEnvio.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEntidadMotiEnvio(resultEntidadMotiEnvio);
+
+
+                const lsServerEstadoEnfermedadLaboral = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_ESTADO_ENFERMEDAD_LABORAL);
+                var resultEstadoEnfermedadLaboral = lsServerEstadoEnfermedadLaboral.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEstadoEnfermedadLaboral(resultEstadoEnfermedadLaboral);
+
+                const lsServerPeligroAsociado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_PELIGRO_ASOCIADO);
+                var resultPeligroAsociado = lsServerPeligroAsociado.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsPeligroAsociado(resultPeligroAsociado);
+
+                const lsServerResultadoOrigen = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_RESULTADO_EN_ORIGEN);
+                var resultResultadoOrigen = lsServerResultadoOrigen.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsResultadoOrigen(resultResultadoOrigen);
+
+                const lsServerInvestigacionEL = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_INVESTIGACION_EL);
+                var resultInvestigacionEL = lsServerInvestigacionEL.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsInvestigacionEL(resultInvestigacionEL);
+
+                const lsServerAsesorEl = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_ASESOREL);
+                var resultAsesorEL = lsServerAsesorEl.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsAsesorEL(resultAsesorEL);
+
+                const lsServerSituacionEmpleado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SITUACION_EMPLEADO);
+                var resultSituacionEmpleado = lsServerSituacionEmpleado.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsSituacionEmpleado(resultSituacionEmpleado);
+
+                const lsServerVistoBueno = await GetAllByTipoCatalogo(0, 0, CodCatalogo.VISTO_BUENO);
+                var resultVistoBueno = lsServerVistoBueno.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsVistoBueno(resultVistoBueno);
             } catch (error) { }
         }
 

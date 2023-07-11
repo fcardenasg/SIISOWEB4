@@ -9,6 +9,9 @@ import {
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import useAuth from 'hooks/useAuth';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import InputText from 'components/input/InputText';
@@ -21,10 +24,10 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
-import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -35,6 +38,13 @@ import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+
+const validationSchema = yup.object().shape({
+    idTipoAsesoria: yup.string().required(ValidationMessage.Requerido),
+    idCausa: yup.string().required(ValidationMessage.Requerido),
+    idMotivo: yup.string().required(ValidationMessage.Requerido),
+    idEstadoCaso: yup.string().required(ValidationMessage.Requerido),
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -65,45 +75,25 @@ const PsychologicalCounseling = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [causaAsesoria, setCausaAsesoria] = useState([]);
 
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState(0);
     const [dataPDF, setDataPDF] = useState(null);
 
     async function getAll() {
         try {
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoPsicologia);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
+            const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoPsicologia);
+            setLsMotivo(lsServerMotivo.data);
 
-            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
-            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsEstadoCaso(resultEstadoCaso);
+            const lsServerEstadoCaso = await GetByTipoCatalogoCombo(CodCatalogo.EstadoCaso);
+            setLsEstadoCaso(lsServerEstadoCaso.data);
 
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAsesoria);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
+            const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+            setTipoAsesoria(lsServerTipoAsesoria.data);
 
-            const lsServerEstadoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_CASO);
-            var resultEstadoAsesoria = lsServerEstadoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setEstadoAsesoria(resultEstadoAsesoria);
+            const lsServerEstadoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ESTADO_CASO);
+            setEstadoAsesoria(lsServerEstadoAsesoria.data);
 
-            const lsServerCausaAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CausaAsesoria);
-            var resultCausaAsesoria = lsServerCausaAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setCausaAsesoria(resultCausaAsesoria);
+            const lsServerCausaAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.CausaAsesoria);
+            setCausaAsesoria(lsServerCausaAsesoria.data);
         } catch (error) { }
     }
 
@@ -111,8 +101,11 @@ const PsychologicalCounseling = () => {
         getAll();
     }, [])
 
-    const methods = useForm();
-    const { handleSubmit, reset } = methods;
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -144,7 +137,7 @@ const PsychologicalCounseling = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(resultData.id);
+            const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data);
@@ -154,27 +147,29 @@ const PsychologicalCounseling = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.idEstadoCaso, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, datos.idCausa, datos.motivoConsulta, datos.concepto, datos.pautasSeguir,
-                datos.idEstadoAsesoria, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
+                undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
+                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, user.nameuser, undefined, undefined, undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await InsertAdvice(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                        reset();
-                        setResultData(result.data);
-                    }
-                } else {
+            const result = await SaveAdvice(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
                     setOpenError(true);
                     setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
+                    setResultData(result.data);
+                    setOpenUpdate(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${error}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -249,6 +244,7 @@ const PsychologicalCounseling = () => {
                                         label="Estado del Caso"
                                         options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idEstadoCaso}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -260,6 +256,7 @@ const PsychologicalCounseling = () => {
                                         label="Motivo"
                                         options={lsMotivo}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idMotivo}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -271,6 +268,7 @@ const PsychologicalCounseling = () => {
                                         label="Causa de Asesoría"
                                         options={causaAsesoria}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idCausa}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -282,6 +280,7 @@ const PsychologicalCounseling = () => {
                                         label="Tipo Asesoría"
                                         options={tipoAsesoria}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoAsesoria}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -396,7 +395,6 @@ const PsychologicalCounseling = () => {
                                     <InputSelect
                                         name="idEstadoAsesoria"
                                         label="Estado"
-                                        defaultValue=""
                                         options={estadoAsesoria}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
@@ -407,7 +405,7 @@ const PsychologicalCounseling = () => {
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    <Button disabled={resultData !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>
@@ -415,7 +413,7 @@ const PsychologicalCounseling = () => {
 
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                    <Button disabled={resultData === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                         {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>

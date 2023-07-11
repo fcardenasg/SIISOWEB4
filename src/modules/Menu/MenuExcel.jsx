@@ -29,7 +29,6 @@ const MenuExcel = () => {
     };
 
     return (
-        //<iframe title="ReportsAsesorias - Distribución  de Asesorías por empleado" width="1140" height="541.25" src="https://app.powerbi.com/links/G3GfgRKt1W?ctid=d8bc053e-1b95-4045-9e8c-0b3a5828dc9d&pbi_source=linkShare" frameborder="0" allowFullScreen="true"></iframe>
         <Fragment>
             <Grid container sx={{ pb: 2 }} direction="column" justifyContent="flex-start" alignItems="flex-end">
                 <MenuItems items={itemsMenuButton} selectedItem={selectedItem} title="Agregar Opción" />

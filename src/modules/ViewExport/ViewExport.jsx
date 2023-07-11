@@ -4,6 +4,7 @@ import ExcelRegistroAtencion from "./ExcelRegistroAtencion";
 import ExcelAsesoria from "./ExcelAsesoria";
 import ExcelParaclinico from "./ExcelParaclinico";
 import ExcelAtencionMedica from "./ExcelAtencionMedica";
+import ExcelEmo from "./ExcelEmo";
 
 const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [sede, setSede] = useState(0);
@@ -58,7 +59,7 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                 }
 
                 {exportBy.codigo === 'EMO' ?
-                    <ExcelRegistroAtencion
+                    <ExcelEmo
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}

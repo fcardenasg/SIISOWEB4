@@ -8,6 +8,9 @@ import {
     Tooltip,
 } from '@mui/material';
 
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
@@ -41,7 +44,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -59,6 +62,10 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import UpdateAttMedicalAdvice from './AttentionMedicalAdvice/UpdateAttMedicalAdvice';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+
+const validationSchema = yup.object().shape({
+    idSubmotivo: yup.string().required(ValidationMessage.Requerido),
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -139,12 +146,18 @@ const UpdateMedicalAdvice = () => {
     const [dataAttention, setDataAttention] = useState({});
     const [lsAtencion, setLsAtencion] = useState({});
 
-    const methods = useForm();
-    const { handleSubmit } = methods;
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+
+    const { handleSubmit, formState: { errors } } = methods;
 
     useEffect(() => {
-        async function getAll() {
+        async function getData() {
             try {
+                const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+                setTipoAsesoria(lsServerTipoAsesoria.data);
+
                 const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
                 setLsMotivo(lsServerMotivo.data);
                 setLsCodigoMotivo(lsServerMotivo.data);
@@ -154,39 +167,39 @@ const UpdateMedicalAdvice = () => {
                     const event = {
                         target: { value: lsServerAtencion.data.documento }
                     }
+
                     handleLoadingDocument(event);
                     setLsAtencion(lsServerAtencion.data);
-                    setTextMotivo(lsServerAtencion.data.motivo);
                     setDocumento(lsServerAtencion.data.documento);
-
-                    var lsResulCode = String(lsServerMotivo.data.filter(code => code.value === lsServerAtencion.data.motivo).map(code => code.codigo));
-                    var lsServerSubmotivo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
-
-                    if (lsServerSubmotivo.status === 200) {
-                        var submotivo = lsServerSubmotivo.data.entities.map((item) => ({
-                            value: item.idCatalogo,
-                            label: item.nombre
-                        }));
-
-                        setLsSubmotivo(submotivo);
-                    }
                 }
-
-                const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
-                setTipoAsesoria(lsServerTipoAsesoria.data);
-
 
                 const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
                 if (lsServerValidate.status === 200) {
                     setResultIdRegistroAtencion(lsServerValidate.data.estado);
                     setResultData(lsServerValidate.data.id);
-                    setDataAttention(lsServerValidate.data.entities);
-                    setIdTipoAsesoria(lsServerValidate.data.entities.idTipoAsesoria);
+
+                    if (lsServerValidate.data.entities !== null) {
+                        setDataAttention(lsServerValidate.data.entities);
+                        setTextMotivo(lsServerValidate.data.entities.idMotivo);
+                        setIdTipoAsesoria(lsServerValidate.data.entities.idTipoAsesoria);
+
+                        var lsResulCode = String(lsServerMotivo.data.filter(code => code.value === lsServerValidate.data.entities.idMotivo).map(code => code.codigo));
+                        var lsServerSubmotivo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
+
+                        if (lsServerSubmotivo.status === 200) {
+                            var submotivo = lsServerSubmotivo.data.entities.map((item) => ({
+                                value: item.idCatalogo,
+                                label: item.nombre
+                            }));
+
+                            setLsSubmotivo(submotivo);
+                        }
+                    }
                 }
             } catch (error) { }
         }
 
-        getAll();
+        getData();
     }, []);
 
     const handleLoadingDocument = async (idEmployee) => {
@@ -256,9 +269,13 @@ const UpdateMedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
+            const usuarioRegistro = resultData === 0 ? user.nameuser : dataAttention.usuarioRegistro;
+            const fechaRegistro = resultData === 0 ? undefined : dataAttention.fechaRegistro;
+            const usuarioModifico = resultData === 0 ? undefined : user.nameuser;
+
             const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede, undefined, undefined,
                 undefined, undefined, idTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
-                user.nameuser, undefined, undefined, undefined);
+                usuarioRegistro, fechaRegistro, usuarioModifico, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {
@@ -434,7 +451,6 @@ const UpdateMedicalAdvice = () => {
 
                                             <Grid item xs={6}>
                                                 <SelectOnChange
-                                                    disabled
                                                     name="idMotivo"
                                                     label="Motivo"
                                                     onChange={handleMotivo}
@@ -447,12 +463,12 @@ const UpdateMedicalAdvice = () => {
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
-                                                        disabled
                                                         defaultValue={dataAttention.idSubmotivo}
                                                         name="idSubmotivo"
                                                         label="Submotivo"
                                                         options={lsSubmotivo}
                                                         size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors.idSubmotivo}
                                                     />
                                                 </FormProvider>
                                             </Grid>

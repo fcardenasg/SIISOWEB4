@@ -12,4 +12,5 @@ export const DeleteOccupationalExamination = async (idHistoriaClinicaOcupacional
 
 export const ValidateIdRegistroAtencion = async (idRegistroAtencion) => await getData(Url.HistoriaClinicaOcupacional_ValidateIdRegistroAtencion, { idRegistroAtencion });
 
+export const GetExcelOccupationalExamination = async (parametroExcel) => await postData(Url.HistoriaClinicaOcupacionalExcel, parametroExcel);
 export const GetLastRegister = async (documento) => await getData(Url.GetLastRegister, { documento });

@@ -36,14 +36,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -353,49 +347,16 @@ const ListMedicalAdvice = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Asesoría Médica">
-                                    <ExcelSheet data={lsMedicalAdvice} name="Asesoría Médica">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Fecha" value="fecha" />
-                                        <ExcelColumn label="Tipo Atención" value="idTipoAtencion" />
-                                        <ExcelColumn label="Sede" value="idSede" />
-                                        <ExcelColumn label="Contingencia" value="idContingencia" />
-                                        <ExcelColumn label="Estado del Caso" value="idEstadoCaso" />
-                                        <ExcelColumn label="Turno" value="idTurno" />
-                                        <ExcelColumn label="Día del Turno" value="idDiaTurno" />
-                                        <ExcelColumn label="Tipo Asesoría" value="idTipoAsesoria" />
-                                        <ExcelColumn label="Motivo" value="idMotivo" />
-                                        <ExcelColumn label="Causa" value="idCausa" />
-                                        <ExcelColumn label="Descripción" value="motivo" />
-                                        <ExcelColumn label="Recomendaciones" value="recomdaciones" />
-                                        <ExcelColumn label="Pautas" value="pautas" />
-                                        <ExcelColumn label="Estado Asesoría" value="idEstadoAsesoria" />
-                                        <ExcelColumn label="Usuario" value="usuario" />
-                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                        <ExcelColumn label="Fecha de Actualización" value="fechaActualizacion" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
-
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/medicaladvice/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/consultancies/menu")}>
                                     {TitleButton.Cancelar}

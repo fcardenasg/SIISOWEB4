@@ -21,10 +21,10 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
-import { GetByIdAdvice, UpdateAdvices } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -83,40 +83,20 @@ const UpdatePsychologicalCounseling = () => {
                 handleLoadingDocument(event);
             }
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoPsicologia);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
+            const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoPsicologia);
+            setLsMotivo(lsServerMotivo.data);
 
-            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
-            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsEstadoCaso(resultEstadoCaso);
+            const lsServerEstadoCaso = await GetByTipoCatalogoCombo(CodCatalogo.EstadoCaso);
+            setLsEstadoCaso(lsServerEstadoCaso.data);
 
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAsesoria);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
+            const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+            setTipoAsesoria(lsServerTipoAsesoria.data);
 
-            const lsServerEstadoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_CASO);
-            var resultEstadoAsesoria = lsServerEstadoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setEstadoAsesoria(resultEstadoAsesoria);
+            const lsServerEstadoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ESTADO_CASO);
+            setEstadoAsesoria(lsServerEstadoAsesoria.data);
 
-            const lsServerCausaAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CausaAsesoria);
-            var resultCausaAsesoria = lsServerCausaAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setCausaAsesoria(resultCausaAsesoria);
+            const lsServerCausaAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.CausaAsesoria);
+            setCausaAsesoria(lsServerCausaAsesoria.data);
         } catch (error) { }
     }
 
@@ -154,15 +134,23 @@ const UpdatePsychologicalCounseling = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), 0, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.idEstadoCaso, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, datos.idCausa, datos.motivoConsulta, datos.concepto, datos.pautasSeguir,
-                datos.idEstadoAsesoria, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), lsPsychologicalCounseling.idRegistroAtencion, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
+                undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
+                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, lsPsychologicalCounseling.usuarioRegistro, undefined, user.nameuser, undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateAdvices(DataToInsert);
-                if (result.status === 200) {
+            const result = await SaveAdvice(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
                     setOpenUpdate(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {

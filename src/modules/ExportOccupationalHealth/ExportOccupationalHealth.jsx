@@ -1,59 +1,172 @@
-import { Tab } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
+import { Button, useMediaQuery, Grid, Typography } from "@mui/material";
+import PrintIcon from '@mui/icons-material/PrintTwoTone';
 
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
+import SelectOnChange from 'components/input/SelectOnChange';
+import InputDatePick from 'components/input/InputDatePick';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { CodCatalogo, TitleButton } from 'components/helpers/Enums';
 import SubCard from 'ui-component/cards/SubCard';
 import AccidenteTrabajo from './Export/AccidenteTrabajo';
 import MedicionaLaboralExport from './Export/MedicionaLaboralExport';
 import ReintegroExport from './Export/ReintegroExport';
 import AusentismoExport from './Export/AusentismoExport';
-
-import { ColorDrummondltd } from 'themes/colors';
-import { Box } from '@mui/system';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { useNavigate } from 'react-router-dom';
+import { ArrayTodaSede } from 'components/Arrays';
 
 const Title = {
-    medicinaLaboral: 'Medicinal Laboral', reintegro: 'Reintegro',
-    accidentalidadTrabajo: 'AT', ausentismoLaboral: 'Ausentismo Laboral',
+    medicinaLaboral: 'Medicinal Laboral',
+    reintegro: 'Reintegro',
+    accidentalidadTrabajo: 'AT',
+    ausentismoLaboral: 'Ausentismo Laboral',
 }
 
 const ExportOccupationalHealth = () => {
-    const [value, setValue] = useState(1);
+    const theme = useTheme();
+    const navigate = useNavigate();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [lsSede, setLsSede] = useState([]);
+    const [tipoReporte, setTipoReporte] = useState('EXCEL1');
+    const [sede, setSede] = useState(0);
+    const [fechaInicio, setFechaInicio] = useState(null);
+    const [fechaFin, setFechaFin] = useState(null);
+
+    async function getAll() {
+        try {
+            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
+            var resultSede = lsServerSede.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+
+            const arraySede = resultSede.concat(ArrayTodaSede);
+
+            setLsSede(arraySede);
+        } catch (error) { }
+    }
+
+    useEffect(() => {
+        getAll();
+    }, []);
+
+    function getAllAgain(codigo = '') {
+        try {
+            setFechaInicio(null);
+            setFechaFin(null);
+            setTipoReporte(codigo);
+        } catch (error) { }
+    }
 
     return (
         <Fragment>
-            <SubCard title="Generar Excel" secondary="Cerrar">
-                <Box sx={{ width: '100%', typography: 'body1' }}>
-                    <TabContext value={value}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <TabList variant="fullWidth" onChange={(event, newValue) => setValue(newValue)} aria-label="lab API tabs example">
-                                <Tab value={1} sx={{ color: ColorDrummondltd.BlueDrummond }} label={Title.medicinaLaboral} />
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <SubCard title={<Typography variant="h4">Exportación</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={3}>
+                                <Button onClick={() => getAllAgain('EXCEL1')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                    {Title.medicinaLaboral}
+                                </Button>
+                            </Grid>
 
-                                <Tab value={2} sx={{ color: ColorDrummondltd.BlueDrummond }} label={Title.reintegro} />
+                            <Grid item xs={12} md={6} lg={3}>
+                                <Button onClick={() => getAllAgain('EXCEL2')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                    {Title.reintegro}
+                                </Button>
+                            </Grid>
 
-                                <Tab value={3} sx={{ color: ColorDrummondltd.BlueDrummond }} label={Title.accidentalidadTrabajo} />
+                            <Grid item xs={12} md={6} lg={3}>
+                                <Button onClick={() => getAllAgain('EXCEL3')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                    {Title.accidentalidadTrabajo}
+                                </Button>
+                            </Grid>
 
-                                <Tab value={4} sx={{ color: ColorDrummondltd.BlueDrummond }} label={Title.ausentismoLaboral} />
-                            </TabList>
-                        </Box>
+                            <Grid item xs={12} md={6} lg={3}>
+                                <Button onClick={() => getAllAgain('EXCEL4')} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
+                                    {Title.ausentismoLaboral}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </SubCard>
+                </Grid>
 
-                        <TabPanel value={1}>
-                            <MedicionaLaboralExport />
-                        </TabPanel>
+                <Grid item xs={12}>
+                    <SubCard title={
+                        <Typography variant="h4">Exportar {tipoReporte === 'EXCEL1' ? Title.medicinaLaboral :
+                            tipoReporte === 'EXCEL2' ? Title.reintegro :
+                                tipoReporte === 'EXCEL3' ? Title.accidentalidadTrabajo :
+                                    tipoReporte === 'EXCEL4' ? Title.ausentismoLaboral : ''}
+                        </Typography>
+                    }
 
-                        <TabPanel value={2}>
-                            <ReintegroExport />
-                        </TabPanel>
+                        secondary={
+                            <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate("/occupational-health/menu")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        }
+                    >
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={3}>
+                                <SelectOnChange
+                                    name="sede"
+                                    label="Sede de Atención"
+                                    value={sede}
+                                    options={lsSede}
+                                    onChange={(e) => setSede(e.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
 
-                        <TabPanel value={3}>
-                            <AccidenteTrabajo />
-                        </TabPanel>
+                            <Grid item xs={12} md={6} lg={3}>
+                                <InputDatePick
+                                    label="Fecha Inicio"
+                                    onChange={(e) => setFechaInicio(e.target.value)}
+                                    value={fechaInicio}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
 
-                        <TabPanel value={4}>
-                            <AusentismoExport />
-                        </TabPanel>
-                    </TabContext>
-                </Box>
-            </SubCard>
+                            <Grid item xs={12} md={6} lg={3}>
+                                <InputDatePick
+                                    label="Fecha Fin"
+                                    onChange={(e) => setFechaFin(e.target.value)}
+                                    value={fechaFin}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            {tipoReporte === 'EXCEL1' ?
+                                <MedicionaLaboralExport
+                                    fechaFin={fechaFin}
+                                    fechaInicio={fechaInicio}
+                                    sede={sede}
+                                /> :
+                                tipoReporte === 'EXCEL2' ?
+                                    <ReintegroExport
+                                        fechaFin={fechaFin}
+                                        fechaInicio={fechaInicio}
+                                        sede={sede}
+                                    /> : tipoReporte === 'EXCEL3' ?
+                                        <AccidenteTrabajo
+                                            fechaFin={fechaFin}
+                                            fechaInicio={fechaInicio}
+                                            sede={sede}
+                                        /> : tipoReporte === 'EXCEL4' ?
+                                            <AusentismoExport
+                                                fechaFin={fechaFin}
+                                                fechaInicio={fechaInicio}
+                                                sede={sede}
+                                            /> : null
+                            }
+                        </Grid>
+                    </SubCard>
+                </Grid>
+
+            </Grid>
         </Fragment>
     );
 };

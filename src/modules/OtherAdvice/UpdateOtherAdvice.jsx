@@ -32,12 +32,12 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, UpdateAdvices } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice, } from 'api/clients/AdviceClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostMedicalAdvice, PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
+import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -126,6 +126,15 @@ const UpdateOtherAdvice = () => {
 
     async function getAll() {
         try {
+            const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+            setTipoAsesoria(lsServerTipoAsesoria.data);
+
+            const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
+            setLsMotivo(lsServerMotivo.data);
+
+            const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TODAS_ASESORIAS);
+            setLsTipoAtencion(lsServerTipoAtencion.data);
+
             const lsServerAtencion = await GetByIdAdvice(id);
             if (lsServerAtencion.status === 200) {
                 setLsOtherAdvice(lsServerAtencion.data);
@@ -136,27 +145,6 @@ const UpdateOtherAdvice = () => {
                 }
                 handleLoadingDocument(event);
             }
-
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
-
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
-
-            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TODAS_ASESORIAS);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoAtencion(resultTipoAtencion);
 
             setLsAtencion([{ id: 0 }]);
         } catch (error) { }
@@ -193,21 +181,23 @@ const UpdateOtherAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), 0, datos.idTipoAtencion, lsEmployee.sede,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.observaciones, datos.recomendaciones, '', DefaultValue.SINREGISTRO_GLOBAL,
-                lsOtherAdvice.usuarioRegistro, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
+            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), lsOtherAdvice.idRegistroAtencion, datos.idTipoAtencion, lsEmployee.sede,
+                undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
+                datos.recomendaciones, undefined, undefined, lsOtherAdvice.usuarioRegistro, undefined, user.nameuser, undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await UpdateAdvices(DataToUpdate);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                    }
-                } else {
+            const result = await SaveAdvice(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
                     setOpenError(true);
                     setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
+                    setOpenSuccess(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {

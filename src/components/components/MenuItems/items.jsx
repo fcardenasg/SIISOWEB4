@@ -231,14 +231,6 @@ export const itemsParameterization = [
     selected: true,
     url: '/personal-notes/list',
     color: ColorDrummondltd.RedDrummond
-  },
-  {
-    title: "Medicamentos",
-    subtitle: "",
-    icon: IconTool,
-    selected: true,
-    url: '/medicines/list',
-    color: ColorDrummondltd.RedDrummond
   }
 ];
 

@@ -10,6 +10,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
@@ -32,10 +35,10 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -48,6 +51,12 @@ import { GetByMail } from 'api/clients/UserClient';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
+
+const validationSchema = yup.object().shape({
+    idTipoAsesoria: yup.string().required(ValidationMessage.Requerido),
+    idMotivo: yup.string().required(ValidationMessage.Requerido),
+    idTipoAtencion: yup.string().required(ValidationMessage.Requerido),
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -114,35 +123,26 @@ const OtherAdvice = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState(0);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
 
-    const methods = useForm();
-    const { handleSubmit } = methods;
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function getAll() {
         try {
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
+            const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+            setTipoAsesoria(lsServerTipoAsesoria.data);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
+            const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
+            setLsMotivo(lsServerMotivo.data);
 
-            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TODAS_ASESORIAS);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoAtencion(resultTipoAtencion);
+            const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TODAS_ASESORIAS);
+            setLsTipoAtencion(lsServerTipoAtencion.data);
 
             setLsAtencion([{ id: 0 }]);
         } catch (error) { }
@@ -160,13 +160,13 @@ const OtherAdvice = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -177,7 +177,7 @@ const OtherAdvice = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(resultData.id);
+            const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
@@ -188,21 +188,23 @@ const OtherAdvice = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, datos.idTipoAtencion, lsEmployee.sede,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.observaciones, datos.recomendaciones, '', DefaultValue.SINREGISTRO_GLOBAL,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
+                datos.recomendaciones, undefined, undefined, user.nameuser, undefined, undefined, undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await InsertAdvice(DataToUpdate);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setResultData(result.data);
-                    }
-                } else {
+            const result = await SaveAdvice(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
                     setOpenError(true);
                     setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
+                    setResultData(result.data);
+                    setOpenSuccess(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {
@@ -344,6 +346,7 @@ const OtherAdvice = () => {
                                         label="Tipo Atención"
                                         options={lsTipoAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoAtencion}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -355,6 +358,7 @@ const OtherAdvice = () => {
                                         label="Motivo"
                                         options={lsMotivo}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idMotivo}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -366,6 +370,7 @@ const OtherAdvice = () => {
                                         label="Tipo de Asesoría"
                                         options={tipoAsesoria}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoAsesoria}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -446,7 +451,7 @@ const OtherAdvice = () => {
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    <Button disabled={resultData !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>
@@ -454,7 +459,7 @@ const OtherAdvice = () => {
 
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                    <Button disabled={resultData === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                         {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>

@@ -21,7 +21,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const validationSchema = yup.object().shape({
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
+    nombre: yup.string().required(ValidationMessage.Requerido),
 });
 
 const TypeCatalog = () => {

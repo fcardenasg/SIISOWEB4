@@ -13,22 +13,18 @@ import { ViewFormat } from "components/helpers/Format";
 import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
-import { GetExcelMedicalHistory } from "api/clients/MedicalHistoryClient";
-import { GetExcelEvolutionNote } from "api/clients/EvolutionNoteClient";
+import { GetExcelOccupationalExamination } from "api/clients/OccupationalExaminationClient";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const ExcelAtencionMedica = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
+const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsSede, setLsSede] = useState([]);
-    const [lsDataExport, setLsDataExport] = useState({
-        lsDataHC: [],
-        lsDataNE: []
-    });
+    const [lsDataExport, setLsDataExport] = useState([]);
     const [statusData, setStatusData] = useState(false);
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -51,12 +47,10 @@ const ExcelAtencionMedica = ({ setSede, sede, setFechaInicio, fechaInicio, setFe
             setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
-            const lsServerExcelHC = await GetExcelMedicalHistory(parametros);
-            const lsServerExcelNE = await GetExcelEvolutionNote(parametros);
+            const lsServerExcel = await GetExcelOccupationalExamination(parametros);
 
-            if (lsServerExcelHC.status === 200 && lsServerExcelNE.status === 200) {
-                setLsDataExport({ lsDataHC: lsServerExcelHC.data, lsDataNE: lsServerExcelNE.data });
-
+            if (lsServerExcel.status === 200) {
+                setLsDataExport(lsServerExcel.data);
                 setTimeout(() => {
                     setStatusData(true);
                     setLoading(false);
@@ -121,8 +115,8 @@ const ExcelAtencionMedica = ({ setSede, sede, setFechaInicio, fechaInicio, setFe
                                     Descargar Excel
                                 </Button>
                             </AnimateButton>
-                        } filename={`LISTA_DE_ATENCION_MEDICA_${new Date().toLocaleString()}`}>
-                            <ExcelSheet data={lsDataExport.lsDataHC} name="Registro De Historia Clinica">
+                        } filename={`LISTA_DE_HISTORIA_CLINICA_OCUPACIONAL_${new Date().toLocaleString()}`}>
+                            <ExcelSheet data={lsDataExport} name="Registro De HCO">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombres" value="nombres" />
@@ -140,66 +134,20 @@ const ExcelAtencionMedica = ({ setSede, sede, setFechaInicio, fechaInicio, setFe
                                 <ExcelColumn label="Empresa" value="empresa" />
                                 <ExcelColumn label="Oficio" value="nameOficio" />
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
+
                                 <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                 <ExcelColumn label="Atención" value="nameAtencion" />
-                                <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                <ExcelColumn label="Motivo Consulta" value="motivoConsulta" />
-                                <ExcelColumn label="Enfermedad Actual" value="enfermedadActual" />
-                                <ExcelColumn label="Antecedentes" value="antecedentes" />
-                                <ExcelColumn label="Revisión Sistema" value="revisionSistema" />
-                                <ExcelColumn label="Examen Fisico" value="examenFisico" />
-                                <ExcelColumn label="Examen Paraclinico" value="examenParaclinico" />
-                                <ExcelColumn label="Codigo Dx1" value="dx1" />
+                                <ExcelColumn label="Concepto Aptitud Psicofísica" value="nameConceptoAptitudPsicofisica" />
+                                <ExcelColumn label="Concepto De Trabajo En Altura" value="nameConceptoTrabajoAltura" />
+                                <ExcelColumn label="Concepto De Trabajo En Espacio Confinado" value="nameConceptoTrabajoEspacioConfinado" />
+                                <ExcelColumn label="Código Dx1" value="dx1" />
                                 <ExcelColumn label="Dx 1" value="nameDx1" />
-                                <ExcelColumn label="Codigo Dx2" value="dx2" />
+                                <ExcelColumn label="Código Dx2" value="dx2" />
                                 <ExcelColumn label="Dx 2" value="nameDx2" />
-                                <ExcelColumn label="Codigo Dx3" value="dx3" />
+                                <ExcelColumn label="Código Dx3" value="dx3" />
                                 <ExcelColumn label="Dx 3" value="nameDx3" />
-                                <ExcelColumn label="Plan De Manejo" value="planManejo" />
-                                <ExcelColumn label="Concepto De Actitud" value="nameConceptoActitud" />
-                                <ExcelColumn label="Remitido" value="nameRemitido" />
-
-                                <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value={(fe) => ViewFormat(fe.fechaModifico)} />
-                            </ExcelSheet>
-
-                            <ExcelSheet data={lsDataExport.lsDataNE} name="Registro De Nota De Evolución">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombres" value="nombres" />
-                                <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
-                                <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                <ExcelColumn label="Area" value="nameArea" />
-                                <ExcelColumn label="Grupo" value="nameGrupo" />
-                                <ExcelColumn label="Fecha De Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
-                                <ExcelColumn label="Roster Position" value="nameRosterPosition" />
-                                <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                <ExcelColumn label="Genero" value="nameGenero" />
-                                <ExcelColumn label="Sede" value="nameSede" />
-                                <ExcelColumn label="Celular" value="celular" />
-                                <ExcelColumn label="Email" value="email" />
-                                <ExcelColumn label="Empresa" value="empresa" />
-                                <ExcelColumn label="Oficio" value="nameOficio" />
-                                <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
-                                <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                <ExcelColumn label="Atencion" value="nameAtencion" />
-                                <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                <ExcelColumn label="Nota" value="nota" />
-                                <ExcelColumn label="Codigo Dx1" value="dx1" />
-                                <ExcelColumn label="Dx1" value="nameDx1" />
-                                <ExcelColumn label="Codigo Dx2" value="dx2" />
-                                <ExcelColumn label="Dx2" value="nameDx2" />
-                                <ExcelColumn label="Codigo Dx3" value="dx3" />
-                                <ExcelColumn label="Dx3" value="nameDx3" />
-                                <ExcelColumn label="Plan De Manejo" value="planManejo" />
-                                <ExcelColumn label="Concepto De Actitud" value="nameConceptoActitud" />
-
-                                <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value={(fe) => ViewFormat(fe.fechaModifico)} />
+                                <ExcelColumn label="Observaciones Diagnóstico" value="observacionesDiagnostica" />
+                                <ExcelColumn label="Recomendaciones Diagnóstico" value="recomendacionesDiagnostica" />
                             </ExcelSheet>
                         </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null
                     }
@@ -209,4 +157,4 @@ const ExcelAtencionMedica = ({ setSede, sede, setFechaInicio, fechaInicio, setFe
     );
 }
 
-export default ExcelAtencionMedica;
+export default ExcelEmo;

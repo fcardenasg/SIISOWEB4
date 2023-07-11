@@ -250,7 +250,7 @@ const ListOccupationalMedicine = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'dx'];
+                const properties = ['id', 'documento', 'nameEmpleado'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

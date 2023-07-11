@@ -132,8 +132,7 @@ export const CodCatalogo = {
     CONCEPTO_APTITUD_REINTEGRO: 95,
     ORDENADO_POR_HORARIO: 167,
     ORIGEN_REINTEGRO: 90,
-
-    TipoAsesoria: 119,
+    
     CausaAsesoria: 120,
     EstadoAsesoria: 8,
     EstadoCaso: 48,

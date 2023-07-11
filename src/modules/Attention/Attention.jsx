@@ -71,7 +71,7 @@ const Attention = () => {
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [lsMotivoPAD, setLsMotivoPAD] = useState([]);
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
-    const [lsMotivoMedica, setLsMotivoMedica] = useState([]);
+    // const [lsMotivoMedica, setLsMotivoMedica] = useState([]);
     const [lsMotivoPsico, setLsMotivoPsico] = useState([]);
     const [lsMedicos, setLsMedicos] = useState([]);
     const [lsPsicologia, setLsPsicologia] = useState([]);
@@ -108,8 +108,8 @@ const Attention = () => {
                 const lsServerMotivoPsico = await GetByTipoCatalogoCombo(CodCatalogo.MotivoPsicologia);
                 setLsMotivoPsico(lsServerMotivoPsico.data);
 
-                const lsServerMotivoMedica = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
-                setLsMotivoMedica(lsServerMotivoMedica.data);
+                /* const lsServerMotivoMedica = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
+                setLsMotivoMedica(lsServerMotivoMedica.data); */
 
                 const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TipoAtencion);
                 setLsTipoAtencion(lsServerTipoAtencion.data);
@@ -307,8 +307,7 @@ const Attention = () => {
 
     const handleClick = async (datos) => {
         try {
-            const motivoFinal = motivo !== null ? motivo : datos.motivoMedica !== undefined ?
-                datos.motivoMedica : datos.motivoPsicologia !== undefined ? datos.motivoPsicologia : undefined;
+            const motivoFinal = motivo !== null ? motivo : datos.motivoPsicologia !== undefined ? datos.motivoPsicologia : undefined;
 
             const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, undefined, undefined,
                 "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, undefined,
@@ -579,7 +578,7 @@ const Attention = () => {
                                                     </Grid>
                                                 </Fragment> : tipoAtencion === DefaultValue.TIP_AT_ASESORIA && atencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA ?
                                                     <Fragment>
-                                                        <Grid item xs={3}>
+                                                        {/* <Grid item xs={3}>
                                                             <FormProvider {...methods}>
                                                                 <InputSelect
                                                                     name="motivoMedica"
@@ -588,7 +587,7 @@ const Attention = () => {
                                                                     size={matchesXS ? 'small' : 'medium'}
                                                                 />
                                                             </FormProvider>
-                                                        </Grid>
+                                                        </Grid> */}
 
                                                         <Grid item xs={3}>
                                                             <FormProvider {...methods}>

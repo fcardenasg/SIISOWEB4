@@ -131,7 +131,7 @@ const ListProgramming = () => {
             title={
                 <Grid container alignItems="center" spacing={gridSpacing}>
                     <Grid item xs={12} md={7.5}>
-                        <Typography variant="h3">LISTA DE PROGRAMACIÓN</Typography>
+                        <Typography variant="h4">Lista De Programación</Typography>
                     </Grid>
 
                     <Grid item xs={8} md={3}>

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -28,23 +27,17 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 import { FormatDate } from 'components/helpers/Format';
-import { DefaultData, Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import { DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
-
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import swal from 'sweetalert';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -209,7 +202,6 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListOtherAdvice = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [idCheck, setIdCheck] = useState('');
     const [lsMedicalAdvice, setLsMedicalAdvice] = useState([]);
@@ -222,6 +214,8 @@ const ListOtherAdvice = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
+
+    const [openDelete, setOpenDelete] = useState(false);
 
     async function getAll() {
         try {
@@ -309,20 +303,18 @@ const ListOtherAdvice = () => {
 
     const handleDelete = async () => {
         try {
-            const result = await DeleteAdvice(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            getAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteAdvice(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSearch('');
+                    setSelected([]);
+                    getAll();
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
 
         }
@@ -333,6 +325,8 @@ const ListOtherAdvice = () => {
 
     return (
         <MainCard title={<Typography variant="h4">Lista De Otras Asesorías</Typography>} content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -350,49 +344,17 @@ const ListOtherAdvice = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Asesoría Médica">
-                                    <ExcelSheet data={lsMedicalAdvice} name="Asesoría Médica">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Fecha" value="fecha" />
-                                        <ExcelColumn label="Tipo Atención" value="idTipoAtencion" />
-                                        <ExcelColumn label="Sede" value="idSede" />
-                                        <ExcelColumn label="Contingencia" value="idContingencia" />
-                                        <ExcelColumn label="Estado del Caso" value="idEstadoCaso" />
-                                        <ExcelColumn label="Turno" value="idTurno" />
-                                        <ExcelColumn label="Día del Turno" value="idDiaTurno" />
-                                        <ExcelColumn label="Tipo Asesoría" value="idTipoAsesoria" />
-                                        <ExcelColumn label="Motivo" value="idMotivo" />
-                                        <ExcelColumn label="Causa" value="idCausa" />
-                                        <ExcelColumn label="Descripción" value="motivo" />
-                                        <ExcelColumn label="Recomendaciones" value="recomdaciones" />
-                                        <ExcelColumn label="Pautas" value="pautas" />
-                                        <ExcelColumn label="Estado Asesoría" value="idEstadoAsesoria" />
-                                        <ExcelColumn label="Usuario" value="usuario" />
-                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                        <ExcelColumn label="Fecha de Actualización" value="fechaActualizacion" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
 
-                            <Grid item xs={5}>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/otheradvice/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/consultancies/menu")}>
                                     {TitleButton.Cancelar}

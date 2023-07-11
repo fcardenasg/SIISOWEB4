@@ -10,6 +10,9 @@ import {
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
@@ -32,10 +35,10 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -51,6 +54,10 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import UpdateAttMedicalAdvice from 'modules/Programming/Attention/AttentionMedicalAdvice/UpdateAttMedicalAdvice';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
+
+const validationSchema = yup.object().shape({
+    idSubmotivo: yup.string().required(ValidationMessage.Requerido),
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -106,8 +113,8 @@ const MedicalAdvice = () => {
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
 
-    const [textTipoAsesoria, setTextTipoAsesoria] = useState('');
-    const [textMotivo, setTextMotivo] = useState('');
+    const [textTipoAsesoria, setTextTipoAsesoria] = useState(undefined);
+    const [textMotivo, setTextMotivo] = useState(undefined);
     const [lsSubmotivo, setLsSubmotivo] = useState([]);
     const [lsCodigoMotivo, setLsCodigoMotivo] = useState([]);
 
@@ -122,30 +129,25 @@ const MedicalAdvice = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState(0);
     const [dataPDF, setDataPDF] = useState(null);
 
     const [userEdit, setUserEdit] = useState(false);
 
-    const methods = useForm();
-    const { handleSubmit, reset } = methods;
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function getAll() {
         try {
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ASME_TIPOASESORIA);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
+            const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+            setTipoAsesoria(lsServerTipoAsesoria.data);
 
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoMedica);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
-            setLsCodigoMotivo(lsServerMotivo.data.entities);
+            const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
+            setLsMotivo(lsServerMotivo.data);
+            setLsCodigoMotivo(lsServerMotivo.data);
 
             setLsAtencion([{ id: 0 }]);
         } catch (error) { }
@@ -163,13 +165,13 @@ const MedicalAdvice = () => {
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -180,7 +182,7 @@ const MedicalAdvice = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(resultData.id);
+            const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
@@ -196,7 +198,7 @@ const MedicalAdvice = () => {
         try {
             setTextMotivo(event.target.value);
 
-            var lsResulCode = String(lsCodigoMotivo.filter(code => code.idCatalogo === event.target.value).map(code => code.codigo));
+            var lsResulCode = String(lsCodigoMotivo.filter(code => code.value === event.target.value).map(code => code.codigo));
             var lsSubmotivo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
 
             if (lsSubmotivo.status === 200) {
@@ -212,23 +214,24 @@ const MedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, DefaultData.ASESORIA_MEDICA,
-                lsEmployee.sede, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL, DefaultData.SINREGISTRO_GLOBAL,
-                DefaultData.SINREGISTRO_GLOBAL, textTipoAsesoria, textMotivo, datos.idSubmotivo, DefaultData.SINREGISTRO_GLOBAL,
-                datos.observaciones, datos.recomendaciones, '', DefaultData.SINREGISTRO_GLOBAL, user.nameuser, FormatDate(new Date()),
-                '', FormatDate(new Date()));
+            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, DefaultData.ASESORIA_MEDICA, lsEmployee.sede, undefined, undefined,
+                undefined, undefined, textTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
+                user.nameuser, undefined, undefined, undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await InsertAdvice(DataToUpdate);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setResultData(result.data);
-                        reset();
-                    }
-                } else {
+            const result = await SaveAdvice(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
                     setOpenError(true);
                     setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
+                    setOpenSuccess(true);
+                    setResultData(result.data);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {
@@ -385,6 +388,7 @@ const MedicalAdvice = () => {
                                                     label="Submotivo"
                                                     options={lsSubmotivo}
                                                     size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.idSubmotivo}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -488,7 +492,7 @@ const MedicalAdvice = () => {
                                     <Grid container spacing={2} sx={{ pt: 4 }}>
                                         <Grid item xs={2.4}>
                                             <AnimateButton>
-                                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                <Button disabled={resultData !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                     {TitleButton.Guardar}
                                                 </Button>
                                             </AnimateButton>
@@ -496,7 +500,7 @@ const MedicalAdvice = () => {
 
                                         <Grid item xs={2.4}>
                                             <AnimateButton>
-                                                <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                                <Button disabled={resultData === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
                                                     {TitleButton.Imprimir}
                                                 </Button>
                                             </AnimateButton>

@@ -3,16 +3,18 @@ import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography,
+    useMediaQuery
 } from '@mui/material';
 
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion, ValidateIdRegistroAtencion } from 'api/clients/AttentionClient';
 import { PutEstadoAtencion } from 'formatdata/AttentionForm';
+
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import useAuth from 'hooks/useAuth';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
@@ -26,14 +28,13 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
-import { GetByIdAdvice, InsertAdvice } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SubCard from 'ui-component/cards/SubCard';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import Cargando from 'components/loading/Cargando';
 import { generateReportPsycho } from './Report/Psychological';
@@ -41,6 +42,13 @@ import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+
+const validationSchema = yup.object().shape({
+    idTipoAsesoria: yup.string().required(ValidationMessage.Requerido),
+    idCausa: yup.string().required(ValidationMessage.Requerido),
+    idMotivo: yup.string().required(ValidationMessage.Requerido)
+});
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -57,6 +65,7 @@ const UpdatePsychological = () => {
     const [documento, setDocumento] = useState('');
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
 
+    const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
 
@@ -74,8 +83,15 @@ const UpdatePsychological = () => {
     const [tipoAsesoria, setTipoAsesoria] = useState([]);
     const [causaAsesoria, setCausaAsesoria] = useState([]);
 
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState(0);
+    const [dataAttention, setDataAttention] = useState({});
     const [dataPDF, setDataPDF] = useState(null);
+
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleUpdateAttentionClose = async (estadoPac = '') => {
         try {
@@ -97,6 +113,21 @@ const UpdatePsychological = () => {
 
     async function getAll() {
         try {
+            const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoPsicologia);
+            setLsMotivo(lsServerMotivo.data);
+
+            const lsServerEstadoCaso = await GetByTipoCatalogoCombo(CodCatalogo.EstadoCaso);
+            setLsEstadoCaso(lsServerEstadoCaso.data);
+
+            const lsServerTipoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ASME_TIPOASESORIA);
+            setTipoAsesoria(lsServerTipoAsesoria.data);
+
+            const lsServerEstadoAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.ESTADO_CASO);
+            setEstadoAsesoria(lsServerEstadoAsesoria.data);
+
+            const lsServerCausaAsesoria = await GetByTipoCatalogoCombo(CodCatalogo.CausaAsesoria);
+            setCausaAsesoria(lsServerCausaAsesoria.data);
+
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
                 setLsAtencion(lsServerAtencion.data);
@@ -107,41 +138,6 @@ const UpdatePsychological = () => {
                 }
                 handleLoadingDocument(event);
             }
-
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MotivoPsicologia);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
-
-            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCaso);
-            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsEstadoCaso(resultEstadoCaso);
-
-            const lsServerTipoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TipoAsesoria);
-            var resultTipoAsesoria = lsServerTipoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setTipoAsesoria(resultTipoAsesoria);
-
-            const lsServerEstadoAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_CASO);
-            var resultEstadoAsesoria = lsServerEstadoAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setEstadoAsesoria(resultEstadoAsesoria);
-
-            const lsServerCausaAsesoria = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CausaAsesoria);
-            var resultCausaAsesoria = lsServerCausaAsesoria.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setCausaAsesoria(resultCausaAsesoria);
         } catch (error) { }
     }
 
@@ -149,8 +145,23 @@ const UpdatePsychological = () => {
         getAll();
     }, [])
 
-    const methods = useForm();
-    const { handleSubmit } = methods;
+    useEffect(() => {
+        async function getData() {
+            try {
+                const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                if (lsServerValidate.status === 200) {
+                    setResultIdRegistroAtencion(lsServerValidate.data.estado);
+                    setResultData(lsServerValidate.data.id);
+
+                    if (lsServerValidate.data.entities !== null) {
+                        setDataAttention(lsServerValidate.data.entities);
+                    }
+                }
+            } catch (error) { }
+        }
+
+        getData();
+    }, []);
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -168,7 +179,7 @@ const UpdatePsychological = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAdvice(resultData.id);
+            const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data);
@@ -178,16 +189,34 @@ const UpdatePsychological = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
-                DefaultValue.SINREGISTRO_GLOBAL, datos.idEstadoCaso, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.idTipoAsesoria, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, datos.idCausa, datos.motivoConsulta, datos.concepto, datos.pautasSeguir,
-                datos.idEstadoAsesoria, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const usuarioRegistro = resultData === 0 ? user.nameuser : dataAttention.usuarioRegistro;
+            const fechaRegistro = resultData === 0 ? undefined : dataAttention.fechaRegistro;
+            const usuarioModifico = resultData === 0 ? undefined : user.nameuser;
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertAdvice(DataToInsert);
-                if (result.status === 200) {
+            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
+                undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
+                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, usuarioRegistro, fechaRegistro, usuarioModifico, undefined);
+
+            const result = await SaveAdvice(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
                     setOpenUpdate(true);
                     setResultData(result.data);
+
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                    if (lsServerValidate.status === 200) {
+                        setResultIdRegistroAtencion(lsServerValidate.data.estado);
+                        setResultData(lsServerValidate.data.id);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {
@@ -244,7 +273,7 @@ const UpdatePsychological = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Asesoría psicológica"
+                            title="Asesoría Psicológica"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -255,7 +284,14 @@ const UpdatePsychological = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Actualizar Asesoría</Typography>}>
+                        <StickyActionBar
+                            onClickSave={handleSubmit(handleClick)}
+                            onClickUpdate={handleSubmit(handleClick)}
+                            disabledUpdate={!resultIdRegistroAtencion}
+                            disabledSave={resultIdRegistroAtencion}
+                            showButton={false}
+                            threshold={568}
+                        >
                             <Grid container spacing={2}>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
@@ -284,9 +320,10 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue={lsAtencion.motivo}
+                                            defaultValue={dataAttention.idMotivo}
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idMotivo}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -296,9 +333,10 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idCausa"
                                             label="Causa de Asesoría"
-                                            defaultValue=""
+                                            defaultValue={dataAttention.idCausa}
                                             options={causaAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idCausa}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -308,25 +346,21 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idTipoAsesoria"
                                             label="Tipo Asesoría"
-                                            defaultValue=""
+                                            defaultValue={dataAttention.idTipoAsesoria}
                                             options={tipoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idTipoAsesoria}
                                         />
                                     </FormProvider>
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
-                            <Grid container spacing={2}>
+
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue=""
+                                            defaultValue={dataAttention.motivo}
                                             name="motivoConsulta"
                                             label="Motivo de consulta"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -359,7 +393,7 @@ const UpdatePsychological = () => {
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue=""
+                                            defaultValue={dataAttention.recomendaciones}
                                             name="concepto"
                                             label="Concepto"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -392,7 +426,7 @@ const UpdatePsychological = () => {
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue=""
+                                            defaultValue={dataAttention.pautas}
                                             name="pautasSeguir"
                                             label="Pautas a Seguir"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -425,48 +459,42 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idEstadoAsesoria"
                                             label="Estado"
-                                            defaultValue=""
+                                            defaultValue={dataAttention.idEstadoAsesoria}
                                             options={estadoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
                                 </Grid>
-                            </Grid>
 
-                            <Grid container spacing={2} sx={{ pt: 4 }}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                                <Grid item xs={12} sx={{ mt: 4 }}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={handleClickReport}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
-                                            {TitleButton.Imprimir}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
+                                                    {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length !== 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
-                                            {TitleButton.CerrarCaso}
-                                        </Button>
-                                    </AnimateButton>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
+                                                    {TitleButton.CerrarCaso}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </SubCard>
+                        </StickyActionBar>
                     </Grid>
                 </Grid> : <Cargando />}
         </Fragment>

@@ -95,8 +95,8 @@ export const JWTProvider = ({ children }) => {
                                 id: data.id,
                                 email: data.correo,
                                 nameuser: data.nombreUsuario,
-                                namerol: data.nombreRol,
-                                namesede: data.nombreSede,
+                                namerol: data.rolUsuario,
+                                namesede: data.sedeUsuario,
                                 idsede: data.idSede
                             }
                         }
