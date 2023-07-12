@@ -198,7 +198,6 @@ const Audiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/Au
 const UpdateAudiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/UpdateAudiometry')));
 
 const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
-const ViewExport = Loadable(lazy(() => import('modules/Export/ViewExport')));
 const Indicators = Loadable(lazy(() => import('modules/Indicators/Indicators')));
 
 const ListPersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/ListPersonalNotes')));
@@ -839,11 +838,6 @@ const MainRoutes = {
             path: '/reprint/list',
             element: <ViewReprint />
         },
-        {
-            path: '/export/list',
-            element: <ViewExport />
-        },
-
         /* INDICADORES */
         {
             path: '/indicators/view',

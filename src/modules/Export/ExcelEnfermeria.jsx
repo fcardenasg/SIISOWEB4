@@ -13,13 +13,13 @@ import { ViewFormat } from "components/helpers/Format";
 import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
-import { GetExcelParaclinics } from "api/clients/ParaclinicsClient";
+import { GetExcelNoteInfirmary } from "api/clients/NoteInfirmaryClient";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const ExcelParaclinico = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
+const ExcelEnfermeria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -47,7 +47,7 @@ const ExcelParaclinico = ({ setSede, sede, setFechaInicio, fechaInicio, setFecha
             setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
-            const lsServerExcel = await GetExcelParaclinics(parametros);
+            const lsServerExcel = await GetExcelNoteInfirmary(parametros);
 
             if (lsServerExcel.status === 200) {
                 setLsDataExport(lsServerExcel.data);
@@ -115,8 +115,8 @@ const ExcelParaclinico = ({ setSede, sede, setFechaInicio, fechaInicio, setFecha
                                     Descargar Excel
                                 </Button>
                             </AnimateButton>
-                        } filename={`LISTA_DE_PARACLINICO_${new Date().toLocaleString()}`}>
-                            <ExcelSheet data={lsDataExport} name="Registro De Paraclinicos">
+                        } filename={`LISTA_DE_ENFERMERIA_${new Date().toLocaleString()}`}>
+                            <ExcelSheet data={lsDataExport} name="Registro De Enfermeria">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombres" value="nombres" />
@@ -136,11 +136,15 @@ const ExcelParaclinico = ({ setSede, sede, setFechaInicio, fechaInicio, setFecha
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
 
                                 <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                <ExcelColumn label="Tipo De Paraclinico" value="idTipoParaclinico" />
-                                <ExcelColumn label="Motivo" value="motivo" />
-                                <ExcelColumn label="Conducta" value="conducta" />
-                                <ExcelColumn label="Conclusion" value="conclusion" />
-                                <ExcelColumn label="Proveedor" value="proveedor" />
+                                <ExcelColumn label="Atención" value="nameAtencion" />
+                                <ExcelColumn label="Contingencia" value="nameContingencia" />
+                                <ExcelColumn label="Código Dx1" value="dx1" />
+                                <ExcelColumn label="Dx1" value="nameDx1" />
+                                <ExcelColumn label="Código Dx2" value="dx2" />
+                                <ExcelColumn label="Dx2" value="nameDx2" />
+                                <ExcelColumn label="Código dx3" value="dx3" />
+                                <ExcelColumn label="Dx3" value="nameDx3" />
+                                <ExcelColumn label="Nota Enfermedad" value="notaEnfermedad" />
                                 <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                 <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
@@ -154,4 +158,4 @@ const ExcelParaclinico = ({ setSede, sede, setFechaInicio, fechaInicio, setFecha
     );
 }
 
-export default ExcelParaclinico;
+export default ExcelEnfermeria;

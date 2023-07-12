@@ -13,13 +13,13 @@ import { ViewFormat } from "components/helpers/Format";
 import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
-import { GetExcelOccupationalExamination } from "api/clients/OccupationalExaminationClient";
+import { GetExcelOrdersParaclinicos } from "api/clients/OrdersClient";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
+const ExcelOrdenes = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -47,7 +47,7 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
             setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
-            const lsServerExcel = await GetExcelOccupationalExamination(parametros);
+            const lsServerExcel = await GetExcelOrdersParaclinicos(parametros);
 
             if (lsServerExcel.status === 200) {
                 setLsDataExport(lsServerExcel.data);
@@ -115,8 +115,8 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
                                     Descargar Excel
                                 </Button>
                             </AnimateButton>
-                        } filename={`LISTA_DE_HISTORIA_CLINICA_OCUPACIONAL_${new Date().toLocaleString()}`}>
-                            <ExcelSheet data={lsDataExport} name="Registro De HCO">
+                        } filename={`LISTA_DE_ORDENES_${new Date().toLocaleString()}`}>
+                            <ExcelSheet data={lsDataExport} name="Registro De Ordenes">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombres" value="nombres" />
@@ -135,19 +135,18 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
                                 <ExcelColumn label="Oficio" value="nameOficio" />
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
 
-                                <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                <ExcelColumn label="Atención" value="nameAtencion" />
-                                <ExcelColumn label="Concepto Aptitud Psicofísica" value="nameConceptoAptitudPsicofisica" />
-                                <ExcelColumn label="Concepto De Trabajo En Altura" value="nameConceptoTrabajoAltura" />
-                                <ExcelColumn label="Concepto De Trabajo En Espacio Confinado" value="nameConceptoTrabajoEspacioConfinado" />
-                                <ExcelColumn label="Código Dx1" value="dx1" />
-                                <ExcelColumn label="Dx 1" value="nameDx1" />
-                                <ExcelColumn label="Código Dx2" value="dx2" />
-                                <ExcelColumn label="Dx 2" value="nameDx2" />
-                                <ExcelColumn label="Código Dx3" value="dx3" />
-                                <ExcelColumn label="Dx 3" value="nameDx3" />
-                                <ExcelColumn label="Observaciones Diagnóstico" value="observacionesDiagnostica" />
-                                <ExcelColumn label="Recomendaciones Diagnóstico" value="recomendacionesDiagnostica" />
+                                <ExcelColumn label="Paraclinico" value="nameParaclinico" />
+                                <ExcelColumn label="Ciudad" value="nameCiudad" />
+                                <ExcelColumn label="Examen RNM" value="nameExamenRNM" />
+                                <ExcelColumn label="Examen De Laboratorio" value="nameExamenLaboratorio" />
+                                <ExcelColumn label="Fecha De Examen Físico" value="fechaExamenFisico" />
+                                <ExcelColumn label="Proveedor" value="nameProveedor" />
+                                <ExcelColumn label="Celular Proveedor" value="celularProveedor" />
+                                <ExcelColumn label="Ciudad Del Proveedor" value="ciudadProveedor" />
+                                <ExcelColumn label="Dirección Del Proveedor" value="direccionProveedor" />
+
+                                <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                <ExcelColumn label="Fecha Registro" value={(fe) => new Date(fe.fechaRegistro).toLocaleString()} />
                             </ExcelSheet>
                         </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null
                     }
@@ -157,4 +156,4 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
     );
 }
 
-export default ExcelEmo;
+export default ExcelOrdenes;

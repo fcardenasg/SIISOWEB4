@@ -117,46 +117,6 @@ const OccupationalMedicine = () => {
     }
 
     useEffect(() => {
-        async function getData() {
-            try {
-                const lsServerAtencion = await GetByIdOccupationalMedicine(id);
-                if (lsServerAtencion.status === 200) {
-                    setDocumento(lsServerAtencion.data.cedula);
-                    setLsOccupationalMedicine(lsServerAtencion.data);
-                    setLsSubsegmento(lsServerAtencion.data.subsegmento);
-                    setTextDiagnostico(lsServerAtencion.data.codDx);
-
-                    setFechaCaliUltimaInstancia(lsServerAtencion.data.fechaCalificacionUltimaInstancia);
-                    setFechaInvestigacion(lsServerAtencion.data.fechaInvestigacion);
-
-                    var diasCalculados = NumeroDias(lsServerAtencion.data.fechaCalificacionUltimaInstancia, lsServerAtencion.data.fechaInvestigacion);
-                    setDiasDiferencia(diasCalculados);
-
-                    const event = {
-                        target: { value: lsServerAtencion.data.cedula }
-                    }
-                    handleLoadingDocument(event);
-
-                    if (lsServerAtencion.data.codDx !== "") {
-                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
-                        if (lsServerCie11.status === 200) {
-                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                                value: item.id,
-                                label: item.dx
-                            }));
-                            setLsDiagnistico(resultCie11);
-                        }
-                    }
-                    setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
-                    setFilePdf(lsServerAtencion.data.urlDocumento);
-                }
-            } catch (error) { }
-        }
-
-        getData();
-    }, [id]);
-
-    useEffect(() => {
         async function getAll() {
             try {
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
@@ -250,7 +210,6 @@ const OccupationalMedicine = () => {
                 }));
                 setLsEntidadMotiEnvio(resultEntidadMotiEnvio);
 
-
                 const lsServerEstadoEnfermedadLaboral = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDICINA_LABORAL_ESTADO_ENFERMEDAD_LABORAL);
                 var resultEstadoEnfermedadLaboral = lsServerEstadoEnfermedadLaboral.data.entities.map((item) => ({
                     value: item.idCatalogo,
@@ -303,7 +262,46 @@ const OccupationalMedicine = () => {
         }
 
         getAll();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const lsServerAtencion = await GetByIdOccupationalMedicine(id);
+                if (lsServerAtencion.status === 200) {
+                    setDocumento(lsServerAtencion.data.cedula);
+                    setLsOccupationalMedicine(lsServerAtencion.data);
+                    setTextDiagnostico(lsServerAtencion.data.codDx);
+
+                    setFechaCaliUltimaInstancia(lsServerAtencion.data.fechaCalificacionUltimaInstancia);
+                    setFechaInvestigacion(lsServerAtencion.data.fechaInvestigacion);
+
+                    var diasCalculados = NumeroDias(lsServerAtencion.data.fechaCalificacionUltimaInstancia, lsServerAtencion.data.fechaInvestigacion);
+                    setDiasDiferencia(diasCalculados);
+
+                    const event = {
+                        target: { value: lsServerAtencion.data.cedula }
+                    }
+                    handleLoadingDocument(event);
+
+                    if (lsServerAtencion.data.codDx !== "") {
+                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
+                        if (lsServerCie11.status === 200) {
+                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                value: item.id,
+                                label: item.dx
+                            }));
+                            setLsDiagnistico(resultCie11);
+                        }
+                    }
+                    setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
+                    setFilePdf(lsServerAtencion.data.urlDocumento);
+                }
+            } catch (error) { }
+        }
+
+        getData();
+    }, [id]);
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -384,7 +382,8 @@ const OccupationalMedicine = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutOccupationalMedicine(id, documento, datos.resumenCaso, datos.situacionEmpleado, FormatDate(datos.fechaRetiro), datos.segmentoAgrupado, datos.segmentoAfectado, datos.subsegmento,
+            const DataToUpdate = PutOccupationalMedicine(id, documento, datos.resumenCaso, datos.situacionEmpleado, FormatDate(datos.fechaRetiro), datos.segmentoAgrupado,
+                datos.segmentoAfectado, datos.subsegmento,
                 datos.codDx, datos.nroFurel, datos.regionInfoLaboral, datos.lateralidad, datos.entidadQueMotivaEnvio, datos.entidadDondeEnvia, FormatDate(datos.fechaEntrega),
                 FormatDate(datos.fechaEnvio), datos.investigado, datos.observaciones, FormatDate(datos.fechaCalificacionEps), datos.origenEps, datos.noSolicitudARL1, datos.noSolicitudARL2,
                 FormatDate(datos.fechaCalifiOrigenARL), datos.origenARL, FormatDate(datos.fechaCalificacionPclARL), datos.pclARL, FormatDate(datos.fechaEstructuraARL),
@@ -449,7 +448,7 @@ const OccupationalMedicine = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
                             <StickyActionBar
                                 mainTitle="Acciones"
                                 titleButtonOne={TitleButton.Actualizar}
@@ -577,11 +576,6 @@ const OccupationalMedicine = () => {
                                                     />
                                                 </FormProvider>
                                             </Grid>
-
-
-
-
-
 
                                             <Grid item xs={3}>
                                                 <FormProvider {...methods}>

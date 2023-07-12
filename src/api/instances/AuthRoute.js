@@ -59,6 +59,7 @@ export const Url = {
     MedicamentosId: 'api/Medicamentos/id',
 
     PruebasAlcoholDroga: 'api/PruebasAlcoholDroga',
+    PruebasAlcoholDrogaExcel: 'api/PruebasAlcoholDroga/excel',
     PruebasAlcoholDrogaId: 'api/PruebasAlcoholDroga/id',
 
     Empresa: 'api/Empresa',
@@ -104,6 +105,7 @@ export const Url = {
     LsOrdenes: 'api/Ordenes/empleados-ordenes',
 
     OrdenesParaclinicos: 'api/OrdenesParaclinicos',
+    OrdenesParaclinicosExcel: 'api/OrdenesParaclinicos/excel',
     OrdenesParaclinicosId: 'api/OrdenesParaclinicos/id',
     OrdenesParaclinicosMasiva: 'api/OrdenesParaclinicos/masiva',
 
@@ -182,6 +184,7 @@ export const Url = {
     NotaEvolucion_ValidateIdRegistroAtencion: 'api/NotaEvolucion/ValidateIdRegistroAtencion',
 
     NotaEnfermeria: 'api/NotaEnfermeria',
+    NotaEnfermeriaExcel: 'api/NotaEnfermeria/excel',
     NotaEnfermeriaId: 'api/NotaEnfermeria/id',
 
     MedicinaLaboral: 'api/MedicinaLaboralX',

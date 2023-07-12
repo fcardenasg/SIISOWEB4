@@ -4,7 +4,7 @@ import { Grid } from '@mui/material';
 import MenuItems from 'components/components/MenuItems/MenuItems';
 import { itemsExcel } from 'components/components/MenuItems/items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
-import ViewExport from 'modules/ViewExport/ViewExport';
+import ViewExport from 'modules/Export/ViewExport';
 
 const MenuExcel = () => {
     const [openModal, setOpenModal] = useState(false);

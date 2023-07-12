@@ -13,13 +13,13 @@ import { ViewFormat } from "components/helpers/Format";
 import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
-import { GetExcelAdvice } from "api/clients/AdviceClient";
+import { GetExcelAlcoholAndDrugTesting } from "api/clients/AlcoholAndDrugTestingClient";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
+const ExcelPruebaAlcoholDroga = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -47,7 +47,7 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
             setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
-            const lsServerExcel = await GetExcelAdvice(parametros);
+            const lsServerExcel = await GetExcelAlcoholAndDrugTesting(parametros);
 
             if (lsServerExcel.status === 200) {
                 setLsDataExport(lsServerExcel.data);
@@ -115,8 +115,8 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
                                     Descargar Excel
                                 </Button>
                             </AnimateButton>
-                        } filename={`LISTA_DE_ASESORIAS_${new Date().toLocaleString()}`}>
-                            <ExcelSheet data={lsDataExport} name="Registro De Asesorías">
+                        } filename={`LISTA_DE_ORDENES_${new Date().toLocaleString()}`}>
+                            <ExcelSheet data={lsDataExport} name="Registro De Ordenes">
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombres" value="nombres" />
@@ -134,14 +134,16 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
                                 <ExcelColumn label="Empresa" value="empresa" />
                                 <ExcelColumn label="Oficio" value="nameOficio" />
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
-                                <ExcelColumn label="Motivo" value="nameMotivo" />
-                                <ExcelColumn label="Submotivo" value="nameSubmotivo" />
+
                                 <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                <ExcelColumn label="Tipo De Atencion" value="nameTipoAtencion" />
-                                <ExcelColumn label="Estado Del Caso" value="nameEstadoCaso" />
-                                <ExcelColumn label="Motivo" value="motivo" />
-                                <ExcelColumn label="Recomendaciones" value="recomendaciones" />
-                                <ExcelColumn label="Pautas" value="pautas" />
+                                <ExcelColumn label="Motivo De Prueba" value="nameMotivoPrueba" />
+                                <ExcelColumn label="Remitido" value="nameRemitido" />
+                                <ExcelColumn label="Concepto" value="nameConcepto" />
+                                <ExcelColumn label="Realizada" value="nameRealizada" />
+                                <ExcelColumn label="Motivo De Asistencia" value="nameMotivoAsis" />
+                                <ExcelColumn label="Observaciones" value="observaciones" />
+                                <ExcelColumn label="Medico" value="idMedico" />
+
                                 <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                 <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
@@ -155,4 +157,4 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
     );
 }
 
-export default ExcelAsesoria;
+export default ExcelPruebaAlcoholDroga;

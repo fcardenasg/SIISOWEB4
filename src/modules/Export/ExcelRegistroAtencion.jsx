@@ -137,6 +137,7 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
                                 <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
                                 <ExcelColumn label="Tipo De Atencion" value="nameTipoAtencion" />
                                 <ExcelColumn label="Atencion" value="nameAtencion" />
+                              
                                 <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                 <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
