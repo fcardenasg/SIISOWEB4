@@ -134,6 +134,7 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
                                 <ExcelColumn label="Empresa" value="empresa" />
                                 <ExcelColumn label="Oficio" value="nameOficio" />
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
+                            
                                 <ExcelColumn label="Motivo" value="nameMotivo" />
                                 <ExcelColumn label="Submotivo" value="nameSubmotivo" />
                                 <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />

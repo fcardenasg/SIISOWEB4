@@ -23,6 +23,11 @@ const Title = {
     ausentismoLaboral: 'Ausentismo Laboral',
 }
 
+const lsTipoExcelAusentismo = [
+    { value: 0, label: 'DAYLI' },
+    { value: 1, label: 'AUDITORIA' }
+]
+
 const ExportOccupationalHealth = () => {
     const theme = useTheme();
     const navigate = useNavigate();
@@ -31,6 +36,7 @@ const ExportOccupationalHealth = () => {
     const [lsSede, setLsSede] = useState([]);
     const [tipoReporte, setTipoReporte] = useState('EXCEL1');
     const [sede, setSede] = useState(0);
+    const [tipoExcelAusentismo, setTipoExcelAusentismo] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
 
@@ -110,6 +116,18 @@ const ExportOccupationalHealth = () => {
                         }
                     >
                         <Grid container spacing={2}>
+                            {tipoReporte === 'EXCEL4' ?
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <SelectOnChange
+                                        name="tipoExcel"
+                                        label="Excel a Generar"
+                                        value={tipoExcelAusentismo}
+                                        options={lsTipoExcelAusentismo}
+                                        onChange={(e) => setTipoExcelAusentismo(e.target.value)}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid> : null}
+
                             <Grid item xs={12} md={6} lg={3}>
                                 <SelectOnChange
                                     name="sede"
@@ -160,6 +178,7 @@ const ExportOccupationalHealth = () => {
                                                 fechaFin={fechaFin}
                                                 fechaInicio={fechaInicio}
                                                 sede={sede}
+                                                tipoExcelAusentismo={tipoExcelAusentismo}
                                             /> : null
                             }
                         </Grid>

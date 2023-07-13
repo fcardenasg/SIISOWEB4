@@ -5,6 +5,9 @@ import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
 import { GetExcelOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
+import LoadingGenerate from 'components/loading/LoadingGenerate';
+import { MessageError } from 'components/alert/AlertAll';
+import { Message } from 'components/helpers/Enums';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -14,21 +17,36 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
     const [lsData, setLsData] = useState([]);
     const [statusData, setStatusData] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     async function getDataForExport() {
         try {
+            setLoading(true);
+
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
             const lsServerExcel = await GetExcelOccupationalMedicine(parametros);
 
             if (lsServerExcel.status === 200) {
                 setLsData(lsServerExcel.data);
-                setStatusData(true);
+                setTimeout(() => {
+                    setStatusData(true);
+                    setLoading(false);
+                }, 1500);
             }
+        } catch (error) {
+            setLoading(false);
 
-        } catch (error) { }
+            setOpenError(true);
+            setErrorMessage(Message.ErrorExcel);
+        }
     }
 
     return (
         <Grid item xs={12} sx={{ textAlign: 'center' }}>
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={3}>
                 <Grid item xs={0} md={3.5} />
 
@@ -36,9 +54,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <AnimateButton>
-                                <Button disabled={
-                                    fechaInicio === null ? true : fechaFin === null ? true : false
-                                } onClick={getDataForExport} size="large" variant="contained" fullWidth>
+                                <Button disabled={loading} onClick={getDataForExport} size="large" variant="contained" fullWidth>
                                     Generar Exportación
                                 </Button>
                             </AnimateButton>
@@ -52,7 +68,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                             Descargar Excel
                                         </Button>
                                     </AnimateButton>
-                                } filename="Medicina Laboral">
+                                } filename={`LISTA_DE_MEDICINA_LABORAL_${new Date().toLocaleString()}`}>
                                     <ExcelSheet data={lsData} name="Lista de Medicina Laboral">
                                         <ExcelColumn label="ID" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
@@ -137,7 +153,6 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Usuario" value="usuario" />
                                         <ExcelColumn label="Observaciones" value="observaciones" />
 
-
                                         <ExcelColumn label="Aplica" value="aplica" />
                                         <ExcelColumn label="Motivo Investigación Enfermedad Laboral" value="motivoIE" />
                                         <ExcelColumn label="Estado Enfermedad Laboral" value="estadoEnfermedadLaboral" />
@@ -153,7 +168,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Peligro Asociado Enfermedad" value="peligroAsociadoEnfermedad" />
                                         <ExcelColumn label="Fecha Entrega Min" value={(fe) => ViewFormat(fe.fechaEntregaMIN)} />
                                     </ExcelSheet>
-                                </ExcelFile> : null
+                                </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null
                             }
                         </Grid>
                     </Grid>
