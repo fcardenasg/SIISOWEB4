@@ -23,7 +23,7 @@ const ReintegroExport = ({ sede, fechaInicio, fechaFin }) => {
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
             const lsServerExcel = await GetExcelRefund(parametros);
@@ -84,12 +84,14 @@ const ReintegroExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Pay Status" value="payStatus" />
                                         <ExcelColumn label="Ges" value="ges" />
                                         <ExcelColumn label="Estado Caso" value="estadoCaso" />
+
                                         <ExcelColumn label="Código DX 1" value="codDX1" />
                                         <ExcelColumn label="Diagnostico 1" value="diagnostico1" />
                                         <ExcelColumn label="Origen 1" value="origen1" />
-                                        <ExcelColumn label="Diagnostico 2" value="diagnostico2" />
                                         <ExcelColumn label="Código DX 2" value="codDX2" />
+                                        <ExcelColumn label="Diagnostico 2" value="diagnostico2" />
                                         <ExcelColumn label="Origen 2" value="origen2" />
+
                                         <ExcelColumn label="Estado Actual" value="estadoActual" />
                                         <ExcelColumn label="Tipo Restricción" value="tipoRestriccion" />
                                         <ExcelColumn label="Fecha Inicio Restricción" value={(fe) => ViewFormat(fe.fechaInicioRestricciones)} />

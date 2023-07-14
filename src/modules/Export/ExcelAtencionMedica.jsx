@@ -48,7 +48,7 @@ const ExcelAtencionMedica = ({ setSede, sede, setFechaInicio, fechaInicio, setFe
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
             const lsServerExcelHC = await GetExcelMedicalHistory(parametros);

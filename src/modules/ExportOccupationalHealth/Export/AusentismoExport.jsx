@@ -23,17 +23,23 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
-            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
-            const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
+            if ((sede === 0 || sede === 1) && (fechaInicio === null || fechaFin === null)) {
+                setOpenError(true);
+                setErrorMessage("Debe seleccionar un rango de fechas");
+            } else {
+                setLoading(true);
+                const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
+                const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
 
-            if (lsServerExcel.status === 200) {
-                setLsData(lsServerExcel.data);
-                setTimeout(() => {
-                    setStatusData(true);
-                    setLoading(false);
-                }, 1500);
+                if (lsServerExcel.status === 200) {
+                    setLsData(lsServerExcel.data);
+                    setTimeout(() => {
+                        setStatusData(true);
+                        setLoading(false);
+                    }, 1500);
+                }
             }
         } catch (error) {
             setLoading(false);
@@ -136,13 +142,15 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
 
                                             <ExcelColumn label="Usuario De Modificación" value="usuarioModificacion" />
                                             <ExcelColumn label="Fecha De Modificación" value={(fe) => ViewFormat(fe.fechaModificacion)} />
-                                            <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                            <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                             <ExcelColumn label="Tipo De Empleado" value="nameTipoEmpleado" />
                                             <ExcelColumn label="Tipo De Nomina" value="nameTipoNomina" />
-                                            <ExcelColumn label="Fecha Confirmacion" value={(fe) => ViewFormat(fe.fechaConfirmacion)} />
-                                            <ExcelColumn label="Usuario Confirma" value="usuarioConfirma" />
+
+                                            <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                            <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                             <ExcelColumn label="Hora Registro" value="horaRegistro" />
+
+                                            {/* <ExcelColumn label="Usuario Confirma" value="usuarioConfirma" />
+                                            <ExcelColumn label="Fecha Confirmacion" value={(fe) => ViewFormat(fe.fechaConfirmacion)} /> */}
                                         </ExcelSheet>
                                     }
                                 </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null

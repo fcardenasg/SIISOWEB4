@@ -44,7 +44,7 @@ const ExcelPruebaAlcoholDroga = ({ setSede, sede, setFechaInicio, fechaInicio, s
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
             const lsServerExcel = await GetExcelAlcoholAndDrugTesting(parametros);

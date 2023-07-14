@@ -44,7 +44,7 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
             const lsServerExcel = await GetExcelOccupationalExamination(parametros);

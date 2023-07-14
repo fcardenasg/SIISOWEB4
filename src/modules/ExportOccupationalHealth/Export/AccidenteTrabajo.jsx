@@ -23,7 +23,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio = null, fechaFin = null }) => {
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
             const lsServerExcel = await GetExcelAccidentRate(parametros);

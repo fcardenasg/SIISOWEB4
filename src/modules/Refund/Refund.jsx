@@ -88,7 +88,7 @@ const Refund = () => {
     const [textDx2, setTextDx2] = useState('');
     const [dataPDF, setDataPDF] = useState(null);
 
-    const [ordenadoPor, setOrdenadoPor] = useState('');
+    const [ordenadoPor, setOrdenadoPor] = useState(undefined);
 
     const methods = useForm();
     const { handleSubmit, formState: { errors } } = methods;
@@ -253,26 +253,28 @@ const Refund = () => {
                 FormatDate(fechaFin), numeroDia, ordenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
-                datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.idEstadoCaso, user.nameuser, undefined, undefined, undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await InsertRefund(DataToInsert);
-                    if (result.status === 200) {
-                        setResultData(result.data);
-                        setOpenSuccess(true);
-                        setDocumento('');
-                        setLsEmployee([]);
+            const result = await InsertRefund(DataToInsert);
+            if (result.status === 200) {
+                if (result.data === Message.ErrorDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.ErrorDocumento);
+                } else if (result.data === Message.NoExisteDocumento) {
+                    setOpenError(true);
+                    setErrorMessage(Message.NoExisteDocumento);
+                } else if (!isNaN(result.data)) {
+                    setOpenSuccess(true);
+                    setResultData(result.data);
 
-                        setTimeout(() => {
-                            if (result.status === 200) {
-                                setViewListRefund(true);
-                            }
-                        }, 1500);
-                    }
+                    setTimeout(() => {
+                        if (result.status === 200) {
+                            setViewListRefund(true);
+                        }
+                    }, 1500);
                 } else {
                     setOpenError(true);
-                    setErrorMessage(Message.ErrorNoHayDatos);
+                    setErrorMessage(result.data);
                 }
             }
         } catch (error) {
@@ -341,7 +343,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="dx1"
                                         label="Diagnóstico 1"
-                                        defaultValue={undefined}
                                         options={lsDx1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.dx1}
@@ -354,7 +355,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="idOrigenDx1"
                                         label="Origen"
-                                        defaultValue={undefined}
                                         options={lsOrigenReintegro}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idOrigenDx1}
@@ -376,7 +376,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="dx2"
                                         label="Diagnóstico 2"
-                                        defaultValue={undefined}
                                         options={lsDx2}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.dx2}
@@ -389,7 +388,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="idOrigenDx2"
                                         label="Origen"
-                                        defaultValue={undefined}
                                         options={lsOrigenReintegro}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idOrigenDx2}
@@ -417,7 +415,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="idEstadoEmpleado"
                                         label="Estado del Empleado"
-                                        defaultValue={undefined}
                                         options={lsEstadoEmpleado}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idEstadoEmpleado}
@@ -430,7 +427,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="idEstadoRestriccion"
                                         label="Estado de Restricción"
-                                        defaultValue={undefined}
                                         options={lsEstadoRestriccion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idEstadoRestriccion}
@@ -443,7 +439,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="idTipoRestriccion"
                                         label="Tipo de Restricción"
-                                        defaultValue={undefined}
                                         options={lsTipoRestriccion}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idTipoRestriccion}
@@ -497,7 +492,6 @@ const Refund = () => {
                                         label="Ordenado Por"
                                         onChange={(e) => setOrdenadoPor(e.target.value)}
                                         value={ordenadoPor}
-                                        defaultValue={undefined}
                                         options={lsOrdenadoPor}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idOrdenadoPor}
@@ -511,7 +505,6 @@ const Refund = () => {
                                         name="idMedico"
                                         label="Médico"
                                         disabled={ordenadoPor === DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD && ordenadoPor !== '' ? false : true}
-                                        defaultValue={undefined}
                                         options={lsUsuarios}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idMedico}
@@ -523,7 +516,6 @@ const Refund = () => {
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"
-                                        defaultValue={undefined}
                                         fullWidth
                                         name="porcentajePCL"
                                         label="% PCL"
@@ -560,7 +552,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="idConceptoReintegro"
                                         label="Concepto de Aptitud"
-                                        defaultValue={undefined}
                                         options={lsConceptoAptitud}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idConceptoReintegro}
@@ -633,7 +624,6 @@ const Refund = () => {
                                                 <InputSelect
                                                     name="idTipoHorario"
                                                     label="Tipo"
-                                                    defaultValue={undefined}
                                                     options={lsTipoRestriccion}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.idTipoHorario}
@@ -646,7 +636,6 @@ const Refund = () => {
                                                 <InputSelect
                                                     name="idOrdenadoPorHorario"
                                                     label="Ordenada Por"
-                                                    defaultValue={undefined}
                                                     options={lsOrdenarPorHorario}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.idOrdenadoPorHorario}
@@ -683,7 +672,6 @@ const Refund = () => {
                                     <InputSelect
                                         name="idEstadoCaso"
                                         label="Estado del Caso"
-                                        defaultValue={undefined}
                                         options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idEstadoCaso}
@@ -704,7 +692,7 @@ const Refund = () => {
                         <Grid container spacing={2} sx={{ pt: 4 }}>
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    <Button disabled={resultData === '' ? false : true} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>
@@ -712,7 +700,7 @@ const Refund = () => {
 
                             <Grid item xs={2}>
                                 <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                    <Button disabled={resultData !== '' ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
                                         {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>

@@ -60,6 +60,7 @@ const ExportOccupationalHealth = () => {
 
     function getAllAgain(codigo = '') {
         try {
+            setSede(0);
             setFechaInicio(null);
             setFechaFin(null);
             setTipoReporte(codigo);

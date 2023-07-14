@@ -23,7 +23,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
             const lsServerExcel = await GetExcelOccupationalMedicine(parametros);
@@ -74,7 +74,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Nombre" value="nombre" />
                                         <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNacimiento)} />
-                                        <ExcelColumn label="Fecha Ingreso" value={(fe) => ViewFormat(fe.fechaIngreso)} />
+                                        {/* <ExcelColumn label="Fecha Ingreso" value={(fe) => ViewFormat(fe.fechaIngreso)} /> */}
                                         <ExcelColumn label="Antiguedad" value={(fe) => GetEdad(fe.antiguedad)} />
                                         <ExcelColumn label="Sucursal" value="sucursal" />
                                         <ExcelColumn label="Dpto Actual" value="dptoActual" />
@@ -91,11 +91,13 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Código Dx" value="codigoDx" />
                                         <ExcelColumn label="Diagnostico" value="diagnostico" />
                                         <ExcelColumn label="Entidad Donde Envia" value="entidadDondeEnvia" />
-                                        <ExcelColumn label="Entidad Que Motiva Envio" value="entidadQueMotivaEnvio" />
+
+                                        {/* <ExcelColumn label="Entidad Que Motiva Envio" value="entidadQueMotivaEnvio" />
                                         <ExcelColumn label="Fecha Entrega" value={(fe) => ViewFormat(fe.fechaEntrega)} />
-                                        <ExcelColumn label="Fecha Envio" value={(fe) => ViewFormat(fe.fechaEnvio)} />
+                                        <ExcelColumn label="Fecha Envio" value={(fe) => ViewFormat(fe.fechaEnvio)} /> */}
+
                                         <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
-                                        <ExcelColumn label="Segmento Afectado" value="nameSegmentoAfectado" />
+                                        {/* <ExcelColumn label="Segmento Afectado" value="nameSegmentoAfectado" /> */}
                                         <ExcelColumn label="Subsegmento" value="nameSubsegmento" />
                                         <ExcelColumn label="Region" value="region" />
                                         <ExcelColumn label="Lateralidad" value="lateralidad" />
@@ -109,7 +111,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Junta Califica" value="juntaCalifica" />
                                         <ExcelColumn label="No Dictamen JRC" value="noDictamenJRC" />
                                         <ExcelColumn label="OrigenJRC" value="origenJRC" />
-                                        <ExcelColumn label="Controversia" value="controversia" />
+                                        {/* <ExcelColumn label="Controversia" value="controversia" /> */}
                                         <ExcelColumn label="Conclusión" value="conclusion" />
                                         <ExcelColumn label="Fecha Califica Origen JNC" value={(fe) => ViewFormat(fe.fechacalificaOrigenJNC)} />
                                         <ExcelColumn label="No Dictamen JNC" value="noDictamenJNC" />
@@ -123,7 +125,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Fecha Estructa ARL" value={(fe) => ViewFormat(fe.fechaEstructaARL)} />
                                         <ExcelColumn label="Fecha Calificación Pcl JRC" value={(fe) => ViewFormat(fe.fechaCalificacionPclJRC)} />
                                         <ExcelColumn label="No Dictamen Pcl JRC" value="nodictamenPclJRC" />
-                                        <ExcelColumn label="Pcl JRC" value="pclJRC" />
+                                        {/* <ExcelColumn label="Pcl JRC" value="pclJRC" /> */}
                                         <ExcelColumn label="Fecha Estructa JRC" value={(fe) => ViewFormat(fe.fechaEstructaJRC)} />
                                         <ExcelColumn label="Fecha Calificación Pcl JNC" value={(fe) => ViewFormat(fe.fechaCalificacionPclJNC)} />
                                         <ExcelColumn label="No Dictamen Pcl JNC" value="noDictamenPclJNC" />
@@ -131,33 +133,39 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Fecha Estructura JNC" value={(fe) => ViewFormat(fe.fechaestructuraJNC)} />
                                         <ExcelColumn label="Pcl Final" value="pclFinal" />
                                         <ExcelColumn label="Instancia Final" value="instanciaFinal" />
-                                        <ExcelColumn label="Fecha Calificación Pcl Final" value={(fe) => ViewFormat(fe.fechaCalificacionPclFinal)} />
+
+                                        {/* <ExcelColumn label="Fecha Calificación Pcl Final" value={(fe) => ViewFormat(fe.fechaCalificacionPclFinal)} />
                                         <ExcelColumn label="Fecha Estructuración Pcl Final" value={(fe) => ViewFormat(fe.fechaEstructuracionPclFinal)} />
                                         <ExcelColumn label="Indemnizado" value="indemnizado" />
                                         <ExcelColumn label="Fecha Pago" value={(fe) => ViewFormat(fe.fechaPago)} />
-                                        <ExcelColumn label="Entregado MIN" value="entregadoMin" />
+                                        <ExcelColumn label="Entregado MIN" value="entregadoMin" /> */}
                                         <ExcelColumn label="Fecha Recalificacion Pcl ARL" value={(fe) => ViewFormat(fe.fechaRecalificacionpclARL)} />
+                                        <ExcelColumn label="Fecha Recalificación Pcl JRC" value={(fe) => ViewFormat(fe.fechaRecalificacionPclJRC)} />
+
                                         <ExcelColumn label="Pcl Recalificada ARL" value="pclRecalificadaARL" />
                                         <ExcelColumn label="Fecha Estructa Recalifición Pcl ARL" value={(fe) => ViewFormat(fe.fechaEstructaRecalificionPclARL)} />
-                                        <ExcelColumn label="Fecha Recalificación Pcl JRC" value={(fe) => ViewFormat(fe.fechaRecalificacionPclJRC)} />
-                                        <ExcelColumn label="No Dictamen Recalificación JRC" value="noDictamenRecalificacionJRC" />
-                                        <ExcelColumn label="Pcl Recalificación JRC" value="pclRecalificacionJRC" />
                                         <ExcelColumn label="Fecha Estructuración Pcl Recalificada JRC" value={(fe) => ViewFormat(fe.fechaEstructuracionPclRecalificadaJRC)} />
+
+
+                                        {/* <ExcelColumn label="No Dictamen Recalificación JRC" value="noDictamenRecalificacionJRC" /> */}
+                                        <ExcelColumn label="Pcl Recalificación JRC" value="pclRecalificacionJRC" />
+
                                         <ExcelColumn label="Fecha Recalificación Pcl JNC" value={(fe) => ViewFormat(fe.fechaRecalificacionPclJNC)} />
-                                        <ExcelColumn label="No Dictamen Recalificación JNC" value="noDictamenRecalificacionJNC" />
+                                        {/* <ExcelColumn label="No Dictamen Recalificación JNC" value="noDictamenRecalificacionJNC" /> */}
                                         <ExcelColumn label="Fecha Estructuración Pcl Recalificada JRC2" value={(fe) => ViewFormat(fe.fechaEstructuracionPclRecalificadaJRC2)} />
-                                        <ExcelColumn label="Pcl Recalificada JNC" value="pclRecalificadaJNC" />
-                                        <ExcelColumn label="Indemnizado Recalificado" value="indemnizadoRecalificado" />
-                                        <ExcelColumn label="Fecha Pago Recalificado" value={(fe) => ViewFormat(fe.fechaPagoRecalificado)} />
-                                        <ExcelColumn label="Investigado" value="investigado" />
+
+                                        {/* <ExcelColumn label="Pcl Recalificada JNC" value="pclRecalificadaJNC" /> */}
+                                        {/* <ExcelColumn label="Indemnizado Recalificado" value="indemnizadoRecalificado" /> */}
+                                        {/* <ExcelColumn label="Fecha Pago Recalificado" value={(fe) => ViewFormat(fe.fechaPagoRecalificado)} /> */}
+                                        {/* <ExcelColumn label="Investigado" value="investigado" /> */}
                                         <ExcelColumn label="Usuario" value="usuario" />
                                         <ExcelColumn label="Observaciones" value="observaciones" />
 
-                                        <ExcelColumn label="Aplica" value="aplica" />
-                                        <ExcelColumn label="Motivo Investigación Enfermedad Laboral" value="motivoIE" />
+                                        {/* <ExcelColumn label="Aplica" value="aplica" /> */}
+                                        {/* <ExcelColumn label="Motivo Investigación Enfermedad Laboral" value="motivoIE" /> */}
                                         <ExcelColumn label="Estado Enfermedad Laboral" value="estadoEnfermedadLaboral" />
                                         <ExcelColumn label="Resultado Del Origen" value="resultadoOrigen" />
-                                        <ExcelColumn label="Fecha Calificación Última Instancia" value="fechaCalificacionUltimaInstancia" />
+                                        {/* <ExcelColumn label="Fecha Calificación Última Instancia" value="fechaCalificacionUltimaInstancia" /> */}
                                         <ExcelColumn label="Fecha Investigación" value={(fe) => ViewFormat(fe.fechaInvestigacion)} />
                                         <ExcelColumn label="Origen Investigación" value="origenInvestigacion" />
                                         <ExcelColumn label="Diferencia Día" value="diferenciaDia" />
@@ -166,7 +174,7 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Resumen SG" value="resumenSG" />
                                         <ExcelColumn label="ACC Sistema" value="accSistema" />
                                         <ExcelColumn label="Peligro Asociado Enfermedad" value="peligroAsociadoEnfermedad" />
-                                        <ExcelColumn label="Fecha Entrega Min" value={(fe) => ViewFormat(fe.fechaEntregaMIN)} />
+                                        {/* <ExcelColumn label="Fecha Entrega Min" value={(fe) => ViewFormat(fe.fechaEntregaMIN)} /> */}
                                     </ExcelSheet>
                                 </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null
                             }

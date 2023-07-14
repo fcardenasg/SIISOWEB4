@@ -44,7 +44,7 @@ const ExcelParaclinico = ({ setSede, sede, setFechaInicio, fechaInicio, setFecha
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
             const lsServerExcel = await GetExcelParaclinics(parametros);

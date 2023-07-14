@@ -44,7 +44,7 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
 
     async function getDataForExport() {
         try {
-            setLoading(true);
+            setStatusData(false); setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
             const lsServerExcel = await GetExcelAdvice(parametros);
@@ -134,7 +134,7 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
                                 <ExcelColumn label="Empresa" value="empresa" />
                                 <ExcelColumn label="Oficio" value="nameOficio" />
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
-                            
+
                                 <ExcelColumn label="Motivo" value="nameMotivo" />
                                 <ExcelColumn label="Submotivo" value="nameSubmotivo" />
                                 <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
@@ -143,7 +143,7 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
                                 <ExcelColumn label="Motivo" value="motivo" />
                                 <ExcelColumn label="Recomendaciones" value="recomendaciones" />
                                 <ExcelColumn label="Pautas" value="pautas" />
-                              
+
                                 <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
                                 <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
                                 <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
