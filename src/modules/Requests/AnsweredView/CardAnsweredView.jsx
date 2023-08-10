@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { MessageDelete } from 'components/alert/AlertAll';
-import { NumeroDiaSolicitudes, ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
 import { Button, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material';
 
@@ -14,7 +13,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControlModal from 'components/controllers/ControlModal';
 import ModalAnsweredView from './ModalAnsweredView';
 
-const CardAnsweredView = ({ lsRequests, getAllRefresh }) => {
+const CardAnsweredView = ({ lsRequests }) => {
     const theme = useTheme();
 
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -55,8 +54,9 @@ const CardAnsweredView = ({ lsRequests, getAllRefresh }) => {
                         <Grid item xs={12}>
                             <Chip
                                 size="small"
-                                label={`${lsRequests.solicitudesRespondidas} RESPUESTAS DE ${lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder}`}
-
+                                label={
+                                    `${lsRequests.solicitudesRespondidas} RESPUESTAS DE ${lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder}`
+                                }
                                 chipcolor={
                                     lsRequests.solicitudesRespondidas === 0 ? 'error' : lsRequests.solicitudesRespondidas === (lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder)
                                         ? 'success' : 'warning'
@@ -81,7 +81,7 @@ const CardAnsweredView = ({ lsRequests, getAllRefresh }) => {
                         <Grid item xs={12}>
                             <AnimateButton>
                                 <Button onClick={() => setOpenRequests(true)} variant="outlined" fullWidth startIcon={<ReplyIcon />}>
-                                    Responder
+                                    Ver Solicitudes
                                 </Button>
                             </AnimateButton>
                         </Grid>

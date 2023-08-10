@@ -41,11 +41,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { IconFileExport } from '@tabler/icons';
 
-import ReplyIcon from '@mui/icons-material/Reply';
 import ViewPDF from 'components/components/ViewPDF';
-import config from 'config';
 import Chip from 'ui-component/extended/Chip';
 import GenerateExcel from './GenerateExcel';
+import Cargando from 'components/loading/Cargando';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -398,150 +397,152 @@ const ListRequests = () => {
             </CardContent>
 
             <TableContainer>
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={lsRequests.length}
-                        theme={theme}
-                        selected={selected}
-                        onClick={handleDelete}
-                    />
-                    <TableBody>
-                        {stableSort(lsRequests, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
+                {lsRequests.length === 0 ? <Cargando size={220} myy={6} /> :
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={lsRequests.length}
+                            theme={theme}
+                            selected={selected}
+                            onClick={handleDelete}
+                        />
+                        <TableBody>
+                            {stableSort(lsRequests, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
 
-                                if (typeof row === 'string') return null;
+                                    if (typeof row === 'string') return null;
 
-                                const isItemSelected = isSelected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                                    const isItemSelected = isSelected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemSelected}
-                                    >
-                                        <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
+                                    return (
+                                        <TableRow
+                                            hover
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={isItemSelected}
                                         >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.documento}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.nameEmpleado}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                <Chip
-                                                    size="small"
-                                                    label={`${row.solicitudesRespondidas} RESPONDIDAS DE ${row.solicitudesRespondidas + row.solicitudesSinResponder}`}
-
-                                                    chipcolor={
-                                                        row.solicitudesRespondidas === 0 ? 'error' : row.solicitudesRespondidas === (row.solicitudesRespondidas + row.solicitudesSinResponder)
-                                                            ? 'success' : 'warning'
-                                                    }
+                                            <TableCell padding="radio" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId
+                                                    }}
                                                 />
-                                            </Typography>
-                                        </TableCell>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: {NumeroDiaSolicitudes(row.fechaRecibido, row.fechaLimiteRespuesta)}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.documento}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {row.nameSede}
-                                            </Typography>
-                                        </TableCell>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameEmpleado}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/requests/update/${row.id}`)}>
-                                                <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    <Chip
+                                                        size="small"
+                                                        label={`${row.solicitudesRespondidas} RESPONDIDAS DE ${row.solicitudesRespondidas + row.solicitudesSinResponder}`}
+
+                                                        chipcolor={
+                                                            row.solicitudesRespondidas === 0 ? 'error' : row.solicitudesRespondidas === (row.solicitudesRespondidas + row.solicitudesSinResponder)
+                                                                ? 'success' : 'warning'
+                                                        }
+                                                    />
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: {NumeroDiaSolicitudes(row.fechaRecibido, row.fechaLimiteRespuesta)}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameSede}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell align="center" sx={{ pr: 3 }}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/requests/update/${row.id}`)}>
+                                                    <IconButton size="large">
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: 53 * emptyRows
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                }
             </TableContainer>
 
             <TablePagination

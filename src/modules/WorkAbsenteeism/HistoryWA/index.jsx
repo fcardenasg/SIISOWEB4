@@ -200,7 +200,7 @@ const HistoryWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'documento', 'nombre', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id', 'documento', 'nombres', 'fechaRegistro', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -270,58 +270,60 @@ const HistoryWorkAbsenteeism = () => {
                                     </Tooltip>
                                 } filename={`LISTA_DE_AUSENTISMO_${new Date().toLocaleString()}`}>
                                     <ExcelSheet data={lsWorkAbsenteeismHistory} name="Registro De Ausentismo">
-                                        <ExcelColumn label="Id_Inc " value="id_Inc" />
+                                        <ExcelColumn label="Id" value="id" />
                                         <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="IdEmpleado" value="idEmpleado" />
-                                        <ExcelColumn label="Nombre" value="nombre" />
-                                        <ExcelColumn label="DepartamentoResidencia" value="departamentoResidencia" />
-                                        <ExcelColumn label="MunicipioResidencia" value="municipioResidencia" />
-                                        <ExcelColumn label="TipoEmpleado" value="tipoEmpleado" />
-                                        <ExcelColumn label="TipoNomina" value="tipoNomina" />
-                                        <ExcelColumn label="Sede" value="sede" />
-                                        <ExcelColumn label="IdSede" value="idSede" />
-                                        <ExcelColumn label="Departamento" value="departamento" />
-                                        <ExcelColumn label="Area" value="area" />
-                                        <ExcelColumn label="Subarea" value="subarea" />
-                                        <ExcelColumn label="Grupo" value="grupo" />
-                                        <ExcelColumn label="GeneralPosition" value="generalPosition" />
-                                        <ExcelColumn label="Genero" value="genero" />
-                                        <ExcelColumn label="Eps" value="eps" />
-                                        <ExcelColumn label="Afp" value="afp" />
-                                        <ExcelColumn label="Turno" value="turno" />
+                                        <ExcelColumn label="Nombres" value="nombres" />
+                                        <ExcelColumn label="Fecha De Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
+                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                        <ExcelColumn label="Area" value="nameArea" />
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />
+                                        <ExcelColumn label="Fecha De Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                        <ExcelColumn label="Roster Position" value="nameRosterPosition" />
+                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Sede" value="nameSede" />
+                                        <ExcelColumn label="Celular" value="celular" />
+                                        <ExcelColumn label="Email" value="email" />
                                         <ExcelColumn label="Empresa" value="empresa" />
-                                        <ExcelColumn label="FechaExpedicion" value="dechaExpedicion" />
-                                        <ExcelColumn label="NroIncapacidad" value="nroIncapacidad" />
-                                        <ExcelColumn label="CiudadExpedicion" value="ciudadExpedicion" />
-                                        <ExcelColumn label="TipoIncapacidad" value="tipoIncapacidad" />
-                                        <ExcelColumn label="Contigencia" value="contigencia" />
-                                        <ExcelColumn label="EstadoCaso" value="estadoCaso" />
-                                        <ExcelColumn label="FechaInicio" value="dechaInicio" />
-                                        <ExcelColumn label="FechaFin" value="dechaFin" />
-                                        <ExcelColumn label="DiasSinLaborar" value="diasSinLaborar" />
-                                        <ExcelColumn label="Cod_Dx" value="cod_Dx" />
-                                        <ExcelColumn label="Dx" value="dx" />
-                                        <ExcelColumn label="NameSegmentoAgrupado" value="nameSegmentoAgrupado" />
-                                        <ExcelColumn label="Segmento" value="segmento" />
-                                        <ExcelColumn label="TipoSoporte" value="tipoSoporte" />
-                                        <ExcelColumn label="Categoria" value="categoria" />
-                                        <ExcelColumn label="Ciudad" value="ciudad" />
-                                        <ExcelColumn label="NombreProfesional" value="nombreProfesional" />
+                                        <ExcelColumn label="Oficio" value="nameOficio" />
+                                        <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
+
+                                        <ExcelColumn label="Incapacidad" value="nameIncapacidad" />
+                                        <ExcelColumn label="Nro Incapacidad" value="nroIncapacidad" />
+                                        <ExcelColumn label="Fecha De Expedición" value={(fe) => ViewFormat(fe.fechaExpedicion)} />
+                                        <ExcelColumn label="Departamento De Expedición" value="nameDepartamentoExpedicion" />
+                                        <ExcelColumn label="Ciudad De Expedición" value="nameCiudadExpedicion" />
+                                        <ExcelColumn label="Tipo Incapacidad" value="nameTipoIncapacidad" />
+                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
+                                        <ExcelColumn label="Fecha Inicio" value={(fe) => ViewFormat(fe.fechaInicio)} />
+                                        <ExcelColumn label="Fecha Fin" value={(fe) => ViewFormat(fe.fechaFin)} />
+                                        <ExcelColumn label="Días Sin Laborar" value="diasSinLaborar" />
+                                        <ExcelColumn label="Código Dx" value="dx" />
+                                        <ExcelColumn label="Dx" value="nameDx" />
+                                        <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
+                                        <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
+                                        <ExcelColumn label="Subsegmento" value="nameSubsegmento" />
+                                        <ExcelColumn label="Tipo De Soporte" value="nameIdTipoSoporte" />
+                                        <ExcelColumn label="Categoria" value="nameIdCategoria" />
+
+                                        <ExcelColumn label="Departamento IPS" value="nameDepartamentoIPS" />
+                                        <ExcelColumn label="Ciudad IPS" value="nameCiudadIPS" />
+                                        <ExcelColumn label="Nombre Profesional" value="nombreProfesional" />
                                         <ExcelColumn label="Especialidad" value="especialidad" />
                                         <ExcelColumn label="RegistroProfesional" value="registroProfesional" />
-                                        <ExcelColumn label="TipoAtencion" value="tipoAtencion" />
-                                        <ExcelColumn label="CumplimientoRequisito" value="cumplimientoRequisito" />
-                                        <ExcelColumn label="Regimen" value="regimen" />
-                                        <ExcelColumn label="UsuarioRegistro" value="usuarioRegistro" />
-                                        <ExcelColumn label="FechaRegistro" value="dechaRegistro" />
-                                        <ExcelColumn label="UsuarioModifica" value="usuarioModifica" />
-                                        <ExcelColumn label="FechaModificación" value="dechaModificación" />
+                                        <ExcelColumn label="Tipo De Atención" value="nameTipoAtencion" />
+                                        <ExcelColumn label="Cumplimiento De Requisito" value="nameCumplimientoRequisito" />
+                                        <ExcelColumn label="Expide InCapacidad" value="nameExpideInCapacidad" />
+                                        <ExcelColumn label="Observación Cumplimiento" value="observacionCumplimiento" />
 
-                                        <ExcelColumn label="IPSExpide" value="iPSExpide" />
+                                        <ExcelColumn label="Usuario De Modificación" value="usuarioModificacion" />
+                                        <ExcelColumn label="Fecha De Modificación" value={(fe) => ViewFormat(fe.fechaModificacion)} />
+                                        <ExcelColumn label="Tipo De Empleado" value="nameTipoEmpleado" />
+                                        <ExcelColumn label="Tipo De Nomina" value="nameTipoNomina" />
 
-                                        <ExcelColumn label="Observacion" value="observacion" />
-                                        <ExcelColumn label="ObservacionCumplimiento" value="observacionCumplimiento" />
-                                        <ExcelColumn label="HoraRegistro" value="horaRegistro" />
+                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                        <ExcelColumn label="Hora Registro" value="horaRegistro" />
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
@@ -390,7 +392,7 @@ const HistoryWorkAbsenteeism = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nombre}
+                                                    {row.nombres}
                                                 </Typography>
                                             </TableCell>
 
@@ -401,12 +403,12 @@ const HistoryWorkAbsenteeism = () => {
                                                 sx={{ cursor: 'pointer' }}
                                                 align="left"
                                             >
-                                                <Tooltip placement="top" TransitionComponent={Fade} title={row.dx === null ? 'SIN DX' : row.dx}>
+                                                <Tooltip placement="top" TransitionComponent={Fade} title={row.nameDx === null ? 'SIN DX' : row.nameDx}>
                                                     <Typography
                                                         variant="subtitle1"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        <Chip label={row.cod_Dx === null ? 'SIN DX' : row.cod_Dx} size="small" chipcolor="success" />
+                                                        <Chip label={row.dx === null ? 'SIN DX' : row.dx} size="small" chipcolor="success" />
                                                     </Typography>
                                                 </Tooltip>
                                             </TableCell>
@@ -483,7 +485,7 @@ const HistoryWorkAbsenteeism = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Ver mas..." onClick={() => navigate(`/work-absenteeism/history/${row.id_Inc}`)}>
+                                                <Tooltip title="Ver mas..." onClick={() => navigate(`/work-absenteeism/history/${row.id}`)}>
                                                     <IconButton size="large">
                                                         <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>

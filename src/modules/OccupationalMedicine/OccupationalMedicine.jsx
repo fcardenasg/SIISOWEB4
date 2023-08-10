@@ -1434,7 +1434,7 @@ const OccupationalMedicine = () => {
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                            SUBIR RESULTADO EN PDF
+                                            Subir Resultado En PDF
                                             <input hidden accept="application/pdf" type="file" onChange={handleFile} />
                                         </Button>
                                     </Grid>

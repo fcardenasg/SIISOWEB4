@@ -24,8 +24,9 @@ const Title = {
 }
 
 const lsTipoExcelAusentismo = [
-    { value: 0, label: 'DAYLI' },
-    { value: 1, label: 'AUDITORIA' }
+    { value: 0, label: 'DAILY' },
+    { value: 1, label: 'AUDITORÍA' },
+    { value: 2, label: 'HISTÓRICO' },
 ]
 
 const ExportOccupationalHealth = () => {

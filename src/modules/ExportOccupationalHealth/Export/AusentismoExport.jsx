@@ -1,10 +1,10 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
 import { ViewFormat, ViewFormatMesDiaAnio } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
-import { GetExcelWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
+import { GetExcelWorkAbsenteeism, GetExcelWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
 import LoadingGenerate from 'components/loading/LoadingGenerate';
 import { Message } from 'components/helpers/Enums';
 import { MessageError } from 'components/alert/AlertAll';
@@ -23,23 +23,35 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
 
     async function getDataForExport() {
         try {
-            setStatusData(false); setLoading(true);
-
-            if ((sede === 0 || sede === 1) && (fechaInicio === null || fechaFin === null)) {
-                setOpenError(true);
-                setErrorMessage("Debe seleccionar un rango de fechas");
-            } else {
+            if (fechaInicio !== null && fechaFin !== null) {
+                setStatusData(false); setLoading(true);
                 setLoading(true);
                 const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
-                const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
 
-                if (lsServerExcel.status === 200) {
-                    setLsData(lsServerExcel.data);
-                    setTimeout(() => {
-                        setStatusData(true);
-                        setLoading(false);
-                    }, 1500);
+                if (tipoExcelAusentismo !== 2) {
+                    const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
+
+                    if (lsServerExcel.status === 200) {
+                        setLsData(lsServerExcel.data);
+                        setTimeout(() => {
+                            setStatusData(true);
+                            setLoading(false);
+                        }, 1500);
+                    }
+                } else {
+                    const lsServerExcel = await GetExcelWorkAbsenteeismHistory(parametros);
+
+                    if (lsServerExcel.status === 200) {
+                        setLsData(lsServerExcel.data);
+                        setTimeout(() => {
+                            setStatusData(true);
+                            setLoading(false);
+                        }, 1500);
+                    }
                 }
+            } else {
+                setOpenError(true);
+                setErrorMessage("Debe seleccionar un rango de fechas");
             }
         } catch (error) {
             setLoading(false);

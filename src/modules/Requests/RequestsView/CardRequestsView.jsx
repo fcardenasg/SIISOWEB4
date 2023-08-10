@@ -71,7 +71,6 @@ const CardRequestsView = ({ lsRequests, getAll }) => {
                             <Chip
                                 label={lsRequests.nameTipoSolicitud}
                                 size="small"
-                                chipcolor="error"
                             />
                         </Grid>
 

@@ -29,7 +29,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import swal from 'sweetalert';
-import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
+import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism, GetExcelWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -42,6 +42,14 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Chip from 'ui-component/extended/Chip';
+
+import { IconFileExport } from '@tabler/icons';
+import ReactExport from "react-export-excel";
+import { ParametrosExcel } from 'formatdata/ParametrosForm';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -204,7 +212,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -238,17 +246,25 @@ const ListWorkAbsenteeism = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
+    const [lsWorkAbsenteeismExcel, setLsWorkAbsenteeismExcel] = useState([]);
+    const [rowsExcel, setRowsExcel] = useState([]);
+
     async function getAll() {
         try {
             const lsServer = await GetAllWorkAbsenteeism();
             setLsWorkAbsenteeism(lsServer.data);
             setRows(lsServer.data);
+
+            const parametros = ParametrosExcel(0, null, null);
+            const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
+            setLsWorkAbsenteeismExcel(lsServerExcel.data);
+            setRowsExcel(lsServerExcel.data);
         } catch (error) { }
     }
 
     useEffect(() => {
         getAll();
-    }, [])
+    }, []);
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -272,9 +288,30 @@ const ListWorkAbsenteeism = () => {
                 }
                 return matches;
             });
+
+            const newRowsExcel = rowsExcel.filter((row) => {
+                let matches = true;
+
+                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'fechaRegistro', 'usuarioRegistro'];
+                let containsQuery = false;
+
+                properties.forEach((property) => {
+                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                        containsQuery = true;
+                    }
+                });
+
+                if (!containsQuery) {
+                    matches = false;
+                }
+                return matches;
+            });
+
             setLsWorkAbsenteeism(newRows);
+            setLsWorkAbsenteeismExcel(newRowsExcel);
         } else {
             setLsWorkAbsenteeism(rows);
+            setLsWorkAbsenteeismExcel(rowsExcel);
         }
     };
 
@@ -329,9 +366,9 @@ const ListWorkAbsenteeism = () => {
                 if (willDelete) {
                     const result = await DeleteWorkAbsenteeism(idCheck);
                     if (result.status === 200) {
+                        getAll();
                         setOpenDelete(true);
                         setSelected([]);
-                        getAll();
                     }
                 } else
                     setSelected([]);
@@ -364,23 +401,90 @@ const ListWorkAbsenteeism = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
+                                <ExcelFile element={
+                                    <Tooltip title="Exportar">
+                                        <IconButton size="large">
+                                            <IconFileExport />
+                                        </IconButton>
+                                    </Tooltip>
+                                } filename={`LISTA_DE_AUSENTISMO_${new Date().toLocaleString()}`}>
+                                    <ExcelSheet data={lsWorkAbsenteeismExcel} name="Registro De Ausentismo">
+                                        <ExcelColumn label="Id" value="id" />
+                                        <ExcelColumn label="Documento" value="documento" />
+                                        <ExcelColumn label="Nombres" value="nombres" />
+                                        <ExcelColumn label="Fecha De Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
+                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
+                                        <ExcelColumn label="Area" value="nameArea" />
+                                        <ExcelColumn label="Grupo" value="nameGrupo" />
+                                        <ExcelColumn label="Fecha De Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                        <ExcelColumn label="Roster Position" value="nameRosterPosition" />
+                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
+                                        <ExcelColumn label="Genero" value="nameGenero" />
+                                        <ExcelColumn label="Sede" value="nameSede" />
+                                        <ExcelColumn label="Celular" value="celular" />
+                                        <ExcelColumn label="Email" value="email" />
+                                        <ExcelColumn label="Empresa" value="empresa" />
+                                        <ExcelColumn label="Oficio" value="nameOficio" />
+                                        <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
+
+                                        <ExcelColumn label="Incapacidad" value="nameIncapacidad" />
+                                        <ExcelColumn label="Nro Incapacidad" value="nroIncapacidad" />
+                                        <ExcelColumn label="Fecha De Expedición" value={(fe) => ViewFormat(fe.fechaExpedicion)} />
+                                        <ExcelColumn label="Departamento De Expedición" value="nameDepartamentoExpedicion" />
+                                        <ExcelColumn label="Ciudad De Expedición" value="nameCiudadExpedicion" />
+                                        <ExcelColumn label="Tipo Incapacidad" value="nameTipoIncapacidad" />
+                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
+                                        <ExcelColumn label="Fecha Inicio" value={(fe) => ViewFormat(fe.fechaInicio)} />
+                                        <ExcelColumn label="Fecha Fin" value={(fe) => ViewFormat(fe.fechaFin)} />
+                                        <ExcelColumn label="Días Sin Laborar" value="diasSinLaborar" />
+                                        <ExcelColumn label="Código Dx" value="dx" />
+                                        <ExcelColumn label="Dx" value="nameDx" />
+                                        <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
+                                        <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
+                                        <ExcelColumn label="Subsegmento" value="nameSubsegmento" />
+                                        <ExcelColumn label="Tipo De Soporte" value="nameIdTipoSoporte" />
+                                        <ExcelColumn label="Categoria" value="nameIdCategoria" />
+
+                                        <ExcelColumn label="Departamento IPS" value="nameDepartamentoIPS" />
+                                        <ExcelColumn label="Ciudad IPS" value="nameCiudadIPS" />
+                                        <ExcelColumn label="Nombre Profesional" value="nombreProfesional" />
+                                        <ExcelColumn label="Especialidad" value="especialidad" />
+                                        <ExcelColumn label="RegistroProfesional" value="registroProfesional" />
+                                        <ExcelColumn label="Tipo De Atención" value="nameTipoAtencion" />
+                                        <ExcelColumn label="Cumplimiento De Requisito" value="nameCumplimientoRequisito" />
+                                        <ExcelColumn label="Expide InCapacidad" value="nameExpideInCapacidad" />
+                                        <ExcelColumn label="Observación Cumplimiento" value="observacionCumplimiento" />
+
+                                        <ExcelColumn label="Usuario De Modificación" value="usuarioModificacion" />
+                                        <ExcelColumn label="Fecha De Modificación" value={(fe) => ViewFormat(fe.fechaModificacion)} />
+                                        <ExcelColumn label="Tipo De Empleado" value="nameTipoEmpleado" />
+                                        <ExcelColumn label="Tipo De Nomina" value="nameTipoNomina" />
+
+                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
+                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                        <ExcelColumn label="Hora Registro" value="horaRegistro" />
+                                    </ExcelSheet>
+                                </ExcelFile>
+                            </Grid>
+
+                            <Grid item xs={3}>
                                 <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
                                     onClick={() => navigate("/work-absenteeism/history")}>
                                     {TitleButton.Historico}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/work-absenteeism/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/occupational-health/menu")}>
                                     {TitleButton.Cancelar}

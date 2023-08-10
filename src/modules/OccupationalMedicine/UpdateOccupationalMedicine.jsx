@@ -270,6 +270,11 @@ const OccupationalMedicine = () => {
                 const lsServerAtencion = await GetByIdOccupationalMedicine(id);
                 if (lsServerAtencion.status === 200) {
                     setDocumento(lsServerAtencion.data.cedula);
+                    const event = {
+                        target: { value: lsServerAtencion.data.cedula }
+                    }
+                    handleLoadingDocument(event);
+
                     setLsOccupationalMedicine(lsServerAtencion.data);
                     setTextDiagnostico(lsServerAtencion.data.codDx);
 
@@ -278,11 +283,6 @@ const OccupationalMedicine = () => {
 
                     var diasCalculados = NumeroDias(lsServerAtencion.data.fechaCalificacionUltimaInstancia, lsServerAtencion.data.fechaInvestigacion);
                     setDiasDiferencia(diasCalculados);
-
-                    const event = {
-                        target: { value: lsServerAtencion.data.cedula }
-                    }
-                    handleLoadingDocument(event);
 
                     if (lsServerAtencion.data.codDx !== "") {
                         var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);

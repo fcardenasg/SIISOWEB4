@@ -70,6 +70,7 @@ const WorkAbsenteeism = () => {
     const [lsCIE11, setLsCIE11] = useState([]);
 
     const [tipoSoporte, setTipoSoporte] = useState(undefined);
+    const [disabledButtons, setDisabledButtons] = useState(false);
     const [diasSinLaborar, setDiasSinLaborar] = useState(0);
     const [numeroDias, setNumeroDias] = useState(0);
     const [departa, setDeparta] = useState(undefined);
@@ -315,13 +316,13 @@ const WorkAbsenteeism = () => {
         try {
             const DataToInsert = PostWorkAbsenteeism(documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
                 datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
-                datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, DefaultValue.SINREGISTRO_GLOBAL, datos.segmento, tipoSoporte, datos.idCategoria,
+                datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, undefined, datos.segmento, tipoSoporte, datos.idCategoria,
 
                 datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
                 datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
 
-                datos.observacion, '', null, user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
-                FormatDate(new Date()), user.nameuser);
+                datos.observacion, undefined, undefined, user.nameuser, undefined, lsEmployee.tipoContrato, lsEmployee.type,
+                undefined, undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -332,6 +333,7 @@ const WorkAbsenteeism = () => {
                             setErrorMessage(result.data.message);
                         } else {
                             setOpenSuccess(true);
+                            setDisabledButtons(true);
 
                             const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(documento);
                             setNumeroDias(numeroDias1.data);
@@ -779,7 +781,7 @@ const WorkAbsenteeism = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button disabled={disabledButtons} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>

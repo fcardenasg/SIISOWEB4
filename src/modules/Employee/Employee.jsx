@@ -378,6 +378,7 @@ const Employee = () => {
                                     <FormProvider {...methods}>
                                         <InputText
                                             fullWidth
+                                            type="number"
                                             name="documento"
                                             label="Documento"
                                             size={matchesXS ? 'small' : 'medium'}

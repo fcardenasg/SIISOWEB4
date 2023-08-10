@@ -4,7 +4,7 @@ const rutaEnergy = 'https://siiso.drummondenergy.com:44447/';
 
 const config = {
     typeDashboard: 'ltd', //energy - ltd
-    rutaApi: rutaLocal,
+    rutaApi: rutaLtd,
 
     basename: '',
     defaultPath: '/dashboard/drummond',

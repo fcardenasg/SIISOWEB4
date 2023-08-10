@@ -123,7 +123,7 @@ const ListProgramming = () => {
             </Grid>
         );
     } else {
-        usersResult = <Cargando />
+        usersResult = <Grid item xs={12}><Cargando /></Grid>
     }
 
     return (

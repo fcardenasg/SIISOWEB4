@@ -7,10 +7,11 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
-import { TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { GetAllRequestsPendientes } from 'api/clients/RequestsClient';
+import Cargando from 'components/loading/Cargando';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -39,6 +40,7 @@ const ListRequestsView = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
 
+    const [timeWait, setTimeWait] = useState(false);
     const [lsRequests, setLsRequests] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
@@ -86,11 +88,15 @@ const ListRequestsView = () => {
             setLsRequests([]);
 
             await GetAllRequestsPendientes(user.idsede, false).then(response => {
-                setLsRequests(response.data);
-                setRows(response.data);
-
-                if (response.data.length === 0)
-                    setMessageAtencion('No hay solicitudes para responder');
+                if (response.data.length === 0) {
+                    setMessageAtencion(Message.NoRegistro);
+                } else if (response.data.length !== 0) {
+                    setTimeout(() => {
+                        setTimeWait(true);
+                        setLsRequests(response.data);
+                        setRows(response.data);
+                    }, 1500);
+                }
             });
         } catch (error) { }
     };
@@ -101,7 +107,7 @@ const ListRequestsView = () => {
 
     let usersResult = <></>;
 
-    if (lsRequests.length !== 0) {
+    if (timeWait) {
         usersResult = stableSort(lsRequests, getComparator('asc', 'fechaRespuesta')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((lsRequests, index) => (
                 <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
@@ -113,7 +119,9 @@ const ListRequestsView = () => {
             <Grid item xs={12} sm={6} lg={4}>
                 <Typography variant="h3">{messageAtencion}</Typography>
             </Grid>
-        )
+        );
+    } else {
+        usersResult = <Grid item xs={12}><Cargando /></Grid>
     }
 
     return (

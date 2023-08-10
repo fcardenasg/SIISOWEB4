@@ -93,61 +93,65 @@ const UpdateLaboratory = () => {
         }
     }
 
-    async function getAll() {
-        try {
-            const serverData = await GetByIdParaclinics(id);
-            if (serverData.status === 200) {
-                setDocumento(serverData.data.documento);
-                setLsVisiometrics(serverData.data);
-                
-                const event = {
-                    target: { value: serverData.data.documento }
-                }
-                handleLoadingDocument(event);
-
-                if (serverData.data.url !== "") {
-                    setFilePdf(serverData.data.url);
-                }
-            }
-
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_PARACLINICO);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
-
-            const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_IINTER_COLESTEROL);
-            var resultInterpretacion = lsServerInterpretacion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsInterpretacion(resultInterpretacion);
-
-            const lsServerInterpretacionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADOAUDIOGRAMA);
-            var resultInterpretacionn = lsServerInterpretacionn.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsInterpretacionColes(resultInterpretacionn);
-
-            const lsServerInterpretacionTri = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_INTER_TRIGLICE);
-            var resultInterpretacionTri = lsServerInterpretacionTri.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsInterpretacionTrigli(resultInterpretacionTri);
-
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
-                value: item.codiProv,
-                label: item.nombProv
-            }));
-            setLsProveedor(resultProveedor);
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                const serverData = await GetByIdParaclinics(id);
+
+                if (serverData.status === 200) {
+                    setDocumento(serverData.data.documento);
+                    setLsVisiometrics(serverData.data);
+
+                    const event = {
+                        target: { value: serverData.data.documento }
+                    }
+                    handleLoadingDocument(event);
+
+                    if (serverData.data.url !== "") {
+                        setFilePdf(serverData.data.url);
+                    }
+                }
+
+                const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_PARACLINICO);
+                var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMotivo(resultMotivo);
+
+                const lsServerInterpretacion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_IINTER_COLESTEROL);
+                var resultInterpretacion = lsServerInterpretacion.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsInterpretacion(resultInterpretacion);
+
+                const lsServerInterpretacionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADOAUDIOGRAMA);
+                var resultInterpretacionn = lsServerInterpretacionn.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsInterpretacionColes(resultInterpretacionn);
+
+                const lsServerInterpretacionTri = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_INTER_TRIGLICE);
+                var resultInterpretacionTri = lsServerInterpretacionTri.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsInterpretacionTrigli(resultInterpretacionTri);
+
+                const lsServerProveedor = await GetAllSupplier(0, 0);
+                var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+                    value: item.codiProv,
+                    label: item.nombProv
+                }));
+                setLsProveedor(resultProveedor);
+            } catch (error) {
+                setOpenError(true);
+                setErrorMessage(error.message);
+            }
+        }
+
         getAll();
     }, [])
 
@@ -189,7 +193,7 @@ const UpdateLaboratory = () => {
     };
 
     setTimeout(() => {
-        if (ListLaboratory.length !== 0)
+        if (lsVisiometrics.length !== 0)
             setTimeWait(true);
     }, 2500);
 

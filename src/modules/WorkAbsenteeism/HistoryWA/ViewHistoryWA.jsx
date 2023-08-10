@@ -15,7 +15,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
 import { NumeroDias } from 'components/helpers/Format';
-import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
+import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -114,139 +114,6 @@ const ViewHistoryWA = () => {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
         }
-    }
-
-    async function getAll() {
-        try {
-            const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
-            var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsSegmentoAgrupado(resultSegAgrupado);
-
-            const lsServerSubsegmento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
-            var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSubsegmento(resultSubsegmento);
-
-            const lsServerMunicipio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Municipio);
-            var resultMunicipio = lsServerMunicipio.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMunicipioArreglo(resultMunicipio);
-
-            const lsServerCatalogoDatos = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CatalogoAusentismo);
-            var resultCatalogoDatos = lsServerCatalogoDatos.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCatalogoDatosInca(resultCatalogoDatos);
-
-            const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
-            var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsDeparta(resultDepartamento);
-            setCodigoFilterDpto(lsServerDepartamento.data.entities);
-
-            const lsServerIncapacidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_INC);
-            var resultIncapacidad = lsServerIncapacidad.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsIncapacidad(resultIncapacidad);
-
-            const lsServerTipoSoporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TISOPOR);
-            var resultTipoSoporte = lsServerTipoSoporte.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoSoporte(resultTipoSoporte);
-            setLsCodigoFilterTipoSoporte(lsServerTipoSoporte.data.entities);
-
-            const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOATEN);
-            var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoAtencion(resultTipoAtencion);
-
-            const lsServerRedExpide = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_REDEXP);
-            var resultRedExpide = lsServerRedExpide.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRedExpide(resultRedExpide);
-
-            const lsServerCumplimientoRequisito = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
-            var resultCumplimientoRequisito = lsServerCumplimientoRequisito.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCumplimientoRequisito(resultCumplimientoRequisito);
-
-            const lsServerTipoInca = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOINCA);
-            var resultTipoInca = lsServerTipoInca.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoInca(resultTipoInca);
-
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_CONT);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsContingencia(resultContingencia);
-
-            const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_ESTCAS);
-            var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsEstadoCaso(resultEstadoCaso);
-
-            const lsServerData = await GetByIdWorkAbsenteeism(id);
-            if (lsServerData.status === 200) {
-                setLsWorkAbsenteeism(lsServerData.data);
-
-                const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(lsServerData.data.cedula);
-                setNumeroDias(numeroDias1.data);
-
-                setDocumento(lsServerData.data.cedula);
-                const event = {
-                    target: { value: lsServerData.data.cedula }
-                }
-                handleLoadingDocument(event);
-
-                setFechaInicio(lsServerData.data.fechaInicio);
-                setFechaFin(lsServerData.data.fechaFin);
-                setFechaExpedicion(lsServerData.data.fechaExpedicion);
-                setDiasSinLaborar(lsServerData.data.diasSinLaborar);
-                setDepartaMedico(lsServerData.data.departamentoIPS);
-                setDeparta(lsServerData.data.departamento);
-                setTipoSoporte(lsServerData.data.idTipoSoporte);
-
-                if (lsServerData.data.dx !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerData.data.dx);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsCIE11(resultCie11);
-                    }
-
-                    setTextoDx(lsServerData.data.dx);
-                }
-            }
-        } catch (error) { }
     }
 
     const handleChangeDepartamentoIncapa = async (event) => {
@@ -353,8 +220,145 @@ const ViewHistoryWA = () => {
     }
 
     useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
+                var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setLsSegmentoAgrupado(resultSegAgrupado);
+
+                const lsServerSubsegmento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
+                var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsSubsegmento(resultSubsegmento);
+
+                const lsServerMunicipio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Municipio);
+                var resultMunicipio = lsServerMunicipio.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsMunicipioArreglo(resultMunicipio);
+
+                const lsServerCatalogoDatos = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CatalogoAusentismo);
+                var resultCatalogoDatos = lsServerCatalogoDatos.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsCatalogoDatosInca(resultCatalogoDatos);
+
+                const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
+                var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsDeparta(resultDepartamento);
+                setCodigoFilterDpto(lsServerDepartamento.data.entities);
+
+                const lsServerIncapacidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_INC);
+                var resultIncapacidad = lsServerIncapacidad.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsIncapacidad(resultIncapacidad);
+
+                const lsServerTipoSoporte = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TISOPOR);
+                var resultTipoSoporte = lsServerTipoSoporte.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsTipoSoporte(resultTipoSoporte);
+                setLsCodigoFilterTipoSoporte(lsServerTipoSoporte.data.entities);
+
+                const lsServerTipoAtencion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOATEN);
+                var resultTipoAtencion = lsServerTipoAtencion.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsTipoAtencion(resultTipoAtencion);
+
+                const lsServerRedExpide = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_REDEXP);
+                var resultRedExpide = lsServerRedExpide.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsRedExpide(resultRedExpide);
+
+                const lsServerCumplimientoRequisito = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
+                var resultCumplimientoRequisito = lsServerCumplimientoRequisito.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsCumplimientoRequisito(resultCumplimientoRequisito);
+
+                const lsServerTipoInca = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_TIPOINCA);
+                var resultTipoInca = lsServerTipoInca.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsTipoInca(resultTipoInca);
+
+                const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_CONT);
+                var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsContingencia(resultContingencia);
+
+                const lsServerEstadoCaso = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_ESTCAS);
+                var resultEstadoCaso = lsServerEstadoCaso.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEstadoCaso(resultEstadoCaso);
+
+                /* BUSQUEDA DE DATOS */
+                const lsServerData = await GetByIdWorkAbsenteeismHistory(id);
+                if (lsServerData.status === 200) {
+                    setLsWorkAbsenteeism(lsServerData.data);
+
+                    const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(lsServerData.data.cedula);
+                    setNumeroDias(numeroDias1.data);
+
+                    setDocumento(lsServerData.data.cedula);
+                    const event = {
+                        target: { value: lsServerData.data.cedula }
+                    }
+                    handleLoadingDocument(event);
+
+                    setFechaInicio(lsServerData.data.fechaInicio);
+                    setFechaFin(lsServerData.data.fechaFin);
+                    setFechaExpedicion(lsServerData.data.fechaExpedicion);
+                    setDiasSinLaborar(lsServerData.data.diasSinLaborar);
+                    setDepartaMedico(lsServerData.data.departamentoIPS);
+                    setDeparta(lsServerData.data.departamento);
+                    setTipoSoporte(lsServerData.data.idTipoSoporte);
+
+                    if (lsServerData.data.dx !== "") {
+                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerData.data.dx);
+
+                        if (lsServerCie11.status === 200) {
+                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                                value: item.id,
+                                label: item.dx
+                            }));
+                            setLsCIE11(resultCie11);
+                        }
+
+                        setTextoDx(lsServerData.data.dx);
+                    }
+                }
+            } catch (error) {
+                setOpenError(true);
+                setErrorMessage(error.message);
+            }
+        }
+
         getAll();
-    }, [])
+    }, []);
 
     setTimeout(() => {
         if (lsWorkAbsenteeism.length !== 0)
@@ -767,7 +771,7 @@ const ViewHistoryWA = () => {
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsWorkAbsenteeism.observacion}
+                                            defaultValue={lsWorkAbsenteeism.comentarios}
                                             fullWidth
                                             name="observacion"
                                             label="Observación/Descripción"

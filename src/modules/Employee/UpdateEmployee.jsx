@@ -439,6 +439,7 @@ const UpdateEmployee = () => {
                                             <InputText
                                                 defaultValue={employee.documento}
                                                 fullWidth
+                                                type="number"
                                                 name="documento"
                                                 label="Documento"
                                                 size={matchesXS ? 'small' : 'medium'}

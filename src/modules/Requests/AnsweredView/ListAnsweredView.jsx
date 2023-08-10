@@ -6,11 +6,12 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 import { IconSearch } from '@tabler/icons';
-import { TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { GetAllBySedeRequests } from 'api/clients/RequestsClient';
 import CardAnsweredView from './CardAnsweredView';
+import Cargando from 'components/loading/Cargando';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -39,6 +40,7 @@ const ListAnsweredView = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
 
+    const [timeWait, setTimeWait] = useState(false);
     const [lsRequests, setLsRequests] = useState([]);
     const [rows, setRows] = useState([]);
     const [search, setSearch] = useState('');
@@ -86,11 +88,15 @@ const ListAnsweredView = () => {
             setLsRequests([]);
 
             await GetAllBySedeRequests(user.idsede).then(response => {
-                setLsRequests(response.data);
-                setRows(response.data);
-
-                if (response.data.length === 0)
-                    setMessageAtencion('No hay solicitudes para revisar');
+                if (response.data.length === 0) {
+                    setMessageAtencion(Message.NoRegistro);
+                } else if (response.data.length !== 0) {
+                    setTimeout(() => {
+                        setTimeWait(true);
+                        setLsRequests(response.data);
+                        setRows(response.data);
+                    }, 1500);
+                }
             });
         } catch (error) { }
     };
@@ -101,11 +107,11 @@ const ListAnsweredView = () => {
 
     let usersResult = <></>;
 
-    if (lsRequests.length !== 0) {
+    if (timeWait) {
         usersResult = stableSort(lsRequests, getComparator('asc', 'documento')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((lsRequests, index) => (
                 <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
-                    <CardAnsweredView key={index} getAll={getAll} lsRequests={lsRequests} />
+                    <CardAnsweredView key={index} lsRequests={lsRequests} />
                 </Grid>
             ));
     } else if (messageAtencion !== '') {
@@ -113,7 +119,9 @@ const ListAnsweredView = () => {
             <Grid item xs={12} sm={6} lg={4}>
                 <Typography variant="h3">{messageAtencion}</Typography>
             </Grid>
-        )
+        );
+    } else {
+        usersResult = <Grid item xs={12}><Cargando /></Grid>
     }
 
     return (
