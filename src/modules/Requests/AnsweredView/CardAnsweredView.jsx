@@ -7,7 +7,7 @@ import { Button, Card, CardContent, CardMedia, Grid, Typography } from '@mui/mat
 
 import { MessageSuccess } from 'components/alert/AlertAll';
 import { ColorDrummondltd } from 'themes/colors';
-import ReplyIcon from '@mui/icons-material/Reply';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import Chip from 'ui-component/extended/Chip';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControlModal from 'components/controllers/ControlModal';
@@ -80,8 +80,8 @@ const CardAnsweredView = ({ lsRequests }) => {
 
                         <Grid item xs={12}>
                             <AnimateButton>
-                                <Button onClick={() => setOpenRequests(true)} variant="outlined" fullWidth startIcon={<ReplyIcon />}>
-                                    Ver Solicitudes
+                                <Button onClick={() => setOpenRequests(true)} variant="outlined" fullWidth startIcon={<QuestionAnswerIcon />}>
+                                    Ver Solicitud
                                 </Button>
                             </AnimateButton>
                         </Grid>

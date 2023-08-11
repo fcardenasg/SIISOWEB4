@@ -29,8 +29,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputOnChange from 'components/input/InputOnChange';
 
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+
 import ViewPDF from 'components/components/ViewPDF';
 import InputDatePick from 'components/input/InputDatePick';
 import ListRequestsDetaills from './ListRequestsDetaills';
@@ -52,7 +51,7 @@ const Requests = () => {
 
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    
+
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
     const [datosEmpleado, setDatosEmpleado] = useState({
@@ -133,8 +132,8 @@ const Requests = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, datos.correoRecibioDLTD, FormatDate(fechaInicio),
-                FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion, FormatDate(datos.fechaEntrega),
-                datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, user.nameuser, null, null, null, dataPDF);
+                FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion, undefined, undefined, undefined,
+                undefined, user.nameuser, null, null, null, null);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -296,92 +295,14 @@ const Requests = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Detalle de Solicitud</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={3}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha de Entrega"
-                                        name="fechaEntrega"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                    <SubCard darkTitle title={<Typography variant="h4">Lista de Solicitudes</Typography>}>
 
-                            <Grid item xs={12} md={6} lg={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        name="metodoUtilizado"
-                                        label="Metodo Utilizado"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        name="numeroGuia"
-                                        label="Número Guia"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={3}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        name="entidadSolicitante"
-                                        label="Entidad Solicitante"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={10}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        fullWidth
-                                        multiline
-                                        rows={3}
-                                        name="observacion"
-                                        label="Observación"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <AnimateButton>
-                                            <Button size="large" variant="contained" component="label" fullWidth startIcon={<UploadFileIcon />}>
-                                                {TitleButton.SubirArchivo}
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={12}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth disabled={dataPDF === null ? true : false} onClick={() => setOpenReport(true)} startIcon={<VisibilityIcon />}>
-                                                {TitleButton.VerArchivo}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            {result !== '' ?
-                                <Grid item xs={12}>
-                                    <ListRequestsDetaills lsEmployee={lsEmployee} idSolicitud={result} />
-                                </Grid> : null}
+                        <Grid item xs={12}>
+                            {result !== '' ? <ListRequestsDetaills lsEmployee={lsEmployee} idSolicitud={result} /> : null}
                         </Grid>
 
-                        <Grid item xs={12} sx={{ pt: 6 }}>
+
+                        <Grid item xs={12} sx={{ pt: 4 }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>

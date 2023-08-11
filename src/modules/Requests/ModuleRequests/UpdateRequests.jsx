@@ -146,9 +146,8 @@ const UpdateRequests = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutRequests(id, documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, datos.correoRecibioDLTD, FormatDate(fechaInicio),
-                FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion,
-                FormatDate(datos.fechaEntrega), datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, user.nameuser, null, null,
-                null, dataPDF);
+                FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion, FormatDate(datos.fechaEntrega),
+                datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, lsDataRequiest.usuarioRegistro, null, user.nameuser, null, dataPDF);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -321,9 +320,14 @@ const UpdateRequests = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">Detalle de Solicitud</Typography>}>
                             <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <Typography variant="h5">Estos datos solo son de lectura.</Typography>
+                                </Grid>
+
                                 <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
+                                            disabled
                                             defaultValue={lsDataRequiest.fechaEntrega}
                                             label="Fecha de Entrega"
                                             name="fechaEntrega"
@@ -335,10 +339,11 @@ const UpdateRequests = () => {
                                 <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            disabled
                                             defaultValue={lsDataRequiest.metodoUtilizado}
                                             fullWidth
                                             name="metodoUtilizado"
-                                            label="Metodo Utilizado"
+                                            label="Medio De Envío"
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -347,10 +352,11 @@ const UpdateRequests = () => {
                                 <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            disabled
                                             defaultValue={lsDataRequiest.numeroGuia}
                                             fullWidth
                                             name="numeroGuia"
-                                            label="Número Guia"
+                                            label="Número Guía"
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>
@@ -359,6 +365,7 @@ const UpdateRequests = () => {
                                 <Grid item xs={12} md={6} lg={3}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            disabled
                                             defaultValue={lsDataRequiest.entidadSolicitante}
                                             fullWidth
                                             name="entidadSolicitante"
@@ -371,6 +378,7 @@ const UpdateRequests = () => {
                                 <Grid item xs={10}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            disabled
                                             defaultValue={lsDataRequiest.observacion}
                                             fullWidth
                                             multiline
@@ -386,7 +394,7 @@ const UpdateRequests = () => {
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             <AnimateButton>
-                                                <Button size="large" variant="contained" component="label" fullWidth startIcon={<UploadFileIcon />}>
+                                                <Button disabled size="large" variant="contained" component="label" fullWidth startIcon={<UploadFileIcon />}>
                                                     {TitleButton.SubirArchivo}
                                                     <input hidden accept="application/pdf" type="file" onChange={handleFile} />
                                                 </Button>
@@ -404,7 +412,9 @@ const UpdateRequests = () => {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <ListRequestsDetaills lsEmployee={lsEmployee} idSolicitud={id} />
+                                    <SubCard title="Lista de Solicitudes">
+                                        <ListRequestsDetaills lsEmployee={lsEmployee} idSolicitud={id} />
+                                    </SubCard>
                                 </Grid>
                             </Grid>
 

@@ -5,8 +5,9 @@ import { getData, deleteData, postData, putData } from '../UtilInstance';
 export const GetAllRequests = async () => await getData(Url.Solicitudes);
 export const GetAllBySedeRequests = async (idSede) => await getData(Url.SolicitudesPorSede, { idSede });
 export const GetByIdRequests = async (id) => await getData(Url.SolicitudesId, { id });
-export const InsertRequests = async (requests) => await postData(Url.Solicitudes, requests);
-export const UpdateRequestss = async (requests) => await putData(Url.Solicitudes, requests);
+export const InsertRequests = async (solicitudes) => await postData(Url.Solicitudes, solicitudes);
+export const UpdateRequestss = async (solicitudes) => await putData(Url.Solicitudes, solicitudes);
+export const UpdateRequestsDataSend = async (solicitudes) => await putData(Url.SolicitudesDataSend, solicitudes);
 export const DeleteRequests = async (idSolicitudes) => await deleteData(Url.Solicitudes, { idSolicitudes });
 export const GetExcelRequests = async (parametroExcel) => await postData(Url.SolicitudesExcel, parametroExcel);
 

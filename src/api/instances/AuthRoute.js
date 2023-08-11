@@ -127,6 +127,7 @@ export const Url = {
     RegistroTaxiId: 'api/RegistroTaxi/id',
 
     Solicitudes: 'api/Solicitudes',
+    SolicitudesDataSend: 'api/Solicitudes/data-send',
     SolicitudesPorSede: 'api/Solicitudes/all-por-sede',
     SolicitudesExcel: 'api/Solicitudes/excel',
     SolicitudesId: 'api/Solicitudes/id',

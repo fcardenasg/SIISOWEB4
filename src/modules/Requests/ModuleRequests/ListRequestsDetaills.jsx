@@ -72,7 +72,7 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud }) => {
     async function getAllListSolicitudes() {
         try {
             const lsServer = await GetAllRequestsDetaillsByIdSolicitud(idSolicitud);
-            
+
             if (lsServer.status === 200) {
                 setLsOrdenesParaclinicos(lsServer.data);
             }
@@ -135,119 +135,117 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud }) => {
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <SubCard title={<Typography variant='h4'>Lista de Solicitudes</Typography>}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <TableContainer>
-                            <Table aria-label="collapsible table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Solicitud</TableCell>
-                                        <TableCell>Responsable Respuesta</TableCell>
-                                        <TableCell>Estado Respuesta</TableCell>
-                                        <TableCell>Fecha Registro</TableCell>
-                                        <TableCell>Acción</TableCell>
-                                    </TableRow>
-                                </TableHead>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <TableContainer>
+                        <Table aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Solicitud</TableCell>
+                                    <TableCell>Responsable Respuesta</TableCell>
+                                    <TableCell>Estado Respuesta</TableCell>
+                                    <TableCell>Fecha Registro</TableCell>
+                                    <TableCell>Acción</TableCell>
+                                </TableRow>
+                            </TableHead>
 
-                                <TableBody>
-                                    {lsOrdenesParaclinicos.map((row) => (
-                                        <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-                                            <TableCell component="th" scope="row">{row.nameTipoSolicitud}</TableCell>
-                                            <TableCell>{row.nameAreaRespuesta}</TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    size="small"
-                                                    label={row.estadoRespuesta ? 'RESPONDIDA' : 'SIN RESPUESTA'}
-                                                    chipcolor={row.estadoRespuesta ? 'success' : 'error'}
-                                                />
-                                            </TableCell>
-                                            <TableCell>{new Date(row.fechaRegistro).toLocaleString()}</TableCell>
+                            <TableBody>
+                                {lsOrdenesParaclinicos.map((row) => (
+                                    <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
+                                        <TableCell component="th" scope="row">{row.nameTipoSolicitud}</TableCell>
+                                        <TableCell>{row.nameAreaRespuesta}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                size="small"
+                                                label={row.estadoRespuesta ? 'RESPONDIDA' : 'SIN RESPUESTA'}
+                                                chipcolor={row.estadoRespuesta ? 'success' : 'error'}
+                                            />
+                                        </TableCell>
+                                        <TableCell>{new Date(row.fechaRegistro).toLocaleString()}</TableCell>
 
-                                            <TableCell>
-                                                <Grid container spacing={2}>
-                                                    <Grid item xs={6}>
-                                                        <AnimateButton>
-                                                            <Tooltip disabled={row.estadoRespuesta ? true : false} title="Eliminar" onClick={() => handleDelete(row.id)}>
-                                                                <IconButton color="error" size="small">
-                                                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </AnimateButton>
-                                                    </Grid>
+                                        <TableCell>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={6}>
+                                                    <AnimateButton>
+                                                        <Tooltip disabled={row.estadoRespuesta ? true : false} title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                                            <IconButton color="error" size="small">
+                                                                <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </AnimateButton>
                                                 </Grid>
-                                            </TableCell>
-                                        </TableRow>))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <Transitions type="collapse" in={addItemClickedEmpresa} position="top-left" direction="up">
-                            <Grid container sx={{ pt: 5 }} spacing={2}>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            defaultValue=""
-                                            name="idTipoSolicitud"
-                                            label="Tipo de Solicitud"
-                                            options={lsSolicitudes}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idTipoSolicitud}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            defaultValue=""
-                                            name="idAreaRespuesta"
-                                            label="Responsable de Respuesta"
-                                            options={lsResponsable}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idAreaRespuesta}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            defaultValue=""
-                                            name="observacion"
-                                            label="Observación"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-
-                            <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
-                                <Stack direction="row" spacing={1} alignItems="center">
-                                    <Button color="error" onClick={() => { setAddItemClickedEmpresa(false); reset(); }}>
-                                        Cancelar
-                                    </Button>
-
-                                    <Button variant="contained" size="small" onClick={handleSubmit(handleClick)}>
-                                        Adicionar
-                                    </Button>
-                                </Stack>
-                            </Grid>
-                        </Transitions>
-
-                        {!addItemClickedEmpresa ?
-                            <Grid item sx={{ pl: 2, pt: 3 }}>
-                                <Button disabled={lsEmployee.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
-                                    + Agregar Paraclinico
-                                </Button>
-                            </Grid> : null}
-                    </Grid>
+                                            </Grid>
+                                        </TableCell>
+                                    </TableRow>))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
-            </SubCard>
+
+                <Grid item xs={12}>
+                    <Transitions type="collapse" in={addItemClickedEmpresa} position="top-left" direction="up">
+                        <Grid container sx={{ pt: 5 }} spacing={2}>
+
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idTipoSolicitud"
+                                        label="Tipo de Solicitud"
+                                        options={lsSolicitudes}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoSolicitud}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idAreaRespuesta"
+                                        label="Responsable de Respuesta"
+                                        options={lsResponsable}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idAreaRespuesta}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        fullWidth
+                                        defaultValue=""
+                                        name="observacion"
+                                        label="Observación"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+                        </Grid>
+
+                        <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <Button color="error" onClick={() => { setAddItemClickedEmpresa(false); reset(); }}>
+                                    Cancelar
+                                </Button>
+
+                                <Button variant="contained" size="small" onClick={handleSubmit(handleClick)}>
+                                    Adicionar
+                                </Button>
+                            </Stack>
+                        </Grid>
+                    </Transitions>
+
+                    {!addItemClickedEmpresa ?
+                        <Grid item sx={{ pl: 2, pt: 3 }}>
+                            <Button disabled={lsEmployee.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
+                                + Agregar Solicitud
+                            </Button>
+                        </Grid> : null}
+                </Grid>
+            </Grid>
         </Fragment>
     );
 };
