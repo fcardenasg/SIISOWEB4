@@ -579,7 +579,7 @@ const UpdateEvolutionNote = () => {
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={() => validateLastData(lsAtencion.fecha, "date")}
+                                                        defaultValue={new Date()}
                                                     />
                                                 </FormProvider>
                                             </Grid>

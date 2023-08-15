@@ -134,6 +134,9 @@ const MedicionaLaboralExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Pcl Final" value="pclFinal" />
                                         <ExcelColumn label="Instancia Final" value="instanciaFinal" />
 
+                                        <ExcelColumn label="Sala Calificadora" value="nameSalaCalificadoraJNC" />
+                                        <ExcelColumn label="Médico Calificador" value="medicoCalificadorJNC" />
+
                                         {/* <ExcelColumn label="Fecha Calificación Pcl Final" value={(fe) => ViewFormat(fe.fechaCalificacionPclFinal)} />
                                         <ExcelColumn label="Fecha Estructuración Pcl Final" value={(fe) => ViewFormat(fe.fechaEstructuracionPclFinal)} />
                                         <ExcelColumn label="Indemnizado" value="indemnizado" />

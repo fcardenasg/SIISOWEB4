@@ -4,11 +4,16 @@ import {
     FormHelperText,
     Grid,
     TextField,
+    useMediaQuery,
 } from '@mui/material';
 import { Fragment } from 'react';
 import { FormatDate } from 'components/helpers/Format';
+import { useTheme } from '@mui/material/styles';
 
 const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) => {
+
+    const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
         <Fragment>
@@ -21,7 +26,7 @@ const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) =>
                         id="fecha"
                         label={label}
                         type="date"
-                        size={size}
+                        size={matchesXS ? 'small' : 'medium'}
                         InputLabelProps={{
                             shrink: true,
                             className: bug ? 'required-label' : '',

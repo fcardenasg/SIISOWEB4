@@ -102,13 +102,7 @@ const headCells = [
     {
         id: 'fechaInicio',
         numeric: false,
-        label: 'Fecha de Inicio',
-        align: 'left'
-    },
-    {
-        id: 'fechaFin',
-        numeric: false,
-        label: 'Fecha Fin',
+        label: 'Fecha de Inicio y Fin',
         align: 'left'
     },
     {
@@ -619,22 +613,7 @@ const ListWorkAbsenteeism = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {ViewFormat(row.fechaInicio)}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id_Inc)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {ViewFormat(row.fechaFin)}
+                                                    {`${ViewFormat(row.fechaInicio)} - ${ViewFormat(row.fechaFin)}`}
                                                 </Typography>
                                             </TableCell>
 

@@ -71,7 +71,6 @@ const Attention = () => {
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [lsMotivoPAD, setLsMotivoPAD] = useState([]);
     const [lsEstadoCaso, setLsEstadoCaso] = useState([]);
-    // const [lsMotivoMedica, setLsMotivoMedica] = useState([]);
     const [lsMotivoPsico, setLsMotivoPsico] = useState([]);
     const [lsMedicos, setLsMedicos] = useState([]);
     const [lsPsicologia, setLsPsicologia] = useState([]);
@@ -107,9 +106,6 @@ const Attention = () => {
 
                 const lsServerMotivoPsico = await GetByTipoCatalogoCombo(CodCatalogo.MotivoPsicologia);
                 setLsMotivoPsico(lsServerMotivoPsico.data);
-
-                /* const lsServerMotivoMedica = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
-                setLsMotivoMedica(lsServerMotivoMedica.data); */
 
                 const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TipoAtencion);
                 setLsTipoAtencion(lsServerTipoAtencion.data);
