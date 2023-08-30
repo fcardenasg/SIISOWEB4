@@ -504,6 +504,7 @@ const UpdateMedicalAdvice = () => {
                                                     <Grid item xs={12}>
                                                         <FormProvider {...methods}>
                                                             <InputText
+                                                                inputProps={{ maxLength: 4000 }}
                                                                 defaultValue={dataAttention.motivo}
                                                                 multiline
                                                                 rows={20}

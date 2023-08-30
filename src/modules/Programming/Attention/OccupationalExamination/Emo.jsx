@@ -55,6 +55,7 @@ import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
 import { GetAntecedente } from 'api/clients/MedicalHistoryClient';
+import Framingham from './Framingham';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -115,6 +116,32 @@ const Emo = ({
     lsEmployee,
     setTipoFobia,
     tipoFobia,
+
+
+    calculoFramingham,
+    frFuma,
+    frColesterol,
+    frTencion,
+    frEdad,
+    frGlicemia,
+    frPuntaje,
+    relacion,
+    frLdl,
+    frHdl,
+    riesgo,
+
+    handleHdl,
+    hdl,
+    handleColesterol,
+    colesterol,
+    handleTrigliceridos,
+    trigliceridos,
+    handleFuma,
+    fuma,
+    handleGlicemia,
+    glicemia,
+    handleTencion,
+    tencion,
     ...methods
 }) => {
     const theme = useTheme();
@@ -947,111 +974,6 @@ const Emo = ({
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Accordion title={<><IconFriends />
-                            <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ANTECEDENTES FAMILIAR</Typography></>}>
-                            <SubCard>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco1ANFA"
-                                                label="Parentesco"
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco1ANFA, "number")}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco1ObserANFA, "string")}
-                                                fullWidth
-                                                name="parentesco1ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco2ANFA"
-                                                label="Parentesco"
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco2ANFA, "number")}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco2ObserANFA, "string")}
-                                                fullWidth
-                                                name="parentesco2ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco3ANFA"
-                                                label="Parentesco"
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco3ANFA, "number")}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco3ObserANFA, "string")}
-                                                fullWidth
-                                                name="parentesco3ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco4ANFA"
-                                                label="Parentesco"
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco4ANFA, "number")}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={() => validateLastData(lsLastRecord.parentesco4ObserANFA, "string")}
-                                                fullWidth
-                                                name="parentesco4ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Accordion>
-                    </Grid>
-
-                    <Grid item xs={12}>
                         <Accordion title={<><IconCarCrash />
                             <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ACCIDENTES DE TRABAJO</Typography></>}>
 
@@ -1303,7 +1225,7 @@ const Emo = ({
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={2} >
+                                            <Grid item xs={2}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
                                                         name="idRefuerzoIM"
@@ -1316,17 +1238,158 @@ const Emo = ({
                                             </Grid>
                                         </Fragment> : null}
                                     {estadoVacuna.otrasIM ?
-                                        <Grid item xs={12} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={() => validateLastData(lsLastRecord.anioVacuna6IM, "string")}
-                                                    fullWidth
-                                                    name="anioVacuna6IM"
-                                                    label="Observación"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : null}
+                                        <Fragment>
+                                            <Grid item xs={2}>
+                                                <FormProvider {...methods}>
+                                                    <InputCheckBox
+                                                        label="BCG"
+                                                        name="vacunaBCGIM"
+                                                        size={30}
+                                                        defaultValue={() => validateLastData(lsLastRecord.vacunaBCGIM)}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <FormProvider {...methods}>
+                                                    <InputCheckBox
+                                                        label="VHB"
+                                                        name="vacunaVHBIM"
+                                                        size={30}
+                                                        defaultValue={() => validateLastData(lsLastRecord.vacunaVHBIM)}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <FormProvider {...methods}>
+                                                    <InputCheckBox
+                                                        label="VHC"
+                                                        name="vacunaVHCIM"
+                                                        size={30}
+                                                        defaultValue={() => validateLastData(lsLastRecord.vacunaVHCIM)}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={6}>
+                                                <FormProvider {...methods}>
+                                                    <InputText
+                                                        defaultValue={() => validateLastData(lsLastRecord.anioVacuna6IM, "string")}
+                                                        fullWidth
+                                                        name="anioVacuna6IM"
+                                                        label="Observación"
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+                                        </Fragment>
+                                        : null}
+                                </Grid>
+                            </SubCard>
+                        </Accordion>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Accordion title={<><IconFriends />
+                            <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">ANTECEDENTES PATOLÓGICOS FAMILIAR</Typography></>}>
+                            <SubCard>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="parentesco1ANFA"
+                                                label="Parentesco"
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco1ANFA, "number")}
+                                                options={lsPariente}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={9}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco1ObserANFA, "string")}
+                                                fullWidth
+                                                name="parentesco1ObserANFA"
+                                                label="Observación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="parentesco2ANFA"
+                                                label="Parentesco"
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco2ANFA, "number")}
+                                                options={lsPariente}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={9}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco2ObserANFA, "string")}
+                                                fullWidth
+                                                name="parentesco2ObserANFA"
+                                                label="Observación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="parentesco3ANFA"
+                                                label="Parentesco"
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco3ANFA, "number")}
+                                                options={lsPariente}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={9}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco3ObserANFA, "string")}
+                                                fullWidth
+                                                name="parentesco3ObserANFA"
+                                                label="Observación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="parentesco4ANFA"
+                                                label="Parentesco"
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco4ANFA, "number")}
+                                                options={lsPariente}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={9}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={() => validateLastData(lsLastRecord.parentesco4ObserANFA, "string")}
+                                                fullWidth
+                                                name="parentesco4ObserANFA"
+                                                label="Observación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
                                 </Grid>
                             </SubCard>
                         </Accordion>
@@ -2840,311 +2903,6 @@ const Emo = ({
                         </Accordion>
                     </Grid>
 
-                    <Grid item xs={12}>
-                        <Accordion title={<><IconYoga />
-                            <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">
-                                EXPLORACIÓN FUNCIONAL (Seleccione el ítem que encuentre Anormal o No Explorado y descríbalo en la casilla observación)
-                            </Typography></>}>
-                            <SubCard>
-                                <Grid container spacing={1} sx={{ pb: 2 }}>
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="1. Movilidad Ocular"
-                                                name="movilidadEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="2. Equilibrio"
-                                                name="equilibrioEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.equilibrioEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="3. Marcha Coordinación"
-                                                name="marchaEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.marchaEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="4. Movilidad Hombro"
-                                                name="movilidadHombroEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadHombroEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="5. Movilidad Codo"
-                                                name="movilidadCodoEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadCodoEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="6. Movilidad Muñeca"
-                                                name="movilidadMuniecaEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadMuniecaEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="7. Signo de Tinel"
-                                                name="signoTinelEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.signoTinelEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="8. Signo de Phalen"
-                                                name="signoPhalenEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.signoPhalenEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="9. Movilidad Manos"
-                                                name="movilidadManosEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadManosEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="10. Movilidad Cadera"
-                                                name="movilidadCaderaEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadCaderaEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="11. Movilidad Rodilla"
-                                                name="movilidadRodillaEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadRodillaEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="12. Movilidad Tobillo"
-                                                name="movilidadTobilloEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadTobilloEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="13. Movilidad Cuello (C1-C4)"
-                                                name="movilidadCuelloEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.movilidadCuelloEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="14. ROT Bicipital (C5)"
-                                                name="rOTVisipitalEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.rotVisipitalEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="15. ROT Rotuliano (L4)"
-                                                name="rOTRotuleanoEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.rotRotuleanoEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="16. Extencion Primer Artejo (L5)"
-                                                name="extencionEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.extencionEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="17. Sensibilidad cara anterior pie (L5)"
-                                                name="sensibilidadCaraAnteriorEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.sensibilidadCaraAnteriorEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="18. Eversión Pie(S1)"
-                                                name="eversionPiesEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.eversionPiesEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="19. Sensibilidad cara lateral pie (L5)"
-                                                name="sensibilidadCaraLateralEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.sensibilidadCaraLateralEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="20. ROT Aquiliano"
-                                                name="rOTAquileanoEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.rotAquileanoEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="21. Signo de la Laségue"
-                                                name="signoLasegueEFU"
-                                                size={30}
-                                                defaultValue={() => validateLastData(lsLastRecord.signoLasegueEFU)}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheck
-                                                label="22. Indice Wells"
-                                                size={30}
-                                                onChange={(e) => setIndiceWellsEFU(e.target.checked)}
-                                                checked={indiceWellsEFU}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    {indiceWellsEFU ?
-                                        <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    fullWidth
-                                                    name="valorIndiceWellsEFU"
-                                                    label="Valor De IndiceWells"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    defaultValue={() => validateLastData(lsLastRecord.valorIndiceWellsEFU, "string")}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : null
-                                    }
-                                </Grid>
-
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        multiline
-                                        rows={4}
-                                        defaultValue={() => validateLastData(lsLastRecord.observacionEFU, "string")}
-                                        fullWidth
-                                        name="observacionEFU"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
-
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
-
-                                    <DetailedIcon
-                                        title={DetailIcons[1].title}
-                                        onClick={() => setOpenApuntesPersonales(true)}
-                                        icons={DetailIcons[1].icons}
-                                    />
-
-                                    <DetailedIcon
-                                        title={DetailIcons[2].title}
-                                        onClick={() => setOpen(true)}
-                                        icons={DetailIcons[2].icons}
-                                    />
-
-                                    <DetailedIcon
-                                        title={DetailIcons[3].title}
-                                        onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_FUNCIONAL') }}
-                                        icons={DetailIcons[3].icons}
-                                    />
-                                </Grid>
-                            </SubCard>
-                        </Accordion>
-                    </Grid>
 
                     <Grid item xs={12}>
                         <Accordion title={<><IconHeartRateMonitor />
@@ -3728,6 +3486,38 @@ const Emo = ({
                     </Grid>
 
                     <Grid item xs={12}>
+                        <Framingham
+                            calculoFramingham={calculoFramingham}
+                            frFuma={frFuma}
+                            frColesterol={frColesterol}
+                            frTencion={frTencion}
+                            frEdad={frEdad}
+                            frGlicemia={frGlicemia}
+                            frPuntaje={frPuntaje}
+                            relacion={relacion}
+                            frLdl={frLdl}
+                            frHdl={frHdl}
+                            riesgo={riesgo}
+
+                            handleHdl={handleHdl}
+                            hdl={hdl}
+                            handleColesterol={handleColesterol}
+                            colesterol={colesterol}
+                            handleTrigliceridos={handleTrigliceridos}
+                            trigliceridos={trigliceridos}
+                            handleFuma={handleFuma}
+                            fuma={fuma}
+                            handleGlicemia={handleGlicemia}
+                            glicemia={glicemia}
+                            handleTencion={handleTencion}
+                            tencion={tencion}
+
+                            documento={documento}
+                            {...methods}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}>
                         <Accordion title={<><IconReportMedical />
                             <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">IMPRESIÓN DIAGNÓSTICA Y CONCEPTO FINAL</Typography></>}>
                             <SubCard>
@@ -3909,6 +3699,312 @@ const Emo = ({
                                 setOpenTemplate={setOpenTemplate}
                                 {...methods}
                             />
+                        </Accordion>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Accordion title={<><IconYoga />
+                            <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">
+                                EXPLORACIÓN FUNCIONAL (Seleccione el ítem que encuentre Anormal o No Explorado y descríbalo en la casilla observación)
+                            </Typography></>}>
+                            <SubCard>
+                                <Grid container spacing={1} sx={{ pb: 2 }}>
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="1. Movilidad Ocular"
+                                                name="movilidadEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="2. Equilibrio"
+                                                name="equilibrioEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.equilibrioEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="3. Marcha Coordinación"
+                                                name="marchaEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.marchaEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="4. Movilidad Hombro"
+                                                name="movilidadHombroEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadHombroEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="5. Movilidad Codo"
+                                                name="movilidadCodoEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadCodoEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="6. Movilidad Muñeca"
+                                                name="movilidadMuniecaEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadMuniecaEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="7. Signo de Tinel"
+                                                name="signoTinelEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.signoTinelEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="8. Signo de Phalen"
+                                                name="signoPhalenEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.signoPhalenEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="9. Movilidad Manos"
+                                                name="movilidadManosEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadManosEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="10. Movilidad Cadera"
+                                                name="movilidadCaderaEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadCaderaEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="11. Movilidad Rodilla"
+                                                name="movilidadRodillaEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadRodillaEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="12. Movilidad Tobillo"
+                                                name="movilidadTobilloEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadTobilloEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="13. Movilidad Cuello (C1-C4)"
+                                                name="movilidadCuelloEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.movilidadCuelloEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="14. ROT Bicipital (C5)"
+                                                name="rOTVisipitalEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.rotVisipitalEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="15. ROT Rotuliano (L4)"
+                                                name="rOTRotuleanoEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.rotRotuleanoEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="16. Extencion Primer Artejo (L5)"
+                                                name="extencionEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.extencionEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="17. Sensibilidad cara anterior pie (L5)"
+                                                name="sensibilidadCaraAnteriorEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.sensibilidadCaraAnteriorEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="18. Eversión Pie(S1)"
+                                                name="eversionPiesEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.eversionPiesEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="19. Sensibilidad cara lateral pie (L5)"
+                                                name="sensibilidadCaraLateralEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.sensibilidadCaraLateralEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="20. ROT Aquiliano"
+                                                name="rOTAquileanoEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.rotAquileanoEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="21. Signo de la Laségue"
+                                                name="signoLasegueEFU"
+                                                size={30}
+                                                defaultValue={() => validateLastData(lsLastRecord.signoLasegueEFU)}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <FormProvider {...methods}>
+                                            <InputCheck
+                                                label="22. Indice Wells"
+                                                size={30}
+                                                onChange={(e) => setIndiceWellsEFU(e.target.checked)}
+                                                checked={indiceWellsEFU}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    {indiceWellsEFU ?
+                                        <Grid item xs={3}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    type="number"
+                                                    fullWidth
+                                                    name="valorIndiceWellsEFU"
+                                                    label="Valor De IndiceWells"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    defaultValue={() => validateLastData(lsLastRecord.valorIndiceWellsEFU, "string")}
+                                                />
+                                            </FormProvider>
+                                        </Grid> : null
+                                    }
+                                </Grid>
+
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        multiline
+                                        rows={4}
+                                        defaultValue={() => validateLastData(lsLastRecord.observacionEFU, "string")}
+                                        fullWidth
+                                        name="observacionEFU"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[1].title}
+                                        onClick={() => setOpenApuntesPersonales(true)}
+                                        icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[2].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[3].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('EXPLORACION_FUNCIONAL') }}
+                                        icons={DetailIcons[3].icons}
+                                    />
+                                </Grid>
+                            </SubCard>
                         </Accordion>
                     </Grid>
 

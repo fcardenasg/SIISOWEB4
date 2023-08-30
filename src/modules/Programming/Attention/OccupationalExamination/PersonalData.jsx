@@ -19,11 +19,13 @@ import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
 import PeopleIcon from '@mui/icons-material/People';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
-import BusinessIcon from '@mui/icons-material/Business';
 import ElderlyIcon from '@mui/icons-material/Elderly';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import { ListDetailsAll, ListDetails } from 'components/components/ListDetails';
 import UpdateEmployee from './Update/UpdateEmployee';
+import RoomPreferencesIcon from '@mui/icons-material/RoomPreferences';
+import BusinessIcon from '@mui/icons-material/Business';
+import SchoolIcon from '@mui/icons-material/School';
 import { useState } from 'react';
 
 const DetailsViewOne = [
@@ -86,7 +88,7 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
             </ControlModal>
 
             <Grid item lg={6} xs={12}>
-                <SubCard title="Datos Personales" secondary={
+                <SubCard secondary={
                     <Tooltip title="Actualizar Empleado">
                         <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
                             <IconEdit stroke={1.5} size="1.3rem" />
@@ -95,22 +97,41 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
                 }>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                            <Avatar sx={{ width: 60, height: 60 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
+                            <Avatar sx={{ width: 80, height: 80 }} alt="Foto del Empleado" src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
                         </Grid>
 
                         {lsEmployee.length !== 0 ?
                             <Grid item xs zeroMinWidth>
-                                <Typography align="left" variant="h4">
-                                    {lsEmployee.nombres}
+                                <Typography align="justify" variant="h4">
+                                    <Grid container spacing={0.5}>
+                                        <Grid item xs={9} md={10}>
+                                            {lsEmployee.nombres}
+                                        </Grid>
+
+                                        <Grid item xs={3} md={2}>
+                                            <Tooltip title="Actualizar Empleado">
+                                                <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
+                                                    <IconEdit stroke={1.5} />
+                                                </Button>
+                                            </Tooltip>
+                                        </Grid>
+                                    </Grid>
                                 </Typography>
-                                <Typography align="left" variant="h7">
-                                    {lsEmployee.nameGenero}
+
+                                <Typography align="left" variant="h6">
+                                    Genero: {lsEmployee.nameGenero}
                                 </Typography>
-                                <Typography align="left" variant="subtitle2">
-                                    {ViewFormat(lsEmployee.fechaNaci)}
+
+                                <Typography align="left" variant="h6">
+                                    Fecha De Nacimiento: {ViewFormat(lsEmployee.fechaNaci)}
                                 </Typography>
-                                <Typography align="left" variant="subtitle2">
-                                    {lsEmployee.nameEstadoCivil}
+
+                                <Typography align="left" variant="h6">
+                                    Municipio De Nacimiento: {lsEmployee.nameMunicipioNacido}
+                                </Typography>
+
+                                <Typography align="left" variant="h6">
+                                    Estado Civil: {lsEmployee.nameEstadoCivil}
                                 </Typography>
                             </Grid> : null
                         }
@@ -118,12 +139,17 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
                     </Grid>
 
                     <List component="nav" aria-label="main mailbox folders">
+                        <Typography variant="h4" sx={{ my: 2 }}>Información Personales</Typography>
                         <ListDetailsAll icons={DetailsViewOne[0].icons} name={DetailsViewOne[0].name} campoRender={lsEmployee.email} />
                         <ListDetailsAll icons={DetailsViewOne[1].icons} name={DetailsViewOne[1].name} campoRender={lsEmployee.celular} />
-                        <ListDetailsAll icons={DetailsViewOne[2].icons} name={DetailsViewOne[2].name} campoRender={lsEmployee.direccionResidencia} />
-                        <ListDetailsAll icons={DetailsViewOne[3].icons} name={DetailsViewOne[3].name} campoRender={lsEmployee.nameMunicipioResidencia} />
+                        <ListDetailsAll icons={<SchoolIcon sx={{ fontSize: '1.3rem' }} />} name="Escolaridad" campoRender={lsEmployee.nameEscolaridad} />
+                        <ListDetailsAll icons={<RoomPreferencesIcon sx={{ fontSize: '1.3rem' }} />} name="Sede" campoRender={lsEmployee.nameSede} />
+                        <ListDetailsAll icons={<BusinessIcon sx={{ fontSize: '1.3rem' }} />} name="Empresa" campoRender={lsEmployee.nameCompany} />
+
                         <ListDetailsAll icons={DetailsViewOne[4].icons} name={DetailsViewOne[4].name} campoRender={lsEmployee.contacto} />
                         <ListDetailsAll icons={DetailsViewOne[5].icons} name={DetailsViewOne[5].name} campoRender={lsEmployee.telefonoContacto} />
+
+                        <Typography variant="h4" sx={{ my: 2 }}>Información De Seguridad Social</Typography>
                         <ListDetailsAll icons={DetailsViewOne[6].icons} name={DetailsViewOne[6].name} campoRender={lsEmployee.nameEps} />
                         <ListDetailsAll icons={DetailsViewOne[7].icons} name={DetailsViewOne[7].name} campoRender={lsEmployee.nameAfp} />
                         <ListDetailsAll icons={DetailsViewOne[8].icons} name={DetailsViewOne[8].name} campoRender={lsEmployee.nameArl} />
@@ -132,17 +158,17 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
             </Grid >
 
             <Grid item lg={6} xs={12}>
-                <SubCard title="Información de la Empresa y Cargo" secondary={
-                    <Tooltip title="Actualizar Empleado">
-                        <Button disabled={lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
-                            <IconEdit stroke={1.5} />
-                        </Button>
-                    </Tooltip>
-                }>
+                <SubCard>
                     <Grid container direction="column" spacing={2}>
-                        <ListDetails name={DetailsViewTwo[0].name} campoRender={lsEmployee.nameSede} />
+                        <Typography variant="h4" sx={{ my: 2, ml: 2 }}>Información Demográfica</Typography>
+                        <ListDetails name="Municipio de nacimiento" campoRender={lsEmployee.nameMunicipioNacido} />
+                        <ListDetails name={DetailsViewOne[2].name} campoRender={lsEmployee.direccionResidencia} />
+                        <ListDetails name={DetailsViewOne[3].name} campoRender={lsEmployee.nameMunicipioResidencia} />
+
                         <ListDetails name={DetailsViewTwo[1].name} campoRender={lsEmployee.direccionResidenciaTrabaja} />
                         <ListDetails name={DetailsViewTwo[2].name} campoRender={lsEmployee.nameMunicipioResidenciaTrabaja} />
+                        <Typography variant="h4" sx={{ my: 2, ml: 2 }}>Información Contractual</Typography>
+
                         <ListDetails name={DetailsViewTwo[3].name} campoRender={lsEmployee.nameDepartamento} />
                         <ListDetails name={DetailsViewTwo[4].name} campoRender={lsEmployee.nameArea} />
                         <ListDetails name={DetailsViewTwo[5].name} campoRender={lsEmployee.nameRosterPosition} />

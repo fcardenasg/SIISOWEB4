@@ -137,7 +137,9 @@ export function PostOccupationalExamination(
     parentesco2ANFA = 9537, parentesco2ObserANFA = "",
     parentesco3ANFA = 9537, parentesco3ObserANFA = "",
     parentesco4ANFA = 9537, parentesco4ObserANFA = "",
-    lateralidadExamenesFisico = DefaultValue.SINREGISTRO_GLOBAL
+    lateralidadExamenesFisico = DefaultValue.SINREGISTRO_GLOBAL,
+
+    vacunaBCGIM, vacunaVHBIM, vacunaVHCIM
 ) {
     return {
         idRegistroAtencion, documento, fecha, idAtencion, congenitosAP, inmunoPrevenibleAP, infecciososAP,
@@ -206,7 +208,9 @@ export function PostOccupationalExamination(
         tabaquismoASintR, tabaquismoBSintR, tabaquismoCSintR, tabaquismoDSintR, tabaquismoESintR, actDeportASintR,
         actDeporA1SintR, actDeporA2SintR, actDeporA3SintR, actDeporA4SintR, recoSintR, parentesco1ANFA,
         parentesco1ObserANFA, parentesco2ANFA, parentesco2ObserANFA, parentesco3ANFA, parentesco3ObserANFA,
-        parentesco4ANFA, parentesco4ObserANFA, lateralidadExamenesFisico
+        parentesco4ANFA, parentesco4ObserANFA, lateralidadExamenesFisico,
+
+        vacunaBCGIM, vacunaVHBIM, vacunaVHCIM
     };
 }
 
@@ -347,7 +351,9 @@ export function PutOccupationalExamination(id,
     parentesco2ANFA = 9537, parentesco2ObserANFA = "",
     parentesco3ANFA = 9537, parentesco3ObserANFA = "",
     parentesco4ANFA = 9537, parentesco4ObserANFA = "",
-    lateralidadExamenesFisico = DefaultValue.SINREGISTRO_GLOBAL
+    lateralidadExamenesFisico = DefaultValue.SINREGISTRO_GLOBAL,
+
+    vacunaBCGIM, vacunaVHBIM, vacunaVHCIM
 ) {
     return {
         id, idRegistroAtencion, documento, fecha, idAtencion, congenitosAP, inmunoPrevenibleAP, infecciososAP,
@@ -416,6 +422,8 @@ export function PutOccupationalExamination(id,
         tabaquismoASintR, tabaquismoBSintR, tabaquismoCSintR, tabaquismoDSintR, tabaquismoESintR, actDeportASintR,
         actDeporA1SintR, actDeporA2SintR, actDeporA3SintR, actDeporA4SintR, recoSintR, parentesco1ANFA,
         parentesco1ObserANFA, parentesco2ANFA, parentesco2ObserANFA, parentesco3ANFA, parentesco3ObserANFA,
-        parentesco4ANFA, parentesco4ObserANFA, lateralidadExamenesFisico
+        parentesco4ANFA, parentesco4ObserANFA, lateralidadExamenesFisico,
+
+        vacunaBCGIM, vacunaVHBIM, vacunaVHCIM
     };
 }

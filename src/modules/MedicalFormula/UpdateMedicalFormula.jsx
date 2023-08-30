@@ -83,7 +83,7 @@ const UpdateMedicalFormula = () => {
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -91,7 +91,7 @@ const UpdateMedicalFormula = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalFormula(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);

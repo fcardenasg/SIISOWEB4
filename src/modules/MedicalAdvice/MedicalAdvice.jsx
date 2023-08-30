@@ -54,6 +54,7 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import UpdateAttMedicalAdvice from 'modules/Programming/Attention/AttentionMedicalAdvice/UpdateAttMedicalAdvice';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
+import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
     idSubmotivo: yup.string().required(ValidationMessage.Requerido),
@@ -103,6 +104,7 @@ const MedicalAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
 
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -185,7 +187,7 @@ const MedicalAdvice = () => {
             const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -450,6 +452,17 @@ const MedicalAdvice = () => {
                                                         onClick={() => setOpen(true)}
                                                         icons={DetailIcons[2].icons}
                                                     />
+
+                                                    <Grid item xs={2}>
+                                                        <InputCheck
+                                                            onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                                            checked={extenderDescripcion}
+                                                            label="Extender Reporte"
+                                                            name="extenderDescripcion"
+                                                            size={30}
+                                                            defaultValue={false}
+                                                        />
+                                                    </Grid>
                                                 </Grid>
 
                                                 <Grid item xs={12} sx={{ pt: 2 }}>

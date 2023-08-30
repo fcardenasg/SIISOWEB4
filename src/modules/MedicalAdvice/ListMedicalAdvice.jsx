@@ -242,7 +242,7 @@ const ListMedicalAdvice = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'nameSubmotivo', 'fecha', 'usuarioRegistra'];
+                const properties = ['documento', 'nameEmpleado', 'nameMotivo', 'nameSubmotivo'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

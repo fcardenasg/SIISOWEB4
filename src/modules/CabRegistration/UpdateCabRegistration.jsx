@@ -9,14 +9,12 @@ import {
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
-
 import ControlModal from 'components/controllers/ControlModal';
 import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdCabRegistration, UpdateCabRegistrations } from 'api/clients/CabRegistrationClient';
@@ -160,7 +158,7 @@ const UpdateCabRegistration = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdCabRegistration(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
             const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }

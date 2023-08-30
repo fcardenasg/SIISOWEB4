@@ -49,7 +49,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
     130,
     doc.internal.pageSize.height - (44 - my)
   );
-  doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
+  doc.text(`FIRMA DEL ${lsDataReport.nameTipoContrato}`, 130, doc.internal.pageSize.height - (40 - my));
 }
 
 /* Encabezado */
@@ -79,36 +79,6 @@ export function getHeader(doc) {
   doc.setLineWidth(1);
   doc.setDrawColor(255, 0, 0);
   doc.line(5, 25, 210, 25);
-}
-
-/* Pie de Pag. */
-function getPiePage(doc, lsDataUser, page, pageSize) {
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setLineWidth(1);
-  doc.setDrawColor(255, 0, 0);
-  doc.line(
-    5,
-    doc.internal.pageSize.height - 10,
-    210,
-    doc.internal.pageSize.height - 10
-  );
-
-  doc.text(
-    `FECHA DE SISTEMA:  ${new Date().toLocaleString()}`,
-    10,
-    doc.internal.pageSize.height - 4
-  );
-  doc.text(
-    `USUARIO ACTIVO:  ${lsDataUser.nombre}`,
-    90,
-    doc.internal.pageSize.height - 4
-  );
-  doc.text(
-    `Pag. ${page} of ${pageSize}`,
-    190,
-    doc.internal.pageSize.height - 4
-  );
 }
 
 /* Pag. 1 */

@@ -5,7 +5,7 @@ import {
     Grid, Typography,
 } from '@mui/material';
 
-import DomainTwoToneIcon from '@mui/icons-material/DomainTwoTone';
+import { IconLungs } from '@tabler/icons';
 import Accordion from 'components/accordion/Accordion';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { FormProvider } from 'react-hook-form';
@@ -84,7 +84,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
 
     return (
         <Fragment>
-            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+            <Accordion title={<><IconLungs />
                 <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">TOS</Typography></>}>
                 <SubCard darkTitle title="Tos">
                     <Grid container spacing={1} alignItems="center">
@@ -321,7 +321,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
             </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+            <Accordion title={<><IconLungs />
                 <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">ATAQUES</Typography></>}>
                 <SubCard darkTitle title="Ataques De Silbidos">
                     <Grid container spacing={1} alignItems="center">
@@ -485,7 +485,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
             </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+            <Accordion title={<><IconLungs />
                 <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">GRIPAS</Typography></>}>
 
                 <SubCard darkTitle title="Gripas y Enfermedades del Torax">
@@ -879,7 +879,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
             </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+            <Accordion title={<><IconLungs />
                 <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">HISTORIA</Typography></>}>
 
                 <SubCard darkTitle title="Historia Ocupacional">
@@ -1169,7 +1169,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
             </Accordion>
             <Grid sx={{ pb: 2 }} />
 
-            <Accordion title={<><DomainTwoToneIcon fontSize="small" color="primary" />
+            <Accordion title={<><IconLungs />
                 <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">RECOMENDACIONES</Typography></>}>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12}>

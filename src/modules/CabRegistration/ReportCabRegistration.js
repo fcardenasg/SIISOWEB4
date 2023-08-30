@@ -33,24 +33,6 @@ function getPiePage(doc, lsDataUser, page, pageSize) {
   doc.text(`Pag. ${page} of ${pageSize}`, 190, doc.internal.pageSize.height - 4);
 }
 
-function getFirmaEmployee(doc, lsDataReport, my = 0) {
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(128, 128, 128);
-  doc.line(
-    130,
-    doc.internal.pageSize.height - (48 - my),
-    195,
-    doc.internal.pageSize.height - (48 - my)
-  );
-  doc.setFontSize(8);
-  doc.text(
-    `${lsDataReport.nameEmpleado}`,
-    130,
-    doc.internal.pageSize.height - (44 - my)
-  );
-  doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
-}
-
 function getFirma(doc, lsDataUser, my = 0) {
   doc.addImage(`${lsDataUser.firma}`, "PNG", 7, doc.internal.pageSize.height - (70 - my), 50, 20);
   doc.setLineWidth(0.5);
@@ -61,11 +43,6 @@ function getFirma(doc, lsDataUser, my = 0) {
   doc.text(`${lsDataUser.nameEspecialidad}`, 7, doc.internal.pageSize.height - (40 - my));
   doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
-
-
-
-
-//////////////////////////////////
 
 function generateReportCabRegistration(
   doc = new jsPDF(),

@@ -91,21 +91,6 @@ function a11yProps(index) {
     };
 }
 
-const tabsOption = [
-    {
-        label: 'Datos Laborales',
-        icon: <AccountCircleTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Historia Laboral',
-        icon: <DescriptionTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
-    },
-    {
-        label: 'Historia Ocupacional',
-        icon: <LibraryBooksTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
-    }
-];
-
 const calculateImc = (peso, talla) => {
     try {
         if (peso !== "" || talla !== "") {
@@ -200,6 +185,7 @@ const OccupationalExamination = () => {
     const [documento, setDocumento] = useState('');
     const [atencion, setAtencion] = useState('');
     const [lsLastRecord, setLsLastRecord] = useState([]);
+    const [tabsOption, setTabsOption] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsAnthropometry, setLsAnthropometry] = useState([]);
     const [lsAtencionEMO, setLsAtencionEMO] = useState([]);
@@ -307,6 +293,23 @@ const OccupationalExamination = () => {
 
             if (lsServerEmployee.status === 200) {
                 setLsEmployee(lsServerEmployee.data);
+
+                const tabsOptionArray = [
+                    {
+                        label: `Datos Del ${lsServerEmployee.data.nameTipoContrato1}`,
+                        icon: <AccountCircleTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
+                    },
+                    {
+                        label: 'Historia Laboral',
+                        icon: <DescriptionTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
+                    },
+                    {
+                        label: 'Historia Clinica',
+                        icon: <LibraryBooksTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
+                    }
+                ];
+                setTabsOption(tabsOptionArray);
+
                 setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
                 setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
             }
@@ -544,7 +547,9 @@ const OccupationalExamination = () => {
                 datos.actDeporA1SintR, datos.actDeporA2SintR, datos.actDeporA3SintR, datos.actDeporA4SintR, datos.recoSintR,
 
                 datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
-                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico
+                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico,
+
+                datos.vacunaBCGIM, datos.vacunaVHBIM, datos.vacunaVHCIM
             );
 
             if (Object.keys(datos.length !== 0)) {
@@ -658,7 +663,9 @@ const OccupationalExamination = () => {
                 datos.actDeporA1SintR, datos.actDeporA2SintR, datos.actDeporA3SintR, datos.actDeporA4SintR, datos.recoSintR,
 
                 datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
-                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico
+                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico,
+
+                datos.vacunaBCGIM, datos.vacunaVHBIM, datos.vacunaVHCIM
             );
 
             if (Object.keys(datos.length !== 0)) {
@@ -771,7 +778,7 @@ const OccupationalExamination = () => {
                         <Grid sx={{ pb: 2 }} />
                     </Transitions>
 
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS DEL PACIENTE</Typography>}
+                    <SubCard darkTitle title={<Typography variant="h4">DATOS DEL {lsEmployee.nameTipoContrato}</Typography>}
                         secondary={
                             <Fragment>
                                 <Tooltip title="Gráfico Historico De IMC">
@@ -954,9 +961,7 @@ const OccupationalExamination = () => {
                                 setEstadoVacuna={setEstadoVacuna}
                                 estadoVacuna={estadoVacuna}
                                 lsEmployee={lsEmployee}
-                                {...methods}
-                            />
-                            <Framingham
+
                                 calculoFramingham={calculoFramingham}
                                 frFuma={frFuma}
                                 frColesterol={frColesterol}
@@ -981,10 +986,9 @@ const OccupationalExamination = () => {
                                 glicemia={glicemia}
                                 handleTencion={setTencion}
                                 tencion={tencion}
-
-                                documento={documento}
                                 {...methods}
                             />
+
                         </StickyActionBar>
                     </TabPanel>
 

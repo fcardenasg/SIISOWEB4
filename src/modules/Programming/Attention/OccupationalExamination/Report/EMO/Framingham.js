@@ -45,7 +45,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
     130,
     doc.internal.pageSize.height - (44 - my)
   );
-  doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
+  doc.text(`FIRMA DEL ${lsDataReport.nameTipoContrato}`, 130, doc.internal.pageSize.height - (40 - my));
 }
 
 /* Pag. 1 */
@@ -210,17 +210,6 @@ export function pageFramingham(
     maxWidth: 190,
     lineHeightFactor: 1.0,
   });
-
-  /* {
-    interpretacion === 'POR DEBAJO DEL RIESGO PROMEDIO' ?
-      <FavoriteIcon sx={{ color: theme.palette.success.dark, width: 50, height: 50 }} fontSize="large" /> :
-      interpretacion === 'RIESGO PROMEDIO' ?
-        <FavoriteIcon sx={{ color: theme.palette.secondary.dark, width: 50, height: 50 }} fontSize="large" /> :
-        interpretacion === 'RIESGO MODERADO' ?
-          <HeartBrokenIcon sx={{ color: theme.palette.warning.dark, width: 50, height: 50 }} fontSize="large" /> :
-          interpretacion === 'RIESGO ALTO' ?
-            <HeartBrokenIcon sx={{ color: theme.palette.error.dark, width: 50, height: 50 }} fontSize="large" /> : ''
-  } */
 
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "normal");

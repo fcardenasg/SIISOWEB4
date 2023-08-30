@@ -54,7 +54,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
     130,
     doc.internal.pageSize.height - (44 - my)
   );
-  doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
+  doc.text(`FIRMA DEL ${lsDataReport.nameTipoContrato}`, 130, doc.internal.pageSize.height - (40 - my));
 }
 
 function generateImmunization(doc = new jsPDF(), lsDataReport) {
@@ -93,7 +93,7 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
       vacuna: lsDataReport.otrasIM,
       anio: lsDataReport.anioVacuna6IM,
       name: "OTRAS",
-      refuerzo: "",
+      refuerzo: `${lsDataReport.vacunaBCGIM !== "" ? lsDataReport.vacunaBCGIM + ((lsDataReport.vacunaVHBIM !== '' || lsDataReport.vacunaVHCIM !== '') ? ' - ' : "") : ""}${lsDataReport.vacunaVHBIM !== "" ? lsDataReport.vacunaVHBIM + ((lsDataReport.vacunaBCGIM !== '' || lsDataReport.vacunaVHCIM !== '') ? ' - ' : "") : ""}${lsDataReport.vacunaVHCIM !== "" ? lsDataReport.vacunaVHCIM : ""}`,
     },
   ];
 

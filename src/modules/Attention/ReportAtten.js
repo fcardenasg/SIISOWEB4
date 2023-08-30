@@ -45,14 +45,11 @@ export function generateReport(lsDataReport = [], lsDataUser = []) {
 
     /* CUADRO DATOS */
     doc.line(5, 40, 210, 40);
-    doc.line(5, 40, 5, 160);
-    doc.line(40, 40, 40, 74); /* LINEA ONE */
-    doc.line(115, 40, 115, 74); /* LINEA TWO */
-    doc.line(210, 40, 210, 160);
-    doc.line(5, 74, 210, 74);
-    /* CUADRO OBSERVACIÓN */
-    doc.line(5, 84, 210, 84);
-    doc.line(5, 160, 210, 160);
+    doc.line(5, 40, 5, 80);
+    doc.line(40, 40, 40, 80); /* LINEA ONE */
+    doc.line(5, 80, 210, 80);
+
+    doc.line(210, 40, 210, 80);
 
     /* TITULOS DE CONTENIDO */
     doc.text('N° REGISTRO:', 45, 48);
@@ -63,7 +60,6 @@ export function generateReport(lsDataReport = [], lsDataUser = []) {
     doc.text('NOMBRES:', 120, 62);
     doc.text('ESTADO CASO:', 45, 69);
     doc.text('SEDE:', 120, 69);
-    doc.text('OBSERVACIÓN:', 10, 80);
 
     /* RENDERIZADO DE CONTENIDO */
     doc.setFont("helvetica", "normal");
@@ -76,8 +72,6 @@ export function generateReport(lsDataReport = [], lsDataUser = []) {
     doc.text(`${lsDataReport.nameEmpleado}`, 145, 62);
     doc.text(`${lsDataReport.nameEstadoCaso}`, 75, 69);
     doc.text(`${lsDataReport.nameSedeAtencion}`, 145, 69);
-
-    doc.text(`${lsDataReport.observaciones}`, 10, 90, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
     /* PIE DE PÁGINA */
     getPiePage(doc, lsDataUser);

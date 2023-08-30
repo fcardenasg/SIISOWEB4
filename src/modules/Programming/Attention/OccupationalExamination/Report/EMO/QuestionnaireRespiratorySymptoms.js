@@ -45,7 +45,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
     130,
     doc.internal.pageSize.height - (44 - my)
   );
-  doc.text("FIRMA DEL EMPLEADO", 130, doc.internal.pageSize.height - (40 - my));
+  doc.text(`FIRMA DEL ${lsDataReport.nameTipoContrato}`, 130, doc.internal.pageSize.height - (40 - my));
 }
 
 /* Pag. 1 */
