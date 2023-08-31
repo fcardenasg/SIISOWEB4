@@ -49,19 +49,19 @@ function getFirma(doc, lsDataUser, my = 0) {
     doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
 
-function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDataUser) {
+function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDataUser, lsConfiguracion) {
     var marXR = doc.internal.pageSize.width - 5;
 
     doc.text('DATOS DEL REGISTRO', 7, 37);
     doc.text('INFORMACIÓN DE ASESORÍA', 7, 85);
     doc.text('DESCRIPCIÓN DE LA ASESORÍA', 7, 105);
-    doc.text('RECOMENDACIONES', 7, 165);
+    if (!lsConfiguracion) { doc.text('RECOMENDACIONES', 7, 165); }
+
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
 
     /* CUADRO DATOS */
-    doc.line(5, 32, 5, 220); /* IZQUIERDA */
     doc.line(5, 32, marXR, 32); /* HORI ONE */
     doc.line(5, 39, marXR, 39); /* HORI TWO  */
 
@@ -70,13 +70,10 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
 
     doc.line(5, 100, marXR, 100); /* HORI FIVE */
     doc.line(5, 108, marXR, 108); /* HORI SIX */
-
-    doc.line(5, 160, marXR, 160); /* HORI SEVEN */
-    doc.line(5, 168, marXR, 168); /* HORI OCHO */
-
-    doc.line(5, 220, marXR, 220); /* HORI ULTIMA */
     doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
-    doc.line(marXR, 32, marXR, 220); /* DERECHA */
+
+
+
 
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
@@ -121,20 +118,72 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`MOTIVO: ${lsDataReport.nameMotivo}`, marXR - 2, 95, { align: 'right', maxWidth: 80, lineHeightFactor: 1.5 });
 
     /* DESCRIPCIONES DE TEXTO */
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.text(`${lsDataReport.motivo}`, 7, 112, { maxWidth: 200, lineHeightFactor: 1.5 });
-    doc.text(`${lsDataReport.recomendaciones}`, 7, 175, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    getFirma(doc, lsDataUser, 15);
+    if (!lsConfiguracion) {
+        doc.line(5, 160, marXR, 160);
+        doc.line(5, 168, marXR, 168);
+
+        doc.line(5, 32, 5, 220);
+        doc.line(marXR, 32, marXR, 220);
+        doc.line(5, 220, marXR, 220);
+
+        doc.text(`${lsDataReport.recomendaciones}`, 7, 175, { maxWidth: 200, lineHeightFactor: 1.5 });
+        getFirma(doc, lsDataUser, 15);
+    } else {
+        doc.line(5, 32, 5, doc.internal.pageSize.height - 15); /* IZQUIERDA */
+        doc.line(marXR, 32, marXR, doc.internal.pageSize.height - 15); /* DERECHA */
+        doc.line(5, doc.internal.pageSize.height - 15, marXR, doc.internal.pageSize.height - 15); /* HORI ULTIMA */
+    }
 }
 
-export function generateReportOtherAdvice(lsDataReport = [], lsDataUser) {
+function generateReportMedicalAdviceExtendido(doc = new jsPDF(), lsDataReport = [], lsDataUser, lsConfiguracion) {
+    var marXR = doc.internal.pageSize.width - 5;
+    doc.setFont("helvetica", "bold");
+    doc.text('RECOMENDACIONES:', 7, 37);
+
+    doc.setFontSize(10);
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(128, 128, 128);
+
+    /* CUADRO DATOS */
+    if (lsConfiguracion) {
+        doc.line(5, 32, 5, 100); /* IZQUIERDA */
+        doc.line(marXR, 32, marXR, 100); /* DERECHA */
+        doc.line(5, 100, marXR, 100); /* HORI ULTIMA */
+    } else {
+        doc.line(5, 32, 5, 220); /* IZQUIERDA */
+        doc.line(marXR, 32, marXR, 220); /* DERECHA */
+        doc.line(5, 220, marXR, 220); /* HORI ULTIMA */
+    }
+
+    doc.line(5, 32, marXR, 32); /* HORI ONE */
+    doc.line(5, 40, marXR, 40); /* HORI TWO  */
+
+    /* DESCRIPCIONES DE TEXTO */
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${lsDataReport.recomendaciones}`, 7, 45, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+    getFirma(doc, lsDataUser);
+}
+
+export function generateReportOtherAdvice(lsDataReport = [], lsDataUser, lsConfiguracion = false) {
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");
     getHeader(doc, lsDataReport);
-    generateReportMedicalAdvice(doc, lsDataReport, lsDataUser);
+    generateReportMedicalAdvice(doc, lsDataReport, lsDataUser, lsConfiguracion);
     getPiePage(doc, lsDataUser, 1, 1);
+
+    if (lsConfiguracion) {
+        doc.addPage();
+
+        getHeader(doc, lsDataReport);
+        generateReportMedicalAdviceExtendido(doc, lsDataReport, lsDataUser, lsConfiguracion);
+        getPiePage(doc, lsDataUser, 1, 1);
+    }
 
     var dataPDF = doc.output("bloburl");
     return dataPDF;

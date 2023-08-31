@@ -171,7 +171,7 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
 
                         <ListDetails name={DetailsViewTwo[3].name} campoRender={lsEmployee.nameDepartamento} />
                         <ListDetails name={DetailsViewTwo[4].name} campoRender={lsEmployee.nameArea} />
-                        <ListDetails name={DetailsViewTwo[5].name} campoRender={lsEmployee.nameRosterPosition} />
+                        <ListDetails name={`Posición/Cargo Del ${lsEmployee.nameTipoContrato1}`} campoRender={lsEmployee.nameRosterPosition} />
                         <ListDetails name={DetailsViewTwo[6].name} campoRender={lsEmployee.nameGrupo} />
                         <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.nameTurno} />
                         <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.nameTipoContrato} />

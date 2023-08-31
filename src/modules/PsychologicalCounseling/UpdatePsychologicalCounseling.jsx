@@ -36,6 +36,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import Cargando from 'components/loading/Cargando';
+import InputCheck from 'components/input/InputCheck';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -53,6 +54,7 @@ const UpdatePsychologicalCounseling = () => {
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
 
     const [openReport, setOpenReport] = useState(false);
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
 
     const [openUpdate, setOpenUpdate] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -127,7 +129,7 @@ const UpdatePsychologicalCounseling = () => {
             const lsDataReport = await GetByIdAdvice(id);
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
-            const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -348,6 +350,17 @@ const UpdatePsychologicalCounseling = () => {
                                         onClick={() => setOpen(true)}
                                         icons={DetailIcons[2].icons}
                                     />
+
+                                    <Grid item xs={2}>
+                                        <InputCheck
+                                            onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                            checked={extenderDescripcion}
+                                            label="Extender Reporte"
+                                            name="extenderDescripcion"
+                                            size={30}
+                                            defaultValue={false}
+                                        />
+                                    </Grid>
                                 </Grid>
 
                                 <Grid item xs={12}>

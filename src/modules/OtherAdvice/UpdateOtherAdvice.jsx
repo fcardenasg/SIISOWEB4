@@ -49,6 +49,7 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import Cargando from 'components/loading/Cargando';
+import InputCheck from 'components/input/InputCheck';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -96,6 +97,7 @@ const UpdateOtherAdvice = () => {
     const [documento, setDocumento] = useState('');
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
 
     const [openReport, setOpenReport] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
@@ -174,7 +176,7 @@ const UpdateOtherAdvice = () => {
             const lsDataReport = await GetByIdAdvice(id);
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
-            const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -409,6 +411,17 @@ const UpdateOtherAdvice = () => {
                                                 onClick={() => setOpen(true)}
                                                 icons={DetailIcons[2].icons}
                                             />
+
+                                            <Grid item xs={2}>
+                                                <InputCheck
+                                                    onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                                    checked={extenderDescripcion}
+                                                    label="Extender Reporte"
+                                                    name="extenderDescripcion"
+                                                    size={30}
+                                                    defaultValue={false}
+                                                />
+                                            </Grid>
                                         </Grid>
 
                                         <Grid item xs={12} sx={{ pt: 2 }}>

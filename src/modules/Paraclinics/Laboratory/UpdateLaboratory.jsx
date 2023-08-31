@@ -331,7 +331,7 @@ const UpdateLaboratory = () => {
                                                 name="interpretacionColesteHDL"
                                                 label="Interpretación"
                                                 defaultValue={lsVisiometrics.interpretacionColesteHDL}
-                                                options={lsInterpretacion}
+                                                options={lsInterpretacionColes}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
@@ -428,7 +428,7 @@ const UpdateLaboratory = () => {
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="interpretacionGlicemia"
-                                                label="Interpretacion"
+                                                label="Interpretación"
                                                 defaultValue={lsVisiometrics.interpretacionGlicemia}
                                                 options={lsInterpretacionColes}
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -472,7 +472,7 @@ const UpdateLaboratory = () => {
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="interpretacionCreatinina"
-                                                label="lsInterpretacion"
+                                                label="Interpretación"
                                                 defaultValue={lsVisiometrics.interpretacionCreatinina}
                                                 options={lsInterpretacionColes}
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -516,7 +516,7 @@ const UpdateLaboratory = () => {
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="interpretacionBUN"
-                                                label="lsInterpretacion"
+                                                label="Interpretación"
                                                 defaultValue={lsVisiometrics.interpretacionBUN}
                                                 options={lsInterpretacionColes}
                                                 size={matchesXS ? 'small' : 'medium'}

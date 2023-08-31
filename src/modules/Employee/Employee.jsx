@@ -337,6 +337,7 @@ const Employee = () => {
                 setOpenError(true);
                 setErrorMessage('Hubo un problemas al guardo los datos');
             }
+            
         } catch (error) {
             setOpenError(true);
             setErrorMessage(`${Message.RegistroNoGuardado}`);

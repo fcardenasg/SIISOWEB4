@@ -37,8 +37,8 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, InsertAdvice, SaveAdvice } from 'api/clients/AdviceClient';
-import { GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -55,6 +55,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+import InputCheck from 'components/input/InputCheck';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -101,6 +102,7 @@ const UpdateOtherAdvice = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
 
     const [timeWait, setTimeWait] = useState(false);
     const [openReport, setOpenReport] = useState(false);
@@ -217,7 +219,7 @@ const UpdateOtherAdvice = () => {
             const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
-            const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -470,6 +472,17 @@ const UpdateOtherAdvice = () => {
                                                 onClick={() => setOpen(true)}
                                                 icons={DetailIcons[2].icons}
                                             />
+
+                                            <Grid item xs={2}>
+                                                <InputCheck
+                                                    onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                                    checked={extenderDescripcion}
+                                                    label="Extender Reporte"
+                                                    name="extenderDescripcion"
+                                                    size={30}
+                                                    defaultValue={false}
+                                                />
+                                            </Grid>
                                         </Grid>
 
                                         <Grid item xs={12} sx={{ pt: 2 }}>

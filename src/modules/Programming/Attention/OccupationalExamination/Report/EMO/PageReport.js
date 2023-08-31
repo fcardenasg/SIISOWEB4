@@ -616,7 +616,7 @@ export function generateReportConceptAptitude(
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
   doc.text("NOMBRE:", 120, 45);
-  doc.text("CARGO:", 45, 50);
+  doc.text(`${lsDataReport.nameAtencion === "INGRESO" ? "CARGO AL QUE ASPIRA:" : "CARGO:"}`, 45, 50);
   doc.text("PROFESIÓN:", 45, 55);
   doc.text("AREA:", 45, 60);
   doc.text("DEPARTAMENTO:", 45, 65);
@@ -688,7 +688,7 @@ export function generateReportDiagnosis(
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 7, 45);
   doc.text("NOMBRE:", 120, 45);
-  doc.text("CARGO:", 7, 50);
+  doc.text(`${lsDataReport.nameAtencion === "INGRESO" ? "CARGO AL QUE ASPIRA:" : "CARGO:"}`, 7, 50);
   doc.text("PROFESIÓN:", 7, 55);
   doc.text("AREA:", 7, 60);
   doc.text("DEPARTAMENTO:", 7, 65);

@@ -142,6 +142,7 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
                                             <ExcelColumn label="Tipo De Soporte" value="nameIdTipoSoporte" />
                                             <ExcelColumn label="Categoria" value="nameIdCategoria" />
 
+                                            <ExcelColumn label="Proveedor IPS" value="proveedor" />
                                             <ExcelColumn label="Departamento IPS" value="nameDepartamentoIPS" />
                                             <ExcelColumn label="Ciudad IPS" value="nameCiudadIPS" />
                                             <ExcelColumn label="Nombre Profesional" value="nombreProfesional" />

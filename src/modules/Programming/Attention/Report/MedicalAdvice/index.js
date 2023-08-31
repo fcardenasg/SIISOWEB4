@@ -187,7 +187,6 @@ function generateReportMedicalAdviceExtendido(doc = new jsPDF(), lsDataReport = 
     getFirma(doc, lsDataUser, 20);
 }
 
-
 export function generateReport(lsDataReport = [], lsDataUser, lsConfiguracion = false) {
     const doc = new jsPDF('p', 'mm', 'letter');
 

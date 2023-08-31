@@ -253,7 +253,7 @@ const Laboratory = () => {
                                     <FormProvider {...methods}>
                                         <InputText
                                             fullWidth
-                                            name="ResultadoColesterol"
+                                            name="resultadoColesterol"
                                             label="Resultado mg/dl"
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
@@ -398,7 +398,7 @@ const Laboratory = () => {
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="interpretacionGlicemia"
-                                            label="Interpretacion"
+                                            label="Interpretación"
                                             options={lsInterpretacionColes}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
@@ -439,7 +439,7 @@ const Laboratory = () => {
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="interpretacionCreatinina"
-                                            label="Interpretacion"
+                                            label="Interpretación"
                                             options={lsInterpretacionColes}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
@@ -480,7 +480,7 @@ const Laboratory = () => {
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="interpretacionBUN"
-                                            label="Interpretacion"
+                                            label="Interpretación"
                                             options={lsInterpretacionColes}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />

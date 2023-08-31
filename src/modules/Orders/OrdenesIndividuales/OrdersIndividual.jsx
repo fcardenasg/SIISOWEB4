@@ -98,7 +98,6 @@ const OrdersIndividual = () => {
                 setLoading(true);
             }
 
-
             const lsDataReport = await GetByIdOrders(resultData);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(resultData);
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);

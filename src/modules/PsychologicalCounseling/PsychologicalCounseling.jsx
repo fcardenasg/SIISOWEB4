@@ -38,6 +38,7 @@ import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
     idTipoAsesoria: yup.string().required(ValidationMessage.Requerido),
@@ -59,6 +60,7 @@ const PsychologicalCounseling = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [documento, setDocumento] = useState('');
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
 
     const [openReport, setOpenReport] = useState(false);
 
@@ -140,7 +142,7 @@ const PsychologicalCounseling = () => {
             const lsDataReport = await GetByIdAdvice(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
-            const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -355,6 +357,17 @@ const PsychologicalCounseling = () => {
                                     onClick={() => setOpen(true)}
                                     icons={DetailIcons[2].icons}
                                 />
+
+                                <Grid item xs={2}>
+                                    <InputCheck
+                                        onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                        checked={extenderDescripcion}
+                                        label="Extender Reporte"
+                                        name="extenderDescripcion"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </Grid>
                             </Grid>
 
                             <Grid item xs={12}>

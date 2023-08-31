@@ -59,12 +59,12 @@ export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser 
     doc.setFontSize(12);
     doc.text(`Nro. Orden:       ${lsDataReport.id}`, 5, 48);
     doc.setFontSize(10);
-    doc.text(`YO ${lsDataReport.nameEmpleado}     IDENTIFICADO CON CC NRO. ${lsDataReport.documento}`, 5, 60);
+    doc.text(`YO ${lsDataReport.nameEmpleado}     IDENTIFICAD${lsDataReport.nameGenero === "MASCULINO" ? "O" : "A"} CON CC NRO.${lsDataReport.documento} `, 5, 60);
 
 
     doc.setFont("helvetica", "normal");
-    doc.text(`${concentimientoParrafo1}`, 7, 80, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
-    doc.text(`${concentimientoParrafo2}`, 7, 130, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`${concentimientoParrafo1} `, 7, 80, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`${concentimientoParrafo2} `, 7, 130, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser);
     getFirmaEmployee(doc, lsDataReport);
@@ -74,7 +74,7 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], 
 
     var cantidadParaclinico = lsDataReport.lsParaclinicos.length * 6;
 
-    doc.text(`CITACIÓN A EXAMEN FÍSICO PARA:            ${lsDataReport.nameTipoExamen}`, 5, 35);
+    doc.text(`CITACIÓN A EXAMEN FÍSICO PARA:            ${lsDataReport.nameTipoExamen} `, 5, 35);
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
@@ -85,7 +85,7 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], 
     doc.text('Fecha Expedición:', 120, 48);
     doc.text('CC No.', 120, 55);
 
-    doc.text('Cargo:', 5, 70);
+    doc.text(`${lsDataReport.nameTipoExamen === "INGRESO" ? "Cargo al que aspira:" : "Cargo:"}`, 5, 70);
     doc.text('Departamento:', 5, 77);
     doc.text('Grupo:', 5, 84);
 
@@ -93,25 +93,26 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], 
     doc.text('Sede:', 120, 84);
     doc.setFontSize(12);
     doc.text(`${lsDataReportParaclinico.filter(x => x.idParaclinico === DefaultValue.ORDENES_FECHA_EXAM_FISICO)
-        .map(x => ViewFormat(x.fechaExamenFisico))}`, 100, 120, null, null, "center");
+        .map(x => ViewFormat(x.fechaExamenFisico))
+        } `, 100, 120, null, null, "center");
 
     /* RENDERIZADO DE CONTENIDO */
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text(`${lsDataReport.id}`, 50, 48);
-    doc.text(`${lsDataReport.nameEmpleado}`, 50, 55);
-    doc.text(`${ViewFormat(lsDataReport.fecha)}`, 160, 48);
-    doc.text(`${lsDataReport.documento}`, 160, 55);
+    doc.text(`${lsDataReport.id} `, 50, 48);
+    doc.text(`${lsDataReport.nameEmpleado} `, 50, 55);
+    doc.text(`${ViewFormat(lsDataReport.fecha)} `, 160, 48);
+    doc.text(`${lsDataReport.documento} `, 160, 55);
 
-    doc.text(`${lsDataReport.nameCargo}`, 50, 70);
-    doc.text(`${lsDataReport.nameDepartamento}`, 50, 77);
-    doc.text(`${lsDataReport.nameGrupo}`, 50, 84);
-    doc.text(`${lsDataReport.nameArea}`, 160, 77);
-    doc.text(`${lsDataReport.nameSede}`, 160, 84);
+    doc.text(`${lsDataReport.nameCargo} `, 50, 70);
+    doc.text(`${lsDataReport.nameDepartamento} `, 50, 77);
+    doc.text(`${lsDataReport.nameGrupo} `, 50, 84);
+    doc.text(`${lsDataReport.nameArea} `, 160, 77);
+    doc.text(`${lsDataReport.nameSede} `, 160, 84);
 
-    doc.text(`Con el propósito de dar cumplimiento al programa de vigilancia epidemiológica de evaluaciones médicas ocupacionales programadas y con ello a la resolución 2346 de 2007, tal como lo establece la legislación Colombiana vigente, me permito informarle que el Departamento Médico de la Compañía ha programado su examen médico en la Unidad de Salud de ${lsDataReport.nameSede}, en la siguiente fecha:`, 5, 100, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`Con el propósito de dar cumplimiento al programa de vigilancia epidemiológica de evaluaciones médicas ocupacionales programadas y con ello a la resolución 2346 de 2007, tal como lo establece la legislación Colombiana vigente, me permito informarle que el Departamento Médico de la Compañía ha programado su examen médico en la Unidad de Salud de ${lsDataReport.nameSede}, en la siguiente fecha: `, 5, 100, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
     doc.text('Adjunto además órdenes de Paraclínicos, cuyos resultados debe traer el día del examen.', 5, 128);
-    doc.text(lsDataReport.lsParaclinicos.map((paracli, index) => { return String(`- ${paracli}`); }), 5, 135, { maxWidth: 200, lineHeightFactor: 2 });
+    doc.text(lsDataReport.lsParaclinicos.map((paracli, index) => { return String(`- ${paracli} `); }), 5, 135, { maxWidth: 200, lineHeightFactor: 2 });
     doc.text("Agradecemos coordinar lo necesario para que los exámenes asignados sean realizados en las fechas programados y no sobrepasen el tiempo acordado con los proveedores.", 5, (145 + cantidadParaclinico), { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
 
@@ -122,8 +123,8 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], 
 export function generateReportParaclinico(doc, lsDataReport = [], lsDataUser = [], lsDataReportParaclinico = []) {
     var restaPosicion = lsDataReportParaclinico.idParaclinico === 3533 ? 0 : 20;
 
-    doc.text(`Nro Orden:        ${lsDataReport.id}`, 5, 35);
-    doc.text(`Fecha Expedición:         ${ViewFormat(lsDataReport.fecha)}`, 100, 35);
+    doc.text(`Nro Orden:        ${lsDataReport.id} `, 5, 35);
+    doc.text(`Fecha Expedición:         ${ViewFormat(lsDataReport.fecha)} `, 100, 35);
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
@@ -139,24 +140,24 @@ export function generateReportParaclinico(doc, lsDataReport = [], lsDataUser = [
     doc.text('Telefono:', 5, 102 - restaPosicion);
     doc.text('Ciudad:', 5, 109 - restaPosicion);
 
-    doc.text(`${lsDataReportParaclinico.nameProveedor}`, 5, 87 - restaPosicion);
-    doc.text(`${lsDataReport.nameEmpleado}`, 5, 134 - restaPosicion);
+    doc.text(`${lsDataReportParaclinico.nameProveedor} `, 5, 87 - restaPosicion);
+    doc.text(`${lsDataReport.nameEmpleado} `, 5, 134 - restaPosicion);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text(`${lsDataReportParaclinico.nameParaclinico} ${lsDataReportParaclinico.nameExamenRNM === null ? "" : lsDataReportParaclinico.nameExamenRNM}`, 100, 48);
+    doc.text(`${lsDataReportParaclinico.nameParaclinico} ${lsDataReportParaclinico.nameExamenRNM === null ? "" : lsDataReportParaclinico.nameExamenRNM} `, 100, 48);
     if (lsDataReportParaclinico.idParaclinico === 3533)
-        doc.text(`${lsDataReportParaclinico.nameExamenLaboratorio}`, 5, 67, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+        doc.text(`${lsDataReportParaclinico.nameExamenLaboratorio} `, 5, 67, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
 
-    doc.text(`${lsDataReportParaclinico.direccionProveedor}`, 40, 95 - restaPosicion);
-    doc.text(`${lsDataReportParaclinico.celularProveedor}`, 40, 102 - restaPosicion);
-    doc.text(`${lsDataReportParaclinico.ciudadProveedor}`, 40, 109 - restaPosicion);
+    doc.text(`${lsDataReportParaclinico.direccionProveedor} `, 40, 95 - restaPosicion);
+    doc.text(`${lsDataReportParaclinico.celularProveedor} `, 40, 102 - restaPosicion);
+    doc.text(`${lsDataReportParaclinico.ciudadProveedor} `, 40, 109 - restaPosicion);
 
     doc.text("Sirvase realizar por nuestra cuenta a el(la) Empleado(a) en mención, el(los) examen(es) señalado(s).", 5, 120 - restaPosicion);
 
-    doc.text(`Identificado con CC No: ${lsDataReport.documento}`, 5, 140 - restaPosicion);
-    doc.text(`Celular: ${lsDataReport.numeroCelular}`, 5, 146 - restaPosicion);
+    doc.text(`Identificado con CC No: ${lsDataReport.documento} `, 5, 140 - restaPosicion);
+    doc.text(`Celular: ${lsDataReport.numeroCelular} `, 5, 146 - restaPosicion);
 
     getFirma(doc, lsDataUser);
     getFirmaEmployee(doc, lsDataReport);
