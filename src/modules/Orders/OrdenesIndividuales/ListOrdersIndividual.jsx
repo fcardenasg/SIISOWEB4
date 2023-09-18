@@ -40,6 +40,7 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { ViewFormat } from 'components/helpers/Format';
 import { DeleteOrders, GetAllOrders } from 'api/clients/OrdersClient';
 import Cargando from 'components/loading/Cargando';
+import { ColorDrummondltd } from 'themes/colors';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -217,7 +218,7 @@ const ListOrdersIndividual = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('fecha');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -353,24 +354,16 @@ const ListOrdersIndividual = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <Tooltip title="Excel">
-                                    <IconButton size="large">
-                                        <FileCopyIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/orders-individual/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate("/orders/view")}>
                                     {TitleButton.Cancelar}
@@ -412,6 +405,12 @@ const ListOrdersIndividual = () => {
                                             tabIndex={-1}
                                             key={index}
                                             selected={isItemSelected}
+                                            sx={{
+                                                bgcolor: row.countExamenes === 0 ? ColorDrummondltd.RedDrummond : '',
+                                                ":hover": {
+
+                                                }
+                                            }}
                                         >
 
                                             <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
@@ -431,10 +430,7 @@ const ListOrdersIndividual = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
+                                                <Typography variant="subtitle1">
                                                     {row.documento}
                                                 </Typography>
                                             </TableCell>
@@ -446,10 +442,7 @@ const ListOrdersIndividual = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
+                                                <Typography variant="subtitle1">
                                                     {row.nameEmpleado}
                                                 </Typography>
                                             </TableCell>
@@ -461,10 +454,7 @@ const ListOrdersIndividual = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
+                                                <Typography variant="subtitle1">
                                                     {row.nameTipoExamen}
                                                 </Typography>
                                             </TableCell>
@@ -476,10 +466,7 @@ const ListOrdersIndividual = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
+                                                <Typography variant="subtitle1">
                                                     {row.sedeEmpleado}
                                                 </Typography>
                                             </TableCell>
@@ -491,11 +478,8 @@ const ListOrdersIndividual = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {ViewFormat(row.fecha)}
+                                                <Typography variant="subtitle1">
+                                                    {new Date(row.fechaRegistro).toLocaleString()}
                                                 </Typography>
                                             </TableCell>
 
@@ -506,10 +490,7 @@ const ListOrdersIndividual = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
+                                                <Typography variant="subtitle1">
                                                     {row.usuarioRegistro}
                                                 </Typography>
                                             </TableCell>

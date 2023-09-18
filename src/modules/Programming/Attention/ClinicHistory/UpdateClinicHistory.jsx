@@ -70,6 +70,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 import AccidentRate from './AccidentRate';
 import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import InputCheck from 'components/input/InputCheck';
 
 const validateLastData = (data, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
@@ -148,6 +149,7 @@ const UpdateClinicHistory = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
     const [openRegistrarAT, setOpenRegistrarAT] = useState(false);
     const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
@@ -211,7 +213,7 @@ const UpdateClinicHistory = () => {
 
     const handleUpdateAttentionClose = async (estadoPac = '') => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : lsAtencion.usuarioCierreAtencion;
+            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
 
             const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
             await UpdateEstadoRegistroAtencion(DataToUpdate);
@@ -428,7 +430,7 @@ const UpdateClinicHistory = () => {
             const lsDataReport = await GetByIdMedicalHistory(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
-            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -758,6 +760,17 @@ const UpdateClinicHistory = () => {
                                                     onClick={() => setOpen(true)}
                                                     icons={DetailIcons[2].icons}
                                                 />
+
+                                                <Grid item xs={2}>
+                                                    <InputCheck
+                                                        onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                                        checked={extenderDescripcion}
+                                                        label="Extender Reporte"
+                                                        name="extenderDescripcion"
+                                                        size={30}
+                                                        defaultValue={false}
+                                                    />
+                                                </Grid>
                                             </Grid>
 
                                             <Grid item xs={12}>

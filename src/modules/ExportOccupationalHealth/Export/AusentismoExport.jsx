@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import ReactExport from 'react-export-excel';
 import { Grid, Button } from '@mui/material';
-import { ViewFormat, ViewFormatMesDiaAnio } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
 import { GetExcelWorkAbsenteeism, GetExcelWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
-import LoadingGenerate from 'components/loading/LoadingGenerate';
 import { Message } from 'components/helpers/Enums';
 import { MessageError } from 'components/alert/AlertAll';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
+
+import ReactExport from 'react-export-excel';
+import { ViewFormatMesDiaAnio } from 'components/helpers/Format';
+import LoadingGenerate from 'components/loading/LoadingGenerate';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -23,16 +25,18 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
 
     async function getDataForExport() {
         try {
+            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
+
             if (fechaInicio !== null && fechaFin !== null) {
                 setStatusData(false); setLoading(true);
                 setLoading(true);
-                const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
 
-                if (tipoExcelAusentismo !== 2) {
+                if (tipoExcelAusentismo === 0) {
                     const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
 
                     if (lsServerExcel.status === 200) {
                         setLsData(lsServerExcel.data);
+                        
                         setTimeout(() => {
                             setStatusData(true);
                             setLoading(false);
@@ -42,11 +46,12 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
                     const lsServerExcel = await GetExcelWorkAbsenteeismHistory(parametros);
 
                     if (lsServerExcel.status === 200) {
-                        setLsData(lsServerExcel.data);
+                        DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
+
                         setTimeout(() => {
                             setStatusData(true);
                             setLoading(false);
-                        }, 1500);
+                        }, 1000);
                     }
                 }
             } else {
@@ -86,9 +91,9 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
                                             Descargar Excel
                                         </Button>
                                     </AnimateButton>
-                                } filename={`LISTA_DE_AUSENTISMO_${new Date().toLocaleString()}`}>
+                                } filename={`Ausentismo${new Date().toLocaleString()}`}>
                                     {tipoExcelAusentismo === 0 ?
-                                        <ExcelSheet data={lsData} name="Lista de Ausentismo Laboral">
+                                        <ExcelSheet data={lsData} name="Ausentismo Laboral">
                                             <ExcelColumn label="ID" value="idEmpleado" />
                                             <ExcelColumn label="Cedula" value="documento" />
                                             <ExcelColumn label="Nombre" value="nombres" />
@@ -103,68 +108,7 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
                                             <ExcelColumn label="Usuario_Registro" value="usuarioRegistro" />
                                             <ExcelColumn label="Fecha_Registro" value={(fe) => ViewFormatMesDiaAnio(fe.fechaRegistro)} />
                                             <ExcelColumn label="Hora_Registro" value="horaRegistro" />
-                                        </ExcelSheet>
-                                        :
-                                        <ExcelSheet data={lsData} name="Lista de Ausentismo Laboral">
-                                            <ExcelColumn label="Id" value="id" />
-                                            <ExcelColumn label="Documento" value="documento" />
-                                            <ExcelColumn label="Nombres" value="nombres" />
-                                            <ExcelColumn label="Fecha De Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
-                                            <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                            <ExcelColumn label="Area" value="nameArea" />
-                                            <ExcelColumn label="Grupo" value="nameGrupo" />
-                                            <ExcelColumn label="Fecha De Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
-                                            <ExcelColumn label="Roster Position" value="nameRosterPosition" />
-                                            <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                            <ExcelColumn label="Genero" value="nameGenero" />
-                                            <ExcelColumn label="Sede" value="nameSede" />
-                                            <ExcelColumn label="Celular" value="celular" />
-                                            <ExcelColumn label="Email" value="email" />
-                                            <ExcelColumn label="Empresa" value="empresa" />
-                                            <ExcelColumn label="Oficio" value="nameOficio" />
-                                            <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
-
-                                            <ExcelColumn label="Incapacidad" value="nameIncapacidad" />
-                                            <ExcelColumn label="Nro Incapacidad" value="nroIncapacidad" />
-                                            <ExcelColumn label="Fecha De Expedición" value={(fe) => ViewFormat(fe.fechaExpedicion)} />
-                                            <ExcelColumn label="Departamento De Expedición" value="nameDepartamentoExpedicion" />
-                                            <ExcelColumn label="Ciudad De Expedición" value="nameCiudadExpedicion" />
-                                            <ExcelColumn label="Tipo Incapacidad" value="nameTipoIncapacidad" />
-                                            <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                            <ExcelColumn label="Fecha Inicio" value={(fe) => ViewFormat(fe.fechaInicio)} />
-                                            <ExcelColumn label="Fecha Fin" value={(fe) => ViewFormat(fe.fechaFin)} />
-                                            <ExcelColumn label="Días Sin Laborar" value="diasSinLaborar" />
-                                            <ExcelColumn label="Código Dx" value="dx" />
-                                            <ExcelColumn label="Dx" value="nameDx" />
-                                            <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
-                                            <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
-                                            <ExcelColumn label="Subsegmento" value="nameSubsegmento" />
-                                            <ExcelColumn label="Tipo De Soporte" value="nameIdTipoSoporte" />
-                                            <ExcelColumn label="Categoria" value="nameIdCategoria" />
-
-                                            <ExcelColumn label="Proveedor IPS" value="proveedor" />
-                                            <ExcelColumn label="Departamento IPS" value="nameDepartamentoIPS" />
-                                            <ExcelColumn label="Ciudad IPS" value="nameCiudadIPS" />
-                                            <ExcelColumn label="Nombre Profesional" value="nombreProfesional" />
-                                            <ExcelColumn label="Especialidad" value="especialidad" />
-                                            <ExcelColumn label="RegistroProfesional" value="registroProfesional" />
-                                            <ExcelColumn label="Tipo De Atención" value="nameTipoAtencion" />
-                                            <ExcelColumn label="Cumplimiento De Requisito" value="nameCumplimientoRequisito" />
-                                            <ExcelColumn label="Expide InCapacidad" value="nameExpideInCapacidad" />
-                                            <ExcelColumn label="Observación Cumplimiento" value="observacionCumplimiento" />
-
-                                            <ExcelColumn label="Usuario De Modificación" value="usuarioModificacion" />
-                                            <ExcelColumn label="Fecha De Modificación" value={(fe) => ViewFormat(fe.fechaModificacion)} />
-                                            <ExcelColumn label="Tipo De Empleado" value="nameTipoEmpleado" />
-                                            <ExcelColumn label="Tipo De Nomina" value="nameTipoNomina" />
-
-                                            <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                            <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                            <ExcelColumn label="Hora Registro" value="horaRegistro" />
-
-                                            {/* <ExcelColumn label="Usuario Confirma" value="usuarioConfirma" />
-                                            <ExcelColumn label="Fecha Confirmacion" value={(fe) => ViewFormat(fe.fechaConfirmacion)} /> */}
-                                        </ExcelSheet>
+                                        </ExcelSheet> : null
                                     }
                                 </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null
                             }

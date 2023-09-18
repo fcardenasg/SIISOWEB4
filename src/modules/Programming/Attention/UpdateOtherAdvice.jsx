@@ -195,7 +195,7 @@ const UpdateOtherAdvice = () => {
 
     const handleUpdateAttentionClose = async (estadoPac = '') => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : lsAtencion.usuarioCierreAtencion;
+            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
 
             const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
             await UpdateEstadoRegistroAtencion(DataToUpdate);

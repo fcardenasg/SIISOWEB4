@@ -273,8 +273,11 @@ const OccupationalExamination = () => {
 
     const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const DataToUpdate = PutEstadoAtencion(id, estadoPac, '');
+            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
+
+            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
             const result = await UpdateEstadoRegistroAtencion(DataToUpdate);
+
             if (result.status === 200) {
                 if (estadoPac === 'ATENDIDO') {
                     swal(ParamCloseCase).then(async (willDelete) => {

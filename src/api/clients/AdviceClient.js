@@ -10,3 +10,6 @@ export const DeleteAdvice = async (idAsesorias) => await deleteData(Url.Asesoria
 
 export const GetExcelAdvice = async (parametroExcel) => await postData(Url.AsesoriasExcel, parametroExcel);
 export const SaveAdvice = async (asesorias) => await postData(Url.Asesorias, asesorias);
+
+/* Reportes de PDF */
+export const GetReportePdf = async () => await getData(Url.AsesoriasReportePdf);

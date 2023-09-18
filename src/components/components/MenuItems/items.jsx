@@ -73,7 +73,7 @@ export const itemsMenu = [
     subtitle: "EMO, TRIAGE, Enfermería y Asesorias",
     icon: GetAppIcon,
     selected: false,
-    url: '/export/list',
+    url: '/programming/update',
     color: ColorDrummondltd.GrayDrummond
   },
 ];
@@ -448,7 +448,7 @@ export const itemsExcel = [
     color: ColorDrummondltd.RedDrummond
   },
   {
-    title: "Pruebas De Alcohol y Droga",
+    title: "P. De Alcohol y Droga",
     subtitle: "",
     icon: IconFileExport,
     selected: true,

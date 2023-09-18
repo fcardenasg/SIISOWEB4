@@ -70,7 +70,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio = null, fechaFin = null }) => {
                                     </AnimateButton>
                                 } filename={`LISTA_DE_ACCIDENTE_TRABAJO_${new Date().toLocaleString()}`}>
                                     <ExcelSheet data={lsData} name="Lista de AT">
-                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                        <ExcelColumn label="Fecha" value={(fe) => new Date(fe.fecha)} />
                                         <ExcelColumn label="Empresa" value="empresa" />
                                         <ExcelColumn label="Tipo Contrato" value="tipoContrato" />
                                         <ExcelColumn label="Estado" value="status" />
@@ -80,7 +80,7 @@ const AccidenteTrabajo = ({ sede, fechaInicio = null, fechaFin = null }) => {
                                         <ExcelColumn label="Area" value="area" />
                                         <ExcelColumn label="Posicion" value="posicion" />
                                         <ExcelColumn label="Grupo" value="grupo" />
-                                        <ExcelColumn label="Fecha Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                        <ExcelColumn label="Fecha Contrato" value={(fe) => new Date(fe.fechaContrato)} />
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.fechaNaci)} />
                                         <ExcelColumn label="Eps" value="eps" />
                                         <ExcelColumn label="Ges" value="ges" />

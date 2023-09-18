@@ -214,6 +214,7 @@ const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParame
 const MenuExcel = Loadable(lazy(() => import('modules/Menu/MenuExcel')));
 
 const ExportOccupationalHealth = Loadable(lazy(() => import('modules/ExportOccupationalHealth/ExportOccupationalHealth')));
+const ListProgrammingUpdate = Loadable(lazy(() => import('modules/Programming/Update/ListProgrammingUpdate')));
 
 const MainRoutes = {
     path: '/',
@@ -908,6 +909,11 @@ const MainRoutes = {
         {
             path: '/export/menu',
             element: <MenuExcel />
+        },
+
+        {
+            path: '/programming/update',
+            element: <ListProgrammingUpdate />
         },
     ]
 };

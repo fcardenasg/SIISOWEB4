@@ -126,7 +126,7 @@ const UpdateOrdersIndividual = () => {
 
             const lsDataReport = await GetByIdOrders(id);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(id);
-            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioModifico);
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
             if (action === 'correo') {
@@ -166,7 +166,8 @@ const UpdateOrdersIndividual = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutOrders(id, documento, datos.fecha, tipoExamen, datos.observaciones,
-                user.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado);
+                lsDataOrdenes.usuarioRegistro, undefined, user.nameuser, undefined, datos.citacion,
+                datos.consentimientoInformado);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateOrders(DataToInsert);
@@ -182,7 +183,7 @@ const UpdateOrdersIndividual = () => {
 
     return (
         <Fragment>
-            <MessageUpdate message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal

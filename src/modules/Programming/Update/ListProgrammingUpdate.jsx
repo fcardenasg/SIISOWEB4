@@ -23,28 +23,29 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button
+    Button,
+    useMediaQuery
 } from '@mui/material';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import swal from 'sweetalert';
+import * as yup from "yup";
 import { visuallyHidden } from '@mui/utils';
-import { MessageDelete, MessageError, ParamDelete } from 'components/alert/AlertAll';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton, Message } from 'components/helpers/Enums';
+import { TitleButton, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllAttention, DeleteAttention, GetExcelAttention } from 'api/clients/AttentionClient';
+import { GetAllAtendidos, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
 
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { IconFileExport } from '@tabler/icons';
 import Cargando from 'components/loading/Cargando';
-import ViewPDF from 'components/components/ViewPDF';
+import useAuth from 'hooks/useAuth';
 import config from 'config';
-import { DownloadFile } from 'components/helpers/ConvertToBytes';
-import { ParametrosExcel } from 'formatdata/ParametrosForm';
+import { PutEstadoAtencion } from 'formatdata/AttentionForm';
+import InputSelect from 'components/input/InputSelect';
+import { FormProvider, useForm } from 'react-hook-form';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -95,9 +96,15 @@ const headCells = [
         align: 'left'
     },
     {
+        id: 'nameSedeAtencion',
+        numeric: false,
+        label: 'Sede',
+        align: 'left'
+    },
+    {
         id: 'fecha',
         numeric: false,
-        label: 'Fecha',
+        label: 'Fecha Cierre',
         align: 'left'
     },
 ];
@@ -192,14 +199,6 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
                 Nutrición
             </Typography>
         )}
-        <Box sx={{ flexGrow: 1 }} />
-        {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
-        )}
     </Toolbar>
 );
 
@@ -208,18 +207,29 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListAttention = () => {
-    const navigate = useNavigate();
-    const [idCheck, setIdCheck] = useState(0);
-    const [lsAttention, setLsAttention] = useState([]);
-    const [openDelete, setOpenDelete] = useState(false);
-    const [openReport, setOpenReport] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+const lsEstadoPaciente = [
+    { value: DefaultValue.ATENCION_PENDIENTE_ATENDIDO, label: "PENDIENTE POR ATENCIÓN" },
+    { value: DefaultValue.ATENCION_ESTASIENDOATENDIDO, label: "ESTÁ SIENDO ATENDIDO" }
+]
+
+const validationSchema = yup.object().shape({
+    idEstado: yup.string().required(ValidationMessage.Requerido),
+});
+
+const ListProgrammingUpdate = () => {
+    const { user } = useAuth();
+    const theme = useTheme();
+    const navigate = useNavigate();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [lsAttention, setLsAttention] = useState([]);
     const [openError, setOpenError] = useState(false);
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [idAtencion, setIdAtencion] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const theme = useTheme();
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
@@ -227,14 +237,34 @@ const ListAttention = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
-    const [dataPDF, setDataPDF] = useState(null);
+
+    const methods = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function getAll() {
         try {
-            const lsServer = await GetAllAttention();
+            const lsServer = await GetAllAtendidos(user?.nameuser);
             setLsAttention(lsServer.data);
             setRows(lsServer.data);
         } catch (error) { }
+    }
+
+    const handleUpdateAttentionOpen = async (datos) => {
+        try {
+            const DataToUpdate = PutEstadoAtencion(idAtencion, datos.idEstado, user?.nameuser);
+            const lsServer = await UpdateEstadoRegistroAtencion(DataToUpdate);
+
+            if (lsServer.status === 200) {
+                getAll();
+                setOpenUpdate(true);
+                setOpenModal(false);
+            }
+        } catch (err) {
+            setOpenError(true);
+            setErrorMessage("Error: No se pudo actualizar el estado");
+        }
     }
 
     useEffect(() => {
@@ -249,7 +279,7 @@ const ListAttention = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'usuarioRegistro'];
+                const properties = ['documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -285,8 +315,6 @@ const ListAttention = () => {
     };
 
     const handleClick = (event, id) => {
-        setIdCheck(id);
-
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
@@ -312,74 +340,47 @@ const ListAttention = () => {
         setPage(0);
     };
 
-    const handleDelete = async () => {
-        try {
-            swal(ParamDelete).then(async (willDelete) => {
-                if (willDelete) {
-                    const result = await DeleteAttention(idCheck);
-
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-                        setSelected([]);
-                        setIdCheck(0);
-                        getAll();
-                    }
-                } else
-                    setSelected([]);
-            });
-        } catch (error) { }
-    }
-
-    async function getDataForExport() {
-        try {
-            setLoading(true);
-
-            const parametros = ParametrosExcel(0, undefined, undefined, undefined);
-            const lsServerExcel = await GetExcelAttention(parametros);
-
-            if (lsServerExcel.status === 200) {
-                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
-
-                setTimeout(() => {
-                    setLoading(false);
-                }, 1000);
-            }
-
-        } catch (error) {
-            setLoading(false);
-
-            setOpenError(true);
-            setErrorMessage(Message.ErrorExcel);
-        }
-    }
-
-    const handleClose = () => {
-        setOpenReport(false);
-        setSelected([]);
-        setIdCheck('');
-        setDataPDF(null);
-    }
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsAttention.length) : 0;
 
     return (
-        <MainCard title="Lista de Atención" content={false}>
+        <MainCard title="Lista de Programaciones Atendidas" content={false}>
+            <MessageSuccess message="Estado cambiado con éxito" open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                title={Message.VistaReporte}
-                open={openReport}
-                onClose={handleClose}
-                maxWidth="xl"
+                title="Cambiar Estado De Atención"
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                maxWidth="xs"
             >
-                <ViewPDF dataPDF={dataPDF} />
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idEstado"
+                                label="Seleccione el nuevo estado"
+                                defaultValue=""
+                                options={lsEstadoPaciente}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.idEstado}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <AnimateButton>
+                            <Button variant="contained" fullWidth onClick={handleSubmit(handleUpdateAttentionOpen)}>
+                                {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                </Grid>
             </ControlModal>
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={8}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -395,30 +396,22 @@ const ListAttention = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <Tooltip disabled={loading} onClick={getDataForExport} title={TitleButton.Excel}>
-                                    <IconButton size="large">
-                                        <IconFileExport />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
+                    <Grid item xs={12} sm={6} lg={2} sx={{ textAlign: 'right' }}>
+                        <AnimateButton>
+                            <Button fullWidth variant="outlined" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate(config.defaultPath)}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
 
-                            <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/attention/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate(config.defaultPath)}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </Grid>
-                        </Grid>
+                    <Grid item xs={12} sm={6} lg={2} sx={{ textAlign: 'right' }}>
+                        <AnimateButton>
+                            <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate("/programming/list")}>
+                                {TitleButton.Programacion}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </Grid>
             </CardContent>
@@ -436,7 +429,6 @@ const ListAttention = () => {
                             rowCount={lsAttention.length}
                             theme={theme}
                             selected={selected}
-                            onClick={handleDelete}
                         />
                         <TableBody>
                             {stableSort(lsAttention, getComparator(order, orderBy))
@@ -537,12 +529,27 @@ const ListAttention = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
+                                                    {row.nameSedeAtencion}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
                                                     {ViewFormat(row.fecha)}
                                                 </Typography>
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/attention/update/${row.id}`)}>
+                                                <Tooltip title="Editar" onClick={() => { setOpenModal(true); setIdAtencion(row.id); }}>
                                                     <IconButton size="large">
                                                         <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
@@ -578,4 +585,4 @@ const ListAttention = () => {
     );
 };
 
-export default ListAttention;
+export default ListProgrammingUpdate;

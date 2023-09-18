@@ -198,6 +198,7 @@ export const DefaultValue = {
     OrdenadoPor_Reintegro_MedicoDLTD: 5180,
 
     ATENCION_ATENDIDO: 'ATENDIDO',
+    ATENCION_ESTASIENDOATENDIDO: 'ESTÁ SIENDO ATENDIDO',
     ATENCION_PENDIENTE_ATENDIDO: 'PENDIENTE POR ATENCIÓN',
 
     /* TIPO DE PARACLINICO */
@@ -322,6 +323,7 @@ export const TitleButton = {
     Historico: 'Historico',
     GenerarExcel: 'Generar Excel',
     DescargarExcel: 'Descargar Excel',
+    Excel: "Generar y Descargar Excel"
 }
 
 export const ValidationMessage = {

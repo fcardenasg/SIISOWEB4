@@ -73,14 +73,15 @@ const ReintegroExport = ({ sede, fechaInicio, fechaFin }) => {
                                         <ExcelColumn label="Nro Documento" value="nroDocumento" />
                                         <ExcelColumn label="Nombre" value="nombre" />
                                         <ExcelColumn label="Edad" value={(fe) => GetEdad(fe.edad)} />
-                                        <ExcelColumn label="Fecha Ingreso" value={(fe) => ViewFormat(fe.fechaIngreso)} />
-                                        <ExcelColumn label="Antiguedad" value={(fe) => ViewFormat(fe.antiguedad)} />
+                                        <ExcelColumn label="Fecha Ingreso" value={(fe) => new Date(fe.fechaIngreso)} />
+                                        <ExcelColumn label="Antiguedad" value={(fe) => new Date(fe.antiguedad)} />
                                         <ExcelColumn label="Sucursal" value="sucursal" />
                                         <ExcelColumn label="Dpto Actual" value="dptoActual" />
                                         <ExcelColumn label="Area Actual" value="areaActual" />
                                         <ExcelColumn label="Cargo Actual" value="cargoActual" />
                                         <ExcelColumn label="General Position" value="generalPosition" />
                                         <ExcelColumn label="Grupo Actual" value="grupoActual" />
+                                        <ExcelColumn label="Rol" value="nameRol" />
                                         <ExcelColumn label="Pay Status" value="payStatus" />
                                         <ExcelColumn label="Ges" value="ges" />
                                         <ExcelColumn label="Estado Caso" value="estadoCaso" />
@@ -94,21 +95,21 @@ const ReintegroExport = ({ sede, fechaInicio, fechaFin }) => {
 
                                         <ExcelColumn label="Estado Actual" value="estadoActual" />
                                         <ExcelColumn label="Tipo Restricción" value="tipoRestriccion" />
-                                        <ExcelColumn label="Fecha Inicio Restricción" value={(fe) => ViewFormat(fe.fechaInicioRestricciones)} />
-                                        <ExcelColumn label="Fecha Final Restricción" value={(fe) => ViewFormat(fe.fechaFinalRestricciones)} />
+                                        <ExcelColumn label="Fecha Inicio Restricción" value={(fe) => new Date(fe.fechaInicioRestricciones)} />
+                                        <ExcelColumn label="Fecha Final Restricción" value={(fe) => new Date(fe.fechaFinalRestricciones)} />
                                         <ExcelColumn label="Días Restringidos" value="diasRestringidos" />
                                         <ExcelColumn label="Estado Restricción" value="estadoRestriccion" />
                                         <ExcelColumn label="Ordenado Por" value="ordenadoPor" />
                                         <ExcelColumn label="Medico DLTD" value="medicoDLTD" />
                                         <ExcelColumn label="PCL" value="pcl" />
-                                        <ExcelColumn label="Inicio Reubicación" value={(fe) => ViewFormat(fe.inicioReubicacion)} />
-                                        <ExcelColumn label="Fin Reubicación" value={(fe) => ViewFormat(fe.finReubicacion)} />
+                                        <ExcelColumn label="Inicio Reubicación" value={(fe) => new Date(fe.inicioReubicacion)} />
+                                        <ExcelColumn label="Fin Reubicación" value={(fe) => new Date(fe.finReubicacion)} />
                                         <ExcelColumn label="Concepto Reintegro Ocupacional" value="conceptoReintegroOcupacional" />
                                         <ExcelColumn label="Tipo Reducción" value="tipoReduccion" />
                                         <ExcelColumn label="Ordenada Por" value="ordenadaPorSinHorario" />
-                                        <ExcelColumn label="Fecha Inicio Reducción" value={(fe) => ViewFormat(fe.fechaInicioReduccion)} />
-                                        <ExcelColumn label="Fecha Fin Reducción" value={(fe) => ViewFormat(fe.fechaFinReduccion)} />
-                                        <ExcelColumn label="Fecha Sistema" value={(fe) => ViewFormat(fe.fechaSistema)} />
+                                        <ExcelColumn label="Fecha Inicio Reducción" value={(fe) => new Date(fe.fechaInicioReduccion)} />
+                                        <ExcelColumn label="Fecha Fin Reducción" value={(fe) => new Date(fe.fechaFinReduccion)} />
+                                        <ExcelColumn label="Fecha Sistema" value={(fe) => new Date(fe.fechaSistema)} />
                                         <ExcelColumn label="Usuario" value="usuario" />
                                         <ExcelColumn label="Funciones" value="funciones" />
                                         <ExcelColumn label="Observación DX" value="observacionDX" />

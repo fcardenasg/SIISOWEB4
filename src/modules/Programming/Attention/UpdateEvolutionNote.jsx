@@ -67,6 +67,7 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPlantillaClinicHistory from 'components/template/ListPlantillaClinicHistory'
 import ListPlantillaEvolutionNote from 'components/template/ListPlantillaEvolutionNote';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+import InputCheck from 'components/input/InputCheck';
 
 const validateLastData = (data, tipoCampo = "bool") => {
     if (tipoCampo === "bool") {
@@ -146,6 +147,7 @@ const UpdateEvolutionNote = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
     const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -274,7 +276,7 @@ const UpdateEvolutionNote = () => {
             const lsDataReport = await GetByIdEvolutionNote(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
-            const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -293,7 +295,7 @@ const UpdateEvolutionNote = () => {
 
     const handleUpdateAttentionClose = async (estadoPac = '') => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : lsAtencion.usuarioCierreAtencion;
+            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
 
             const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
             await UpdateEstadoRegistroAtencion(DataToUpdate);
@@ -675,6 +677,17 @@ const UpdateEvolutionNote = () => {
                                                     onClick={() => setOpenNotaEvolucion(true)}
                                                     icons={DetailIcons[6].icons}
                                                 />
+
+                                                <Grid item xs={2}>
+                                                    <InputCheck
+                                                        onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                                        checked={extenderDescripcion}
+                                                        label="Extender Reporte"
+                                                        name="extenderDescripcion"
+                                                        size={30}
+                                                        defaultValue={false}
+                                                    />
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                     </SubCard>

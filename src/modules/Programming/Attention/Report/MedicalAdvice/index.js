@@ -76,7 +76,6 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
         doc.line(marXR, 32, marXR, 265); /* DERECHA */
     }
 
-
     doc.line(5, 108, marXR, 108); /* HORI SIX */
     doc.line(5, 32, marXR, 32); /* HORI ONE */
     doc.line(5, 39, marXR, 39); /* HORI TWO  */
@@ -89,7 +88,6 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
 
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
-
 
     doc.text('DOCUMENTO:', 42, 45);
     doc.text('ROSTER POSITION:', 42, 50);
@@ -149,8 +147,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`${lsDataReport.motivo}`, 7, 112, { maxWidth: 200, lineHeightFactor: 1.5 });
 
 
-    if (!lsConfiguracion/* lsConfiguracion.extendido */) {
-
+    if (!lsConfiguracion) {
         doc.text(`${lsDataReport.recomendaciones}`, 7, 212, { maxWidth: 200, lineHeightFactor: 1.5 });
         getFirma(doc, lsDataUser, 24);
     }

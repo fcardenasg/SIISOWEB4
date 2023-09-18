@@ -87,6 +87,7 @@ export const Url = {
     ProveedorId: 'api/Proveedor/id',
 
     RegistroAtencion: 'api/RegistroAtencion',
+    RegistroAtencionAtendidos: 'api/RegistroAtencion/atendidos',
     RegistroAtencionExcel: 'api/RegistroAtencion/excel',
     RegistroAtencionValidateAtencion: 'api/RegistroAtencion/validate-attention',
     UpdateEstadoRegistroAtencion: 'api/RegistroAtencion/UpdateEstadoRegistroAtencion',
@@ -115,6 +116,7 @@ export const Url = {
     AsesoriasExcel: 'api/Asesorias/excel',
     AsesoriasAll: 'api/Asesorias/all',
     AsesoriasId: 'api/Asesorias/id',
+    AsesoriasReportePdf: 'api/Asesorias/reporte-pdf',
 
     OrdenesEPP: 'api/OrdenesEPP',
     OrdenesEPPId: 'api/OrdenesEPP/id',

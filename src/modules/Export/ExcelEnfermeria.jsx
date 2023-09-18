@@ -120,11 +120,11 @@ const ExcelEnfermeria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
                                 <ExcelColumn label="Id" value="id" />
                                 <ExcelColumn label="Documento" value="documento" />
                                 <ExcelColumn label="Nombres" value="nombres" />
-                                <ExcelColumn label="Fecha De Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
+                                <ExcelColumn label="Fecha De Nacimiento" value={(fe) => new Date(fe.fechaNaci)} />
                                 <ExcelColumn label="Departamento" value="nameDepartamento" />
                                 <ExcelColumn label="Area" value="nameArea" />
                                 <ExcelColumn label="Grupo" value="nameGrupo" />
-                                <ExcelColumn label="Fecha De Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
+                                <ExcelColumn label="Fecha De Contrato" value={(fe) => new Date(fe.fechaContrato)} />
                                 <ExcelColumn label="Roster Position" value="nameRosterPosition" />
                                 <ExcelColumn label="General Position" value="nameGeneralPosition" />
                                 <ExcelColumn label="Genero" value="nameGenero" />
@@ -135,7 +135,7 @@ const ExcelEnfermeria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
                                 <ExcelColumn label="Oficio" value="nameOficio" />
                                 <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
 
-                                <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
+                                <ExcelColumn label="Fecha" value={(fe) => new Date(fe.fecha)} />
                                 <ExcelColumn label="Atención" value="nameAtencion" />
                                 <ExcelColumn label="Contingencia" value="nameContingencia" />
                                 <ExcelColumn label="Código Dx1" value="dx1" />
@@ -146,9 +146,9 @@ const ExcelEnfermeria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
                                 <ExcelColumn label="Dx3" value="nameDx3" />
                                 <ExcelColumn label="Nota Enfermedad" value="notaEnfermedad" />
                                 <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
+                                <ExcelColumn label="Fecha Registro" value={(fe) => new Date(fe.fechaRegistro)} />
                                 <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                <ExcelColumn label="Fecha Modifico" value={(fe) => ViewFormat(fe.fechaModifico)} />
+                                <ExcelColumn label="Fecha Modifico" value={(fe) => new Date(fe.fechaModifico)} />
                             </ExcelSheet>
                         </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null
                     }

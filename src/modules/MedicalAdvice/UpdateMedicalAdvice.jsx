@@ -35,7 +35,7 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import { FormatDate } from 'components/helpers/Format';
-import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
+import { GetByIdAdvice, GetReportePdf, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
@@ -204,10 +204,12 @@ const UpdateMedicalAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(id);
+            //const lsDataReport = await GetReportePdf();
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
+            //setDataPDF(`data:application/pdf;base64,${lsDataReport.data}`);
         } catch (err) { }
     };
 

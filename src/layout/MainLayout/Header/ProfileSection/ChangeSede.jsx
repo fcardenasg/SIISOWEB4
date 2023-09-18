@@ -15,7 +15,6 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Button, Grid, useMediaQuery } from '@mui/material';
 import { UpdateSedeUser } from 'api/clients/UserClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { IconReportMedical } from '@tabler/icons';
 
 const ChangeSede = () => {
     const theme = useTheme();
