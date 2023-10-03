@@ -27,7 +27,7 @@ import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -39,7 +39,7 @@ import { GetByIdAccidentRate, InsertAccidentRate } from 'api/clients/AccidentRat
 import { PostAccidentRate } from 'formatdata/AccidentRateForm';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
-import Cargando from 'components/loading/Cargando';
+
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetByMail } from 'api/clients/UserClient';
@@ -57,6 +57,7 @@ const AccidentRate = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
     const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
@@ -589,12 +590,15 @@ const AccidentRate = () => {
 
                                 <Grid item xs={12} sx={{ pt: 4 }}>
                                     {urlFile && (
-                                        <object type="application/pdf"
-                                            data={urlFile}
-                                            width="1180"
-                                            height="500"
-                                            onLoad={<Cargando />}
-                                        />
+                                        <Typography align='center'>
+                                            {urlFile && (
+                                                <object type="application/pdf"
+                                                    data={urlFile}
+                                                    width={matchesXS ? '350' : '800'}
+                                                    height="500"
+                                                />
+                                            )}
+                                        </Typography>
                                     )}
                                 </Grid>
                             </MainCard>

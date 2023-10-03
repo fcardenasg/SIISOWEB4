@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Button, Grid, useMediaQuery } from "@mui/material";
@@ -8,8 +9,6 @@ import InputDatePick from "components/input/InputDatePick";
 import SelectOnChange from "components/input/SelectOnChange";
 import { ParametrosExcel } from "formatdata/ParametrosForm";
 import AnimateButton from "ui-component/extended/AnimateButton";
-import ReactExport from "react-export-excel";
-import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
 import { GetExcelOrdersParaclinicos } from "api/clients/OrdersClient";

@@ -243,7 +243,7 @@ const ListPsychologicalCounseling = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'fecha', 'usuarioRegistra', 'nameMotivo', 'nameEmpleado', 'nameEstadoCaso'];
+                const properties = ['documento', 'fecha', 'nameMotivo', 'nameEmpleado', 'nameEstadoCaso'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

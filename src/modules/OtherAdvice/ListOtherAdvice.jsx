@@ -238,7 +238,7 @@ const ListOtherAdvice = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'fecha', 'nameTipoAtencion', 'usuarioRegistra'];
+                const properties = ['documento', 'nameEmpleado', 'fecha', 'nameTipoAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

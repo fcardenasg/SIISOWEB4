@@ -15,7 +15,7 @@ const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
         <div>
             <Dialog
                 fullWidth={true}
-                maxWidth={title === Message.VistaReporte ? "md" : maxWidth}
+                maxWidth={title === Message.VistaReporte || title === Message.VistaArchivo ? "md" : maxWidth}
                 open={open}
             >
                 <Grid container>

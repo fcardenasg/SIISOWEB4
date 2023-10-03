@@ -690,7 +690,7 @@ const Refund = () => {
                         </Transitions>
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>
-                            <Grid item xs={2}>
+                            <Grid item xs={4} md={2}>
                                 <AnimateButton>
                                     <Button disabled={resultData === '' ? false : true} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
@@ -698,7 +698,7 @@ const Refund = () => {
                                 </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={4} md={2}>
                                 <AnimateButton>
                                     <Button disabled={resultData !== '' ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
                                         {TitleButton.Imprimir}
@@ -706,7 +706,7 @@ const Refund = () => {
                                 </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={4} md={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/refund/list")}>
                                         {TitleButton.Cancelar}

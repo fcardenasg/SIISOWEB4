@@ -132,11 +132,11 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const CheckListRefund = ({ idReintegro, setRecargarLista, recargarLista }) => {
+const CheckListRefund = ({ idReintegro }) => {
     const [listRefund, setListRefund] = useState([]);
     const [openListPDF, setOpenListPDF] = useState(false);
     const [idListPDF, setIdListPDF] = useState(false);
-    const [nameListPDF, setNameListPDF] = useState(false);
+    const [nameListPDF, setNameListPDF] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
@@ -148,15 +148,11 @@ const CheckListRefund = ({ idReintegro, setRecargarLista, recargarLista }) => {
             try {
                 var lsCheckedReintegro = await GetAllReintegro(idReintegro);
                 setListRefund(lsCheckedReintegro.data);
-                if (lsCheckedReintegro.data.length !== 0) {
-                    setRecargarLista(true);
-                }
-
             } catch (error) { }
         }
 
         GetAll();
-    }, [idReintegro, openListPDF, recargarLista]);
+    }, [idReintegro, openListPDF]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -174,7 +170,7 @@ const CheckListRefund = ({ idReintegro, setRecargarLista, recargarLista }) => {
         <Fragment>
             <FullScreenDialog
                 open={openListPDF}
-                title={"ARCHIVOS DE " + nameListPDF}
+                title={`Archivos de ${nameListPDF?.toLowerCase()}`}
                 handleClose={() => setOpenListPDF(false)}
             >
                 <Grid sx={{ m: 2 }}>
@@ -197,7 +193,6 @@ const CheckListRefund = ({ idReintegro, setRecargarLista, recargarLista }) => {
                         {stableSort(listRefund, getComparator(order, orderBy))
                             .map((row, index) => {
                                 if (typeof row === 'string') return null;
-
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -282,7 +277,7 @@ const CheckListRefund = ({ idReintegro, setRecargarLista, recargarLista }) => {
 
                                         <TableCell align="center">
                                             <AnimateButton>
-                                                <Tooltip title="Subir Archivo" onClick={() => handleModalPDFS(row.id, row.documento)}>
+                                                <Tooltip title="Subir Archivo / Visualizar" onClick={() => handleModalPDFS(row.id, row.documento)}>
                                                     <IconButton size="large">
                                                         <UploadIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>

@@ -99,7 +99,7 @@ const headCells = [
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Usuario Que Atiende',
+        label: 'Usuario Registro',
         align: 'left'
     },
 ];

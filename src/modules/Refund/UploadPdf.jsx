@@ -47,8 +47,6 @@ const UploadPdf = ({ idListaReintegro }) => {
 
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
-
-
         let selectedFile = event.target.files[0];
 
         if (selectedFile) {
@@ -91,10 +89,10 @@ const UploadPdf = ({ idListaReintegro }) => {
     return (
         <Fragment>
             <ControlModal
-                title="VISUALIZAR ARCHIVO"
+                title={Message.VistaArchivo}
                 open={openViewArchivo}
                 onClose={() => setOpenViewArchivo(false)}
-                maxWidth="xl"
+                maxWidth="md"
             >
                 <ViewPDF dataPDF={filePdf} />
             </ControlModal>
@@ -104,44 +102,51 @@ const UploadPdf = ({ idListaReintegro }) => {
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">SUBIR ARCHIVO</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">{TitleButton.SubirArchivo} / {TitleButton.VerArchivo}</Typography>}>
                         <Grid container spacing={3}>
-                            <Grid item xs={4}>
-                                <AnimateButton>
-                                    <Button fullWidth variant="contained" component="label" endIcon={<UploadIcon fontSize="small" />}>
-                                        <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                        {TitleButton.SubirArchivo}
-                                    </Button>
-                                </AnimateButton>
+                            <Grid item xs={12} md={9} lg={10.5}>
+                                <SubCard darkTitle title={<Typography variant="h4">Lista de Archivo</Typography>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            {
+                                                lsArchivosReintegro.length !== 0 ?
+                                                    <ListaArchivosPDF lsArchivosCheckReintegro={lsArchivosReintegro} getAll={getAll} />
+                                                    :
+                                                    <Typography variant='h4' sx={{ pt: 2 }}>{Message.NoRegistro}</Typography>
+                                            }
+                                        </Grid>
+                                    </Grid>
+                                </SubCard>
                             </Grid>
 
-                            <Grid item xs={4}>
-                                <AnimateButton>
-                                    <Button disabled={filePdf === null ? true : false} fullWidth variant="outlined" component="label"
-                                        endIcon={<VisibilityIcon fontSize="small" />} onClick={() => setOpenViewArchivo(true)}>
-                                        {TitleButton.VerArchivo}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                            <Grid item xs={12} md={3} lg={1.5}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6} md={12}>
+                                        <AnimateButton>
+                                            <Button fullWidth variant="contained" component="label" endIcon={<UploadIcon fontSize="small" />}>
+                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                                {TitleButton.SubirArchivo}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
 
-                            <Grid item xs={4}>
-                                <AnimateButton>
-                                    <Button disabled={filePdf === null ? true : false} fullWidth variant="outlined" component="label" endIcon={<SaveIcon fontSize="small" />} onClick={handleSave}>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                                    <Grid item xs={6} md={12}>
+                                        <AnimateButton>
+                                            <Button disabled={filePdf === null ? true : false} fullWidth variant="outlined" component="label"
+                                                endIcon={<VisibilityIcon fontSize="small" />} onClick={() => setOpenViewArchivo(true)}>
+                                                {TitleButton.VerArchivo}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">LISTA DE ARCHIVO</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                {lsArchivosReintegro.length !== 0 ? <ListaArchivosPDF lsArchivosCheckReintegro={lsArchivosReintegro} getAll={getAll} />
-                                    : <Typography variant='h4'>NO HAY ARCHIVO</Typography>}
-
+                                    <Grid item xs={6} md={12}>
+                                        <AnimateButton>
+                                            <Button disabled={filePdf === null ? true : false} fullWidth variant="outlined" component="label" endIcon={<SaveIcon fontSize="small" />} onClick={handleSave}>
+                                                {TitleButton.Guardar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </SubCard>

@@ -239,7 +239,7 @@ const UpdateMedicalAdvice = () => {
         try {
             const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), lsMedicalAdvice.idRegistroAtencion, DefaultData.ASESORIA_MEDICA,
                 lsEmployee.sede, undefined, undefined, undefined, undefined, textTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones,
-                datos.recomendaciones, '', undefined, lsMedicalAdvice.usuarioRegistro, undefined, user.nameuser, undefined);
+                datos.recomendaciones, '', undefined, undefined, undefined, user.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

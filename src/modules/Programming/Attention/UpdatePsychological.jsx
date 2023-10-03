@@ -191,13 +191,9 @@ const UpdatePsychological = () => {
 
     const handleClick = async (datos) => {
         try {
-            const usuarioRegistro = resultData === 0 ? user.nameuser : dataAttention.usuarioRegistro;
-            const fechaRegistro = resultData === 0 ? undefined : dataAttention.fechaRegistro;
-            const usuarioModifico = resultData === 0 ? undefined : user.nameuser;
-
             const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
-                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, usuarioRegistro, fechaRegistro, usuarioModifico, undefined);
+                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, user.nameuser, undefined, user.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

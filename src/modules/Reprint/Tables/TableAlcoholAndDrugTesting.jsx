@@ -81,9 +81,9 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'Concepto',
+        id: 'nameConcepto',
         numeric: false,
-        label: 'nameConcepto',
+        label: 'Concepto',
         align: 'left'
     },
     {

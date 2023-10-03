@@ -224,7 +224,7 @@ const ListExamenesFisico = ({ documento = '' }) => {
     return (
         <Fragment>
             <ControlModal
-                title="VISTA DE EXAMEN"
+                title="Vista De Examen"
                 open={openViewPdf}
                 onClose={() => setOpenViewPdf(false)}
                 maxWidth="xl"

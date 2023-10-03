@@ -26,6 +26,7 @@ import ViewPDF from 'components/components/ViewPDF';
 import { DeleteListaReintegroArchivo } from 'api/clients/ListRefundClient';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import swal from 'sweetalert';
+import { Message } from 'components/helpers/Enums';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -157,7 +158,7 @@ const ListaArchivosPDF = ({ lsArchivosCheckReintegro, getAll }) => {
             <MessageDelete onClose={() => setOpenDelete(true)} open={openDelete} />
 
             <ControlModal
-                title="VISUALIZAR ARCHIVO"
+                title={Message.VistaArchivo}
                 open={openViewArchivo}
                 onClose={() => setOpenViewArchivo(false)}
                 maxWidth="xl"

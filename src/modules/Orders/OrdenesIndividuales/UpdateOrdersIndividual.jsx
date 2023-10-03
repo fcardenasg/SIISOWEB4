@@ -126,7 +126,10 @@ const UpdateOrdersIndividual = () => {
 
             const lsDataReport = await GetByIdOrders(id);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(id);
-            const lsDataUser = await GetByMail(lsDataReport.data.usuarioModifico);
+
+            const idUsuario = lsDataReport.data.usuarioModifico === "" ? lsDataReport.data.usuarioRegistro : lsDataReport.data.usuarioModifico;
+
+            const lsDataUser = await GetByMail(idUsuario);
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
             if (action === 'correo') {

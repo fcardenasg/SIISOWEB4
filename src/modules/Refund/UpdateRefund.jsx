@@ -57,11 +57,7 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    /* Eliminar Mas Adelante */
-    const [recargarLista, setRecargarLista] = useState(false);
-
     const [openReport, setOpenReport] = useState(false);
-
     const [viewListRefund, setViewListRefund] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -323,12 +319,14 @@ const Refund = () => {
             if (lsChekeo.data === true) {
                 setOpenSuccess(true);
                 setErrorMessage("Lista generada con éxito");
-                setRecargarLista(true);
+            } else {
+                setOpenError(true);
+                setErrorMessage("Este reintegro ya tiene una lista de chequeo generada");
             }
 
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            setErrorMessage("No se pudo generar la lista.");
         }
     };
 
@@ -754,11 +752,11 @@ const Refund = () => {
                         <SubCard darkTitle title={<Typography variant="h4">Lista de Chequeo</Typography>}>
 
                             <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
-                                <CheckListRefund idReintegro={id} recargarLista={recargarLista} setRecargarLista={setRecargarLista} />
+                                <CheckListRefund idReintegro={id} />
                             </Transitions>
 
                             <Grid container spacing={2} sx={{ pt: 4 }}>
-                                <Grid item xs={3}>
+                                <Grid item xs={6} md={3}>
                                     <AnimateButton>
                                         <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {TitleButton.Actualizar}
@@ -766,7 +764,7 @@ const Refund = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                <Grid item xs={6} md={3}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={handleClickReport}>
                                             {TitleButton.Imprimir}
@@ -774,15 +772,15 @@ const Refund = () => {
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                <Grid item xs={6} md={3}>
                                     <AnimateButton>
-                                        <Button disabled={recargarLista ? true : false} variant="outlined" fullWidth onClick={handleClickGenerateListChekeo}>
+                                        <Button disabled={lsRefund.tieneListaChequeo} variant="outlined" fullWidth onClick={handleClickGenerateListChekeo}>
                                             Generar Lista Chequeo
                                         </Button>
                                     </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                <Grid item xs={6} md={3}>
                                     <AnimateButton>
                                         <Button variant="outlined" fullWidth onClick={() => navigate("/refund/list")}>
                                             {TitleButton.Cancelar}

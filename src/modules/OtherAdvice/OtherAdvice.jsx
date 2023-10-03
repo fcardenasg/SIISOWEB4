@@ -38,7 +38,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -144,7 +144,8 @@ const OtherAdvice = () => {
             setLsMotivo(lsServerMotivo.data);
 
             const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TODAS_ASESORIAS);
-            setLsTipoAtencion(lsServerTipoAtencion.data);
+            setLsTipoAtencion(lsServerTipoAtencion.data?.filter(x => x.value !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO
+                && x.value !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA));
 
             setLsAtencion([{ id: 0 }]);
         } catch (error) { }

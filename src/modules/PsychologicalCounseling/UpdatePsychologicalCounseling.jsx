@@ -138,7 +138,7 @@ const UpdatePsychologicalCounseling = () => {
         try {
             const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), lsPsychologicalCounseling.idRegistroAtencion, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
-                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, lsPsychologicalCounseling.usuarioRegistro, undefined, user.nameuser, undefined);
+                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, undefined, undefined, user.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

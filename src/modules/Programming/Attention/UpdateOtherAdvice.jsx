@@ -162,7 +162,8 @@ const UpdateOtherAdvice = () => {
                 setLsMotivo(lsServerMotivo.data);
 
                 const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TODAS_ASESORIAS);
-                setLsTipoAtencion(lsServerTipoAtencion.data);
+                setLsTipoAtencion(lsServerTipoAtencion.data?.filter(x => x.value !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO
+                    && x.value !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA));
 
                 const lsServerAtencion = await GetByIdAttention(id);
                 if (lsServerAtencion.status === 200) {
@@ -211,8 +212,6 @@ const UpdateOtherAdvice = () => {
         } catch (error) { }
     }
 
-
-
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
@@ -226,13 +225,9 @@ const UpdateOtherAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const usuarioRegistro = resultData === 0 ? user.nameuser : dataAttention.usuarioRegistro;
-            const fechaRegistro = resultData === 0 ? undefined : dataAttention.fechaRegistro;
-            const usuarioModifico = resultData === 0 ? undefined : user.nameuser;
-
             const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
-                datos.recomendaciones, undefined, undefined, usuarioRegistro, fechaRegistro, usuarioModifico, undefined);
+                datos.recomendaciones, undefined, undefined, user.nameuser, undefined, user.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

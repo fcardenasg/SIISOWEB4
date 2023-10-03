@@ -21,7 +21,7 @@ import UpdateMedicalFormula from '../Programming/Attention/OccupationalExaminati
 import DialogFormula from '../Programming/Attention/OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -35,7 +35,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, SaveAdvice, } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -135,7 +135,8 @@ const UpdateOtherAdvice = () => {
             setLsMotivo(lsServerMotivo.data);
 
             const lsServerTipoAtencion = await GetByTipoCatalogoCombo(CodCatalogo.TODAS_ASESORIAS);
-            setLsTipoAtencion(lsServerTipoAtencion.data);
+            setLsTipoAtencion(lsServerTipoAtencion.data?.filter(x => x.value !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO
+                && x.value !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA));
 
             const lsServerAtencion = await GetByIdAdvice(id);
             if (lsServerAtencion.status === 200) {
@@ -185,7 +186,7 @@ const UpdateOtherAdvice = () => {
         try {
             const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), lsOtherAdvice.idRegistroAtencion, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
-                datos.recomendaciones, undefined, undefined, lsOtherAdvice.usuarioRegistro, undefined, user.nameuser, undefined);
+                datos.recomendaciones, undefined, undefined, undefined, undefined, user.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {
@@ -215,7 +216,7 @@ const UpdateOtherAdvice = () => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <FullScreenDialog
