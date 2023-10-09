@@ -8,6 +8,7 @@ import ExcelEmo from "./ExcelEmo";
 import ExcelEnfermeria from "./ExcelEnfermeria";
 import ExcelOrdenes from "./ExcelOrdenes";
 import ExcelPruebaAlcoholDroga from "./ExcelPruebaAlcoholDroga";
+import ExcelFramingham from "./ExcelFramingham";
 
 const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [sede, setSede] = useState(0);
@@ -87,6 +88,14 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
 
                 {exportBy.codigo === 'ALC_DRO' ?
                     <ExcelPruebaAlcoholDroga
+                        setSede={setSede} sede={sede}
+                        setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
+                        setFechaFin={setFechaFin} fechaFin={fechaFin}
+                    /> : null
+                }
+
+                {exportBy.codigo === 'FRAMI' ?
+                    <ExcelFramingham
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}

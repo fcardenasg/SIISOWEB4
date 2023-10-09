@@ -94,6 +94,7 @@ const UpdateAssistance = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [openReport, setOpenReport] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
     const [openFormula, setOpenFormula] = useState(false);
     const [openForm, setOpenForm] = useState(false);
     const [titleModal, setTitleModal] = useState('');
@@ -202,6 +203,11 @@ const UpdateAssistance = () => {
         }
     };
 
+    setTimeout(() => {
+        if (lsAssistance.length !== 0)
+            setTimeWait(true);
+    }, 1500);
+
     return (
         <Fragment>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
@@ -309,7 +315,7 @@ const UpdateAssistance = () => {
                 )}
             </DialogFormula>
 
-            {lsAssistance.length != 0 ?
+            {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee

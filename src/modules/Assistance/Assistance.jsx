@@ -132,13 +132,13 @@ const Assistance = () => {
                         setLsEmployee(lsServerEmployee.data);
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setLsEmployee([]);
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -246,7 +246,7 @@ const Assistance = () => {
                 onClose={() => setOpenReport(false)}
                 maxWidth="xl"
             >
-                
+
             </ControlModal>
 
             <ControlModal

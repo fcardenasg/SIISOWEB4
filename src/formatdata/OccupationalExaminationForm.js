@@ -301,7 +301,9 @@ export function PutOccupationalExamination(id,
 
     ldlfra = 0, relacionFRA = "",
     frlEdadFRA = 0, frlColesterolFRA = 0, frhdlfra = 0, frGlisemiaFRA = 0, frTencionFRA = 0, frTabaquismoFRA = 0, puntajeFRA = 0, riesgoAbsolutoFRA = 0,
-    riesgoRelativoFRA = "", interpretacionFRA = "", usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
+    riesgoRelativoFRA = "", interpretacionFRA = "", 
+    
+    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
 
     /* SINTOMAS RESPIRATORIOS */
     tosAUsualSin = false, tosEnLaSemanaSintR = false, tosMananaSintR = false, tosConsecutivaSintR = false, anosConTosSintR = 0,

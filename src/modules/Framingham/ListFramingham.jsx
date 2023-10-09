@@ -78,33 +78,33 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nameEmpleado',
+        id: 'nombre',
         numeric: false,
         label: 'Nombres',
         align: 'left'
     },
     {
-        id: 'tencionFRA',
+        id: 'tencion',
         numeric: false,
         label: 'Tención',
         align: 'left'
     },
     {
-        id: 'colesterolTotalFRA',
+        id: 'colesterolTotal',
         numeric: false,
         label: 'Colesterol Total',
+        align: 'left'
+    },
+    {
+        id: 'interpretacion',
+        numeric: false,
+        label: 'Interpretación',
         align: 'left'
     },
     {
         id: 'fecha',
         numeric: false,
         label: 'Fecha',
-        align: 'left'
-    },
-    {
-        id: 'interpretacionFRA',
-        numeric: false,
-        label: 'Interpretación',
         align: 'left'
     }
 ];
@@ -223,7 +223,7 @@ const ListAudiometry = () => {
 
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('fechaFRA');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -232,9 +232,9 @@ const ListAudiometry = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllFramingham(0, 0);
-            setLsFramingham(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllFramingham();
+            setLsFramingham(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) { }
     }
 
@@ -250,7 +250,7 @@ const ListAudiometry = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameEmpleado', 'tencionFRA', 'colesterolTotalFRA', 'fecha', 'interpretacionFRA'];
+                const properties = ['documento', 'nombre', 'tencion', 'colesterolTotal', 'interpretacion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -328,16 +328,14 @@ const ListAudiometry = () => {
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - laboratory.length) : 0;
 
     return (
-        <MainCard title="LISTA DE FRAMINGHAM" content={false}>
+        <MainCard title="Lista De Framingham" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -358,30 +356,16 @@ const ListAudiometry = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Audiometrías">
-                                    <ExcelSheet data={laboratory} name="Audiometrías">
-                                        <ExcelColumn label="Id" value="id" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
-
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/framingham/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                     onClick={() => navigate(config.defaultPath)}>
                                     {TitleButton.Cancelar}
@@ -455,7 +439,7 @@ const ListAudiometry = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.nameEmpleado}
+                                                {row.nombre}
                                             </Typography>
                                         </TableCell>
 
@@ -470,7 +454,7 @@ const ListAudiometry = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.tencionFRA}
+                                                {row.tencion}
                                             </Typography>
                                         </TableCell>
 
@@ -485,7 +469,22 @@ const ListAudiometry = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.colesterolTotalFRA}
+                                                {row.colesterolTotal}
+                                            </Typography>
+                                        </TableCell>
+
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.interpretacion}
                                             </Typography>
                                         </TableCell>
 
@@ -501,21 +500,6 @@ const ListAudiometry = () => {
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {ViewFormat(row.fecha)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {row.interpretacionFRA}
                                             </Typography>
                                         </TableCell>
 

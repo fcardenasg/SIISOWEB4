@@ -38,6 +38,7 @@ export const Url = {
     ReintegroGenerarList: 'api/Reintegro/lista-chekeo',
 
     Framingham: 'api/Framingham',
+    FraminghamExcel: 'api/Framingham/excel',
     FraminghamId: 'api/Framingham/id',
 
     ListaReintegro: 'api/ListaReintegro',

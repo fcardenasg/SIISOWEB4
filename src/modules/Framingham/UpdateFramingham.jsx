@@ -7,19 +7,18 @@ import {
     useMediaQuery,
 } from '@mui/material';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
     FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, PuntajeFr, FrColesterol, FrTension, FrLdl_FrRelacion
 } from 'components/helpers/Format';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageSuccess, MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 import InputOnChange from 'components/input/InputOnChange';
 import SelectOnChange from 'components/input/SelectOnChange';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { GetByIdAttention } from 'api/clients/AttentionClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -27,9 +26,9 @@ import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReport } from './ReportFramingham';
+import { generateReportFramingham } from './ReportFramingham';
 import ViewPDF from 'components/components/ViewPDF';
-import { PostFramingham } from 'formatdata/FraminghamForm';
+import { PostFramingham, PutFramingham } from 'formatdata/FraminghamForm';
 import ViewFramingham from 'modules/Programming/Attention/OccupationalExamination/Framingham/ViewFramingham';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -40,7 +39,8 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from 'modules/Programming/Attention/OccupationalExamination/TableEmo/TableAntecedentes';
-import { InsertFramingham } from 'api/clients/FraminghamClient';
+import { GetByIdFramingham, InsertFramingham, UpdateFraminghams } from 'api/clients/FraminghamClient';
+import Cargando from 'components/loading/Cargando';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -48,14 +48,18 @@ const DetailIcons = [
     { title: 'Ver Historico', icons: <AddBoxIcon fontSize="small" /> },
 ]
 
-const AddFramingham = () => {
+const UpdateFramingham = () => {
+    const { id } = useParams();
     const { user } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [openReport, setOpenReport] = useState(false);
+    const [timeWait, setTimeWait] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
+    const [result, setResult] = useState('');
+    const [lsData, setLsData] = useState([]);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -63,8 +67,6 @@ const AddFramingham = () => {
 
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-
-    const [result, setResult] = useState([]);
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
@@ -99,7 +101,22 @@ const AddFramingham = () => {
 
     const methods = useForm();
 
-    const { handleSubmit, reset } = methods;
+    const { handleSubmit } = methods;
+
+    const handleLoadingDocument = async (idEmployee) => {
+        try {
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
+
+            if (lsServerEmployee.status === 200) {
+                setLsEmployee(lsServerEmployee.data);
+
+
+            }
+        } catch (error) {
+            setLsEmployee([]);
+            setErrorMessage(Message.ErrorDeDatos);
+        }
+    }
 
     useEffect(() => {
         async function getAll() {
@@ -110,6 +127,40 @@ const AddFramingham = () => {
                     label: item.nombre
                 }));
                 setLsOpcion(resultOpcion);
+
+                const lsServe = await GetByIdFramingham(id);
+                if (lsServe.status === 200) {
+                    setDocumento(lsServe.data.documento);
+                    setLsData(lsServe.data);
+
+                    const event = {
+                        target: { value: lsServe.data.documento }
+                    }
+                    handleLoadingDocument(event);
+
+                    setFuma(lsServe.data.idFumaFRA);
+                    setTencion(lsServe.data.tencionFRA);
+                    setColesterol(lsServe.data.colesterolTotalFRA);
+                    setHdl(lsServe.data.hdlfra);
+                    setTrigliceridos(lsServe.data.triglicericosFRA);
+                    setGlicemia(lsServe.data.glisemiaFRA);
+
+                    setFrLdl(lsServe.data.ldlfra);
+                    setRelacion(lsServe.data.relacionFRA);
+                    setFrEdad(lsServe.data.frlEdadFRA);
+                    setFrColesterol(lsServe.data.frlColesterolFRA);
+                    setFrHdl(lsServe.data.frhdlfra);
+                    setFrGlicemia(lsServe.data.frGlisemiaFRA);
+                    setFrTencion(lsServe.data.frTencionFRA);
+                    setFrFuma(lsServe.data.frTabaquismoFRA);
+                    setFrPuntaje(lsServe.data.puntajeFRA);
+
+                    setRiesgo({
+                        dxRiesgo: lsServe.data.interpretacionFRA,
+                        riesgoAbsoluto: lsServe.data.riesgoAbsolutoFRA,
+                        riesgoRelativo: lsServe.data.riesgoRelativoFRA
+                    });
+                }
             } catch (error) { }
         }
 
@@ -156,53 +207,28 @@ const AddFramingham = () => {
         } catch (error) { }
     }
 
-    const handleDocumento = async (event) => {
-        try {
-            setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value !== "") {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
-                        setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
-                        setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(Message.ErrorDocumento);
-                }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(Message.ErrorDeDatos);
-        }
-    }
-
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAttention(result.id);
-            const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const lsDataReport = await GetByIdFramingham(id);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+
+            const dataPDFTwo = generateReportFramingham(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
     const handleClick = async (datos) => {
         try {
-
-            const DataToInsert = PostFramingham(documento, FormatDate(datos.fechaFRA), 0, 0, 0, '', tencion, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos,
-                '', glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
+            const DataToInsert = PutFramingham(id, documento, FormatDate(datos.fecha), tencion, FormatDate(datos.fechaLaboratorioFRA), colesterol,
+                hdl, trigliceridos, glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
                 frGlicemia, frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                undefined, undefined, user.nameuser, undefined);
 
             if (lsEmployee.length !== 0) {
                 if (fuma && tencion && colesterol && hdl && trigliceridos && glicemia) {
 
-                    const result = await InsertFramingham(DataToInsert);
+                    const result = await UpdateFraminghams(DataToInsert);
                     if (result.status === 200) {
                         setOpenSuccess(true);
                         setResult(result.data);
@@ -223,9 +249,14 @@ const AddFramingham = () => {
         }
     };
 
+    setTimeout(() => {
+        if (lsData.length !== 0)
+            setTimeWait(true);
+    }, 1500);
+
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -262,197 +293,201 @@ const AddFramingham = () => {
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <ViewEmployee
-                        title="REGISTRAR FRAMINGHAM"
-                        key={lsEmployee.documento}
-                        documento={documento}
-                        onChange={(e) => setDocumento(e.target.value)}
-                        lsEmployee={lsEmployee}
-                        handleDocumento={handleDocumento}
-                    />
-                </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha"
-                                        name="fechaFRA"
-                                        defaultValue={new Date()}
-                                    />
-                                </FormProvider>
-                            </Grid>
+            {timeWait ?
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            disabled={true}
+                            title="Actualizar Framingham"
+                            key={lsEmployee.documento}
+                            documento={documento}
+                            onChange={(e) => setDocumento(e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleLoadingDocument}
+                        />
+                    </Grid>
 
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="fumaFRA"
-                                    label="Fuma"
-                                    value={fuma}
-                                    onChange={(e) => setFuma(e.target.value)}
-                                    options={lsOpcion}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
+                    <Grid item xs={12}>
+                        <SubCard>
+                            <Grid container spacing={2}>
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha"
+                                            name="fecha"
+                                            defaultValue={new Date()}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    name="tencionFRA"
-                                    label="Tensión Arterial"
-                                    onChange={(e) => setTencion(e.target.value)}
-                                    value={tencion}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha Laboratorio"
-                                        name="fechaLaboratorioFRA"
-                                        defaultValue={new Date()}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    type="number"
-                                    name="colesterolTotalFRA"
-                                    label="Colesterol Total"
-                                    onChange={(e) => setColesterol(e.target.value)}
-                                    value={colesterol}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    name="hDLFRA"
-                                    label="HDL"
-                                    onChange={(e) => setHdl(e.target.value)}
-                                    value={hdl}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    name="triglicericosFRA"
-                                    label="Trigliceridos"
-                                    onChange={(e) => setTrigliceridos(e.target.value)}
-                                    value={trigliceridos}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <InputOnChange
-                                    type="number"
-                                    name="glisemiaFRA"
-                                    label="Glicemia"
-                                    onChange={(e) => setGlicemia(e.target.value)}
-                                    value={glicemia}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Typography align='center'>
-                                    <Button variant='contained' fullWidth onClick={calculoFramingham}>
-                                        CALCULAR
-                                    </Button>
-                                </Typography>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <ViewFramingham
-                                    ldl={frLdl}
-                                    relacion={relacion}
-                                    frEdad={frEdad}
-                                    frColesterol={frColesterol}
-                                    frHdl={frHdl}
-                                    frGlicemia={frGlicemia}
-                                    frTensionArterial={frTencion}
-                                    frTabaquismo={frFuma}
-                                    puntaje={frPuntaje}
-                                    riesgoAbsoluto={riesgo.riesgoAbsoluto}
-                                    riesgoRelativo={riesgo.riesgoRelativo}
-                                    interpretacion={riesgo.dxRiesgo}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        multiline
-                                        rows={4}
-                                        defaultValue=""
-                                        fullWidth
-                                        name="observacionFRA"
-                                        label="Observación"
+                                <Grid item xs={4}>
+                                    <SelectOnChange
+                                        name="fumaFRA"
+                                        label="Fuma"
+                                        value={fuma}
+                                        onChange={(e) => setFuma(e.target.value)}
+                                        options={lsOpcion}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                <DetailedIcon
-                                    title={DetailIcons[0].title}
-                                    onClick={() => setOpenTemplate(true)}
-                                    icons={DetailIcons[0].icons}
-                                />
-
-                                <DetailedIcon
-                                    title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
-                                    icons={DetailIcons[1].icons}
-                                />
-
-                                <DetailedIcon
-                                    title={DetailIcons[2].title}
-                                    onClick={() => { setOpenHistory(true); setCadenaHistory('INFORMACION_CARDIOVASCULAR') }}
-                                    icons={DetailIcons[2].icons}
-                                />
-                            </Grid>
-                        </Grid>
-
-
-                        <Grid item xs={12} sx={{ pt: 6 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" onClick={handleClickReport} fullWidth>
-                                            {TitleButton.Imprimir}
-                                        </Button>
-                                    </AnimateButton>
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        name="tencionFRA"
+                                        label="Tensión Arterial"
+                                        onChange={(e) => setTencion(e.target.value)}
+                                        value={tencion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/framingham/list")}>
-                                            {TitleButton.Cancelar}
+                                <Grid item xs={4}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha Laboratorio"
+                                            name="fechaLaboratorioFRA"
+                                            defaultValue={new Date()}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        type="number"
+                                        name="colesterolTotalFRA"
+                                        label="Colesterol Total"
+                                        onChange={(e) => setColesterol(e.target.value)}
+                                        value={colesterol}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        name="hDLFRA"
+                                        label="HDL"
+                                        onChange={(e) => setHdl(e.target.value)}
+                                        value={hdl}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        name="triglicericosFRA"
+                                        label="Trigliceridos"
+                                        onChange={(e) => setTrigliceridos(e.target.value)}
+                                        value={trigliceridos}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <InputOnChange
+                                        type="number"
+                                        name="glisemiaFRA"
+                                        label="Glicemia"
+                                        onChange={(e) => setGlicemia(e.target.value)}
+                                        value={glicemia}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={4}>
+                                    <Typography align='center'>
+                                        <Button variant='contained' fullWidth onClick={calculoFramingham}>
+                                            CALCULAR
                                         </Button>
-                                    </AnimateButton>
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <ViewFramingham
+                                        ldl={frLdl}
+                                        relacion={relacion}
+                                        frEdad={frEdad}
+                                        frColesterol={frColesterol}
+                                        frHdl={frHdl}
+                                        frGlicemia={frGlicemia}
+                                        frTensionArterial={frTencion}
+                                        frTabaquismo={frFuma}
+                                        puntaje={frPuntaje}
+                                        riesgoAbsoluto={riesgo.riesgoAbsoluto}
+                                        riesgoRelativo={riesgo.riesgoRelativo}
+                                        interpretacion={riesgo.dxRiesgo}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsData.observacionFRA}
+                                            fullWidth
+                                            name="observacionFRA"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[1].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[1].icons}
+                                    />
+
+                                    <DetailedIcon
+                                        title={DetailIcons[2].title}
+                                        onClick={() => { setOpenHistory(true); setCadenaHistory('INFORMACION_CARDIOVASCULAR') }}
+                                        icons={DetailIcons[2].icons}
+                                    />
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-            </Grid>
+
+
+                            <Grid item xs={12} sx={{ pt: 6 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                                {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" onClick={handleClickReport} fullWidth>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/framingham/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+                </Grid> : <Cargando />
+            }
         </Fragment>
     );
 };
 
-export default AddFramingham;
+export default UpdateFramingham;

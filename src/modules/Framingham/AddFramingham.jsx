@@ -27,7 +27,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReport } from './ReportFramingham';
+import { generateReportFramingham } from './ReportFramingham';
 import ViewPDF from 'components/components/ViewPDF';
 import { PostFramingham } from 'formatdata/FraminghamForm';
 import ViewFramingham from 'modules/Programming/Attention/OccupationalExamination/Framingham/ViewFramingham';
@@ -40,7 +40,7 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import TableAntecedentes from 'modules/Programming/Attention/OccupationalExamination/TableEmo/TableAntecedentes';
-import { InsertFramingham } from 'api/clients/FraminghamClient';
+import { GetByIdFramingham, InsertFramingham } from 'api/clients/FraminghamClient';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -56,6 +56,7 @@ const AddFramingham = () => {
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
+    const [result, setResult] = useState('');
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -63,8 +64,6 @@ const AddFramingham = () => {
 
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-
-    const [result, setResult] = useState([]);
 
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
@@ -99,7 +98,7 @@ const AddFramingham = () => {
 
     const methods = useForm();
 
-    const { handleSubmit, reset } = methods;
+    const { handleSubmit } = methods;
 
     useEffect(() => {
         async function getAll() {
@@ -183,21 +182,20 @@ const AddFramingham = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdAttention(result.id);
+            const lsDataReport = await GetByIdFramingham(result);
             const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+
+            const dataPDFTwo = generateReportFramingham(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
 
     const handleClick = async (datos) => {
         try {
-
-            const DataToInsert = PostFramingham(documento, FormatDate(datos.fecha), 0, 0, 0, '', tencion, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos,
-                '', glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
+            const DataToInsert = PostFramingham(documento, FormatDate(datos.fecha), tencion, FormatDate(datos.fechaLaboratorioFRA), colesterol,
+                hdl, trigliceridos, glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
                 frGlicemia, frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user.nameuser, undefined, undefined, undefined);
 
             if (lsEmployee.length !== 0) {
                 if (fuma && tencion && colesterol && hdl && trigliceridos && glicemia) {
@@ -425,7 +423,7 @@ const AddFramingham = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        <Button disabled={result === '' ? false : true} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                             {TitleButton.Guardar}
                                         </Button>
                                     </AnimateButton>
@@ -433,7 +431,7 @@ const AddFramingham = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button variant="outlined" onClick={handleClickReport} fullWidth>
+                                        <Button disabled={result !== '' ? false : true} variant="outlined" onClick={handleClickReport} fullWidth>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

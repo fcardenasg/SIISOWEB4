@@ -530,7 +530,8 @@ const OccupationalExamination = () => {
 
                 frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
                 frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()),
+
+                user.nameuser, undefined, undefined, undefined,
 
                 datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
                 datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,
@@ -646,7 +647,8 @@ const OccupationalExamination = () => {
 
                 frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
                 frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()),
+
+                undefined, undefined, user.nameuser, undefined,
 
                 datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
                 datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,
