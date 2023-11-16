@@ -222,6 +222,14 @@ const ViewHistoryWA = () => {
     useEffect(() => {
         async function getAll() {
             try {
+                const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
+                var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsDeparta(resultDepartamento);
+                setCodigoFilterDpto(lsServerDepartamento.data.entities);
+
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
                     value: item.id,
@@ -249,14 +257,6 @@ const ViewHistoryWA = () => {
                     label: item.nombre
                 }));
                 setLsCatalogoDatosInca(resultCatalogoDatos);
-
-                const lsServerDepartamento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Departamento);
-                var resultDepartamento = lsServerDepartamento.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsDeparta(resultDepartamento);
-                setCodigoFilterDpto(lsServerDepartamento.data.entities);
 
                 const lsServerIncapacidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AUSLAB_INC);
                 var resultIncapacidad = lsServerIncapacidad.data.entities.map((item) => ({
@@ -314,7 +314,18 @@ const ViewHistoryWA = () => {
                     label: item.nombre
                 }));
                 setLsEstadoCaso(resultEstadoCaso);
+            } catch (error) {
+                setOpenError(true);
+                setErrorMessage(error.message);
+            }
+        }
 
+        getAll();
+    }, []);
+
+    useEffect(() => {
+        async function getData() {
+            try {
                 /* BUSQUEDA DE DATOS */
                 const lsServerData = await GetByIdWorkAbsenteeismHistory(id);
                 if (lsServerData.status === 200) {
@@ -357,7 +368,7 @@ const ViewHistoryWA = () => {
             }
         }
 
-        getAll();
+        getData();
     }, []);
 
     setTimeout(() => {
@@ -385,7 +396,7 @@ const ViewHistoryWA = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">DATOS DE LA EMPRESA QUE EXPIDE</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos De La Empresa Que Expide</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -423,14 +434,24 @@ const ViewHistoryWA = () => {
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <SelectOnChange
+                                    {/* <SelectOnChange
                                         name="departamento"
                                         label="Departamento"
                                         options={lsDeparta}
                                         size={matchesXS ? 'small' : 'medium'}
                                         value={departa}
                                         onChange={handleChangeDepartamentoIncapa}
-                                    />
+                                    /> */}
+
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            name="departamento"
+                                            label="Departamento"
+                                            defaultValue={lsWorkAbsenteeism.departamento}
+                                            options={lsDeparta}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={4}>
@@ -461,7 +482,7 @@ const ViewHistoryWA = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">DATOS DE INCAPACIDAD O LICENCIA</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos De Incapacidad O Licencia</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
@@ -533,7 +554,7 @@ const ViewHistoryWA = () => {
                                         <InputSelect
                                             name="dxFinal"
                                             label="Diagnóstico"
-                                            defaultValue={lsWorkAbsenteeism.dxFinal}
+                                            defaultValue={lsWorkAbsenteeism.dx}
                                             options={lsCIE11}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -619,12 +640,12 @@ const ViewHistoryWA = () => {
                     </Grid >
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">DATOS DEL MÉDICO O IPS PRESTADORA DEL SERVICIO</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos Del Médico O IPS Prestadora Del Servicio</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4.8}>
                                     <FormProvider {...methods}>
                                         <InputText
-                                            defaultValue={lsWorkAbsenteeism.proveedor}
+                                            defaultValue={lsWorkAbsenteeism.expideInCapacidad}
                                             fullWidth
                                             name="proveedor"
                                             label="Proveedor"
@@ -766,7 +787,7 @@ const ViewHistoryWA = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">OBSERVACIÓN/DESCRIPCIÓN DE LA NOVEDAD</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Observación/Descripción De La Novedad</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -787,7 +808,7 @@ const ViewHistoryWA = () => {
                     </Grid >
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">MONITOR DE EVENTOS</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Monitor De Eventos</Typography>}>
                             <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
                                 <Grid item xs={2}>
                                     <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.main }} />
@@ -806,7 +827,7 @@ const ViewHistoryWA = () => {
                             <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4, textAlign: 'center' }}>
                                 <Grid item xs={6}>
                                     <UserCountCard
-                                        primary="TOTAL DÍAS ACUMULADO EN INCAPACIDAD"
+                                        primary="Total días acumulado en incapacidad"
                                         secondary={numeroDias}
                                         iconPrimary={AccountCircleTwoTone}
                                         color={() => ColorCard(numeroDias)}
@@ -816,7 +837,7 @@ const ViewHistoryWA = () => {
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Accordion title={<><HistoryIcon color='info' />
-                                    <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">HISTORIAL DE AUSENTISMO LABORAL</Typography></>}>
+                                    <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Historial de días acumulado en incapacidad</Typography></>}>
                                     <HistoryWorkAbsenteeism documento={documento} refresh={openSuccess} />
                                 </Accordion>
                             </Grid>

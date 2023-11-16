@@ -67,19 +67,19 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'documento',
+        id: 'cedula',
         numeric: false,
         label: 'Documento',
         align: 'left'
     },
     {
-        id: 'nombre',
+        id: 'nameEmpleado',
         numeric: false,
         label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'cod_Dx',
+        id: 'dx',
         numeric: false,
         label: 'Dx Inicial',
         align: 'left'
@@ -172,7 +172,7 @@ const HistoryWorkAbsenteeism = () => {
     const [lsWorkAbsenteeismHistory, setLsWorkAbsenteeismHistory] = useState([]);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
@@ -200,7 +200,7 @@ const HistoryWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nombres', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'dx', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -260,80 +260,11 @@ const HistoryWorkAbsenteeism = () => {
                     </Grid>
 
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={3}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename={`LISTA_DE_AUSENTISMO_${new Date().toLocaleString()}`}>
-                                    <ExcelSheet data={lsWorkAbsenteeismHistory} name="Registro De Ausentismo">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombres" value="nombres" />
-                                        <ExcelColumn label="Fecha De Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
-                                        <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                        <ExcelColumn label="Area" value="nameArea" />
-                                        <ExcelColumn label="Grupo" value="nameGrupo" />
-                                        <ExcelColumn label="Fecha De Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
-                                        <ExcelColumn label="Roster Position" value="nameRosterPosition" />
-                                        <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                        <ExcelColumn label="Genero" value="nameGenero" />
-                                        <ExcelColumn label="Sede" value="nameSede" />
-                                        <ExcelColumn label="Celular" value="celular" />
-                                        <ExcelColumn label="Email" value="email" />
-                                        <ExcelColumn label="Empresa" value="empresa" />
-                                        <ExcelColumn label="Oficio" value="nameOficio" />
-                                        <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
-
-                                        <ExcelColumn label="Incapacidad" value="nameIncapacidad" />
-                                        <ExcelColumn label="Nro Incapacidad" value="nroIncapacidad" />
-                                        <ExcelColumn label="Fecha De Expedición" value={(fe) => ViewFormat(fe.fechaExpedicion)} />
-                                        <ExcelColumn label="Departamento De Expedición" value="nameDepartamentoExpedicion" />
-                                        <ExcelColumn label="Ciudad De Expedición" value="nameCiudadExpedicion" />
-                                        <ExcelColumn label="Tipo Incapacidad" value="nameTipoIncapacidad" />
-                                        <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                        <ExcelColumn label="Fecha Inicio" value={(fe) => ViewFormat(fe.fechaInicio)} />
-                                        <ExcelColumn label="Fecha Fin" value={(fe) => ViewFormat(fe.fechaFin)} />
-                                        <ExcelColumn label="Días Sin Laborar" value="diasSinLaborar" />
-                                        <ExcelColumn label="Código Dx" value="dx" />
-                                        <ExcelColumn label="Dx" value="nameDx" />
-                                        <ExcelColumn label="Estado Caso" value="nameEstadoCaso" />
-                                        <ExcelColumn label="Segmento Agrupado" value="nameSegmentoAgrupado" />
-                                        <ExcelColumn label="Subsegmento" value="nameSubsegmento" />
-                                        <ExcelColumn label="Tipo De Soporte" value="nameIdTipoSoporte" />
-                                        <ExcelColumn label="Categoria" value="nameIdCategoria" />
-
-                                        <ExcelColumn label="Departamento IPS" value="nameDepartamentoIPS" />
-                                        <ExcelColumn label="Ciudad IPS" value="nameCiudadIPS" />
-                                        <ExcelColumn label="Nombre Profesional" value="nombreProfesional" />
-                                        <ExcelColumn label="Especialidad" value="especialidad" />
-                                        <ExcelColumn label="RegistroProfesional" value="registroProfesional" />
-                                        <ExcelColumn label="Tipo De Atención" value="nameTipoAtencion" />
-                                        <ExcelColumn label="Cumplimiento De Requisito" value="nameCumplimientoRequisito" />
-                                        <ExcelColumn label="Expide InCapacidad" value="nameExpideInCapacidad" />
-                                        <ExcelColumn label="Observación Cumplimiento" value="observacionCumplimiento" />
-
-                                        <ExcelColumn label="Usuario De Modificación" value="usuarioModificacion" />
-                                        <ExcelColumn label="Fecha De Modificación" value={(fe) => ViewFormat(fe.fechaModificacion)} />
-                                        <ExcelColumn label="Tipo De Empleado" value="nameTipoEmpleado" />
-                                        <ExcelColumn label="Tipo De Nomina" value="nameTipoNomina" />
-
-                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                        <ExcelColumn label="Hora Registro" value="horaRegistro" />
-                                    </ExcelSheet>
-                                </ExcelFile>
-                            </Grid>
-
-                            <Grid item xs={9}>
-                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/work-absenteeism/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </Grid>
+                        <Grid item>
+                            <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate("/work-absenteeism/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -377,7 +308,7 @@ const HistoryWorkAbsenteeism = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.documento}
+                                                    {row.cedula}
                                                 </Typography>
                                             </TableCell>
 
@@ -392,7 +323,7 @@ const HistoryWorkAbsenteeism = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nombres}
+                                                    {row.nameEmpleado}
                                                 </Typography>
                                             </TableCell>
 
@@ -485,7 +416,7 @@ const HistoryWorkAbsenteeism = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Ver mas..." onClick={() => navigate(`/work-absenteeism/history/${row.id}`)}>
+                                                <Tooltip title="Ver mas..." onClick={() => navigate(`/work-absenteeism/history/${row.id_Inc}`)}>
                                                     <IconButton size="large">
                                                         <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>

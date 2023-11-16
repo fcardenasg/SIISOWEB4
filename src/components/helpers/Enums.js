@@ -309,6 +309,7 @@ export const TitleButton = {
     Programacion: 'Programación',
     Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',
+    Limpiar: 'Limpiar',
     VerArchivo: 'Ver Archivo',
     Cerrar: 'Cancelar',
     Actualizar: 'Actualizar',

@@ -22,7 +22,7 @@ import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { PutUser } from 'formatdata/UserForm';
 import { GetByIdUser, UpdateUsers } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
-import { GetAllRol } from 'api/clients/RolClient';
+import {  GetComboRol } from 'api/clients/RolClient';
 import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
@@ -71,12 +71,8 @@ const UpdateUser = () => {
                 setCheckRespondeRein(lsServerUpdate.data.respondeReintegro);
             }
 
-            const lsServerRol = await GetAllRol(0, 0);
-            var resultRol = lsServerRol.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombreRol.toUpperCase()
-            }));
-            setLsRolUser(resultRol);
+            const lsServerRol = await GetComboRol();
+            setLsRolUser(lsServerRol.data);
 
             const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
             var resultEspecialidad = lsServerEspecialidad.data.entities.map((item) => ({

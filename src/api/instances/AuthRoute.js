@@ -19,7 +19,13 @@ export const Url = {
     TipoCatalogoId: 'api/TipoCatalogo/id',
 
     Rol: 'api/Rol',
+    RolList: 'api/Rol/list',
+    RolComboRol: 'api/Rol/combo-rol',
+    RolComboCompo: 'api/Rol/combo-componente',
+    RolComboItem: 'api/Rol/combo-itemmenu',
+    RolComboCard: 'api/Rol/combo-carditem',
     RolId: 'api/Rol/id',
+    RolIdPermiso: 'api/Rol/idPermiso',
 
     Catalogo: 'api/Catalogo',
     CatalogoCombo: 'api/Catalogo/combo',
@@ -113,6 +119,8 @@ export const Url = {
 
     Antecedente: 'api/Antecedente',
 
+    Indicador: 'api/Indicador',
+
     Asesorias: 'api/Asesorias',
     AsesoriasExcel: 'api/Asesorias/excel',
     AsesoriasAll: 'api/Asesorias/all',
@@ -198,6 +206,8 @@ export const Url = {
     AusentismoLaboralHistorico: 'api/AusentismoLaboralHistorico',
     AusentismoLaboralHistoricoExcel: 'api/AusentismoLaboralHistorico/excel',
     AusentismoLaboralHistoricoId: 'api/AusentismoLaboralHistorico/id',
+    AusentismoLaboralHistoricoIndicadores: 'api/AusentismoLaboralHistorico/indicadores',
+    AusentismoLaboralHistoricoComboAnios: 'api/AusentismoLaboralHistorico/combo-anio',
 
     AusentismoLaboral: 'api/AusentismoLaboral',
     AusentismoLaboralExcel: 'api/AusentismoLaboral/excel',

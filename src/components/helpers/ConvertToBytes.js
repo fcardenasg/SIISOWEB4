@@ -1,3 +1,5 @@
+import { ArrayMeses } from "components/Arrays";
+
 export const convertToBase64 = (archivos) => {
     Array.from(archivos).forEach(archivo => {
         var reader = new FileReader();
@@ -27,4 +29,28 @@ export const DownloadFile = (filename, bytesBase64) => {
         link.click();
         document.body.removeChild(link);
     }
+}
+
+export const ConvertStringToInt = (arregloDeCadenas) => {
+    var arregloDeEnteros = [];
+
+    for (var i = 0; i < arregloDeCadenas.length; i++) {
+        var entero = parseInt(arregloDeCadenas[i]);
+        arregloDeEnteros.push(entero);
+    }
+
+    return arregloDeEnteros;
+}
+
+export const ConvertToArregloMeses = (arregloDeMeses) => {
+    var arregloDeEnterosMeses = [];
+
+    for (var i = 0; i < arregloDeMeses.length; i++) {
+        var stringMes = arregloDeMeses[i];
+        var numeroMes = ArrayMeses.filter(x => x.label === stringMes)[0].value;
+
+        arregloDeEnterosMeses.push(numeroMes);
+    }
+
+    return arregloDeEnterosMeses;
 }

@@ -40,7 +40,7 @@ import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/Cat
 import InputSelect from 'components/input/InputSelect';
 import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
+import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import SubCard from 'ui-component/cards/SubCard';
@@ -55,6 +55,7 @@ import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import UpdateAttMedicalAdvice from 'modules/Programming/Attention/AttentionMedicalAdvice/UpdateAttMedicalAdvice';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import InputCheck from 'components/input/InputCheck';
+import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 
 const validationSchema = yup.object().shape({
     idSubmotivo: yup.string().required(ValidationMessage.Requerido),
@@ -115,8 +116,8 @@ const MedicalAdvice = () => {
     const [updateMedicalFormula, setUpdateMedicalFormula] = useState(false);
     const [numberId, setNumberId] = useState('');
 
-    const [textTipoAsesoria, setTextTipoAsesoria] = useState(undefined);
-    const [textMotivo, setTextMotivo] = useState(undefined);
+    const [textTipoAsesoria, setTextTipoAsesoria] = useState('');
+    const [textMotivo, setTextMotivo] = useState('');
     const [lsSubmotivo, setLsSubmotivo] = useState([]);
     const [lsCodigoMotivo, setLsCodigoMotivo] = useState([]);
 
@@ -140,7 +141,7 @@ const MedicalAdvice = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, formState: { errors } } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     async function getAll() {
         try {
@@ -214,9 +215,20 @@ const MedicalAdvice = () => {
         } catch (error) { }
     }
 
+    const handleClickClear = async () => {
+        reset();
+        setResultData(0);
+        setLsEmployee([]);
+        setDocumento('');
+        setExtenderDescripcion(false);
+        setTextMotivo('');  
+        setTextTipoAsesoria('');
+        setLsSubmotivo([]);
+    }
+
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, DefaultData.ASESORIA_MEDICA, lsEmployee.sede, undefined, undefined,
+            const DataToUpdate = PutMedicalAdvice(resultData, documento, FormatDate(datos.fecha), 0, DefaultData.ASESORIA_MEDICA, lsEmployee.sede, undefined, undefined,
                 undefined, undefined, textTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
                 user.nameuser, undefined, undefined, undefined);
 
@@ -244,7 +256,7 @@ const MedicalAdvice = () => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess open={openSuccess} message={resultData === 0 ? Message.Guardar : Message.Actualizar} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <FullScreenDialog
@@ -360,7 +372,14 @@ const MedicalAdvice = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
+                                <StickyActionBar
+                                    onClickSave={handleSubmit(handleClick)}
+                                    onClickUpdate={handleSubmit(handleClick)}
+                                    disabledUpdate={resultData === 0 ? true : false}
+                                    disabledSave={resultData !== 0 ? true : false}
+                                    showButton={false}
+                                    threshold={568}
+                                >
                                     <Grid container spacing={2}>
                                         <Grid item xs={6}>
                                             <FormProvider {...methods}>
@@ -501,41 +520,41 @@ const MedicalAdvice = () => {
                                             </SubCard>
                                         </Grid>
                                     </Grid>
+                                </StickyActionBar>
+                            </Grid>
+                        </Grid>
 
-                                    <Grid container spacing={2} sx={{ pt: 4 }}>
-                                        <Grid item xs={2.4}>
-                                            <AnimateButton>
-                                                <Button disabled={resultData !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                                    {TitleButton.Guardar}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
+                        <Grid container spacing={2} sx={{ pt: 4 }}>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button disabled={resultData === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                        {TitleButton.Imprimir}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
 
-                                        <Grid item xs={2.4}>
-                                            <AnimateButton>
-                                                <Button disabled={resultData === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
-                                                    {TitleButton.Imprimir}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                        {TitleButton.OrdenesMedicas}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
 
-                                        <Grid item xs={2.4}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                                    {TitleButton.OrdenesMedicas}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={handleClickClear}>
+                                        {TitleButton.Limpiar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
 
-                                        <Grid item xs={2.4}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
-                                                    {TitleButton.Cancelar}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </SubCard>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicaladvice/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
                             </Grid>
                         </Grid>
                     </Grid>

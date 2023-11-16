@@ -63,7 +63,7 @@ const ListProgramming = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'usuarioRegistro', 'nameSedeAtencion'];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameTipoAtencion', 'nameAtencion', 'fecha', 'nameSedeAtencion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -97,7 +97,7 @@ const ListProgramming = () => {
                         setTimeWait(true);
                         setLsProgramming(response.data);
                         setRows(response.data);
-                    }, 1500);
+                    }, 500);
                 }
             });
         } catch (error) { }
@@ -112,7 +112,7 @@ const ListProgramming = () => {
     if (timeWait) {
         usersResult = stableSort(lsProgramming, getComparator('desc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((programming, index) => (
-                <Grid key={index} item xs={12} sm={6} lg={3} xl={2}>
+                <Grid key={index} item xs={12} sm={6} lg={3} /* xl={2} */>
                     <ViewProgramming key={index} programming={programming} getAll={getAll} />
                 </Grid>
             ));

@@ -223,8 +223,9 @@ const ViewProgramming = ({ programming, getAll }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography fontSize={10}>{programming.usuarioCierreAtencion === '' ? "" : `${programming.usuarioCierreAtencion}`}</Typography>
+                                <Typography fontSize={10}>{programming.usuarioCierreAtencion}</Typography>
                             </Grid>
+
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
@@ -238,16 +239,26 @@ const ViewProgramming = ({ programming, getAll }) => {
                                 <Typography variant="h6"><b>SEDE:</b> </Typography>
                                 <Typography variant="h6">{programming.nameSedeAtencion}</Typography>
                             </Grid>
+
+                            <Grid item xs={6}>
+                                <Typography variant="h6"><b>Turno/Grupo:</b> </Typography>
+                                <Typography variant="h6">{`${programming.nameTurno} / ${programming.nameGrupo}`}</Typography>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <Typography variant="h6"><b>Fecha/Hora:</b> </Typography>
+                                <Typography variant="h6">{new Date(programming.fechaRegistro).toLocaleString()}</Typography>
+                            </Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6}>
                         <Button disabled={disabledButon} variant="outlined" onClick={handleClick} fullWidth startIcon={<IconEye />}>
                             Atender
                         </Button>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6}>
                         <Button disabled={disabledButon} variant="outlined" color="error" onClick={() => onClickDelete(programming.id)} fullWidth startIcon={<IconCircleMinus />}>
                             Anular
                         </Button>

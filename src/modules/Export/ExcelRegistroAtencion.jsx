@@ -45,7 +45,6 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
             if (lsServerExcel.status === 200) {
                 DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
 
-
                 setTimeout(() => {
                     setLoading(false);
                 }, 1000);

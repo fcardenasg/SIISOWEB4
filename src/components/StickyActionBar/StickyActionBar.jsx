@@ -34,7 +34,7 @@ function StickyActionBar({ children, mainTitle = 'Actualizar o Guardar', titleBu
                                     <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
                                         <Grid item xs={6} md={4}>
                                             <AnimateButton>
-                                                <Button variant="contained" disabled={disabledSave} onClick={onClickSave} sx={{ background: ColorDrummondltd.RedDrummond }} color="error" fullWidth>
+                                                <Button variant="contained" disabled={disabledSave} onClick={onClickSave} /* sx={{ background: ColorDrummondltd.RedDrummond }} */ /* color="error" */ fullWidth>
                                                     {titleButtonOne}
                                                 </Button>
                                             </AnimateButton>

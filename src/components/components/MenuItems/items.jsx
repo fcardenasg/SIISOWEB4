@@ -9,6 +9,7 @@ import {
   IconUsers,
   IconFirstAidKit,
   IconMessages,
+  IconChartLine,
   IconFileExport
 } from '@tabler/icons';
 
@@ -461,6 +462,81 @@ export const itemsExcel = [
     icon: IconFileExport,
     selected: true,
     url: 'FRAMI',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Indicadores",
+    subtitle: "",
+    icon: IconFileExport,
+    selected: true,
+    url: 'INDIC',
+    color: ColorDrummondltd.GrayDrummond
+  },
+];
+
+export const itemsIndicadores = [
+  {
+    title: "Incapacidades",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Atenciones Médicas",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Asesorías",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Órdenes",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Paraclinicos",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Medicina Laboral",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Accidente De Trabajo",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
+    color: ColorDrummondltd.RedDrummond
+  },
+  {
+    title: "Reintegro",
+    subtitle: "",
+    icon: IconChartLine,
+    selected: true,
+    url: '/indicators/disabilities',
     color: ColorDrummondltd.RedDrummond
   },
 ];

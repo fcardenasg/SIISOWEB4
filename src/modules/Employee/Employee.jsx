@@ -33,16 +33,16 @@ import { PostEmployee } from 'formatdata/EmployeeForm';
 import { Fragment } from 'react';
 
 const validationSchema = yup.object().shape({
-    documento: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombres: yup.string().required(`${ValidationMessage.Requerido}`),
-    celular: yup.string().required(`${ValidationMessage.Requerido}`),
-    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
-    sede: yup.string().required(`${ValidationMessage.Requerido}`),
-    genero: yup.string().required(`${ValidationMessage.Requerido}`),
-    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
-    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
-    type: yup.string().required(`${ValidationMessage.Requerido}`),
+    documento: yup.string().required(ValidationMessage.Requerido),
+    nombres: yup.string().required(ValidationMessage.Requerido),
+    celular: yup.string().required(ValidationMessage.Requerido),
+    empresa: yup.string().required(ValidationMessage.Requerido),
+    tipoContrato: yup.string().required(ValidationMessage.Requerido),
+    sede: yup.string().required(ValidationMessage.Requerido),
+    genero: yup.string().required(ValidationMessage.Requerido),
+    estadoCivil: yup.string().required(ValidationMessage.Requerido),
+    grupo: yup.string().required(ValidationMessage.Requerido),
+    type: yup.string().required(ValidationMessage.Requerido),
 });
 
 const Employee = () => {
@@ -114,7 +114,7 @@ const Employee = () => {
             }
         } catch (error) {
             setOpenError(true);
-            
+
         }
     }
 
@@ -337,7 +337,7 @@ const Employee = () => {
                 setOpenError(true);
                 setErrorMessage('Hubo un problemas al guardo los datos');
             }
-            
+
         } catch (error) {
             setOpenError(true);
             setErrorMessage(`${Message.RegistroNoGuardado}`);
@@ -831,6 +831,7 @@ const Employee = () => {
                                 </Button>
                             </AnimateButton>
                         </Grid>
+
                         <Grid item xs={6} md={4} lg={2}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>

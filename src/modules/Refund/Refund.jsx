@@ -54,6 +54,9 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [idMedico, setIdMedico] = useState(undefined);
+    const [ordenadoPor, setOrdenadoPor] = useState(undefined);
+
     const [openReport, setOpenReport] = useState(false);
     const [viewListRefund, setViewListRefund] = useState(false);
 
@@ -87,8 +90,6 @@ const Refund = () => {
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
     const [dataPDF, setDataPDF] = useState(null);
-
-    const [ordenadoPor, setOrdenadoPor] = useState(undefined);
 
     const methods = useForm();
     const { handleSubmit, formState: { errors } } = methods;
@@ -250,7 +251,7 @@ const Refund = () => {
         try {
             const DataToInsert = PostRefund(documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
                 datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, FormatDate(fechaInicio),
-                FormatDate(fechaFin), numeroDia, ordenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
+                FormatDate(fechaFin), numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
                 datos.idEstadoCaso, user.nameuser, undefined, undefined, undefined);
@@ -490,6 +491,38 @@ const Refund = () => {
                                     <SelectOnChange
                                         name="idOrdenadoPor"
                                         label="Ordenado Por"
+                                        onChange={(e) => {
+                                            if (e.target.value !== DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD) {
+                                                setIdMedico(undefined);
+                                            }
+                                            setOrdenadoPor(e.target.value)
+                                        }}
+                                        value={ordenadoPor}
+                                        options={lsOrdenadoPor}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={2.4}>
+                                <FormProvider {...methods}>
+                                    <SelectOnChange
+                                        name="idMedico"
+                                        label="Médico"
+                                        onChange={(e) => setIdMedico(e.target.value)}
+                                        value={idMedico}
+                                        options={lsUsuarios}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        disabled={ordenadoPor === DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD && ordenadoPor !== '' ? false : true}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            {/* <Grid item xs={2.4}>
+                                <FormProvider {...methods}>
+                                    <SelectOnChange
+                                        name="idOrdenadoPor"
+                                        label="Ordenado Por"
                                         onChange={(e) => setOrdenadoPor(e.target.value)}
                                         value={ordenadoPor}
                                         options={lsOrdenadoPor}
@@ -510,7 +543,7 @@ const Refund = () => {
                                         bug={errors.idMedico}
                                     />
                                 </FormProvider>
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item xs={2.4}>
                                 <FormProvider {...methods}>

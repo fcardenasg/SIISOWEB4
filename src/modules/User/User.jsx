@@ -21,16 +21,16 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostUser } from 'formatdata/UserForm';
 import { InsertUser } from 'api/clients/UserClient';
-import { GetAllRol } from 'api/clients/RolClient';
+import { GetComboRol } from 'api/clients/RolClient';
 import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
-    documento: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombreUsuario: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    telefono: yup.string().required(`${ValidationMessage.Requerido}`),
-    correo: yup.string().required(`${ValidationMessage.Requerido}`),
-    idRol: yup.string().required(`${ValidationMessage.Requerido}`),
+    documento: yup.string().required(ValidationMessage.Requerido),
+    nombreUsuario: yup.string().required(ValidationMessage.Requerido),
+    nombre: yup.string().required(ValidationMessage.Requerido),
+    telefono: yup.string().required(ValidationMessage.Requerido),
+    correo: yup.string().required(ValidationMessage.Requerido),
+    idRol: yup.string().required(ValidationMessage.Requerido),
 });
 
 const User = () => {
@@ -59,12 +59,8 @@ const User = () => {
 
     async function getAll() {
         try {
-            const lsServerRol = await GetAllRol(0, 0);
-            var resultRol = lsServerRol.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombreRol.toUpperCase()
-            }));
-            setLsRolUser(resultRol);
+            const lsServerRol = await GetComboRol();
+            setLsRolUser(lsServerRol.data);
 
             const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
             var resultEspecialidad = lsServerEspecialidad.data.entities.map((item) => ({

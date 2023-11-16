@@ -19,7 +19,7 @@ const MenuProps = {
     },
 };
 
-export default function InputMultiSelectCheck({ onChange, value, label, options }) {
+export default function InputMultiSelectCheck({ onChange, value, label, options, size, ...other }) {
 
     return (
         <>
@@ -35,8 +35,10 @@ export default function InputMultiSelectCheck({ onChange, value, label, options 
                     input={<OutlinedInput label={label} />}
                     renderValue={(selected) => selected.join(', ')}
                     MenuProps={MenuProps}
+                    size={size}
+                    {...other}
                 >
-                    {options.map((name) => (
+                    {options?.map((name) => (
                         <MenuItem key={name.label} value={name.label}>
                             <Checkbox checked={value.indexOf(name.label) > -1} />
                             <ListItemText primary={name.label} />

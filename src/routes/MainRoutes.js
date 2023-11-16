@@ -62,8 +62,8 @@ const UpdateRequests = Loadable(lazy(() => import('modules/Requests/ModuleReques
 
 const ListRequestsView = Loadable(lazy(() => import('modules/Requests/RequestsView/ListRequestsView')));
 const ListAnsweredView = Loadable(lazy(() => import('modules/Requests/AnsweredView/ListAnsweredView')));
-const MenuRequests = Loadable(lazy(() => import('modules/Menu/MenuRequests')));
 
+const MenuRequests = Loadable(lazy(() => import('modules/Menu/MenuRequests')));
 const MenuMedicines = Loadable(lazy(() => import('modules/Menu/MenuMedicines')));
 
 const ListMedicinesEntry = Loadable(lazy(() => import('modules/MedicinesEntry/ListMedicinesEntry')));
@@ -173,6 +173,10 @@ const ListPSA = Loadable(lazy(() => import('modules/Paraclinics/PSA/ListPSA')));
 const PSA = Loadable(lazy(() => import('modules/Paraclinics/PSA/PSA')));
 const UpdatePSA = Loadable(lazy(() => import('modules/Paraclinics/PSA/UpdatePSA')));
 
+const Rol = Loadable(lazy(() => import('modules/Rol/Rol')));
+const ListRol = Loadable(lazy(() => import('modules/Rol/ListRol')));
+const UpdateRol = Loadable(lazy(() => import('modules/Rol/UpdateRol')));
+
 const ListRXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/ListRXTORAX')));
 const RXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/RXTORAX')));
 const UpdateRXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/UpdateRXTORAX')));
@@ -198,13 +202,14 @@ const Audiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/Au
 const UpdateAudiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/UpdateAudiometry')));
 
 const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
-const Indicators = Loadable(lazy(() => import('modules/Indicators/Indicators')));
+const MenuIndicadores = Loadable(lazy(() => import('modules/Menu/MenuIndicadores')));
 
 const ListPersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/ListPersonalNotes')));
 const PersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/PersonalNotes')));
 const UpdatePersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/UpdatePersonalNotes')));
 
 const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
+const IndicadorIncapacidades = Loadable(lazy(() => import('modules/Indicators/Indicators')));
 
 const MenuOccupationalHealth = Loadable(lazy(() => import('modules/Menu/MenuOccupationalHealth')));
 const MenuAdministration = Loadable(lazy(() => import('modules/Menu/MenuAdministration')));
@@ -841,8 +846,8 @@ const MainRoutes = {
         },
         /* INDICADORES */
         {
-            path: '/indicators/view',
-            element: <Indicators />
+            path: '/indicators/menu',
+            element: <MenuIndicadores />
         },
 
         /* Render de Recuperar Contraseña */
@@ -910,10 +915,29 @@ const MainRoutes = {
             path: '/export/menu',
             element: <MenuExcel />
         },
-
         {
             path: '/programming/update',
             element: <ListProgrammingUpdate />
+        },
+
+        /* Indicadores */
+        {
+            path: '/indicators/disabilities',
+            element: <IndicadorIncapacidades />
+        },
+
+        /* Rol */
+        {
+            path: '/rol/add',
+            element: <Rol />
+        },
+        {
+            path: '/rol/list',
+            element: <ListRol />
+        },
+        {
+            path: '/rol/update/:id',
+            element: <UpdateRol />
         },
     ]
 };

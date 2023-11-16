@@ -9,17 +9,24 @@ import ExcelEnfermeria from "./ExcelEnfermeria";
 import ExcelOrdenes from "./ExcelOrdenes";
 import ExcelPruebaAlcoholDroga from "./ExcelPruebaAlcoholDroga";
 import ExcelFramingham from "./ExcelFramingham";
+import ExcelIndicadores from "./ExcelIndicadores";
 
 const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [sede, setSede] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
 
+    const [allMes, setAllMes] = useState(false);
+    const [lsMeses, setLsMeses] = useState([]);
+    const [lsAnios, setLsAnios] = useState([]);
+
     const handleClose = () => {
         setSede(0);
         setOpenModal(false);
         setFechaInicio(null);
         setFechaFin(null);
+        setLsMeses([]);
+        setLsAnios([]);
     }
 
     return (
@@ -99,6 +106,17 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
+                    /> : null
+                }
+
+                {exportBy.codigo === 'INDIC' ?
+                    <ExcelIndicadores
+                        setLsMeses={setLsMeses}
+                        lsMeses={lsMeses}
+                        setLsAnios={setLsAnios}
+                        lsAnios={lsAnios}
+                        setAllMes={setAllMes}
+                        allMes={allMes}
                     /> : null
                 }
             </ControlModal>

@@ -3,7 +3,7 @@ import { useTheme } from "@emotion/react";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import { ArrayTodaSede } from "components/Arrays";
-import { CodCatalogo, Message } from "components/helpers/Enums";
+import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
 import InputDatePick from "components/input/InputDatePick";
 import SelectOnChange from "components/input/SelectOnChange";
 import { ParametrosExcel } from "formatdata/ParametrosForm";
@@ -14,6 +14,7 @@ import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
 import { GetExcelOccupationalExamination } from "api/clients/OccupationalExaminationClient";
+import { DownloadFile } from "components/helpers/ConvertToBytes";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -44,17 +45,17 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
 
     async function getDataForExport() {
         try {
-            setStatusData(false); setLoading(true);
+            setLoading(true);
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
             const lsServerExcel = await GetExcelOccupationalExamination(parametros);
 
             if (lsServerExcel.status === 200) {
-                setLsDataExport(lsServerExcel.data);
+                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
+
                 setTimeout(() => {
-                    setStatusData(true);
                     setLoading(false);
-                }, 1500);
+                }, 1000);
             }
 
         } catch (error) {
@@ -99,64 +100,19 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
                     />
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
                     <AnimateButton>
                         <Button disabled={loading} onClick={getDataForExport} size="large" variant="contained" fullWidth>
-                            Generar Exportación
+                            {TitleButton.Excel}
                         </Button>
                     </AnimateButton>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
-                    {statusData ?
-                        <ExcelFile element={
-                            <AnimateButton>
-                                <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                    Descargar Excel
-                                </Button>
-                            </AnimateButton>
-                        } filename={`LISTA_DE_HISTORIA_CLINICA_OCUPACIONAL_${new Date().toLocaleString()}`}>
-                            <ExcelSheet data={lsDataExport} name="Registro De HCO">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Nombres" value="nombres" />
-                                <ExcelColumn label="Fecha De Nacimiento" value={(fe) => new Date(fe.fechaNaci)} />
-                                <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                <ExcelColumn label="Area" value="nameArea" />
-                                <ExcelColumn label="Grupo" value="nameGrupo" />
-                                <ExcelColumn label="Fecha De Contrato" value={(fe) => new Date(fe.fechaContrato)} />
-                                <ExcelColumn label="Roster Position" value="nameRosterPosition" />
-                                <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                <ExcelColumn label="Genero" value="nameGenero" />
-                                <ExcelColumn label="Sede" value="nameSede" />
-                                <ExcelColumn label="Celular" value="celular" />
-                                <ExcelColumn label="Email" value="email" />
-                                <ExcelColumn label="Empresa" value="empresa" />
-                                <ExcelColumn label="Oficio" value="nameOficio" />
-                                <ExcelColumn label="Municipio De Nacimiento" value="nameMunicipioNacido" />
-
-                                <ExcelColumn label="Fecha" value={(fe) => new Date(fe.fecha)} />
-                                <ExcelColumn label="Atención" value="nameAtencion" />
-                                <ExcelColumn label="Concepto Aptitud Psicofísica" value="nameConceptoAptitudPsicofisica" />
-                                <ExcelColumn label="Concepto De Trabajo En Altura" value="nameConceptoTrabajoAltura" />
-                                <ExcelColumn label="Concepto De Trabajo En Espacio Confinado" value="nameConceptoTrabajoEspacioConfinado" />
-                                <ExcelColumn label="Código Dx1" value="dx1" />
-                                <ExcelColumn label="Dx 1" value="nameDx1" />
-                                <ExcelColumn label="Código Dx2" value="dx2" />
-                                <ExcelColumn label="Dx 2" value="nameDx2" />
-                                <ExcelColumn label="Código Dx3" value="dx3" />
-                                <ExcelColumn label="Dx 3" value="nameDx3" />
-                                <ExcelColumn label="Observaciones Diagnóstico" value="observacionesDiagnostica" />
-                                <ExcelColumn label="Recomendaciones Diagnóstico" value="recomendacionesDiagnostica" />
-
-                                <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                <ExcelColumn label="Fecha Registro" value={(fe) => new Date(fe.fechaRegistro)} />
-                                <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                <ExcelColumn label="Fecha Modifica" value={(fe) => new Date(fe.fechaModifica)} />
-                            </ExcelSheet>
-                        </ExcelFile> : loading ? <LoadingGenerate title="Generando..." /> : null
-                    }
-                </Grid>
+                {loading ?
+                    <Grid item xs={12}>
+                        <LoadingGenerate title="Generando Excel..." />
+                    </Grid> : null
+                }
             </Grid>
         </Fragment>
     );

@@ -15,3 +15,5 @@ export const GetAllWorkAbsenteeismNumeroDia = async (documento) => await getData
 export const GetAllWorkAbsenteeismHistory = async () => await getData(Url.AusentismoLaboralHistorico);
 export const GetByIdWorkAbsenteeismHistory = async (id) => await getData(Url.AusentismoLaboralHistoricoId, { id });
 export const GetExcelWorkAbsenteeismHistory = async (parametroExcel) => await postData(Url.AusentismoLaboralHistoricoExcel, parametroExcel);
+export const GetExcelIndicadores = async (indicadores) => await postData(Url.AusentismoLaboralHistoricoIndicadores, indicadores);
+export const GetWorkAbsenteeismHistoryComboAnio = async () => await getData(Url.AusentismoLaboralHistoricoComboAnios);

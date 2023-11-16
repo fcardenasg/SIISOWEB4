@@ -57,6 +57,7 @@ const Refund = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [idMedico, setIdMedico] = useState(undefined);
     const [openReport, setOpenReport] = useState(false);
     const [viewListRefund, setViewListRefund] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -88,7 +89,7 @@ const Refund = () => {
 
     const [lsDx2, setLsDx2] = useState([]);
     const [textDx2, setTextDx2] = useState('');
-    const [ordenadoPor, setOrdenadoPor] = useState('');
+    const [ordenadoPor, setOrdenadoPor] = useState(undefined);
 
     const [dataPDF, setDataPDF] = useState(null);
 
@@ -247,6 +248,7 @@ const Refund = () => {
                     setFechaFin(lsServerAtencion.data.fechaFin);
                     setNumeroDia(lsServerAtencion.data.numeroDia);
                     setOrdenadoPor(lsServerAtencion.data.idOrdenadoPor);
+                    setIdMedico(lsServerAtencion.data.idMedico);
                     setViewListRefund(true);
 
                     if (lsServerAtencion.data.dx1 !== undefined || lsServerAtencion.data.dx1 !== '') {
@@ -290,7 +292,7 @@ const Refund = () => {
         try {
             const DataToInsert = PutRefund(id, documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
                 datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, FormatDate(fechaInicio),
-                FormatDate(fechaFin), numeroDia, ordenadoPor, datos.idMedico, datos.porcentajePCL, datos.recomendaciones,
+                FormatDate(fechaFin), numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
                 datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
@@ -551,9 +553,13 @@ const Refund = () => {
                                         <SelectOnChange
                                             name="idOrdenadoPor"
                                             label="Ordenado Por"
-                                            onChange={(e) => setOrdenadoPor(e.target.value)}
+                                            onChange={(e) => {
+                                                if (e.target.value !== DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD) {
+                                                    setIdMedico(undefined);
+                                                }
+                                                setOrdenadoPor(e.target.value)
+                                            }}
                                             value={ordenadoPor}
-                                            defaultValue={undefined}
                                             options={lsOrdenadoPor}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idOrdenadoPor}
@@ -563,14 +569,14 @@ const Refund = () => {
 
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
-                                        <InputSelect
+                                        <SelectOnChange
                                             name="idMedico"
                                             label="Médico"
-                                            disabled={ordenadoPor === DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD && ordenadoPor !== '' ? false : true}
-                                            defaultValue={undefined}
+                                            onChange={(e) => setIdMedico(e.target.value)}
+                                            value={idMedico}
                                             options={lsUsuarios}
                                             size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idMedico}
+                                            disabled={ordenadoPor === DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD && ordenadoPor !== '' ? false : true}
                                         />
                                     </FormProvider>
                                 </Grid>
