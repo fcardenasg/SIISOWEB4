@@ -4,14 +4,17 @@ import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { itemsIndicadores } from 'components/components/MenuItems/items';
+import { IconChartLine } from '@tabler/icons';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 
 const MenuIndicadores = () => {
     const navigate = useNavigate();
 
+    const systemMenu = window.localStorage.getItem('systemMenu');
+    const navigation = JSON.parse(systemMenu);
+
     const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...itemsIndicadores,
+        ...navigation[3]?.children[0].children,
     ]);
 
     const selectedItem = (itemSelected = []) => {
@@ -38,7 +41,7 @@ const MenuIndicadores = () => {
                             secondary={item.title}
                             onClick={() => navigate(`${item.url}`)}
                             primary={item.subtitle}
-                            iconPrimary={item.icon}
+                            iconPrimary={IconChartLine}
                             color={item.color}
                         />
                     </Grid>

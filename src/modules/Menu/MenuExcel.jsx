@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react';
 import { Grid } from '@mui/material';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { itemsExcel } from 'components/components/MenuItems/items';
+import { IconFileExport } from '@tabler/icons';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 import ViewExport from 'modules/Export/ViewExport';
 
@@ -13,8 +13,12 @@ const MenuExcel = () => {
         titulo: ''
     });
 
+    const systemMenu = window.localStorage.getItem('systemMenu');
+    const navigation = JSON.parse(systemMenu);
+
+
     const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...itemsExcel,
+        ...navigation[3]?.children[1].children,
     ]);
 
     const selectedItem = (itemSelected = []) => {
@@ -39,9 +43,9 @@ const MenuExcel = () => {
                     <Grid item xs={12} md={6} lg={3}>
                         <HoverSocialCard
                             secondary={item.title}
-                            onClick={() => { setOpenModal(true); setTipoExcel({ ...tipoExcel, codigo: item.url, titulo: item.title }) }}
+                            onClick={() => { setOpenModal(true); setTipoExcel({ codigo: item.url, titulo: item.title }) }}
                             primary={item.subtitle}
-                            iconPrimary={item.icon}
+                            iconPrimary={IconFileExport}
                             color={item.color}
                         />
                     </Grid>

@@ -92,7 +92,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsCon
 
     /* TITULOS DE CONTENIDO */
     doc.text(`CONSECUTIVO NRO: ${lsDataReport.id}`, 7, 30);
-    doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, 90, 30);
+    doc.text(`FECHA: ${new Date(lsDataReport.fechaRegistro).toLocaleString()}`, 85, 30);
     doc.text(`MOTIVO: ${lsDataReport.nameContingencia}`, marXR - 2, 30, { align: 'right' });
 
     doc.setFontSize(8);

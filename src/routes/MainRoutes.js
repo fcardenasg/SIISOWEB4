@@ -32,14 +32,6 @@ const ListSupplier = Loadable(lazy(() => import('modules/Supplier/ListSupplier')
 const Supplier = Loadable(lazy(() => import('modules/Supplier/Supplier')));
 const UpdateSupplier = Loadable(lazy(() => import('modules/Supplier/UpdateSupplier')));
 
-const ListAssistance = Loadable(lazy(() => import('modules/Assistance/ListAssistance')));
-const Assistance = Loadable(lazy(() => import('modules/Assistance/Assistance')));
-const UpdateAssistance = Loadable(lazy(() => import('modules/Assistance/UpdateAssistance')));
-
-const ListEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/ListEvolutionNote')));
-const EvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/EvolutionNote')));
-const UpdateEvolutionNote = Loadable(lazy(() => import('modules/EvolutionNote/UpdateEvolutionNote')));
-
 const ListMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/ListMedicalAdvice')));
 const MedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/MedicalAdvice')));
 const UpdateMedicalAdvice = Loadable(lazy(() => import('modules/MedicalAdvice/UpdateMedicalAdvice')));
@@ -87,7 +79,6 @@ const Attention = Loadable(lazy(() => import('modules/Attention/Attention')));
 const UpdateAttention = Loadable(lazy(() => import('modules/Attention/UpdateAttention')));
 const ListAttention = Loadable(lazy(() => import('modules/Attention/ListAttention')));
 
-
 const ListOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/ListOtherAdvice')));
 const OtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/OtherAdvice')));
 const UpdateOtherAdvice = Loadable(lazy(() => import('modules/OtherAdvice/UpdateOtherAdvice')));
@@ -111,10 +102,6 @@ const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/Panorama/Upda
 const ListTemplate = Loadable(lazy(() => import('modules/Template/ListTemplate')));
 const Template = Loadable(lazy(() => import('modules/Template/Template')));
 const UpdateTemplate = Loadable(lazy(() => import('modules/Template/UpdateTemplate')));
-
-const ListOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/ListOccupationalHealth')));
-const OccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/OccupationalHealth')));
-const UpdateOccupationalHealth = Loadable(lazy(() => import('modules/OccupationalHealth/UpdateOccupationalHealth')));
 
 const ListOccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/ListOccupationalMedicine')));
 const OccupationalMedicine = Loadable(lazy(() => import('modules/OccupationalMedicine/OccupationalMedicine')));
@@ -202,11 +189,15 @@ const Audiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/Au
 const UpdateAudiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/UpdateAudiometry')));
 
 const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
-const MenuIndicadores = Loadable(lazy(() => import('modules/Menu/MenuIndicadores')));
+const ViewIndicadores = Loadable(lazy(() => import('modules/Indicators/ViewIndicadores')));
 
 const ListPersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/ListPersonalNotes')));
 const PersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/PersonalNotes')));
 const UpdatePersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/UpdatePersonalNotes')));
+
+const ListHeadcount = Loadable(lazy(() => import('modules/Headcount/ListHeadcount')));
+const Headcount = Loadable(lazy(() => import('modules/Headcount/Headcount')));
+const UpdateHeadcount = Loadable(lazy(() => import('modules/Headcount/UpdateHeadcount')));
 
 const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
 const IndicadorIncapacidades = Loadable(lazy(() => import('modules/Indicators/Indicators')));
@@ -319,32 +310,6 @@ const MainRoutes = {
         {
             path: '/supplier/update/:id',
             element: <UpdateSupplier />
-        },
-        /* Render de HISTORIA CLÍNICA */
-        {
-            path: '/assistance/list',
-            element: <ListAssistance />
-        },
-        {
-            path: '/assistance/add',
-            element: <Assistance />
-        },
-        {
-            path: '/assistance/update/:id',
-            element: <UpdateAssistance />
-        },
-        /* Render de NOTAS DE EVOLUCION */
-        {
-            path: '/evolution-note/list',
-            element: <ListEvolutionNote />
-        },
-        {
-            path: '/evolution-note/add',
-            element: <EvolutionNote />
-        },
-        {
-            path: '/evolution-note/update/:id',
-            element: <UpdateEvolutionNote />
         },
         /* Render de ASESORÍAS MÉDICA */
         {
@@ -599,19 +564,6 @@ const MainRoutes = {
             path: '/template/update/:id',
             element: <UpdateTemplate />
         },
-        /* Render de OCCUPATIONAL HEALTH */
-        {
-            path: '/occupational-health/list',
-            element: <ListOccupationalHealth />
-        },
-        {
-            path: '/occupational-health/add',
-            element: <OccupationalHealth />
-        },
-        {
-            path: '/occupational-health/update/:id',
-            element: <UpdateOccupationalHealth />
-        },
         {
             path: '/programming/list',
             element: <ListProgramming />
@@ -847,7 +799,7 @@ const MainRoutes = {
         /* INDICADORES */
         {
             path: '/indicators/menu',
-            element: <MenuIndicadores />
+            element: <ViewIndicadores />
         },
 
         /* Render de Recuperar Contraseña */
@@ -938,6 +890,20 @@ const MainRoutes = {
         {
             path: '/rol/update/:id',
             element: <UpdateRol />
+        },
+
+        /*  */
+        {
+            path: '/headcount/add',
+            element: <Headcount />
+        },
+        {
+            path: '/headcount/list',
+            element: <ListHeadcount />
+        },
+        {
+            path: '/headcount/update/:id',
+            element: <UpdateHeadcount />
         },
     ]
 };

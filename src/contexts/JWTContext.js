@@ -127,6 +127,7 @@ export const JWTProvider = ({ children }) => {
             response.data.message === 'Usuario inactivo') {
             throw Error(response.data.message);
         }
+
         if (response.data.token !== undefined) {
             const { token, dataUser, message } = response.data;
 
@@ -186,6 +187,8 @@ export const JWTProvider = ({ children }) => {
     const logout = () => {
         setSession(null);
         dispatch({ type: LOGOUT });
+        setRenderMenu(null);
+        setIdUsuario(null);
     };
 
     const resetPassword = async (correo) => {

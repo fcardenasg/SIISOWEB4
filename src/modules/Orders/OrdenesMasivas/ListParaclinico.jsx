@@ -204,9 +204,9 @@ const ListParaclinico = ({ setLsOrdenesParaclinicos, lsOrdenesParaclinicos }) =>
                                 <TableBody>
                                     {lsOrdenesParaclinicos.map((row, index) => (
                                         <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-                                            <TableCell>{lsEstudioParaclinico.filter(x => x.value === Number(row.idParaclinico)).map(x => x.label)}</TableCell>
-                                            <TableCell>{lsProveedor.filter(x => x.codiProv === row.idProveedor).map(x => x.nombProv)}</TableCell>
-                                            <TableCell>{lsCiudad.filter(x => x.value === Number(row.idCiudad)).map(x => x.label)}</TableCell>
+                                            <TableCell>{lsEstudioParaclinico.filter(x => x.value === Number(row.idParaclinico))[0].label}</TableCell>
+                                            <TableCell>{lsProveedor.filter(x => x.codiProv === row.idProveedor)[0].nombProv}</TableCell>
+                                            <TableCell>{lsCiudad.filter(x => x.value === Number(row.idCiudad))[0].label}</TableCell>
                                             <TableCell>{ViewFormat(row.fechaRegistro)}</TableCell>
 
                                             <TableCell>

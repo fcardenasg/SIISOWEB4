@@ -50,7 +50,6 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
                                 <TableCell>Clase</TableCell>
                                 {diferen === 'COMPANY' ? null : <TableCell>Grado sin EPP</TableCell>}
-
                                 {diferen === 'COMPANY' ? null : <TableCell>Grado con EPP</TableCell>}
                                 {diferen === 'COMPANY' ? null : <TableCell>Medidas de Control</TableCell>}
                                 <TableCell>Año</TableCell>

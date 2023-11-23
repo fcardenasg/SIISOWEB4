@@ -4,8 +4,8 @@ import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { itemsMenuOrders } from 'components/components/MenuItems/items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
+import { itemsMenuOrders } from './items';
 
 const ViewOrders = () => {
     const navigate = useNavigate();

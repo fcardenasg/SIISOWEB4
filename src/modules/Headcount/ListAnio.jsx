@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import Cargando from 'components/loading/Cargando';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
-    Grid,
     IconButton,
     InputAdornment,
     Table,
@@ -22,31 +20,22 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-import swal from 'sweetalert';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { DeleteMedicalHistory, GetAllMedicalHistory } from 'api/clients/MedicalHistoryClient';
-import { ViewFormat } from 'components/helpers/Format';
-import ReactExport from "react-export-excel";
-import { IconFileExport } from '@tabler/icons';
-import FullScreenDialogs from 'components/controllers/FullScreenDialog';
-import Assistance from './Assistance';
-import Cargando from 'components/loading/Cargando';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import ControlModal from 'components/controllers/ControlModal';
+import EditHeadcount from './EditHeadcount';
+import { ArrayMeses } from 'components/Arrays';
+import { UpperFirstChar } from 'components/helpers/Format';
+import { DeleteHeadcount } from 'api/clients/HeadcountClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -73,33 +62,33 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'documento',
+        id: 'id',
         numeric: false,
-        label: 'Documento',
-        align: 'center'
-    },
-    {
-        id: 'nameContingencia',
-        numeric: false,
-        label: 'Contingencia',
+        label: 'Id',
         align: 'left'
     },
     {
-        id: 'nameAtencion',
+        id: 'stringMes',
         numeric: false,
-        label: 'Atencion',
+        label: 'Mes',
         align: 'left'
     },
     {
-        id: 'fecha',
+        id: 'cantidad',
         numeric: false,
-        label: 'Fecha',
+        label: 'Cantidad',
         align: 'left'
     },
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Usuario Que Atiende',
+        label: 'Usuario Registro',
+        align: 'left'
+    },
+    {
+        id: 'fechaRegistro',
+        numeric: false,
+        label: 'Fecha Registro',
         align: 'left'
     }
 ];
@@ -191,7 +180,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -210,33 +199,25 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListAssistance = () => {
-    const navigate = useNavigate();
+const ListAnio = ({ getAll, setLsHeadcount, lsHeadcount, rows, idAnio }) => {
     const [idCheck, setIdCheck] = useState('');
-    const [assistance, setAssistance] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
-    const [open, setOpen] = useState(false);
+    const [openModal, setOpenModal] = useState({
+        isOpen: false,
+        idHeadcount: 0,
+        AnioMesHeadCount: ''
+    });
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
-    const [rows, setRows] = useState([]);
-
-    async function GetAll() {
-        try {
-            const lsServer = await GetAllMedicalHistory(0, 0);
-            setAssistance(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-        }
-    }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -247,7 +228,7 @@ const ListAssistance = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nameContingencia', 'nameAtencion', 'fecha', 'usuarioRegistro'];
+                const properties = ['id', 'stringMes', 'cantidad', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -261,9 +242,9 @@ const ListAssistance = () => {
                 }
                 return matches;
             });
-            setAssistance(newRows);
+            setLsHeadcount(newRows);
         } else {
-            setAssistance(rows);
+            setLsHeadcount(rows);
         }
     };
 
@@ -274,9 +255,8 @@ const ListAssistance = () => {
     };
 
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
-            const newSelectedId = assistance.map((n) => n.id);
+            const newSelectedId = lsHeadcount.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -284,7 +264,7 @@ const ListAssistance = () => {
     };
 
     const handleClick = (event, id) => {
-        if (idCheck === '') setIdCheck(id); else setIdCheck('')
+        setIdCheck(id);
 
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -292,7 +272,6 @@ const ListAssistance = () => {
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
-            setIdCheck('');
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
@@ -316,12 +295,13 @@ const ListAssistance = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteMedicalHistory(idCheck);
+                    const result = await DeleteHeadcount(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
                     }
+                    setSearch('');
                     setSelected([]);
-                    GetAll();
+                    getAll();
                 } else
                     setSelected([]);
             });
@@ -330,79 +310,39 @@ const ListAssistance = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assistance.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsHeadcount.length) : 0;
 
     return (
-        <MainCard title="Lista de Pacientes" content={false}>
+        <MainCard title={`Lista De Headcount - Año ${idAnio}`} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
+            <ControlModal
+                title={`Editar Headcount - ${openModal.AnioMesHeadCount}`}
+                open={openModal.isOpen}
+                onClose={() => setOpenModal({ ...openModal, isOpen: false })}
+                maxWidth="xs"
+            >
+                <EditHeadcount idHeadcount={openModal.idHeadcount} getAllHeadcount={getAll} />
+            </ControlModal>
+
             <CardContent>
-                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon fontSize="small" />
-                                    </InputAdornment>
-                                )
-                            }}
-                            onChange={handleSearch}
-                            placeholder="Buscar"
-                            value={search}
-                            size="small"
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Historia Clínica">
-                            <ExcelSheet data={assistance} name="Historia Clínica">
-                                <ExcelColumn label="Id" value="id" />
-                                <ExcelColumn label="Documento" value="documento" />
-                                <ExcelColumn label="Fecha" value="fecha" />
-                                <ExcelColumn label="Atención" value="nameAtencion" />
-                                <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                <ExcelColumn label="Turno" value="idTurno" />
-                                <ExcelColumn label="Día del Turno" value="idDiaTurno" />
-                                <ExcelColumn label="Motivo de Consulta" value="motivoConsulta" />
-                                <ExcelColumn label="Enfermedad Actual" value="enfermedadActual" />
-                                <ExcelColumn label="Antecedentes" value="antecedentes" />
-                                <ExcelColumn label="Revision por Sistema" value="revisionSistema" />
-                                <ExcelColumn label="Examen Físico" value="examenFisico" />
-                                <ExcelColumn label="Examen Paraclínico" value="examenParaclinico" />
-                                <ExcelColumn label="Diagnostico" value="diagnostico" />
-                                <ExcelColumn label="Plan de Manejo" value="planManejo" />
-                                <ExcelColumn label="Concepto de Actitud" value="idConceptoActitud" />
-                                <ExcelColumn label="Remitido" value="idRemitido" />
-                                <ExcelColumn label="Usuario de Creación" value="usuarioCreacion" />
-                                <ExcelColumn label="Fecha de Creacion" value="fechaCreacion" />
-                                <ExcelColumn label="Usuario Modifica" value="usuarioModifica" />
-                                <ExcelColumn label="Fecha de Modificación" value="fechaModifica" />
-                            </ExcelSheet>
-                        </ExcelFile>
-
-                        <Tooltip title="Impresión" onClick={() => navigate(`/assistance/report/${idCheck}`)}>
-                            <IconButton disabled={idCheck === '' ? true : false} size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/assistance/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
-                    </Grid>
-                </Grid>
+                <TextField
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon fontSize="small" />
+                            </InputAdornment>
+                        )
+                    }}
+                    onChange={handleSearch}
+                    placeholder="Buscar"
+                    value={search}
+                    size="small"
+                />
             </CardContent>
 
             <TableContainer>
-                {assistance.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsHeadcount.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -410,15 +350,16 @@ const ListAssistance = () => {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={assistance.length}
+                            rowCount={lsHeadcount.length}
                             theme={theme}
                             selected={selected}
                             onClick={handleDelete}
                         />
                         <TableBody>
-                            {stableSort(assistance, getComparator(order, orderBy))
+                            {stableSort(lsHeadcount, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
+
                                     if (typeof row === 'string') return null;
 
                                     const isItemSelected = isSelected(row.id);
@@ -449,23 +390,12 @@ const ListAssistance = () => {
                                                 scope="row"
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
-                                                align="center"
-                                            >
-                                                {row.documento}
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameContingencia}
+                                                    {row.id}
                                                 </Typography>
                                             </TableCell>
 
@@ -480,7 +410,7 @@ const ListAssistance = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameAtencion}
+                                                    {row.stringMes}
                                                 </Typography>
                                             </TableCell>
 
@@ -495,7 +425,7 @@ const ListAssistance = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {ViewFormat(row.fecha)}
+                                                    {row.cantidad}
                                                 </Typography>
                                             </TableCell>
 
@@ -514,8 +444,25 @@ const ListAssistance = () => {
                                                 </Typography>
                                             </TableCell>
 
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {new Date(row.fechaRegistro).toLocaleString()}
+                                                </Typography>
+                                            </TableCell>
+
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/assistance/update/${row.id}`)}>
+                                                <Tooltip title="Actualizar" onClick={() => setOpenModal({
+                                                    isOpen: true, AnioMesHeadCount: `${UpperFirstChar(ArrayMeses.filter(x => x.value === row.mes)[0].label)}/${row.anio}`, idHeadcount: row.id
+                                                })}>
                                                     <IconButton size="large">
                                                         <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
@@ -538,18 +485,10 @@ const ListAssistance = () => {
                 }
             </TableContainer>
 
-            <FullScreenDialogs
-                open={open}
-                title="IMPRIMIR HISTORIA CLÍNICA"
-                handleClose={() => setOpen(false)}
-            >
-                <Assistance />
-            </FullScreenDialogs>
-
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={assistance.length}
+                count={lsHeadcount.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -559,4 +498,4 @@ const ListAssistance = () => {
     );
 };
 
-export default ListAssistance;
+export default ListAnio;

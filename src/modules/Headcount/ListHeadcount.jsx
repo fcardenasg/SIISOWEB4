@@ -1,16 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-
-// Componentes de Material-ui
+import Cargando from 'components/loading/Cargando';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
     Table,
@@ -28,31 +25,23 @@ import {
     Button
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { IconFileExport } from '@tabler/icons';
 
-// Import de proyectos
-import { Message, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
-import Cargando from 'components/loading/Cargando';
+import swal from 'sweetalert';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import Chip from 'ui-component/extended/Chip';
+import { DeleteRol } from 'api/clients/RolClient';
+import { GetAllHeadcount } from 'api/clients/HeadcountClient';
+import { ArrayMeses } from 'components/Arrays';
+import { UpperFirstChar } from 'components/helpers/Format';
 
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -66,7 +55,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -77,43 +65,26 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'documento',
+        id: 'anio',
         numeric: false,
-        label: 'Documento',
-        align: 'center'
-    },
-    {
-        id: 'Fecha',
-        numeric: false,
-        label: 'fecha',
+        label: 'Año',
         align: 'left'
     },
     {
-        id: 'atencion',
+        id: 'count',
         numeric: false,
-        label: 'Atención',
+        label: 'N° Meses',
         align: 'left'
     },
     {
-        id: 'motivo',
+        id: 'meses',
         numeric: false,
-        label: 'Motivo',
-        align: 'left'
-    },
-    {
-        id: 'tipoProv',
-        numeric: false,
-        label: 'Tipo Proveedor',
+        label: 'Meses',
         align: 'left'
     }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -134,11 +105,11 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
                         }}
                     />
                 </TableCell>
-                {numSelected > 0 && (
+                {/* {numSelected > 0 && (
                     <TableCell padding="none" colSpan={8}>
                         <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
                     </TableCell>
-                )}
+                )} */}
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -185,11 +156,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -226,39 +192,31 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-// ==============================|| RENDER DE LA LISTA ||============================== //
+const ListHeadcount = () => {
+    const navigate = useNavigate();
+    const [lsHeadcount, setLsHeadcoult] = useState([]);
 
-const ListSupplier = () => {
-    const dispatch = useDispatch();
-    const [supplier, setSupplier] = useState([]);
-
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
-    async function GetAll() {
+    async function getAll() {
         try {
-            const lsServer = await GetAllSupplier(0, 0);
-            setSupplier(lsServer.data.entities);
-            setRows(lsServer.data.entities);
-        } catch (error) {
-
-        }
+            const lsServer = await GetAllHeadcount();
+            setLsHeadcoult(lsServer.data);
+            setRows(lsServer.data);
+        } catch (error) { }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -267,7 +225,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv', 'tipoProv'];
+                const properties = ['anio', 'count'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -281,34 +239,28 @@ const ListSupplier = () => {
                 }
                 return matches;
             });
-            setSupplier(newRows);
+            setLsHeadcoult(newRows);
         } else {
-            setSupplier(rows);
+            setLsHeadcoult(rows);
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
-            const newSelectedId = supplier.map((n) => n.codiProv);
+            const newSelectedId = lsHeadcount.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
-        setIdCheck(id);
-
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
@@ -334,39 +286,11 @@ const ListSupplier = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
-    const handleDelete = async () => {
-        try {
-            const result = await DeleteSupplier(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
-        } catch (error) {
-
-        }
-    }
-
-    const navigate = useNavigate();
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsHeadcount.length) : 0;
 
     return (
-        <MainCard title="Lista de Proveedores" content={false}>
-
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
+        <MainCard title="Lista De Headcount" content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -384,42 +308,29 @@ const ListSupplier = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Empresas">
-                            <ExcelSheet data={supplier} name="Empresas">
-                                <ExcelColumn label="Código" value="codiProv" />
-                                <ExcelColumn label="Nombre" value="nombProv" />
-                                <ExcelColumn label="Teléfono" value="teleProv" />
-                                <ExcelColumn label="Correo Electronico" value="emaiProv" />
-                                <ExcelColumn label="Tipo de Proveedor" value="nameTypeSupplier" />
-                            </ExcelSheet>
-                        </ExcelFile>
 
-                        <Tooltip title="Impresión" onClick={() => navigate('/occupational-health/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/headcount/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
 
-                        {/* product add & dialog */}
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/occupational-health/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
-
+                            <Grid item xs={6}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
             <TableContainer>
-                {supplier.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsHeadcount.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -427,19 +338,18 @@ const ListSupplier = () => {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={supplier.length}
+                            rowCount={lsHeadcount.length}
                             theme={theme}
                             selected={selected}
-                            onClick={handleDelete}
                         />
                         <TableBody>
-                            {stableSort(supplier, getComparator(order, orderBy))
+                            {stableSort(lsHeadcount, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    /** Make sure no display bugs if row isn't an OrderData object */
+
                                     if (typeof row === 'string') return null;
 
-                                    const isItemSelected = isSelected(row.codiProv);
+                                    const isItemSelected = isSelected(row.anio);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -451,10 +361,7 @@ const ListSupplier = () => {
                                             key={index}
                                             selected={isItemSelected}
                                         >
-                                            {/* Desde aquí colocamos la llegada de los datos
-                                        en cada columna, recordar solo cambiar el nombre y ya */}
-
-                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.codiProv)}>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.anio)}>
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
@@ -468,15 +375,14 @@ const ListSupplier = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
+                                                onClick={(event) => handleClick(event, row.anio)}
                                                 sx={{ cursor: 'pointer' }}
-                                                align="center"
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codiProv}
+                                                    {row.anio}
                                                 </Typography>
                                             </TableCell>
 
@@ -484,14 +390,14 @@ const ListSupplier = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
+                                                onClick={(event) => handleClick(event, row.anio)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nombProv}
+                                                    {row.count} {`${row.count === 1 ? 'Mes' : 'Meses'}`}
                                                 </Typography>
                                             </TableCell>
 
@@ -499,61 +405,23 @@ const ListSupplier = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
+                                                onClick={(event) => handleClick(event, row.anio)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.teleProv}
+                                                    {row.lsHeadcount?.map(x => `${x.label}`).join(", ")}
                                                 </Typography>
                                             </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.emaiProv}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.tipoProv}
-                                                </Typography>
-                                            </TableCell>
-
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <IconButton color="primary" size="large">
-                                                    <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                                <Fab
-                                                    size="small"
-                                                    color="info"
-                                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                                                    onClick={() => navigate(`/occupational-health/update/${row.codiProv}`)}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/headcount/update/${row.anio}`)}>
                                                     <IconButton size="large">
                                                         <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
-                                                </Fab>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -572,11 +440,10 @@ const ListSupplier = () => {
                 }
             </TableContainer>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={supplier.length}
+                count={lsHeadcount.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -586,4 +453,4 @@ const ListSupplier = () => {
     );
 };
 
-export default ListSupplier;
+export default ListHeadcount;

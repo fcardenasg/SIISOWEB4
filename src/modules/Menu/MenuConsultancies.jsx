@@ -4,14 +4,16 @@ import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { itemsConsultancies } from 'components/components/MenuItems/items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
+import { IconReportMedical } from '@tabler/icons';
 
 const MenuConsultancies = () => {
     const navigate = useNavigate();
+    const systemMenu = window.localStorage.getItem('systemMenu');
+    const navigation = JSON.parse(systemMenu);
 
     const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...itemsConsultancies,
+        ...navigation[0]?.children[1].children,
     ]);
 
     const selectedItem = (itemSelected = []) => {
@@ -38,7 +40,7 @@ const MenuConsultancies = () => {
                             secondary={item.title}
                             onClick={() => navigate(`${item.url}`)}
                             primary={item.subtitle}
-                            iconPrimary={item.icon}
+                            iconPrimary={IconReportMedical}
                             color={item.color}
                         />
                     </Grid>

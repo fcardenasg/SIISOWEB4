@@ -1,5 +1,9 @@
 import { DefaultValue } from "./Enums";
 
+export function UpperFirstChar(cadena) {
+    return cadena.charAt(0).toUpperCase() + cadena.slice(1).toLowerCase();
+}
+
 const FormatDate = (date) => {
     try {
         if (date === null) {

@@ -4,14 +4,16 @@ import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { itemsParameterization } from 'components/components/MenuItems/items';
+import { IconTool } from '@tabler/icons';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 
 const MenuParameterization = () => {
     const navigate = useNavigate();
+    const systemMenu = window.localStorage.getItem('systemMenu');
+    const navigation = JSON.parse(systemMenu);
 
     const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...itemsParameterization,
+        ...navigation[2]?.children[0].children,
     ]);
 
     const selectedItem = (itemSelected = []) => {
@@ -38,7 +40,7 @@ const MenuParameterization = () => {
                             secondary={item.title}
                             onClick={() => navigate(`${item.url}`)}
                             primary={item.subtitle}
-                            iconPrimary={item.icon}
+                            iconPrimary={IconTool}
                             color={item.color}
                         />
                     </Grid>

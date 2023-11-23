@@ -1069,13 +1069,13 @@ const UpdateClinicHistory = () => {
                                                 </AnimateButton>
                                             </Grid>
 
-                                            <Grid item xs={2}>
+                                            {/* <Grid item xs={2}>
                                                 <AnimateButton>
                                                     <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => setOpenRegistrarAT(true)}>
                                                         Registrar AT
                                                     </Button>
                                                 </AnimateButton>
-                                            </Grid>
+                                            </Grid> */}
 
                                             <Grid item xs={2}>
                                                 <AnimateButton>

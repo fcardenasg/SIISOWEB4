@@ -22,7 +22,7 @@ import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { PutUser } from 'formatdata/UserForm';
 import { GetByIdUser, UpdateUsers } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
-import {  GetComboRol } from 'api/clients/RolClient';
+import { GetComboRol } from 'api/clients/RolClient';
 import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
@@ -334,14 +334,14 @@ const UpdateUser = () => {
 
                     <Grid item xs={12} sx={{ pt: 4 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
                                     <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Actualizar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/user/list")}>
                                         {TitleButton.Cancelar}

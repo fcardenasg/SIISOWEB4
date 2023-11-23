@@ -15,7 +15,6 @@ import { Fragment } from 'react';
 
 import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
-import MailIcon from '@mui/icons-material/Mail';
 import PrintIcon from '@mui/icons-material/Print';
 import { LoadingButton } from '@mui/lab';
 

@@ -18,6 +18,10 @@ export const Url = {
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
 
+    HeadcountId: "api/Headcount/id",
+    Headcount: "api/Headcount",
+    HeadcountAnio: "api/Headcount/list-anio",
+
     Rol: 'api/Rol',
     RolList: 'api/Rol/list',
     RolComboRol: 'api/Rol/combo-rol',
@@ -119,7 +123,8 @@ export const Url = {
 
     Antecedente: 'api/Antecedente',
 
-    Indicador: 'api/Indicador',
+    Indicadores: 'api/Indicadores',
+    IndicadoresId: 'api/Indicadores/id',
 
     Asesorias: 'api/Asesorias',
     AsesoriasExcel: 'api/Asesorias/excel',

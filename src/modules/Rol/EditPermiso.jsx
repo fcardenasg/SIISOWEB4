@@ -84,7 +84,6 @@ const EditPermiso = ({ idPermiso, getAllPermisos }) => {
             };
 
             const result = await UpdateRols(DataToInsert);
-            console.log("result => ", result);
             if (result.status === 200) {
                 if (dataPermiso.id === result.data) {
                     setOpenSuccess(true);
