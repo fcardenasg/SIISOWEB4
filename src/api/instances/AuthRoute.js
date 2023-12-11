@@ -124,6 +124,7 @@ export const Url = {
     Antecedente: 'api/Antecedente',
 
     Indicadores: 'api/Indicadores',
+    IndicadoresExcel: 'api/Headcount/indicadores',
     IndicadoresId: 'api/Indicadores/id',
 
     Asesorias: 'api/Asesorias',

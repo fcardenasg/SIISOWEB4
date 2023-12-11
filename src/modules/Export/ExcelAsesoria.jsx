@@ -9,7 +9,6 @@ import SelectOnChange from "components/input/SelectOnChange";
 import { ParametrosExcel } from "formatdata/ParametrosForm";
 import AnimateButton from "ui-component/extended/AnimateButton";
 import ReactExport from "react-export-excel";
-import { ViewFormat } from "components/helpers/Format";
 import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";

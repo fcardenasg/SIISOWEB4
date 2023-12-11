@@ -41,7 +41,6 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import Cargando from 'components/loading/Cargando';
 import useAuth from 'hooks/useAuth';
 import config from 'config';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 import InputSelect from 'components/input/InputSelect';
 import { FormProvider, useForm } from 'react-hook-form';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -253,7 +252,12 @@ const ListProgrammingUpdate = () => {
 
     const handleUpdateAttentionOpen = async (datos) => {
         try {
-            const DataToUpdate = PutEstadoAtencion(idAtencion, datos.idEstado, user?.nameuser);
+            const DataToUpdate = {
+                id: idAtencion,
+                estadoPac: datos.idEstado,
+                usuario: user?.nameuser
+            }
+
             const lsServer = await UpdateEstadoRegistroAtencion(DataToUpdate);
 
             if (lsServer.status === 200) {

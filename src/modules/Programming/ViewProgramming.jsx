@@ -16,7 +16,6 @@ import { gridSpacing } from 'store/constant';
 import { IconEye, IconCircleMinus } from '@tabler/icons';
 import { DefaultValue } from 'components/helpers/Enums';
 import MenuOptions from './MenuOptions';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 import useAuth from 'hooks/useAuth';
 
 const ViewProgramming = ({ programming, getAll }) => {
@@ -32,7 +31,12 @@ const ViewProgramming = ({ programming, getAll }) => {
 
     const handleUpdateAttention = async () => {
         try {
-            const DataToUpdate = PutEstadoAtencion(programming.id, 'PENDIENTE POR ATENCIÓN', '');
+            const DataToUpdate = {
+                id: programming.id,
+                estadoPac: DefaultValue.ATENCION_PENDIENTE_ATENDIDO,
+                usuario: ""
+            }
+
             const result = await UpdateEstadoRegistroAtencion(DataToUpdate);
             if (result.status === 200) {
                 setOpenSuccess(true);
@@ -44,7 +48,11 @@ const ViewProgramming = ({ programming, getAll }) => {
 
     const handleUpdateAttentionOpen = async () => {
         try {
-            const DataToUpdate = PutEstadoAtencion(programming.id, 'ESTÁ SIENDO ATENDIDO', user.nameuser);
+            const DataToUpdate = {
+                id: programming.id,
+                estadoPac: DefaultValue.ATENCION_ESTASIENDOATENDIDO,
+                usuario: user?.nameuser
+            }
             await UpdateEstadoRegistroAtencion(DataToUpdate);
         } catch (error) { }
     }
@@ -112,7 +120,6 @@ const ViewProgramming = ({ programming, getAll }) => {
     const handleSound = (nombre, atencion) => {
         let mensaje = new SpeechSynthesisUtterance();
         mensaje.text = `${nombre} pasar al consultorio 3 ${atencion}`;
-        //mensaje.voice = speechSynthesis.getVoices()[2];
 
         var agnesIndex = speechSynthesis.getVoices().findIndex(function (voice) {
             return voice.name;
@@ -123,13 +130,13 @@ const ViewProgramming = ({ programming, getAll }) => {
     useEffect(() => {
         const handleDisabledButon = () => {
             try {
-                if (programming.estadoPac === 'ESTÁ SIENDO ATENDIDO' && programming.usuarioCierreAtencion === user.nameuser) {
+                if (programming.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO && programming.usuarioCierreAtencion === user.nameuser) {
                     setDisabledButon(false);
-                } else if (programming.estadoPac === 'PENDIENTE POR ATENCIÓN') {
+                } else if (programming.estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
                     setDisabledButon(false);
-                } else if (programming.estadoPac === 'ESTÁ SIENDO ATENDIDO') {
+                } else if (programming.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO) {
                     setDisabledButon(true);
-                } else if (programming.estadoPac === 'ATENDIDO') {
+                } else if (programming.estadoPac === DefaultValue.ATENCION_ATENDIDO) {
                     setDisabledButon(true);
                 }
             } catch (error) { }

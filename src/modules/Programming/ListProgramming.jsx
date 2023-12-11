@@ -112,7 +112,7 @@ const ListProgramming = () => {
     if (timeWait) {
         usersResult = stableSort(lsProgramming, getComparator('desc', 'fecha')).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((programming, index) => (
-                <Grid key={index} item xs={12} sm={6} lg={3} /* xl={2} */>
+                <Grid key={index} item xs={12} sm={6} lg={3}>
                     <ViewProgramming key={index} programming={programming} getAll={getAll} />
                 </Grid>
             ));

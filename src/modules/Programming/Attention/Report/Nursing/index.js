@@ -2,8 +2,6 @@ import jsPDF from "jspdf";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 import config from "config";
-import LogoReportLtd from 'assets/img/LogoReportLTD.png';
-import LogoReportEnergy from 'assets/img/LogoReportEnergy.png';
 
 /* FIRMAS */
 function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
@@ -55,8 +53,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
 /* Encabezado */
 function getHeader(doc) {
   /* ENCABEZADO REPORTE */
-  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
-    config.typeDashboard === 'ltd' ? 60 : 50, 15);
+  doc.addImage(config.logotipo, "PNG", 5, 5, config.typeDashboard === 'DLTD' ? 60 : 50, 15);
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");
@@ -180,7 +177,7 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text(`${lsDataReport.nameContingencia}`, 40, 88);
 
-  if (lsDataReport.procedimientos !== undefined && lsDataReport !== []) {
+  if (lsDataReport.procedimientos !== undefined && lsDataReport != []) {
     doc.text(JSON.parse(lsDataReport.procedimientos).map((dx, index) => {
       return String(`${dx.label.toUpperCase()}`)
     }), 40, 98, { maxWidth: 200, lineHeightFactor: 1.5 });

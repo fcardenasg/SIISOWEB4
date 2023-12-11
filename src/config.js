@@ -1,10 +1,14 @@
+import LogoReportLtd from 'assets/img/LogoReportLTD.png';
+import LogoReportEnergy from 'assets/img/LogoReportEnergy.png';
+
 const rutaLocal = 'https://localhost:44347/';
 const rutaLtd = 'https://siiso.drummondltd.com:44347/';
 const rutaEnergy = 'https://siiso.drummondenergy.com:44447/';
 
 const config = {
-    typeDashboard: 'ltd', //energy - ltd
+    typeDashboard: 'DLTD', //ENERGY - DLTD
     rutaApi: rutaLocal,
+    logotipo: LogoReportLtd,
 
     basename: '',
     defaultPath: '/dashboard/drummond',

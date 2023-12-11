@@ -2,14 +2,11 @@ import jsPDF from "jspdf";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 import config from "config";
-import LogoReportLtd from 'assets/img/LogoReportLTD.png';
-import LogoReportEnergy from 'assets/img/LogoReportEnergy.png';
 
 /* Encabezado */
 function getHeader(doc) {
   /* ENCABEZADO REPORTE */
-  doc.addImage(config.typeDashboard === 'ltd' ? LogoReportLtd : LogoReportEnergy, "PNG", 5, 5,
-    config.typeDashboard === 'ltd' ? 60 : 50, 15);
+  doc.addImage(config.logotipo, "PNG", 5, 5, config.typeDashboard === 'DLTD' ? 60 : 50, 15);
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("DIVISIÓN MÉDICA", 120, 10, null, null, "center");

@@ -240,19 +240,11 @@ const ListWorkAbsenteeism = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    const [lsWorkAbsenteeismExcel, setLsWorkAbsenteeismExcel] = useState([]);
-    const [rowsExcel, setRowsExcel] = useState([]);
-
     async function getAll() {
         try {
             const lsServer = await GetAllWorkAbsenteeism();
             setLsWorkAbsenteeism(lsServer.data);
             setRows(lsServer.data);
-
-            const parametros = ParametrosExcel(0, null, null);
-            const lsServerExcel = await GetExcelWorkAbsenteeism(parametros);
-            setLsWorkAbsenteeismExcel(lsServerExcel.data);
-            setRowsExcel(lsServerExcel.data);
         } catch (error) { }
     }
 
@@ -268,25 +260,7 @@ const ListWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'fechaRegistro', 'usuarioRegistro'];
-                let containsQuery = false;
-
-                properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
-                        containsQuery = true;
-                    }
-                });
-
-                if (!containsQuery) {
-                    matches = false;
-                }
-                return matches;
-            });
-
-            const newRowsExcel = rowsExcel.filter((row) => {
-                let matches = true;
-
-                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'fechaRegistro', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'cedula', 'nameEmpleado'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -302,10 +276,8 @@ const ListWorkAbsenteeism = () => {
             });
 
             setLsWorkAbsenteeism(newRows);
-            setLsWorkAbsenteeismExcel(newRowsExcel);
         } else {
             setLsWorkAbsenteeism(rows);
-            setLsWorkAbsenteeismExcel(rowsExcel);
         }
     };
 

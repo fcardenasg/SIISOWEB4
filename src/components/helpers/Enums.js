@@ -376,3 +376,12 @@ export const optionsDate = {
     month: 'long',
     day: 'numeric'
 };
+
+export const CodRegistroAtencion = {
+    Emo: 'EMO',
+    Asesoria: 'ASESORIA',
+    HistoriaClinica: 'HC',
+    NotaEnfermeria: 'NENF',
+    NotaEvolucion: 'NEVO',
+    PruebaAlcoholDroga: 'PAD'
+}

@@ -13,6 +13,7 @@ import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
 import { DownloadFile } from "components/helpers/ConvertToBytes";
 import { GetExcelAttention } from "api/clients/AttentionClient";
+import { GenerateExcelIndicadores } from "api/clients/IndicadoresClient";
 
 const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
@@ -41,6 +42,7 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
 
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
             const lsServerExcel = await GetExcelAttention(parametros);
+            //const lsServerExcel = await GenerateExcelIndicadores(2020);
 
             if (lsServerExcel.status === 200) {
                 DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);

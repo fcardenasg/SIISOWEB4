@@ -23,7 +23,7 @@ const urlEnergy = 'https://siiso.drummondenergy.com:444/login';
 const ChangeButtons = () => {
     return (
         <Fragment>
-            {config.typeDashboard === 'ltd' ?
+            {config.typeDashboard === 'DLTD' ?
                 <Fragment>
                     <Grid item xs={6}>
                         <AnimateButton>
@@ -44,7 +44,7 @@ const ChangeButtons = () => {
                                 <CardMedia
                                     component="img"
                                     image={LogoDrummondEnergy}
-                                    alt="Logo DrummondLTD"
+                                    alt="Logo Drummond Energy"
                                 />
                             </Button>
                         </AnimateButton>
@@ -59,7 +59,7 @@ const ChangeButtons = () => {
                                 <CardMedia
                                     component="img"
                                     image={LogoDrummondEnergy}
-                                    alt="Logo DrummondLTD"
+                                    alt="Logo Drummond Energy"
                                 />
                             </Button>
                         </AnimateButton>

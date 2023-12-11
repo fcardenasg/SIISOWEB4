@@ -17,9 +17,3 @@ export function PutAttention(id, documento, fecha, sede, tipo, atencion, estadoC
         usuarioModifico, fechaModifico
     };
 }
-
-export function PutEstadoAtencion(id, estadoPac, usuario) {
-    return {
-        id, estadoPac, usuario
-    }
-}

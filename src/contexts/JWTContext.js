@@ -187,8 +187,9 @@ export const JWTProvider = ({ children }) => {
     const logout = () => {
         setSession(null);
         dispatch({ type: LOGOUT });
-        setRenderMenu(null);
-        setIdUsuario(null);
+
+        window.localStorage.removeItem('idusuariologueado');
+        window.localStorage.removeItem('systemMenu');
     };
 
     const resetPassword = async (correo) => {

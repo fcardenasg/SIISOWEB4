@@ -19,8 +19,7 @@ import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
-import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
+import { GetByIdAttention, UpdateEstadoRegistroAtencion, ValidateIdRegistroAtencion } from 'api/clients/AttentionClient';
 
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
@@ -38,16 +37,16 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
-import { PostNoteInfirmary } from 'formatdata/NoteInfirmaryForm';
+import { PutNoteInfirmary } from 'formatdata/NoteInfirmaryForm';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, CodRegistroAtencion } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdNoteInfirmary, InsertNoteInfirmary } from 'api/clients/NoteInfirmaryClient';
+import { GetByIdNoteInfirmary, InsertNoteInfirmary, UpdateNoteInfirmarys } from 'api/clients/NoteInfirmaryClient';
 import Cargando from 'components/loading/Cargando';
 import InputOnChange from 'components/input/InputOnChange';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
@@ -56,6 +55,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -102,6 +102,8 @@ const UpdateNoteInfirmary = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsAtencionn, setLsAtencionn] = useState([]);
+    const [dataNotaEnfermeria, setDataNotaEnfermeria] = useState([]);
+    const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
 
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -134,7 +136,7 @@ const UpdateNoteInfirmary = () => {
     const [lsProcedimiento, setLsProcedimiento] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
 
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState(0);
     const [dataPDF, setDataPDF] = useState(null);
 
     const methods = useForm();
@@ -145,7 +147,7 @@ const UpdateNoteInfirmary = () => {
     const handleClickReport = async () => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdNoteInfirmary(resultData.id);
+            const lsDataReport = await GetByIdNoteInfirmary(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
             const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
@@ -154,21 +156,25 @@ const UpdateNoteInfirmary = () => {
         } catch (err) { }
     };
 
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
+    const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
-
-            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
-            await UpdateEstadoRegistroAtencion(DataToUpdate);
+            const DataToUpdate = {
+                id: id,
+                estadoPac: estadoPac,
+                usuario: estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser
+            }
 
             if (estadoPac === DefaultValue.ATENCION_ATENDIDO) {
                 swal(ParamCloseCase).then(async (willDelete) => {
-                    if (willDelete)
-                        navigate("/programming/list");
+                    if (willDelete) {
+                        await UpdateEstadoRegistroAtencion(DataToUpdate);
+                        navigate('/programming/list');
+                    }
                 });
-            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO)
-                navigate("/programming/list");
-
+            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
+                await UpdateEstadoRegistroAtencion(DataToUpdate);
+                navigate('/programming/list');
+            }
         } catch (error) { }
     }
 
@@ -331,6 +337,45 @@ const UpdateNoteInfirmary = () => {
                 label: item.nombre
             }));
             setLsProcedimiento(resultProcedimiento);
+
+            const lsServerData = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.NotaEnfermeria);
+            if (lsServerData.status === 200) {
+                setDataNotaEnfermeria(lsServerData.data.entities);
+                setResultIdRegistroAtencion(lsServerData.data.estado);
+                setResultData(lsServerData.data.entities.id);
+                setProcedimiento(JSON.parse(lsServerData.data.entities.procedimientos));
+
+                setTextDx1(lsServerData.data.entities.dx1);
+                setTextDx2(lsServerData.data.entities.dx2);
+                setTextDx3(lsServerData.data.entities.dx3);
+
+                if (lsServerData.data.entities.dx1 !== "") {
+                    const lsServerCie11Dx1 = await GetAllByCodeOrName(0, 0, lsServerData.data.entities.dx1);
+                    var resultCie11Dx1 = lsServerCie11Dx1.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.dx
+                    }));
+                    setLsDx1(resultCie11Dx1);
+                }
+
+                if (lsServerData.data.entities.dx2 !== "") {
+                    const lsServerCie11Dx2 = await GetAllByCodeOrName(0, 0, lsServerData.data.entities.dx2);
+                    var resultCie11Dx2 = lsServerCie11Dx2.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.dx
+                    }));
+                    setLsDx2(resultCie11Dx2);
+                }
+
+                if (lsServerData.data.entities.dx3 !== "") {
+                    const lsServerCie11Dx3 = await GetAllByCodeOrName(0, 0, lsServerData.data.entities.dx3);
+                    var resultCie11Dx3 = lsServerCie11Dx3.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.dx
+                    }));
+                    setLsDx3(resultCie11Dx3);
+                }
+            }
         } catch (error) { }
     }
 
@@ -340,29 +385,27 @@ const UpdateNoteInfirmary = () => {
 
     const handleClick = async (datos) => {
         try {
-            const UpdateToInsert = PostNoteInfirmary(id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia,
-                datos.dx1, datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const UpdateToInsert = PutNoteInfirmary(resultData, id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.dx1,
+                datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad, user.nameuser, undefined, user.nameuser, undefined, procedimiento);
 
-            if (lsAtencion.sede === DefaultValue.SEDE_PUERTO && lsAtencion.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
-                if (textDx1 === '') {
-                    setOpenError(true);
-                    setErrorMessage('Por favor, registre por lo menos un Diagnóstico');
-                } else {
-                    if (Object.keys(datos.length !== 0)) {
-                        const result = await InsertNoteInfirmary(UpdateToInsert);
-                        if (result.status === 200) {
-                            setOpenUpdate(true);
-                            setResultData(result.data);
-                        }
+            if (resultIdRegistroAtencion) {
+                const result1 = await UpdateNoteInfirmarys(UpdateToInsert);
+                if (result1.status === 200) {
+                    setOpenUpdate(true);
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.NotaEnfermeria)
+                    if (lsServerValidate.status === 200) {
+                        setResultIdRegistroAtencion(lsServerValidate.data.estado);
                     }
                 }
             } else {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await InsertNoteInfirmary(UpdateToInsert);
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                        setResultData(result.data);
+                const result2 = await InsertNoteInfirmary(UpdateToInsert);
+                if (result2.status === 200) {
+                    setResultData(result2.data);
+                    setOpenUpdate(true);
+
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.NotaEnfermeria)
+                    if (lsServerValidate.status === 200) {
+                        setResultIdRegistroAtencion(lsServerValidate.data.estado);
                     }
                 }
             }
@@ -493,202 +536,207 @@ const UpdateNoteInfirmary = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha"
-                                            name="fecha"
-                                            defaultValue={FormatDate(lsAtencion.fecha)}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idAtencion"
-                                            label="Atención"
-                                            defaultValue={lsAtencion.atencion}
-                                            options={lsAtencionn}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idContingencia"
-                                            label="Contingencia"
-                                            defaultValue=""
-                                            options={lsContingencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Procedimiento</Typography>}>
+                        <StickyActionBar
+                            onClickSave={handleSubmit(handleClick)}
+                            onClickUpdate={handleSubmit(handleClick)}
+                            disabledUpdate={!resultIdRegistroAtencion}
+                            disabledSave={resultIdRegistroAtencion}
+                            showButton={false}
+                            threshold={510}
+                        >
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <InputMultiSelects
-                                        fullWidth
-                                        onChange={(event, value) => setProcedimiento(value)}
-                                        value={procedimiento}
-                                        label="Procedimientos"
-                                        options={lsProcedimiento}
-                                    />
+                                    <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputDatePicker
+                                                        label="Fecha"
+                                                        name="fecha"
+                                                        defaultValue={lsAtencion.fecha}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputSelect
+                                                        name="idAtencion"
+                                                        label="Atención"
+                                                        defaultValue={lsAtencion.atencion}
+                                                        options={lsAtencionn}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputSelect
+                                                        name="idContingencia"
+                                                        label="Contingencia"
+                                                        defaultValue={dataNotaEnfermeria?.idContingencia}
+                                                        options={lsContingencia}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+                                        </Grid>
+                                    </SubCard>
                                 </Grid>
-
-                                {lsAtencion.sede === DefaultValue.SEDE_PUERTO &&
-                                    lsAtencion.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA ?
-                                    <Fragment>
-                                        <Grid item xs={2}>
-                                            <InputOnChange
-                                                label="Dx 1"
-                                                onKeyDown={handleDx1}
-                                                onChange={(e) => setTextDx1(e?.target.value)}
-                                                value={textDx1}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={10}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="dx1"
-                                                    label="Dx1"
-                                                    defaultValue=""
-                                                    options={lsDx1}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={2}>
-                                            <InputOnChange
-                                                label="Dx 2"
-                                                onKeyDown={handleDx2}
-                                                onChange={(e) => setTextDx2(e.target.value)}
-                                                value={textDx2}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={10}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="dx2"
-                                                    label="Dx2"
-                                                    defaultValue=""
-                                                    options={lsDx2}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={2}>
-                                            <InputOnChange
-                                                label="Dx 3"
-                                                onKeyDown={handleDx3}
-                                                onChange={(e) => setTextDx3(e.target.value)}
-                                                value={textDx3}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={10}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="dx3"
-                                                    label="Dx3"
-                                                    defaultValue=""
-                                                    options={lsDx3}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-                                    </Fragment> : null
-                                }
 
                                 <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            defaultValue=""
-                                            fullWidth
-                                            name="notaEnfermedad"
-                                            label="Nota"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
+                                    <SubCard darkTitle title={<Typography variant="h4">Procedimiento</Typography>}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <InputMultiSelects
+                                                    fullWidth
+                                                    onChange={(event, value) => setProcedimiento(value)}
+                                                    value={procedimiento}
+                                                    label="Procedimientos"
+                                                    options={lsProcedimiento}
+                                                />
+                                            </Grid>
 
-                                    <DetailedIcon
-                                        title={DetailIcons[1].title}
-                                        onClick={() => setOpenApuntesPersonales(true)}
-                                        icons={DetailIcons[1].icons}
-                                    />
+                                            {lsAtencion.sede === DefaultValue.SEDE_PUERTO &&
+                                                lsAtencion.tipo === DefaultValue.TIPO_ATENCION_ENFERMERIA ?
+                                                <Fragment>
+                                                    <Grid item xs={2}>
+                                                        <InputOnChange
+                                                            label="Dx 1"
+                                                            onKeyDown={handleDx1}
+                                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                                            value={textDx1}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="dx1"
+                                                                label="Dx1"
+                                                                defaultValue={dataNotaEnfermeria?.dx1}
+                                                                options={lsDx1}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
 
-                                    <DetailedIcon
-                                        title={DetailIcons[2].title}
-                                        onClick={() => setOpen(true)}
-                                        icons={DetailIcons[2].icons}
-                                    />
+                                                    <Grid item xs={2}>
+                                                        <InputOnChange
+                                                            label="Dx 2"
+                                                            onKeyDown={handleDx2}
+                                                            onChange={(e) => setTextDx2(e.target.value)}
+                                                            value={textDx2}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="dx2"
+                                                                label="Dx2"
+                                                                defaultValue={dataNotaEnfermeria?.dx2}
+                                                                options={lsDx2}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+
+                                                    <Grid item xs={2}>
+                                                        <InputOnChange
+                                                            label="Dx 3"
+                                                            onKeyDown={handleDx3}
+                                                            onChange={(e) => setTextDx3(e.target.value)}
+                                                            value={textDx3}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
+                                                        <FormProvider {...methods}>
+                                                            <InputSelect
+                                                                name="dx3"
+                                                                label="Dx3"
+                                                                defaultValue={dataNotaEnfermeria?.dx3}
+                                                                options={lsDx3}
+                                                                size={matchesXS ? 'small' : 'medium'}
+                                                            />
+                                                        </FormProvider>
+                                                    </Grid>
+                                                </Fragment> : null
+                                            }
+
+                                            <Grid item xs={12}>
+                                                <FormProvider {...methods}>
+                                                    <InputText
+                                                        defaultValue={dataNotaEnfermeria?.notaEnfermedad}
+                                                        fullWidth
+                                                        name="notaEnfermedad"
+                                                        label="Nota"
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        multiline
+                                                        rows={6}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+                                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                                <DetailedIcon
+                                                    title={DetailIcons[0].title}
+                                                    onClick={() => setOpenTemplate(true)}
+                                                    icons={DetailIcons[0].icons}
+                                                />
+
+                                                <DetailedIcon
+                                                    title={DetailIcons[1].title}
+                                                    onClick={() => setOpenApuntesPersonales(true)}
+                                                    icons={DetailIcons[1].icons}
+                                                />
+
+                                                <DetailedIcon
+                                                    title={DetailIcons[2].title}
+                                                    onClick={() => setOpen(true)}
+                                                    icons={DetailIcons[2].icons}
+                                                />
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid container spacing={2} sx={{ pt: 4 }}>
+                                            <Grid item xs={2}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                                        {TitleButton.Imprimir}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                                        {TitleButton.OrdenesMedicas}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
+                                                        {TitleButton.Cancelar}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
+                                                        {TitleButton.CerrarCaso}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+                                        </Grid>
+                                    </SubCard>
                                 </Grid>
                             </Grid>
-
-                            <Grid container spacing={2} sx={{ pt: 4 }}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
-                                            {TitleButton.Imprimir}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                            {TitleButton.OrdenesMedicas}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
-                                            {TitleButton.CerrarCaso}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
+                        </StickyActionBar>
                     </Grid>
                 </Grid> : <Cargando />
             }

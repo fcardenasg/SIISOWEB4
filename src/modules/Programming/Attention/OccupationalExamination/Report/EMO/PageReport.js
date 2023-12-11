@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import ImgWhite from "assets/img/ImgWhite.png";
 import { DefaultValue } from "components/helpers/Enums";
 import autoTable from 'jspdf-autotable';
+import config from "config";
 
 function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   doc.addImage(
@@ -943,7 +944,7 @@ export function generateClinicHistoryDLTD(
 
   doc.text("3.3 EXPOSICIÓN ACUMULADA DE FACTORES DE RIESGO", 7, 83 + 150);
   doc.line(5, 242, marXR, 242); /* HORI ULTIMA */
-  doc.text("EN DLTD", 40, 91 + 150, { align: "center" });
+  doc.text(`${config.typeDashboard === 'DLTD' ? "EN DLTD" : "EN D. Energy"}`, 40, 91 + 150, { align: "center" });
   doc.text("EN OTRAS EMPRESAS", 103, 91 + 150, { align: "center" });
   doc.text("TOTAL EXPOSICIÓN", 175, 91 + 150, { align: "center" });
 

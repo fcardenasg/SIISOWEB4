@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import { ViewFormat } from 'components/helpers/Format';
 import { DefaultValue } from 'components/helpers/Enums';
+import config from 'config';
 
 function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
     doc.addImage(
@@ -49,7 +50,8 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
     doc.text(`Celular:      ${lsDataReport.numeroCelular}`, 130, doc.internal.pageSize.height - (36 - my));
 }
 
-const concentimientoParrafo1 = "Como aparece al pie de mi firma y en mi calidad de empleado de la empresa DRUMMOND LTD COLOMBIA, declaro haber sido informado sobre las valoraciones médicas complementarias realizadas en desarrollo de los programas de vigilancia epidemiológica ocupacional implementados por la empresa. Autorizo al Dpto. de Salud Ocupacional de DLTD a realizar los exámenes médicos y pruebas complementarias sugeridas. Certifico que he sido informado (a) acerca de la naturaleza y propósito de estos exámenes. Entiendo que la realización de estos exámenes es voluntaria y que tengo la oportunidad de retirar mi consentimiento en cualquier momento. Se me informó además que estos son manejados con confidencialidad y reserva profesional, no pueden comunicarse o darse a conocer, salvo a las personas o entidades previstas por la Ley y en la Legislación vigente."
+const concentimientoParrafoDLTD1 = "Como aparece al pie de mi firma y en mi calidad de empleado de la empresa DRUMMOND LTD COLOMBIA, declaro haber sido informado sobre las valoraciones médicas complementarias realizadas en desarrollo de los programas de vigilancia epidemiológica ocupacional implementados por la empresa. Autorizo al Dpto. de Salud Ocupacional de DLTD a realizar los exámenes médicos y pruebas complementarias sugeridas. Certifico que he sido informado (a) acerca de la naturaleza y propósito de estos exámenes. Entiendo que la realización de estos exámenes es voluntaria y que tengo la oportunidad de retirar mi consentimiento en cualquier momento. Se me informó además que estos son manejados con confidencialidad y reserva profesional, no pueden comunicarse o darse a conocer, salvo a las personas o entidades previstas por la Ley y en la Legislación vigente."
+const concentimientoParrafoDEnergy1 = "Como aparece al pie de mi firma y en mi calidad de empleado de la empresa DRUMMOND ENERGY COLOMBIA, declaro haber sido informado sobre las valoraciones médicas complementarias realizadas en desarrollo de los programas de vigilancia epidemiológica ocupacional implementados por la empresa. Autorizo al Dpto. de Salud Ocupacional de Drummond Energy a realizar los exámenes médicos y pruebas complementarias sugeridas. Certifico que he sido informado (a) acerca de la naturaleza y propósito de estos exámenes. Entiendo que la realización de estos exámenes es voluntaria y que tengo la oportunidad de retirar mi consentimiento en cualquier momento. Se me informó además que estos son manejados con confidencialidad y reserva profesional, no pueden comunicarse o darse a conocer, salvo a las personas o entidades previstas por la Ley y en la Legislación vigente."
 const concentimientoParrafo2 = "Considerando lo anterior y atendiendo los requisitos legales respecto a la práctica de exámenes ocupacionales, acepto que me realicen las pruebas complementarias, que determine la empresa dentro del desarrollo de programas de control de riesgos y sistemas de vigilancia epidemiológica para establecer mi estado de salud, durante mi vinculación con la Compañía. En señal de aceptación firmo este consentimiento."
 
 export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser = []) {
@@ -61,9 +63,8 @@ export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser 
     doc.setFontSize(10);
     doc.text(`YO ${lsDataReport.nameEmpleado}     IDENTIFICAD${lsDataReport.nameGenero === "MASCULINO" ? "O" : "A"} CON CC NRO.${lsDataReport.documento} `, 5, 60);
 
-
     doc.setFont("helvetica", "normal");
-    doc.text(`${concentimientoParrafo1} `, 7, 80, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`${config.typeDashboard === 'DLTD' ? concentimientoParrafoDLTD1 : concentimientoParrafoDEnergy1} `, 7, 80, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
     doc.text(`${concentimientoParrafo2} `, 7, 130, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser);

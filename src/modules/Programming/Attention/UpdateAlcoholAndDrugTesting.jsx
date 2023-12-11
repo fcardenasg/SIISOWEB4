@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 
 import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
 import swal from 'sweetalert';
 import { ParamCloseCase } from 'components/alert/AlertAll';
@@ -104,21 +103,25 @@ const UpdateAlcoholAndDrugTesting = () => {
         }
     }
 
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
+    const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
-
-            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
-            await UpdateEstadoRegistroAtencion(DataToUpdate);
+            const DataToUpdate = {
+                id: id,
+                estadoPac: estadoPac,
+                usuario: estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser
+            }
 
             if (estadoPac === DefaultValue.ATENCION_ATENDIDO) {
                 swal(ParamCloseCase).then(async (willDelete) => {
-                    if (willDelete)
-                        navigate("/programming/list");
+                    if (willDelete) {
+                        await UpdateEstadoRegistroAtencion(DataToUpdate);
+                        navigate('/programming/list');
+                    }
                 });
-            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO)
-                navigate("/programming/list");
-
+            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
+                await UpdateEstadoRegistroAtencion(DataToUpdate);
+                navigate('/programming/list');
+            }
         } catch (error) { }
     }
 

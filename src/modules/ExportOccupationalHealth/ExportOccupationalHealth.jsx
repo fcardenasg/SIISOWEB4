@@ -15,6 +15,7 @@ import ReintegroExport from './Export/ReintegroExport';
 import AusentismoExport from './Export/AusentismoExport';
 import { useNavigate } from 'react-router-dom';
 import { ArrayTodaSede } from 'components/Arrays';
+import InputOnChange from 'components/input/InputOnChange';
 
 const Title = {
     medicinaLaboral: 'Medicinal Laboral',
@@ -39,6 +40,7 @@ const ExportOccupationalHealth = () => {
     const [sede, setSede] = useState(0);
     const [tipoExcelAusentismo, setTipoExcelAusentismo] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
+    const [documento, setDocumento] = useState("");
     const [fechaFin, setFechaFin] = useState(null);
 
     async function getAll() {
@@ -65,6 +67,7 @@ const ExportOccupationalHealth = () => {
             setFechaInicio(null);
             setFechaFin(null);
             setTipoReporte(codigo);
+            setDocumento("");
         } catch (error) { }
     }
 
@@ -109,7 +112,6 @@ const ExportOccupationalHealth = () => {
                                     tipoReporte === 'EXCEL4' ? Title.ausentismoLaboral : ''}
                         </Typography>
                     }
-
                         secondary={
                             <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
                                 onClick={() => navigate("/occupational-health/menu")}>
@@ -119,7 +121,7 @@ const ExportOccupationalHealth = () => {
                     >
                         <Grid container spacing={2}>
                             {tipoReporte === 'EXCEL4' ?
-                                <Grid item xs={12} md={6} lg={3}>
+                                <Grid item xs={12} md={6} lg={tipoReporte === 'EXCEL4' ? 2.4 : 3}>
                                     <SelectOnChange
                                         name="tipoExcel"
                                         label="Excel a Generar"
@@ -130,7 +132,18 @@ const ExportOccupationalHealth = () => {
                                     />
                                 </Grid> : null}
 
-                            <Grid item xs={12} md={6} lg={3}>
+                            <Grid item xs={12} md={6} lg={tipoReporte === 'EXCEL4' ? 2.4 : 3}>
+                                <InputOnChange
+                                    fullWidth
+                                    type="number"
+                                    label="Documento"
+                                    onChange={(e) => setDocumento(e.target.value)}
+                                    value={documento}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={tipoReporte === 'EXCEL4' ? 2.4 : 3}>
                                 <SelectOnChange
                                     name="sede"
                                     label="Sede de Atención"
@@ -141,7 +154,7 @@ const ExportOccupationalHealth = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12} md={6} lg={3}>
+                            <Grid item xs={12} md={6} lg={tipoReporte === 'EXCEL4' ? 2.4 : 3}>
                                 <InputDatePick
                                     label="Fecha Inicio"
                                     onChange={(e) => setFechaInicio(e.target.value)}
@@ -150,7 +163,7 @@ const ExportOccupationalHealth = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12} md={6} lg={3}>
+                            <Grid item xs={12} md={6} lg={tipoReporte === 'EXCEL4' ? 2.4 : 3}>
                                 <InputDatePick
                                     label="Fecha Fin"
                                     onChange={(e) => setFechaFin(e.target.value)}
@@ -164,25 +177,27 @@ const ExportOccupationalHealth = () => {
                                     fechaFin={fechaFin}
                                     fechaInicio={fechaInicio}
                                     sede={sede}
-                                /> :
-                                tipoReporte === 'EXCEL2' ?
+                                    documento={documento}
+                                /> : tipoReporte === 'EXCEL2' ?
                                     <ReintegroExport
                                         fechaFin={fechaFin}
                                         fechaInicio={fechaInicio}
                                         sede={sede}
+                                        documento={documento}
                                     /> : tipoReporte === 'EXCEL3' ?
                                         <AccidenteTrabajo
                                             fechaFin={fechaFin}
                                             fechaInicio={fechaInicio}
                                             sede={sede}
+                                            documento={documento}
                                         /> : tipoReporte === 'EXCEL4' ?
                                             <AusentismoExport
                                                 fechaFin={fechaFin}
                                                 fechaInicio={fechaInicio}
                                                 sede={sede}
                                                 tipoExcelAusentismo={tipoExcelAusentismo}
-                                            /> : null
-                            }
+                                                documento={documento}
+                                            /> : null}
                         </Grid>
                     </SubCard>
                 </Grid>

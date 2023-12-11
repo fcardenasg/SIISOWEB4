@@ -10,7 +10,7 @@ import {
     useMediaQuery,
     Typography,
     Avatar,
-    Tooltip,
+    Tooltip
 } from '@mui/material';
 
 import Chip from 'ui-component/extended/Chip';
@@ -59,8 +59,7 @@ import { PostOccupationalExamination, PutOccupationalExamination } from 'formatd
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
 import Cargando from 'components/loading/Cargando';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
-import Framingham from './Framingham';
+
 import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './MedicalOrder/MedicalFormula';
@@ -273,19 +272,22 @@ const OccupationalExamination = () => {
 
     const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
+            const DataToUpdate = {
+                id: id,
+                estadoPac: estadoPac,
+                usuario: estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser
+            }
 
-            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
-            const result = await UpdateEstadoRegistroAtencion(DataToUpdate);
-
-            if (result.status === 200) {
-                if (estadoPac === 'ATENDIDO') {
-                    swal(ParamCloseCase).then(async (willDelete) => {
-                        if (willDelete)
-                            navigate('/programming/list');
-                    });
-                } else if (estadoPac === 'PENDIENTE POR ATENCIÓN')
-                    navigate('/programming/list');
+            if (estadoPac === DefaultValue.ATENCION_ATENDIDO) {
+                swal(ParamCloseCase).then(async (willDelete) => {
+                    if (willDelete) {
+                        await UpdateEstadoRegistroAtencion(DataToUpdate);
+                        navigate('/programming/list');
+                    }
+                });
+            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
+                await UpdateEstadoRegistroAtencion(DataToUpdate);
+                navigate('/programming/list');
             }
         } catch (error) { }
     }

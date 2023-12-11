@@ -8,7 +8,7 @@ import { MessageError } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
-const ReintegroExport = ({ sede, fechaInicio, fechaFin }) => {
+const ReintegroExport = ({ sede, fechaInicio, fechaFin, documento }) => {
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -17,7 +17,7 @@ const ReintegroExport = ({ sede, fechaInicio, fechaFin }) => {
         try {
             setLoading(true);
 
-            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
+            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, documento);
             const lsServerExcel = await GetExcelRefund(parametros);
 
             if (lsServerExcel.status === 200) {

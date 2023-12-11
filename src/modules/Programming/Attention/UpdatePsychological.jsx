@@ -11,7 +11,6 @@ import { ParamCloseCase } from 'components/alert/AlertAll';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { GetByIdAttention, UpdateEstadoRegistroAtencion, ValidateIdRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -31,7 +30,7 @@ import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage, CodRegistroAtencion } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -95,21 +94,25 @@ const UpdatePsychological = () => {
 
     const { handleSubmit, formState: { errors } } = methods;
 
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
+    const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
-
-            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
-            await UpdateEstadoRegistroAtencion(DataToUpdate);
+            const DataToUpdate = {
+                id: id,
+                estadoPac: estadoPac,
+                usuario: estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser
+            }
 
             if (estadoPac === DefaultValue.ATENCION_ATENDIDO) {
                 swal(ParamCloseCase).then(async (willDelete) => {
-                    if (willDelete)
-                        navigate("/programming/list");
+                    if (willDelete) {
+                        await UpdateEstadoRegistroAtencion(DataToUpdate);
+                        navigate('/programming/list');
+                    }
                 });
-            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO)
-                navigate("/programming/list");
-
+            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
+                await UpdateEstadoRegistroAtencion(DataToUpdate);
+                navigate('/programming/list');
+            }
         } catch (error) { }
     }
 
@@ -150,7 +153,7 @@ const UpdatePsychological = () => {
     useEffect(() => {
         async function getData() {
             try {
-                const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.Asesoria);
                 if (lsServerValidate.status === 200) {
                     setResultIdRegistroAtencion(lsServerValidate.data.estado);
                     setResultData(lsServerValidate.data.id);
@@ -207,7 +210,7 @@ const UpdatePsychological = () => {
                     setOpenUpdate(true);
                     setResultData(result.data);
 
-                    const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.Asesoria);
                     if (lsServerValidate.status === 200) {
                         setResultIdRegistroAtencion(lsServerValidate.data.estado);
                         setResultData(lsServerValidate.data.id);

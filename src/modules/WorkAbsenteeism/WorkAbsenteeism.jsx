@@ -479,7 +479,7 @@ const WorkAbsenteeism = () => {
                                     disabled
                                     name="diasSinLaborar"
                                     label="Días de Incapacidad"
-                                    onChange={(e) => setDiasSinLaborar(e.target.event)}
+                                    onChange={(e) => setDiasSinLaborar(e.target.value)}
                                     value={diasSinLaborar}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />

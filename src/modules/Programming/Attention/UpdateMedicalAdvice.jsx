@@ -22,7 +22,6 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
 import { GetByIdAttention, UpdateEstadoRegistroAtencion, ValidateIdRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
@@ -44,7 +43,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage, CodRegistroAtencion } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -176,7 +175,7 @@ const UpdateMedicalAdvice = () => {
                     setDocumento(lsServerAtencion.data.documento);
                 }
 
-                const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.Asesoria);
                 if (lsServerValidate.status === 200) {
                     setResultIdRegistroAtencion(lsServerValidate.data.estado);
                     setResultData(lsServerValidate.data.id);
@@ -219,21 +218,25 @@ const UpdateMedicalAdvice = () => {
         }
     }
 
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
+    const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
-
-            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
-            await UpdateEstadoRegistroAtencion(DataToUpdate);
+            const DataToUpdate = {
+                id: id,
+                estadoPac: estadoPac,
+                usuario: estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser
+            }
 
             if (estadoPac === DefaultValue.ATENCION_ATENDIDO) {
                 swal(ParamCloseCase).then(async (willDelete) => {
-                    if (willDelete)
-                        navigate("/programming/list");
+                    if (willDelete) {
+                        await UpdateEstadoRegistroAtencion(DataToUpdate);
+                        navigate('/programming/list');
+                    }
                 });
-            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO)
-                navigate("/programming/list");
-
+            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
+                await UpdateEstadoRegistroAtencion(DataToUpdate);
+                navigate('/programming/list');
+            }
         } catch (error) { }
     }
 
@@ -288,7 +291,7 @@ const UpdateMedicalAdvice = () => {
                     setOpenSuccess(true);
                     setResultData(result.data);
 
-                    const lsServerValidate = await ValidateIdRegistroAtencion(id, 'ASESORIA');
+                    const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.Asesoria);
                     if (lsServerValidate.status === 200) {
                         setResultIdRegistroAtencion(lsServerValidate.data.estado);
                         setResultData(lsServerValidate.data.id);

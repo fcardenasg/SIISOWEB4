@@ -8,6 +8,7 @@ import { CodCatalogo } from "components/helpers/Enums";
 import { ViewFormat } from "components/helpers/Format";
 import InputDatePick from "components/input/InputDatePick";
 import SelectOnChange from "components/input/SelectOnChange";
+import config from "config";
 import { ParametrosExcel } from "formatdata/ParametrosForm";
 import { useEffect, useState } from "react";
 import { Fragment } from "react";
@@ -131,8 +132,8 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                                     <ExcelColumn label="Nombre" value="nameEmpleado" />
                                     <ExcelColumn label="Sede" value="nameSede" />
 
-                                    <ExcelColumn label="Fecha que recibio DLTD" value={(fe) => ViewFormat(fe.fechaReciboDLTD)} />
-                                    <ExcelColumn label="Usuario que recibio en DLTD" value="usuarioReciboDLTD" />
+                                    <ExcelColumn label={`Fecha que recibio D. ${config.typeDashboard}`} value={(fe) => ViewFormat(fe.fechaReciboDLTD)} />
+                                    <ExcelColumn label={`Usuario que recibio en D. ${config.typeDashboard}`} value="usuarioReciboDLTD" />
                                     <ExcelColumn label="Fecha de recibido" value={(fe) => ViewFormat(fe.fechaRecibido)} />
                                     <ExcelColumn label="Fecha limite de respuesta" value={(fe) => ViewFormat(fe.fechaLimiteRespuesta)} />
                                     <ExcelColumn label="Dirección" value="direccion" />

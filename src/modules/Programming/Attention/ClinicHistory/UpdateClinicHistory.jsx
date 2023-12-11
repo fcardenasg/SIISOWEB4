@@ -15,7 +15,6 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
 import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
-import { PutEstadoAtencion } from 'formatdata/AttentionForm';
 
 import ListMedicalFormula from '../OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from '../OccupationalExamination/MedicalOrder/MedicalFormula';
@@ -211,21 +210,25 @@ const UpdateClinicHistory = () => {
         }
     }
 
-    const handleUpdateAttentionClose = async (estadoPac = '') => {
+    const handleUpdateAttentionClose = async (estadoPac) => {
         try {
-            const usuarioCierre = estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser;
-
-            const DataToUpdate = PutEstadoAtencion(id, estadoPac, usuarioCierre);
-            await UpdateEstadoRegistroAtencion(DataToUpdate);
+            const DataToUpdate = {
+                id: id,
+                estadoPac: estadoPac,
+                usuario: estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO ? '' : user?.nameuser
+            }
 
             if (estadoPac === DefaultValue.ATENCION_ATENDIDO) {
                 swal(ParamCloseCase).then(async (willDelete) => {
-                    if (willDelete)
-                        navigate("/programming/list");
+                    if (willDelete) {
+                        await UpdateEstadoRegistroAtencion(DataToUpdate);
+                        navigate('/programming/list');
+                    }
                 });
-            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO)
-                navigate("/programming/list");
-
+            } else if (estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
+                await UpdateEstadoRegistroAtencion(DataToUpdate);
+                navigate('/programming/list');
+            }
         } catch (error) { }
     }
 

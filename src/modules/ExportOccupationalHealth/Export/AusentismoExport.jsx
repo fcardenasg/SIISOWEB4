@@ -9,18 +9,17 @@ import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import LoadingGenerate from 'components/loading/LoadingGenerate';
 
 
-const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) => {
+const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo, documento }) => {
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     async function getDataForExport() {
         try {
-
-            if (fechaInicio !== null && fechaFin !== null) {
+            if (documento !== null) {
                 setLoading(true);
 
-                const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, `${tipoExcelAusentismo}`);
+                const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, documento, `${tipoExcelAusentismo}`);
                 const lsServerExcel = await GetExcelWorkAbsenteeismHistory(parametros);
 
                 if (lsServerExcel.status === 200) {
@@ -31,8 +30,23 @@ const AusentismoExport = ({ sede, fechaInicio, fechaFin, tipoExcelAusentismo }) 
                     }, 1500);
                 }
             } else {
-                setOpenError(true);
-                setErrorMessage("Debe seleccionar un rango de fechas");
+                if (fechaInicio !== null && fechaFin !== null) {
+                    setLoading(true);
+
+                    const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, documento, `${tipoExcelAusentismo}`);
+                    const lsServerExcel = await GetExcelWorkAbsenteeismHistory(parametros);
+
+                    if (lsServerExcel.status === 200) {
+                        DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
+
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 1500);
+                    }
+                } else {
+                    setOpenError(true);
+                    setErrorMessage("Debe seleccionar un rango de fechas");
+                }
             }
         } catch (error) {
             setLoading(false);

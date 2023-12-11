@@ -43,6 +43,7 @@ import Accordion from 'components/accordion/Accordion';
 import { IconAffiliate } from '@tabler/icons';
 import WorkHistoryRiesgoEmpresa from './WorkHistoryRiesgoEmpresa';
 import WorkHistoryRiesgoDLTD from './WorkHistoryRiesgoDLTD';
+import config from 'config';
 
 const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const theme = useTheme();
@@ -334,7 +335,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
             </Grid>
 
             <Grid item xs={12}>
-                <SubCard title={<Typography variant='h4'>Historia Laboral DLTD</Typography>}>
+                <SubCard title={<Typography variant='h4'>Historia Laboral D. {config.typeDashboard}</Typography>}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TableContainer>
@@ -368,7 +369,11 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Accordion title={<><IconAffiliate /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Exposición Ocupacional Drummond LTD</Typography></>}>
+                            <Accordion title={<><IconAffiliate />
+                                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">
+                                    Exposición Ocupacional Drummond {config.typeDashboard}
+                                </Typography>
+                            </>}>
                                 <WorkHistoryRiesgoDLTD
                                     documento={documento}
                                     atencion={atencion}
@@ -464,14 +469,14 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
 
             <Grid item xs={12}>
                 <DataExposition
-                    title="Exposición Acumulada de Factores de Riesgo - DLTD"
-                    title1="Ruido en DLTD"
+                    title={`Exposición Acumulada de Factores de Riesgo - ${config.typeDashboard}`}
+                    title1={`Ruido en ${config.typeDashboard}`}
                     anio1={`Años: ${anioRuidoDTLD}`}
-                    title2="Ruido en DLTD"
+                    title2={`Ruido en ${config.typeDashboard}`}
                     mes1={`Meses: ${mesRuidoDTLD}`}
-                    title3="Exposición MPI DLTD"
+                    title3={`Exposición MPI ${config.typeDashboard}`}
                     anio2={`Años: ${mpiAnioDTLD}`}
-                    title4="Exposición MPI DLTD"
+                    title4={`Exposición MPI ${config.typeDashboard}`}
                     mes2={`Meses: ${mpiMesDTLD}`}
                 />
             </Grid>

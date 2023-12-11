@@ -35,7 +35,7 @@ import { generateReportOrderEPP } from './ReportEPP';
 import ViewPDF from 'components/components/ViewPDF';
 
 const validationSchema = yup.object().shape({
-    idProvedor: yup.string().required(`${ValidationMessage.Requerido}`),
+    idProvedor: yup.string().required(ValidationMessage.Requerido),
 });
 
 const UpdateOrderEPP = () => {
@@ -90,7 +90,7 @@ const UpdateOrderEPP = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdOrderEPP(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioModifico === "" ? lsDataReport.data.usuarioRegistro : lsDataReport.data.usuarioModifico);
             const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }

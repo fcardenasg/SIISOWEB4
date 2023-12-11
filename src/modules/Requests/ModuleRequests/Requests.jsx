@@ -33,6 +33,7 @@ import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
 import InputDatePick from 'components/input/InputDatePick';
 import ListRequestsDetaills from './ListRequestsDetaills';
+import config from 'config';
 
 const validationSchema = yup.object().shape({
     fechaReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -180,7 +181,7 @@ const Requests = () => {
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                    <SubCard darkTitle title={<Typography variant="h4">Recibio en DLTD</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Recibio en {config.typeDashboard}</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <FormProvider {...methods}>
@@ -209,7 +210,7 @@ const Requests = () => {
                                 <FormProvider {...methods}>
                                     <InputText
                                         fullWidth
-                                        label="Correo DLTD"
+                                        label={`Correo D. ${config.typeDashboard}`}
                                         name="correoRecibioDLTD"
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.correoRecibioDLTD}
