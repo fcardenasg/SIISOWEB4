@@ -151,6 +151,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableInfirmary = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [lsNoteInfirmary, setLsNoteInfirmary] = useState([]);
     const [openReport, setOpenReport] = useState(false);
@@ -183,7 +184,7 @@ const TableInfirmary = () => {
             const lsDataReport = await GetByIdNoteInfirmary(id);
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
-            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data, user.namesede);
 
             setDataPDF(dataPDFTwo);
         } catch (err) { }

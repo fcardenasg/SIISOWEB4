@@ -1410,12 +1410,11 @@ const OccupationalMedicine = () => {
 
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <FormProvider {...methods}>
-                                                    <InputText
+                                                    <InputSelect
                                                         defaultValue={lsOccupationalMedicine.instanciaFinal}
-                                                        type="number"
-                                                        fullWidth
                                                         name="instanciaFinal"
                                                         label="Instancia Final"
+                                                        options={lsInstanciaOrigen}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </FormProvider>

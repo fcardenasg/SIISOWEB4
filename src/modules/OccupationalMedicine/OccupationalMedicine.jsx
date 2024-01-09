@@ -804,7 +804,6 @@ const OccupationalMedicine = () => {
                                     <Grid item xs={12} md={6} lg={3}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                type="number"
                                                 fullWidth
                                                 name="pclJRC"
                                                 label="PCL"
@@ -1260,11 +1259,10 @@ const OccupationalMedicine = () => {
 
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
-                                            <InputText
-                                                type="number"
-                                                fullWidth
+                                            <InputSelect
                                                 name="instanciaFinal"
                                                 label="Instancia Final"
+                                                options={lsInstanciaOrigen}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>

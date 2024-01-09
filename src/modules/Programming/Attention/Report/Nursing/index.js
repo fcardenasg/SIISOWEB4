@@ -2,6 +2,7 @@ import jsPDF from "jspdf";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
 
 import config from "config";
+import useAuth from "hooks/useAuth";
 
 /* FIRMAS */
 function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
@@ -193,13 +194,119 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
   getFirmaEmployee(doc, lsDataReport);
 }
 
+function pageNursingPuerto(doc, lsDataReport = [], lsDataUser = []) {
+  /* CUADRO DATOS */
+
+  /* LISTA DE DATOS PACIENTE */
+  doc.setFontSize(10);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(128, 128, 128);
+  doc.text(`${lsDataReport.nameAtencion}`, 7, 30);
+  doc.line(5, 32, 210, 32);
+
+  doc.text("DATOS BÁSICOS DE LA ATENCIÓN", 7, 37);
+
+  /* CUADRO DATOS */
+  doc.line(5, 40, 210, 40);
+  doc.line(5, 25, 5, 220);
+  doc.line(40, 40, 40, 74); /* LINEA ONE */
+  doc.line(115, 40, 115, 74); /* LINEA TWO */
+  doc.line(210, 25, 210, 220);
+  doc.line(5, 74, 210, 74);
+  doc.line(5, 82, 210, 82);
+  doc.line(5, 91, 210, 91);
+  doc.line(5, 140 + 10, 210, 140 + 10);
+  doc.line(5, 149 + 10, 210, 149 + 10);
+
+  doc.line(5, 122, 210, 122);
+  doc.line(5, 130, 210, 130);
+
+  doc.line(5, 220, 210, 220);
+
+  /* TITULOS DE CONTENIDO */
+  doc.text("CONSECUTIVO:", 45, 46);
+  doc.text("FECHA:", 120, 46);
+  doc.text("DOCUMENTO:", 45, 52);
+  doc.text("NOMBRES:", 120, 52);
+  doc.text("GENERO:", 45, 58);
+
+  doc.text("EDAD:", 120, 58);
+  doc.text(`ANTIGUEDAD:  ${GetEdad(lsDataReport.fechaContrato)}`, 170, 58);
+  doc.text("TIPO CONTRATO:", 45, 64);
+
+  doc.text("AÑOS", 153, 58);
+  doc.text("CARGO:", 120, 64);
+  doc.text("AREA:", 45, 70);
+  doc.text("DEPARTAMENTO:", 120, 70);
+
+  doc.text("RESUMEN DE LA ATENCIÓN", 6, 79);
+  doc.text("CONTINGENCIA:", 6, 88);
+  doc.text("PROCEDIMIENTOS:", 6, 98);
+  doc.text("DESCRIPCIÓN", 6, 156);
+  doc.text("DIAGNÓSTICO", 6, 126);
+
+  /* RENDERIZADO DE CONTENIDO */
+  doc.setFont("helvetica", "normal");
+  doc.addImage(`${lsDataReport.empleadoFoto}`, "JPEG", 7.5, 42, 30, 30);
+
+  doc.text(`${lsDataReport.id}`, 75, 46);
+  doc.text(`${ViewFormat(lsDataReport.fecha)}`, 147, 46);
+  doc.text(`${lsDataReport.documento}`, 75, 52);
+  doc.text(`${lsDataReport.nameEmpleado}`, 147, 52);
+
+  doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 147, 58);
+  doc.text(`${lsDataReport.nameGenero}`, 75, 58);
+  doc.text(`${lsDataReport.nameTipoContrato}`, 75, 64);
+
+  doc.text(`${lsDataReport.nameArea}`, 75, 70);
+  doc.text(`${lsDataReport.nameDepartamento}`, 152, 70);
+  doc.text(`${lsDataReport.nameCargo}`, 147, 64);
+
+  doc.text(`${lsDataReport.nameContingencia}`, 40, 88);
+
+  if (lsDataReport.procedimientos !== undefined && lsDataReport != []) {
+    doc.text(JSON.parse(lsDataReport.procedimientos).map((dx, index) => {
+      return String(`${dx.label.toUpperCase()}`)
+    }), 40, 98, { maxWidth: 200, lineHeightFactor: 1.5 });
+  }
+
+  doc.text(`${lsDataReport.dx1}     ${lsDataReport.nameDx1}`, 6, 135, {
+    maxWidth: 190,
+    lineHeightFactor: 1.0,
+  });
+
+  doc.text(`${lsDataReport.dx2}     ${lsDataReport.nameDx2}`, 6, 140, {
+    maxWidth: 190,
+    lineHeightFactor: 1.0,
+  });
+
+  doc.text(`${lsDataReport.dx3}     ${lsDataReport.nameDx3}`, 6, 145, {
+    maxWidth: 190,
+    lineHeightFactor: 1.0,
+  });
+
+  doc.text(`${lsDataReport.notaEnfermedad}`, 6, 156 + 10, {
+    maxWidth: 190,
+    lineHeightFactor: 1.0,
+  });
+
+  /* FIRMA */
+  getFirma(doc, lsDataUser, 20);
+  getFirmaEmployee(doc, lsDataReport, 20);
+}
 
 /* Renderizado Principal INDEX  */
-export function generateReportNursing(lsDataReport = [], lsDataUser = []) {
+export function generateReportNursing(lsDataReport = [], lsDataUser = [], nameSede) {
+
   var doc = new jsPDF("p", "mm", "letter");
   /* Pag. 1 */
   getHeader(doc);
-  pageNursing(doc, lsDataReport, lsDataUser);
+
+  if (nameSede === 'PUERTO')
+    pageNursingPuerto(doc, lsDataReport, lsDataUser);
+  else
+    pageNursing(doc, lsDataReport, lsDataUser);
+
   getPiePage(doc, lsDataUser, 1, 1);
 
 

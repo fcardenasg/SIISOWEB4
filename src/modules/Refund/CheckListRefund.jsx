@@ -148,6 +148,8 @@ const CheckListRefund = ({ idReintegro }) => {
             try {
                 var lsCheckedReintegro = await GetAllReintegro(idReintegro);
                 setListRefund(lsCheckedReintegro.data);
+
+                console.log("data => ", lsCheckedReintegro);
             } catch (error) { }
         }
 
@@ -257,7 +259,7 @@ const CheckListRefund = ({ idReintegro }) => {
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.usuarioRegistro}
+                                                {row?.usuarioRegistro}
                                             </Typography>
                                         </TableCell>
 
@@ -271,7 +273,7 @@ const CheckListRefund = ({ idReintegro }) => {
                                                 variant="subtitle2"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {ViewFormat(row.fechaModifico)}
+                                                {ViewFormat(row?.fechaModifico)}
                                             </Typography>
                                         </TableCell>
 

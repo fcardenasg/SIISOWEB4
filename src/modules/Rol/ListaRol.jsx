@@ -236,7 +236,7 @@ const ListaRol = ({ getAll, setLsPermisos, lsPermisos, rows }) => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameComponente', 'nameItem', 'nameCard'];
+                const properties = ['id', 'nameComponente', 'nameItem', 'nameCard', 'estado'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

@@ -209,7 +209,7 @@ const MenuParaclinics = Loadable(lazy(() => import('modules/Menu/MenuParaclinics
 const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParameterization')));
 const MenuExcel = Loadable(lazy(() => import('modules/Menu/MenuExcel')));
 
-const ExportOccupationalHealth = Loadable(lazy(() => import('modules/ExportOccupationalHealth/ExportOccupationalHealth')));
+const MenuExcelOccupationalHealth = Loadable(lazy(() => import('modules/Menu/MenuExcelOccupationalHealth')));
 const ListProgrammingUpdate = Loadable(lazy(() => import('modules/Programming/Update/ListProgrammingUpdate')));
 
 const MainRoutes = {
@@ -860,7 +860,7 @@ const MainRoutes = {
         /* Exportar de Salud Ocupacional */
         {
             path: '/occupational-health/export',
-            element: <ExportOccupationalHealth />
+            element: <MenuExcelOccupationalHealth />
         },
         /* Vista de Exportar */
         {

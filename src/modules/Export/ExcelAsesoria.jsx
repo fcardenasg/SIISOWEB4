@@ -15,10 +15,6 @@ import LoadingGenerate from "components/loading/LoadingGenerate";
 import { GetExcelAdvice } from "api/clients/AdviceClient";
 import { DownloadFile } from "components/helpers/ConvertToBytes";
 
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-
 const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));

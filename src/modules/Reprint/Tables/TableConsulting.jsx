@@ -39,6 +39,7 @@ import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
 import config from 'config';
 import Cargando from 'components/loading/Cargando';
+import InputCheck from 'components/input/InputCheck';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -167,6 +168,8 @@ const TableConsulting = () => {
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
+    const [idReporte, setIdReporte] = useState(0);
+    const [extenderReport, setExtenderReport] = useState(false);
 
     useEffect(() => {
         async function getAll() {
@@ -180,28 +183,28 @@ const TableConsulting = () => {
         getAll();
     }, []);
 
-    const handleClickReport = async (id) => {
+    const handleClickReport = async (id, lsConfigurations) => {
         try {
+            setIdReporte(id);
             setOpenReport(true);
             var lsDataUser = [];
             const lsDataReport = await GetByIdAdvice(id);
 
             if (lsDataReport.status === 200) {
-
                 lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
                 if (lsDataUser.status === 200) {
                     if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA) {
-                        const asesoriaMedica = generateReport(lsDataReport.data, lsDataUser.data);
+                        const asesoriaMedica = generateReport(lsDataReport.data, lsDataUser.data, lsConfigurations);
                         setDataPDF(asesoriaMedica);
                     }
                     if (lsDataReport.data.idTipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
-                        const asesoriaPsicologica = generateReportPsycho(lsDataReport.data, lsDataUser.data);
+                        const asesoriaPsicologica = generateReportPsycho(lsDataReport.data, lsDataUser.data, lsConfigurations);
                         setDataPDF(asesoriaPsicologica);
                     }
                     if (lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA &&
                         lsDataReport.data.idTipoAtencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO) {
-                        const asesoriaOtras = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data);
+                        const asesoriaOtras = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data, lsConfigurations);
                         setDataPDF(asesoriaOtras);
                     }
                 }
@@ -252,15 +255,39 @@ const TableConsulting = () => {
         setPage(0);
     };
 
+    const handleChangeExtender = (event) => {
+        setExtenderReport(event.target.checked);
+        handleClickReport(idReporte, event.target.checked);
+    };
+
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsConsulting.length) : 0;
 
     return (
         <Fragment>
             <ControlModal
-                title={Message.VistaReporte}
+                title={
+                    <Fragment>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                {Message.VistaReporte}
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <InputCheck
+                                    onChange={handleChangeExtender}
+                                    checked={extenderReport}
+                                    label="Extender Reporte"
+                                    name="extenderDescripcion"
+                                    size={30}
+                                    defaultValue={false}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Fragment>
+                }
                 open={openReport}
                 onClose={() => { setOpenReport(false); setDataPDF(null) }}
-                maxWidth="xl"
+                maxWidth="md"
             >
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
@@ -405,7 +432,7 @@ const TableConsulting = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id)}>
+                                                <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id, extenderReport)}>
                                                     <IconButton size="large">
                                                         <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>

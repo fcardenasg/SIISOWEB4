@@ -32,11 +32,12 @@ import { ViewFormat } from 'components/helpers/Format';
 import { GetAllMedicalHistory, GetByIdMedicalHistory } from 'api/clients/MedicalHistoryClient';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReportClinicHistory } from 'modules/Programming/Attention/Report/ClinicHistory';
-import useAuth from 'hooks/useAuth';
+
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import config from 'config';
 import Cargando from 'components/loading/Cargando';
+import InputCheck from 'components/input/InputCheck';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -151,7 +152,6 @@ EnhancedTableHead.propTypes = {
 };
 
 const TableMedicalAttention = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [lsMedicalAttention, setLsMedicalAttention] = useState([]);
     const [openReport, setOpenReport] = useState(false);
@@ -166,6 +166,9 @@ const TableMedicalAttention = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
+    const [idReporte, setIdReporte] = useState(0);
+    const [extenderReport, setExtenderReport] = useState(false);
+
     useEffect(() => {
         async function GetAll() {
             try {
@@ -178,13 +181,14 @@ const TableMedicalAttention = () => {
         GetAll();
     }, []);
 
-    const handleClickReport = async (id) => {
+    const handleClickReport = async (id, lsConfigurations) => {
         try {
+            setIdReporte(id);
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalHistory(id);
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
-            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data, lsConfigurations);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -232,15 +236,39 @@ const TableMedicalAttention = () => {
         setPage(0);
     };
 
+    const handleChangeExtender = (event) => {
+        setExtenderReport(event.target.checked);
+        handleClickReport(idReporte, event.target.checked);
+    };
+
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAttention.length) : 0;
 
     return (
         <Fragment>
             <ControlModal
-                title={Message.VistaReporte}
+                title={
+                    <Fragment>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                {Message.VistaReporte}
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <InputCheck
+                                    onChange={handleChangeExtender}
+                                    checked={extenderReport}
+                                    label="Extender Reporte"
+                                    name="extenderDescripcion"
+                                    size={30}
+                                    defaultValue={false}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Fragment>
+                }
                 open={openReport}
                 onClose={() => { setOpenReport(false); setDataPDF(null) }}
-                maxWidth="xl"
+                maxWidth="md"
             >
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
@@ -385,7 +413,7 @@ const TableMedicalAttention = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id)}>
+                                                <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id, extenderReport)}>
                                                     <IconButton size="large">
                                                         <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>

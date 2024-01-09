@@ -1,25 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useTheme } from "@emotion/react";
 import { Button, Grid, useMediaQuery } from "@mui/material";
-import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
-import { ArrayTodaSede } from "components/Arrays";
-import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
-import InputDatePick from "components/input/InputDatePick";
-import SelectOnChange from "components/input/SelectOnChange";
-import { ParametrosExcel } from "formatdata/ParametrosForm";
+import { Message, TitleButton } from "components/helpers/Enums";
 import AnimateButton from "ui-component/extended/AnimateButton";
-import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
 import { DownloadFile } from "components/helpers/ConvertToBytes";
+import { GetWorkAbsenteeismHistoryComboAnio } from "api/clients/WorkAbsenteeismClient";
+import SelectOnChange from "components/input/SelectOnChange";
 import { GenerateExcelIndicadores } from "api/clients/IndicadoresClient";
-import { GetExcelAttention } from "api/clients/AttentionClient";
 
-const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
+const ExcelIndicador = ({ setSede, sede }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [lsSede, setLsSede] = useState([]);
+    const [lsAnios, setLsAnios] = useState([]);
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -27,9 +22,9 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
-                const arraySede = lsServerSede.data.concat(ArrayTodaSede);
-                setLsSede(arraySede);
+                const lsServerAnios = await GetWorkAbsenteeismHistoryComboAnio();
+                setLsAnios(lsServerAnios.data);
+                setSede(new Date().getFullYear());
             } catch (error) { }
         }
 
@@ -39,9 +34,7 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
     async function getDataForExport() {
         try {
             setLoading(true);
-
-            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
-            const lsServerExcel = await GetExcelAttention(parametros);
+            const lsServerExcel = await GenerateExcelIndicadores(sede);
 
             if (lsServerExcel.status === 200) {
                 DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
@@ -66,29 +59,11 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <SelectOnChange
-                        name="sede"
-                        label="Sede de Atención"
+                        name="anio"
+                        label="Año"
                         value={sede}
-                        options={lsSede}
+                        options={lsAnios}
                         onChange={(e) => setSede(e.target.value)}
-                        size={matchesXS ? 'small' : 'medium'}
-                    />
-                </Grid>
-
-                <Grid item xs={6}>
-                    <InputDatePick
-                        label="Fecha Inicio"
-                        onChange={(e) => setFechaInicio(e.target.value)}
-                        value={fechaInicio}
-                        size={matchesXS ? 'small' : 'medium'}
-                    />
-                </Grid>
-
-                <Grid item xs={6}>
-                    <InputDatePick
-                        label="Fecha Fin"
-                        onChange={(e) => setFechaFin(e.target.value)}
-                        value={fechaFin}
                         size={matchesXS ? 'small' : 'medium'}
                     />
                 </Grid>
@@ -111,4 +86,4 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
     );
 }
 
-export default ExcelRegistroAtencion;
+export default ExcelIndicador;

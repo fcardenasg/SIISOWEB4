@@ -150,7 +150,7 @@ const UpdateNoteInfirmary = () => {
             const lsDataReport = await GetByIdNoteInfirmary(resultData);
             const lsDataUser = await GetByMail(user.nameuser);
 
-            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data, user.namesede);
 
             setDataPDF(dataPDFTwo);
         } catch (err) { }

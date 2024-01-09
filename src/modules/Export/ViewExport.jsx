@@ -10,6 +10,7 @@ import ExcelOrdenes from "./ExcelOrdenes";
 import ExcelPruebaAlcoholDroga from "./ExcelPruebaAlcoholDroga";
 import ExcelFramingham from "./ExcelFramingham";
 import ExcelIndicadores from "./ExcelIndicadores";
+import ExcelIndicador from "./ExcelIndicador";
 
 const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [sede, setSede] = useState(0);
@@ -117,6 +118,13 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         lsAnios={lsAnios}
                         setAllMes={setAllMes}
                         allMes={allMes}
+                    /> : null
+                }
+
+                {exportBy.codigo === 'INDICADOR' ?
+                    <ExcelIndicador
+                        setSede={setSede}
+                        sede={sede}
                     /> : null
                 }
             </ControlModal>
