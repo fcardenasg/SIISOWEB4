@@ -31,19 +31,16 @@ import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllSupplier, DeleteSupplier } from 'api/clients/SupplierClient';
+import { GetAllSupplier, DeleteSupplier, GetExcelSupplier } from 'api/clients/SupplierClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Cargando from 'components/loading/Cargando';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import LoadingGenerate from 'components/loading/LoadingGenerate';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -208,6 +205,10 @@ const ListSupplier = () => {
     const [idCheck, setIdCheck] = useState('');
     const [resultMessage, setResultMessage] = useState('');
 
+    const [loading, setLoading] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     const theme = useTheme();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('nombProv');
@@ -218,7 +219,7 @@ const ListSupplier = () => {
     const [rows, setRows] = useState([]);
 
     //Primer metodo a actualizar
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServer = await GetAllSupplier(0, 0);
             if (lsServer.status === 200) {
@@ -230,8 +231,29 @@ const ListSupplier = () => {
     }
 
     useEffect(() => {
-        GetAll();
-    }, [])
+        getAll();
+    }, []);
+
+    async function getDataForExport() {
+        try {
+            setLoading(true);
+            const lsServerExcel = await GetExcelSupplier();
+
+            if (lsServerExcel.status === 200) {
+                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
+
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
+            }
+
+        } catch (error) {
+            setLoading(false);
+
+            setOpenError(true);
+            setErrorMessage(Message.ErrorExcel);
+        }
+    }
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -315,7 +337,7 @@ const ListSupplier = () => {
                             setOpenDelete(true);
                             setSelected([]);
                             setSearch('');
-                            GetAll();
+                            getAll();
                         } else {
                             setResultMessage(result.data.message);
                             setOpenDelete(true);
@@ -354,27 +376,15 @@ const ListSupplier = () => {
                             size="small"
                         />
                     </Grid>
+
                     <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Empresas">
-                                    <ExcelSheet data={supplier} name="Empresas">
-                                        <ExcelColumn label="Código" value="codiProv" />
-                                        <ExcelColumn label="Nombre" value="nombProv" />
-                                        <ExcelColumn label="Teléfono" value="teleProv" />
-                                        <ExcelColumn label="Email" value="emaiProv" />
-                                        <ExcelColumn label="Contacto" value="contaProv" />
-                                        <ExcelColumn label="Ciudad" value="nameCiudad" />
-                                        <ExcelColumn label="Dirección" value="direProv" />
-                                        <ExcelColumn label="Tipo de Proveedor" value="tipoProv" />
-                                    </ExcelSheet>
-                                </ExcelFile>
+                                <Tooltip disable={loading} onClick={() => getDataForExport()} title="Exportar">
+                                    <IconButton size="large">
+                                        <IconFileExport />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
 
                             <Grid item xs={5}>

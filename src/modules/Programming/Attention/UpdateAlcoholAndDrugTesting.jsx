@@ -250,11 +250,11 @@ const UpdateAlcoholAndDrugTesting = () => {
                         }
                     } else {
                         setOpenError(true);
-                        setErrorMessage(`${Message.ErrorNoHayDatos}`);
+                        setErrorMessage(Message.ErrorNoHayDatos);
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {

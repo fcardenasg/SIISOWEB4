@@ -1,87 +1,121 @@
-import PropTypes from 'prop-types';
-import { Fragment, useState } from 'react';
-
-import { MessageDelete } from 'components/alert/AlertAll';
+import { Fragment, useEffect, useState } from 'react';
+import { ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
-import { Button, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardMedia, Divider, Grid, Typography } from '@mui/material';
 
-import { MessageSuccess } from 'components/alert/AlertAll';
-import { ColorDrummondltd } from 'themes/colors';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import ReplyIcon from '@mui/icons-material/Reply';
 import Chip from 'ui-component/extended/Chip';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControlModal from 'components/controllers/ControlModal';
+import Avatar from 'components/form/Avatar';
 import ModalAnsweredView from './ModalAnsweredView';
+import { ColorDrummondltd } from 'themes/colors';
 
-const CardAnsweredView = ({ lsRequests }) => {
+
+
+const CardRequestsView = ({ lsRequests }) => {
     const theme = useTheme();
-
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
     const [openRequests, setOpenRequests] = useState(false);
+    const [etiquetaColor, setEtiquetaColor] = useState({
+        colorChip: '',
+        colorCard: ''
+    });
+
+    useEffect(() => {
+        function getColorCard() {
+            var totalSolicitud = (lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder);
+            var mitadSolicitud = (totalSolicitud / 2);
+
+            if (lsRequests.solicitudesSinResponder === 0) {
+                setEtiquetaColor({ colorChip: "success", colorCard: ColorDrummondltd.GreenDrummond });
+            } else if (lsRequests.solicitudesSinResponder > mitadSolicitud) {
+                setEtiquetaColor({ colorChip: "warning", colorCard: ColorDrummondltd.YellowSeDrummond });
+            } else if (lsRequests.solicitudesSinResponder > mitadSolicitud) {
+                setEtiquetaColor({ colorChip: "error", colorCard: ColorDrummondltd.RedDrummond });
+            }
+        }
+
+        getColorCard();
+    }, [lsRequests]);
 
     return (
         <Fragment>
+            <ControlModal
+                title="Detalle De Solicitudes"
+                open={openRequests}
+                onClose={() => setOpenRequests(false)}
+                maxWidth="xl"
+            >
+                <ModalAnsweredView lsCardRequests={lsRequests} />
+            </ControlModal>
+
             <Card
                 sx={{
                     background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[100],
                     border: theme.palette.mode === 'dark' ? 'none' : '2px solid',
-                    borderColor: theme.palette.grey[500], textAlign: 'center'
+                    borderColor: theme.palette.grey[500],
+                    textAlign: 'center'
                 }}
             >
-                <ControlModal
-                    title="Detalle De Solicitudes"
-                    open={openRequests}
-                    onClose={() => setOpenRequests(false)}
-                    maxWidth="xl"
-                >
-                    <ModalAnsweredView lsCardRequests={lsRequests} />
-                </ControlModal>
-
-                <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
-                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-
-                <CardMedia component="div" title="Area De Respuesta" sx={{
-                    height: '70px', bgcolor: lsRequests.solicitudesRespondidas === 0 ? ColorDrummondltd.RedDrummond :
-                        lsRequests.solicitudesRespondidas === (lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder)
-                            ? ColorDrummondltd.GreenDrummond : ColorDrummondltd.YellowSeDrummond
-                }}>
-                    <Typography variant="h6" sx={{ pt: 2.5, color: 'white' }}>{lsRequests.nameEmpleado}</Typography>
+                <CardMedia component="div" title="Correspondencia" sx={{ height: '90px', bgcolor: etiquetaColor }}>
+                    <Typography variant="h6" sx={{ pt: 3, color: 'white' }}>{lsRequests?.nameAreaRespuesta}</Typography>
                 </CardMedia>
 
                 <CardContent sx={{ p: 2, pb: '16px !important' }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Chip
-                                size="small"
-                                label={
-                                    `${lsRequests.solicitudesRespondidas} RESPUESTAS DE ${lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder}`
-                                }
-                                chipcolor={
-                                    lsRequests.solicitudesRespondidas === 0 ? 'error' : lsRequests.solicitudesRespondidas === (lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder)
-                                        ? 'success' : 'warning'
-                                }
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <Typography variant="h5"><b>Documento:</b> </Typography>
-                                    <Typography variant="h6">{lsRequests.documento}</Typography>
+                                    <Avatar alt={lsRequests?.nameEmpleado} src={lsRequests?.empleadoFoto === undefined ? null :
+                                        lsRequests?.empleadoFoto === '' ? null : lsRequests?.empleadoFoto} sx={{ width: 60, height: 60, m: '-50px auto 0' }} />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12} alignItems="center">
+                            <Grid container spacing={1}>
+                                <Grid item xs={12}>
+                                    <Typography fontSize={12}><b>{lsRequests?.documento} - {lsRequests?.nameEmpleado}</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Typography variant="h5"><b>Sede:</b> </Typography>
-                                    <Typography variant="h6">{lsRequests.nameSede}</Typography>
+                                    <Chip
+                                        size="small"
+                                        label={
+                                            `${lsRequests.solicitudesRespondidas} RESPUESTAS DE ${lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder}`
+                                        }
+                                        chipcolor={etiquetaColor}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography variant="h6"><b>{lsRequests?.diasTranscurridos}</b></Typography>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={6}>
+                                    <Typography variant="h6"><b>F. Recibido</b> </Typography>
+                                    <Typography variant="h6">{ViewFormat(lsRequests?.fechaRecibido)}</Typography>
+                                </Grid>
+
+                                <Grid item xs={6}>
+                                    <Typography variant="h6"><b>F. Límite</b> </Typography>
+                                    <Typography variant="h6">{ViewFormat(lsRequests?.fechaLimiteRespuesta)}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
 
                         <Grid item xs={12}>
                             <AnimateButton>
-                                <Button onClick={() => setOpenRequests(true)} variant="outlined" fullWidth startIcon={<QuestionAnswerIcon />}>
-                                    Ver Solicitud
+                                <Button onClick={() => setOpenRequests(true)} variant="outlined" fullWidth startIcon={<ReplyIcon />}>
+                                    Responder
                                 </Button>
                             </AnimateButton>
                         </Grid>
@@ -92,9 +126,4 @@ const CardAnsweredView = ({ lsRequests }) => {
     );
 };
 
-CardAnsweredView.propTypes = {
-    lsRequests: PropTypes.object,
-    onClickDelete: PropTypes.object
-};
-
-export default CardAnsweredView;
+export default CardRequestsView;

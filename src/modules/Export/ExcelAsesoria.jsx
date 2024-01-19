@@ -20,8 +20,6 @@ const ExcelAsesoria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsSede, setLsSede] = useState([]);
-    const [lsDataExport, setLsDataExport] = useState([]);
-    const [statusData, setStatusData] = useState(false);
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');

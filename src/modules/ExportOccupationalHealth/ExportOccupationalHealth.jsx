@@ -1,9 +1,4 @@
-import { useTheme } from '@mui/material/styles';
-import { useMediaQuery } from "@mui/material";
-
 import { useState, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 import ControlModal from 'components/controllers/ControlModal';
 import MedicionaLaboralExport from './Export/MedicionaLaboralExport';
 import ReintegroExport from './Export/ReintegroExport';
@@ -23,10 +18,6 @@ const lsTipoBusqueda = [
 ]
 
 const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
-    const theme = useTheme();
-    const navigate = useNavigate();
-    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
     const [sede, setSede] = useState(0);
     const [tipoExcelAusentismo, setTipoExcelAusentismo] = useState(0);
     const [documento, setDocumento] = useState('');
@@ -54,7 +45,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
             >
                 {exportBy.codigo === 'MEDIC' ?
                     <MedicionaLaboralExport
-                        lsTipoExcelAusentismo={lsTipoExcelAusentismo.filter(x => x.value === 1)}
+                        lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
                         setTipoExcelAusentismo={setTipoExcelAusentismo} tipoExcelAusentismo={tipoExcelAusentismo}
                         setDocumento={setDocumento} documento={documento}
@@ -67,7 +58,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
 
                 {exportBy.codigo === 'REINT' ?
                     <ReintegroExport
-                        lsTipoExcelAusentismo={lsTipoExcelAusentismo.filter(x => x.value === 2)}
+                        lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
                         setTipoExcelAusentismo={setTipoExcelAusentismo} tipoExcelAusentismo={tipoExcelAusentismo}
                         setDocumento={setDocumento} documento={documento}
@@ -80,7 +71,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
 
                 {exportBy.codigo === 'AT' ?
                     <AccidenteTrabajo
-                        lsTipoExcelAusentismo={lsTipoExcelAusentismo.filter(x => x.value === 1)}
+                        lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
                         setTipoExcelAusentismo={setTipoExcelAusentismo} tipoExcelAusentismo={tipoExcelAusentismo}
                         setDocumento={setDocumento} documento={documento}
@@ -94,7 +85,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                 {exportBy.codigo === 'AUSENTI' ?
                     <AusentismoExport
                         parametroConsulta={exportBy.codigo}
-                        lsTipoExcelAusentismo={lsTipoExcelAusentismo.filter(x => x.value === 1)}
+                        lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
                         setTipoExcelAusentismo={setTipoExcelAusentismo} tipoExcelAusentismo={tipoExcelAusentismo}
                         setDocumento={setDocumento} documento={documento}

@@ -148,8 +148,11 @@ export function pageCompanyNotificationEC(
   doc.text("1 AÑO", 75, 79);
   doc.text(`${lsDataReport.nameAtencion}`, 75, 88);
 
-  doc.text(`${lsDataReport.nameIdConceptoEspacioConfinado}`, 75, 96);
-  doc.text(`${lsDataReport.nameConceptoAplazadoNETA}`, 75, 104);
+  if (lsDataReport.nameIdConceptoEspacioConfinado !== 'SIN REGISTRO' || lsDataReport.nameAtencion !== 'EGRESO')
+    doc.text(`${lsDataReport.nameIdConceptoEspacioConfinado}`, 75, 96);
+
+  if (lsDataReport.nameConceptoAplazadoNETA !== 'SIN REGISTRO' || lsDataReport.nameAtencion !== 'EGRESO')
+    doc.text(`${lsDataReport.nameConceptoAplazadoNETA}`, 75, 104);
 
   doc.text(`${lsDataReport.motivoAplazoNETA}`, 75, 115, {
     maxWidth: 130,
@@ -372,7 +375,9 @@ export function pageWorkerNotificationEC(doc, lsDataReport = [], lsDataUser = []
   doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 58);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 146, 58);
 
-  doc.text(`${lsDataReport.nameIdConceptoEspacioConfinado}`, 89, 70);
+  if (lsDataReport.nameIdConceptoEspacioConfinado !== 'SIN REGISTRO' || lsDataReport.nameAtencion !== 'EGRESO')
+    doc.text(`${lsDataReport.nameIdConceptoEspacioConfinado}`, 89, 70);
+
   doc.text(`${lsDataReport.pesoEF}`, 69, 63);
   doc.text(`${lsDataReport.imcef}`, 86, 63);
 

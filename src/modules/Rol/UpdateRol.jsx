@@ -100,7 +100,7 @@ const UpdateRol = () => {
                 id: 0,
                 idRol: id,
                 idItemMenu: valueItem,
-                idCardItem: valueCard,
+                idCardItem: valueCard === '' ? undefined : valueCard,
                 estado: estadoPermiso,
                 usuarioRegistro: user.nameuser,
 

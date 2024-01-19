@@ -11,5 +11,6 @@ export const UpdateAttentions = async (registroAtencion) => await putData(Url.Re
 export const UpdateEstadoRegistroAtencion = async (registroAtencionDTO) => await putData(Url.UpdateEstadoRegistroAtencion, registroAtencionDTO);
 
 export const GetExcelAttention = async (parametroExcel) => await postData(Url.RegistroAtencionExcel, parametroExcel);
+export const GetDataEpidemiologica = async (documento) => await getData(Url.RegistroAtencionEpide, { documento });
 
 export const ValidateIdRegistroAtencion = async (idRegistroAtencion, option) => await getData(Url.RegistroAtencionValidateAtencion, { idRegistroAtencion, option });

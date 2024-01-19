@@ -95,6 +95,7 @@ export const Url = {
     RiesgoHistoriaLaboralEmpresa_GetDataExploracion: 'api/RiesgoHistoriaLaboralOtrasEmpresas/get-data-exploracion',
 
     Proveedor: 'api/Proveedor',
+    ProveedorExcel: 'api/Proveedor/excel',
     ProveedorId: 'api/Proveedor/id',
 
     RegistroAtencion: 'api/RegistroAtencion',
@@ -104,6 +105,7 @@ export const Url = {
     UpdateEstadoRegistroAtencion: 'api/RegistroAtencion/UpdateEstadoRegistroAtencion',
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/attention',
     RegistroAtencionId: 'api/RegistroAtencion/id',
+    RegistroAtencionEpide: 'api/RegistroAtencion/consulta-epidemiologica',
 
     Paraclinicos: 'api/Paraclinicos',
     Paraclinicos_GetAllByDocumento: 'api/Paraclinicos/GetAllByDocumento',

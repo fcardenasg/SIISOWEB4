@@ -617,15 +617,23 @@ export function generateReportConceptAptitude(
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
   doc.text("NOMBRE:", 120, 45);
+
   doc.text(`${lsDataReport.nameAtencion === "INGRESO" ? "CARGO AL QUE ASPIRA:" : "CARGO:"}`, 45, 50);
+
   doc.text("PROFESIÓN:", 45, 55);
   doc.text("AREA:", 45, 60);
   doc.text("DEPARTAMENTO:", 45, 65);
-  doc.text("CONCEPTO DE APTITUD:", 45, 70);
-  doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70, {
-    maxWidth: 110,
-    lineHeightFactor: 1.5,
-  });
+
+  if (lsDataReport.nameAtencion !== 'EGRESO') {
+    doc.text("CONCEPTO DE APTITUD:", 45, 70);
+
+    if (lsDataReport.nameConceptoActitudNETA !== 'SIN REGISTRO' || lsDataReport.nameAtencion !== 'EGRESO') {
+      doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70, {
+        maxWidth: 110,
+        lineHeightFactor: 1.5,
+      });
+    }
+  }
 
   doc.text("RECOMENDACIONES:", 7, 95);
 
@@ -1514,10 +1522,12 @@ export function generateDefinitiveDiagnosis(
     lineHeightFactor: 1.5,
   });
 
-  doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 107, {
-    maxWidth: 200,
-    lineHeightFactor: 1.5,
-  });
+  if (lsDataReport.nameAtencion !== 'EGRESO' && lsDataReport.nameConceptoActitudID !== 'SIN REGISTRO') {
+    doc.text(`${lsDataReport.nameConceptoActitudID}`, 7, 107, {
+      maxWidth: 200,
+      lineHeightFactor: 1.5,
+    });
+  }
 
   doc.text(`${lsDataReport.recomendacionesID}`, 7, 130, {
     maxWidth: 200,

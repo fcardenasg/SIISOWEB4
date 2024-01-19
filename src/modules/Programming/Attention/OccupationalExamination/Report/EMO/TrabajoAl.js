@@ -155,10 +155,11 @@ export function pageCompanyNotification(
   doc.text("1 AÑO", 75, 79);
   doc.text(`${lsDataReport.nameAtencion}`, 75, 88);
 
-  doc.text(`${lsDataReport.nameConceptoActitudNETA}`, 75, 96);
-  doc.text(`${lsDataReport.nameConceptoAplazadoNETA}`, 75, 104);
+  if (lsDataReport.nameConceptoActitudNETA !== 'SIN REGISTRO' || lsDataReport.nameAtencion !== 'EGRESO')
+    doc.text(`${lsDataReport.nameConceptoActitudNETA}`, 75, 96);
 
-
+  if (lsDataReport.nameConceptoAplazadoNETA !== 'SIN REGISTRO' || lsDataReport.nameAtencion !== 'EGRESO')
+    doc.text(`${lsDataReport.nameConceptoAplazadoNETA}`, 75, 104);
 
   doc.text(`${lsDataReport.motivoAplazoNETA}`, 75, 115, {
     maxWidth: 130, lineHeightFactor: 1.0,
@@ -382,7 +383,8 @@ export function pageWorkerNotification(
   doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 58);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 146, 58);
 
-  doc.text(`${lsDataReport.nameConceptoActitudMedicoNEMTA}`, 89, 70);
+  doc.text(`${lsDataReport.nameConceptoActitudMedicoNEMTA === 'SIN REGISTRO' ? '' : lsDataReport.nameConceptoActitudMedicoNEMTA}`, 89, 70);
+
   doc.text(`${lsDataReport.pesoEF}`, 69, 63);
   doc.text(`${lsDataReport.imcef}`, 86, 63);
 

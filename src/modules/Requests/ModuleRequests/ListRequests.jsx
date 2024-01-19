@@ -30,7 +30,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { NumeroDiaSolicitudes, ViewFormat } from 'components/helpers/Format';
+import { ViewFormat } from 'components/helpers/Format';
 import { TitleButton, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllRequests, DeleteRequests } from 'api/clients/RequestsClient';
@@ -502,7 +502,7 @@ const ListRequests = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: {NumeroDiaSolicitudes(row.fechaRecibido, row.fechaLimiteRespuesta)}
+                                                    {ViewFormat(row.fechaLimiteRespuesta)} - Días Restantes: Calcular {/*  {NumeroDiaSolicitudes(row.fechaRecibido, row.fechaLimiteRespuesta)} */}
                                                 </Typography>
                                             </TableCell>
 

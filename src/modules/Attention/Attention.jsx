@@ -345,7 +345,7 @@ const Attention = () => {
 
             <FullScreenDialog
                 open={openTemplate}
-                title="LISTADO DE PLANTILLA"
+                title="Listado De Plantilla"
                 handleClose={() => setOpenTemplate(false)}
             >
                 <ListPlantillaAll />
@@ -355,7 +355,7 @@ const Attention = () => {
                 maxWidth="md"
                 open={open}
                 onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
+                title="Dictado Por Voz"
             >
                 <ControllerListen />
             </ControlModal>

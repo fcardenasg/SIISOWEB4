@@ -62,7 +62,13 @@ const MenuExcelOccupationalHealth = () => {
     return (
         <Fragment>
             <Grid container sx={{ pb: 2 }} direction="column" justifyContent="flex-start" alignItems="flex-end">
-                <MenuItems items={itemsMenuButton} selectedItem={selectedItem} title="Agregar Opción" />
+                <Grid item xs={6}>
+
+                </Grid>
+
+                <Grid item xs={6}>
+                    <MenuItems items={itemsMenuButton} selectedItem={selectedItem} title="Agregar Opción" />
+                </Grid>
             </Grid>
 
             <Grid container spacing={2}>

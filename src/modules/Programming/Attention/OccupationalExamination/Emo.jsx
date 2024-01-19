@@ -3976,12 +3976,14 @@ const Emo = ({
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 defaultValue={() => validateLastData(lsLastRecord.idConceptoActitudID, "number")}
+                                                disabled={atencion === DefaultValue.EMO_ATENCION_EGRESO ? true : false}
                                                 name="idConceptoActitudID"
                                                 label="Concepto de Aptitud PsicoFisica"
                                                 options={
                                                     atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
                                                         atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
-                                                            atencion === DefaultValue.EMO_ATENCION_PROMO ? lsControlPeriodico : lsControlPeriodico
+                                                            atencion === DefaultValue.EMO_ATENCION_PROMO ? lsControlPeriodico :
+                                                                atencion === DefaultValue.EMO_ATENCION_EGRESO ? [] : lsControlPeriodico
                                                 }
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
