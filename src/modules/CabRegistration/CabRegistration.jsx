@@ -71,23 +71,28 @@ const CabRegistration = () => {
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value !== "") {
+
+            if (event?.target.value !== '') {
+                if (event.key === 'Enter') {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
+                    if (lsServerEmployee?.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
+                    } else {
+                        setLsEmployee(lsServerEmployee?.data.data);
+                        setOpenError(true);
+                        setErrorMessage(lsServerEmployee?.data.message);
                     }
+
                 } else {
-                    setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+
+                    if (lsServerEmployee.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
+                    }
                 }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
-        }
+            } else setLsEmployee([]);
+        } catch (error) { }
     }
 
     const handleClickReport = async () => {
@@ -226,7 +231,7 @@ const CabRegistration = () => {
                 <Grid item xs={12}>
                     <ViewEmployee
                         title="Registrar Taxis"
-                        key={lsEmployee.documento}
+                        key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
                         lsEmployee={lsEmployee}

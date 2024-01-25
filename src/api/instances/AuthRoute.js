@@ -150,6 +150,7 @@ export const Url = {
     SolicitudesPorSede: 'api/Solicitudes/all-por-sede',
     SolicitudesExcel: 'api/Solicitudes/excel',
     SolicitudesId: 'api/Solicitudes/id',
+    SolicitudesSendSolic: 'api/Solicitudes/enviar-solicitud',
 
     SolicitudDetalle: 'api/SolicitudDetalle',
     SolicitudDetalleFile: 'api/SolicitudDetalle/file',

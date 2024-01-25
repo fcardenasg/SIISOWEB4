@@ -107,8 +107,8 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
     lsDataReport.otrasIM
   ) {
     doc.setFont("helvetica", "bold");
-    doc.text("VACUNAS", 7, 195);
-    doc.text("AÑOS", 50, 195);
+    doc.text("VACUNAS", 7, 220);
+    doc.text("AÑOS", 50, 220);
 
     doc.setFont("helvetica", "normal");
     doc.text(
@@ -118,7 +118,7 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
           return String(`${vacu.name}`);
         }),
       7,
-      200,
+      230,
       { maxWidth: 200, lineHeightFactor: 2 }
     );
 
@@ -129,7 +129,7 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
           return String(`${vacu.anio}`);
         }),
       50,
-      200,
+      230,
       { maxWidth: 200, lineHeightFactor: 2 }
     );
 
@@ -140,13 +140,13 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
           return String(`${vacu.refuerzo}`);
         }),
       100,
-      200,
+      230,
       { maxWidth: 200, lineHeightFactor: 2 }
     );
   } else {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(15);
-    doc.text("NO REFIERE", 12, 200);
+    doc.text("NO REFIERE", 12, 230);
   }
 }
 
@@ -1037,9 +1037,9 @@ export function generatePathologicalAntecedents(
   var marXR = doc.internal.pageSize.width - 5;
 
   doc.text("4. ANTECEDENTES PERSONALES", 7, 30);
-  doc.text("4.2 ENFERMEDAD LABORAL", 7, 125);
-  doc.text("4.3 ACCIDENTE DE TRABAJO", 7, 155);
-  doc.text("4.4 INMUNIZACIONES", 7, 185);
+  doc.text("4.2 ENFERMEDAD LABORAL", 7, 165);
+  doc.text("4.3 ACCIDENTE DE TRABAJO", 7, 185);
+  doc.text("4.4 INMUNIZACIONES", 7, 209);
 
   doc.text("4.1 PATOLÓGICOS", 7, 37);
   doc.setFontSize(10);
@@ -1047,24 +1047,24 @@ export function generatePathologicalAntecedents(
   doc.setDrawColor(128, 128, 128);
 
   /* CUADRO DATOS */
-  doc.line(5, 25, 5, 250); /* IZQUIERDA */
+  doc.line(5, 25, 5, 265); /* IZQUIERDA */
   doc.line(5, 32, marXR, 32); /* HORI ONE */
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
   doc.line(5, 94, marXR, 94); /* HORI THREE*/
 
-  doc.line(5, 120, marXR, 120); /* HORI FOUR */
-  doc.line(5, 128, marXR, 128); /* HORI FIVE */
+  doc.line(5, 160, marXR, 160); /* HORI FOUR */
+  doc.line(5, 168, marXR, 168); /* HORI FIVE */
 
-  doc.line(5, 150, marXR, 150); /* HORI SIX */
-  doc.line(5, 158, marXR, 158); /* HORI SEVEN */
+  doc.line(5, 180, marXR, 180); /* HORI SIX */
+  doc.line(5, 188, marXR, 188); /* HORI SEVEN */
 
-  doc.line(5, 180, marXR, 180); /* HORI EIGHT */
-  doc.line(5, 188, marXR, 188); /* HORI NINE */
+  doc.line(5, 204, marXR, 204); /* HORI EIGHT */
+  doc.line(5, 212, marXR, 212); /* HORI NINE */
 
   doc.line(70, 39, 70, 94); /* VERTI ONE */
   doc.line(140, 39, 140, 94); /* VERTI TWO */
-  doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
-  doc.line(marXR, 25, marXR, 250); /* DERECHA */
+  doc.line(5, 265, marXR, 265); /* HORI ULTIMA */
+  doc.line(marXR, 25, marXR, 265); /* DERECHA */
 
   /* PATOLÓGICOS */
   doc.setFontSize(8);
@@ -1107,12 +1107,12 @@ export function generatePathologicalAntecedents(
 
   /* ENFERMEDAD PROFESIONAL/ACCIDENTE DE TRABAJO */
   if (lsDataReport.anio1AT !== '') {
-    doc.text("AÑO:", 7, 133);
+    doc.text("AÑO:", 7, 172);
   }
 
   /* doc.text("OBSERVACIÓN", 7, 138); */
   if (lsDataReport.anioAT !== '') {
-    doc.text("AÑO:", 7, 163);
+    doc.text("AÑO:", 7, 192);
   }
 
   /* doc.text("OBSERVACIÓN", 7, 168); */
@@ -1156,14 +1156,14 @@ export function generatePathologicalAntecedents(
     lineHeightFactor: 1.5,
   });
 
-  doc.text(`${lsDataReport.anio1AT}`, 20, 133);
-  doc.text(`${lsDataReport.especifique1AT}`, 7, 142, {
+  doc.text(`${lsDataReport.anio1AT}`, 20, 172);
+  doc.text(`${lsDataReport.especifique1AT}`, 7, 177, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });
 
-  doc.text(`${lsDataReport.anioAT}`, 20, 163);
-  doc.text(`${lsDataReport.especifiqueAT}`, 7, 172, {
+  doc.text(`${lsDataReport.anioAT}`, 20, 192);
+  doc.text(`${lsDataReport.especifiqueAT}`, 7, 197, {
     maxWidth: 200,
     lineHeightFactor: 1.5,
   });

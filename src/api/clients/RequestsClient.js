@@ -20,3 +20,5 @@ export const InsertRequestsDetaills = async (solicitudDetalle) => await postData
 export const UpdateRequestsDetaills = async (solicitudDetalle) => await putData(Url.SolicitudDetalle, solicitudDetalle);
 export const DeleteRequestsDetaills = async (idSolicitudDetalle) => await deleteData(Url.SolicitudDetalle, { idSolicitudDetalle });
 export const GetAllRequestsPendientes = async (idSede, estado) => await getData(Url.SolicitudDetallePendiente, { idSede, estado });
+
+export const SendMainRequests = async (bodyMail) => await postData(Url.SolicitudesSendSolic, bodyMail);

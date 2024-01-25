@@ -69,10 +69,7 @@ const ModalRequestAnswered = ({ idSolicitudDetalle, getAllRefresh }) => {
                 const result = await UpdateRequestsDetaills(UpdateToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-
-                    setTimeout(() => {
-                        getAllRefresh();
-                    }, 2500);
+                    getAllRefresh();
                 }
             } else {
                 setOpenError(true);
@@ -89,7 +86,7 @@ const ModalRequestAnswered = ({ idSolicitudDetalle, getAllRefresh }) => {
     setTimeout(() => {
         if (lsRequests.length !== 0)
             setTimeWait(true);
-    }, 1000);
+    }, 500);
 
     return (
         <Fragment>

@@ -66,8 +66,12 @@ const UpdateOrdersIndividual = () => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200) {
-                setLsEmployee(lsServerEmployee.data);
+            if (lsServerEmployee?.data.status === 200) {
+                setLsEmployee(lsServerEmployee.data.data);
+            } else {
+                setLsEmployee(lsServerEmployee?.data.data);
+                setOpenError(true);
+                setErrorMessage(lsServerEmployee?.data.message);
             }
         } catch (error) {
             setLsEmployee([]);
@@ -131,6 +135,8 @@ const UpdateOrdersIndividual = () => {
 
             const lsDataUser = await GetByMail(idUsuario);
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
+
+            /* console.log("dataPDFTwo => ", dataPDFTwo); */
 
             if (action === 'correo') {
                 if (lsEmployee.email !== '' || lsEmployee.email !== undefined) {

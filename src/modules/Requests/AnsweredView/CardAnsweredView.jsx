@@ -3,15 +3,13 @@ import { ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
 import { Button, Card, CardContent, CardMedia, Divider, Grid, Typography } from '@mui/material';
 
-import ReplyIcon from '@mui/icons-material/Reply';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import Chip from 'ui-component/extended/Chip';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControlModal from 'components/controllers/ControlModal';
 import Avatar from 'components/form/Avatar';
 import ModalAnsweredView from './ModalAnsweredView';
 import { ColorDrummondltd } from 'themes/colors';
-
-
 
 const CardRequestsView = ({ lsRequests }) => {
     const theme = useTheme();
@@ -30,7 +28,7 @@ const CardRequestsView = ({ lsRequests }) => {
                 setEtiquetaColor({ colorChip: "success", colorCard: ColorDrummondltd.GreenDrummond });
             } else if (lsRequests.solicitudesSinResponder > mitadSolicitud) {
                 setEtiquetaColor({ colorChip: "warning", colorCard: ColorDrummondltd.YellowSeDrummond });
-            } else if (lsRequests.solicitudesSinResponder > mitadSolicitud) {
+            } else if (lsRequests.solicitudesSinResponder < mitadSolicitud) {
                 setEtiquetaColor({ colorChip: "error", colorCard: ColorDrummondltd.RedDrummond });
             }
         }
@@ -57,9 +55,7 @@ const CardRequestsView = ({ lsRequests }) => {
                     textAlign: 'center'
                 }}
             >
-                <CardMedia component="div" title="Correspondencia" sx={{ height: '90px', bgcolor: etiquetaColor }}>
-                    <Typography variant="h6" sx={{ pt: 3, color: 'white' }}>{lsRequests?.nameAreaRespuesta}</Typography>
-                </CardMedia>
+                <CardMedia component="div" title="Correspondencia" sx={{ height: '60px', bgcolor: etiquetaColor.colorCard }} />
 
                 <CardContent sx={{ p: 2, pb: '16px !important' }}>
                     <Grid container spacing={1}>
@@ -84,7 +80,7 @@ const CardRequestsView = ({ lsRequests }) => {
                                         label={
                                             `${lsRequests.solicitudesRespondidas} RESPUESTAS DE ${lsRequests.solicitudesRespondidas + lsRequests.solicitudesSinResponder}`
                                         }
-                                        chipcolor={etiquetaColor}
+                                        chipcolor={etiquetaColor.colorChip}
                                     />
                                 </Grid>
 
@@ -114,7 +110,7 @@ const CardRequestsView = ({ lsRequests }) => {
 
                         <Grid item xs={12}>
                             <AnimateButton>
-                                <Button onClick={() => setOpenRequests(true)} variant="outlined" fullWidth startIcon={<ReplyIcon />}>
+                                <Button onClick={() => setOpenRequests(true)} variant="outlined" fullWidth startIcon={<QuestionAnswerIcon />}>
                                     Responder
                                 </Button>
                             </AnimateButton>

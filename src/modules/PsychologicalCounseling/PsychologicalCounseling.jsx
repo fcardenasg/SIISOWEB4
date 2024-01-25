@@ -113,27 +113,27 @@ const PsychologicalCounseling = () => {
         try {
             setDocumento(event?.target.value);
 
-            if (event.target.value !== '') {
+            if (event?.target.value !== '') {
                 if (event.key === 'Enter') {
-                    if (event?.target.value != "") {
-                        var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
-                        if (lsServerEmployee.status === 200) {
-                            setLsEmployee(lsServerEmployee.data);
-                        }
+                    if (lsServerEmployee?.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
                     } else {
+                        setLsEmployee(lsServerEmployee?.data.data);
                         setOpenError(true);
-                        setErrorMessage(Message.ErrorDocumento);
+                        setErrorMessage(lsServerEmployee?.data.message);
                     }
+
                 } else {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
+                    if (lsServerEmployee.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
                     }
                 }
-            }
-        } catch (error) { setLsEmployee([]); }
+            } else setLsEmployee([]);
+        } catch (error) { }
     }
 
     const handleClickReport = async () => {
@@ -218,7 +218,7 @@ const PsychologicalCounseling = () => {
                 <Grid item xs={12}>
                     <ViewEmployee
                         title="Registrar Asesoría Psicológica"
-                        key={lsEmployee.documento}
+                        key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
                         lsEmployee={lsEmployee}

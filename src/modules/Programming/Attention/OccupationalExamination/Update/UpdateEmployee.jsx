@@ -96,12 +96,19 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
     async function getAll() {
         try {
             const lsServerEmployeeId = await GetByIdEmployee(idEmpleado);
-            if (lsServerEmployeeId.status === 200) {
-                setEmployee(lsServerEmployeeId.data);
-                setImgSrc(lsServerEmployeeId.data.imagenUrl);
-                setDptoNacido(lsServerEmployeeId.data.dptoNacido);
-                setDptoResidenciaTrabaja(lsServerEmployeeId.data.dptoResidenciaTrabaja);
-                setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
+            if (lsServerEmployeeId.data.status === 200) {
+                setEmployee(lsServerEmployeeId?.data.data);
+                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl);
+                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
+                setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
+                setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
+            } else {
+                setEmployee(lsServerEmployeeId?.data.data);
+
+                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl);
+                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
+                setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
+                setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
             }
 
             const lsServerOficio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Oficio);

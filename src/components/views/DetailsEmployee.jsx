@@ -1,44 +1,21 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 
-// material-ui
-import { useTheme } from '@mui/material/styles';
-import { Button, Card, Grid, IconButton, Menu, MenuItem, Typography, Avatar } from '@mui/material';
-
-// project imports
+import { Grid, Typography, Avatar } from '@mui/material';
 import Cargando from 'components/loading/Cargando';
 import { gridSpacing } from 'store/constant';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
-// assets
-import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import NotInterestedTwoToneIcon from '@mui/icons-material/NotInterestedTwoTone';
-import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
-
-const avatarImage = require.context('assets/images/profile', true);
-
-// ==============================|| USER DETAILS CARD ||============================== //
-
 const DetailsEmployee = ({ id }) => {
-    const theme = useTheme();
-    /* const avatarProfile = employee.imagenUrl && avatarImage(`./${}`).default; */
-
-    const [anchorEl, setAnchorEl] = useState(null);
-    const handleClick = (event) => {
-        setAnchorEl(event?.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     const [employee, setEmployee] = useState([]);
 
     async function GetById() {
         try {
             const lsServer = await GetByIdEmployee(id);
-            if (lsServer.status === 200) {
-                setEmployee(lsServer.data);
+            if (lsServer?.data.status === 200) {
+                setEmployee(lsServer.data.data);
+            } else {
+                setEmployee(lsServer.data.data);
             }
         } catch (error) {
         }

@@ -67,29 +67,27 @@ const OrdersIndividual = () => {
         try {
             setDocumento(event?.target.value);
 
-            if (event.target.value !== '') {
+            if (event?.target.value !== '') {
                 if (event.key === 'Enter') {
-                    if (event?.target.value != "") {
-                        var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
-                        if (lsServerEmployee.status === 200) {
-                            setLsEmployee(lsServerEmployee.data);
-                        }
+                    if (lsServerEmployee?.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
                     } else {
+                        setLsEmployee(lsServerEmployee?.data.data);
                         setOpenError(true);
-                        setErrorMessage(Message.ErrorDocumento);
+                        setErrorMessage(lsServerEmployee?.data.message);
                     }
+
                 } else {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
+                    if (lsServerEmployee.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
                     }
                 }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-        }
+            } else setLsEmployee([]);
+        } catch (error) { }
     }
 
     async function generateReport(action = '') {
@@ -115,7 +113,7 @@ const OrdersIndividual = () => {
 
                         setTimeout(() => {
                             if (result.status === 200) {
-                                setErrorMessage(result.data);  
+                                setErrorMessage(result.data);
                                 setOpenSuccess(true);
                                 setLoading(false);
                             }
@@ -199,7 +197,7 @@ const OrdersIndividual = () => {
                 <Grid item xs={12}>
                     <ViewEmployee
                         title="Registrar Ordenes Individuales"
-                        key={lsEmployee.documento}
+                        key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
                         lsEmployee={lsEmployee}

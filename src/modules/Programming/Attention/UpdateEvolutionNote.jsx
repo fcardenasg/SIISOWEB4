@@ -284,8 +284,13 @@ const UpdateEvolutionNote = () => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200)
-                setLsEmployee(lsServerEmployee.data);
+            if (lsServerEmployee?.data.status === 200) {
+                setLsEmployee(lsServerEmployee.data.data);
+            } else {
+                setLsEmployee(lsServerEmployee?.data.data);
+                setOpenError(true);
+                setErrorMessage(lsServerEmployee?.data.message);
+            }
         } catch (error) {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);

@@ -88,8 +88,8 @@ const UpdateAlcoholAndDrugTesting = () => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200)
-                setLsEmployee(lsServerEmployee.data);
+            if (lsServerEmployee.data.status === 200)
+                setLsEmployee(lsServerEmployee.data.data);
         } catch (error) {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
@@ -118,17 +118,17 @@ const UpdateAlcoholAndDrugTesting = () => {
                 if (event?.target.value != "") {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
-                    if (lsServerEmployee.status === 200) {
-                        setNombreSolicitante(lsServerEmployee.data.nombres);
+                    if (lsServerEmployee.data.status === 200) {
+                        setNombreSolicitante(lsServerEmployee.data.data.nombres);
                     }
                 } else {
                     setOpenError(true);
-                    setErrorMessage(`${Message.ErrorDocumento}`);
+                    setErrorMessage(Message.ErrorDocumento);
                 }
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${Message.ErrorDeDatos}`);
+            setErrorMessage(Message.ErrorDeDatos);
         }
     }
 
@@ -278,7 +278,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                         <ViewEmployee
                             title="Actualizar Prueba de Alcohol y Drogas"
                             disabled={true}
-                            key={lsEmployee.documento}
+                            key={lsEmployee?.documento}
                             documento={documento}
                             onChange={(e) => setDocumento(e.target.value)}
                             lsEmployee={lsEmployee}

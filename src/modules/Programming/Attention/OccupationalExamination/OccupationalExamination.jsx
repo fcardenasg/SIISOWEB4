@@ -296,12 +296,12 @@ const OccupationalExamination = () => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200) {
-                setLsEmployee(lsServerEmployee.data);
+            if (lsServerEmployee.data.status === 200) {
+                setLsEmployee(lsServerEmployee.data.data);
 
                 const tabsOptionArray = [
                     {
-                        label: `Datos Del ${lsServerEmployee.data.nameTipoContrato1}`,
+                        label: `Datos Del ${lsServerEmployee.data.data.nameTipoContrato1}`,
                         icon: <AccountCircleTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
                     },
                     {
@@ -315,8 +315,31 @@ const OccupationalExamination = () => {
                 ];
                 setTabsOption(tabsOptionArray);
 
-                setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
-                setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.fechaNaci), lsServerEmployee.data.nameGenero));
+                setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
+                setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
+            } else {
+                setLsEmployee(lsServerEmployee?.data.data);
+                setOpenError(true);
+                setErrorMessage(lsServerEmployee?.data.message);
+
+                const tabsOptionArray = [
+                    {
+                        label: `Datos Del ${lsServerEmployee.data.data.nameTipoContrato1}`,
+                        icon: <AccountCircleTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
+                    },
+                    {
+                        label: 'Historia Laboral',
+                        icon: <DescriptionTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
+                    },
+                    {
+                        label: 'Historia Clinica',
+                        icon: <LibraryBooksTwoToneIcon color="error" sx={{ fontSize: '1.3rem' }} />
+                    }
+                ];
+                setTabsOption(tabsOptionArray);
+
+                setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
+                setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
             }
         } catch (error) {
             setLsEmployee([]);

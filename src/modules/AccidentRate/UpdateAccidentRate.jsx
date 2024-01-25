@@ -232,8 +232,13 @@ const UpdateAccidentRate = () => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200)
-                setLsEmployee(lsServerEmployee.data);
+            if (lsServerEmployee?.data.status === 200) {
+                setLsEmployee(lsServerEmployee.data.data);
+            } else {
+                setLsEmployee(lsServerEmployee?.data.data);
+                setOpenError(true);
+                setErrorMessage(lsServerEmployee?.data.message);
+            }
         } catch (error) {
             setLsEmployee([]);
             setErrorMessage(Message.ErrorDeDatos);
@@ -376,7 +381,7 @@ const UpdateAccidentRate = () => {
                         <ViewEmployee
                             title="Actualizar Accidente de Trabajo"
                             disabled={true}
-                            key={lsEmployee.documento}
+                            key={lsEmployee?.documento}
                             documento={documento}
                             onChange={(e) => setDocumento(e.target.value)}
                             lsEmployee={lsEmployee}

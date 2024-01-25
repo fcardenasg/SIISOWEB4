@@ -102,26 +102,28 @@ const WorkAbsenteeism = () => {
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
-            if (event.key === 'Enter') {
-                if (event?.target.value != "") {
+
+            if (event?.target.value !== '') {
+                if (event.key === 'Enter') {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
-                    if (lsServerEmployee.status === 200) {
-                        setLsEmployee(lsServerEmployee.data);
+                    if (lsServerEmployee?.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
+                    } else {
+                        setLsEmployee(lsServerEmployee?.data.data);
+                        setOpenError(true);
+                        setErrorMessage(lsServerEmployee?.data.message);
                     }
 
-                    const numeroDias1 = await GetAllWorkAbsenteeismNumeroDia(event?.target.value);
-                    setNumeroDias(numeroDias1.data);
                 } else {
-                    setOpenError(true);
-                    setErrorMessage(Message.ErrorDocumento);
+                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+
+                    if (lsServerEmployee.data.status === 200) {
+                        setLsEmployee(lsServerEmployee.data.data);
+                    }
                 }
-            }
-        } catch (error) {
-            setLsEmployee([]);
-            setOpenError(true);
-            setErrorMessage(Message.ErrorDeDatos);
-        }
+            } else setLsEmployee([]);
+        } catch (error) { }
     }
 
     async function getAll() {
@@ -359,7 +361,7 @@ const WorkAbsenteeism = () => {
                 <Grid item xs={12}>
                     <ViewEmployee
                         title="Registrar Ausentismo Labora"
-                        key={lsEmployee.documento}
+                        key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
                         lsEmployee={lsEmployee}

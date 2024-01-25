@@ -150,7 +150,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
     return (
         <Grid container spacing={1}>
             <ControlModal
-                title="ACTUALIZAR EMPLEADO"
+                title="Actualizar Empleado"
                 open={openUpdate}
                 onClose={() => setOpenUpdate(false)}
                 maxWidth="xl"
@@ -175,17 +175,17 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                         <Grid item xs={5.5}>
                             <Stack /* sx={{ pr: 2 }} */ alignItems="center" spacing={1}>
                                 <Typography variant="h3">
-                                    {lsEmployee.nombres == null ? 'Digite Documento...' : lsEmployee.nombres}
+                                    {lsEmployee?.nombres == null ? 'Digite Documento...' : lsEmployee?.nombres}
                                 </Typography>
                             </Stack>
                         </Grid>
 
                         <Grid item xs={2.5}>
-                            {lsEmployee.namePayStatus != null ?
+                            {lsEmployee?.namePayStatus != null ?
                                 <Chip
                                     size="small"
-                                    label={lsEmployee.namePayStatus}
-                                    chipcolor={lsEmployee.namePayStatus === 'ACTIVO (A)'
+                                    label={lsEmployee?.namePayStatus}
+                                    chipcolor={lsEmployee?.namePayStatus === 'ACTIVO (A)'
                                         ? 'success' : 'error'}
                                     sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
                                 /> : null}
@@ -193,14 +193,14 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
 
                         <Grid item xs={4}>
                             <Typography variant="h4">
-                                <b>Profesión:</b> {lsEmployee.nameOficio}
+                                <b>Profesión:</b> {lsEmployee?.nameOficio}
                             </Typography>
                         </Grid>
                     </Grid>
 
                     {/* AQUI VA EL ACTUALIZAR */}
                     <AnimateButton>
-                        <Button disabled={documento === '' && lsEmployee.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
+                        <Button disabled={documento === '' && lsEmployee?.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
                             <IconEdit stroke={2} size="1.3rem" />
                         </Button>
                     </AnimateButton>
@@ -214,7 +214,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                         <Typography variant="h5">
                             Roster Position:
                             <Typography variant="h6">
-                                {lsEmployee.nameRosterPosition}
+                                {lsEmployee?.nameRosterPosition}
                             </Typography>
                         </Typography>
                     </Grid>
@@ -223,7 +223,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                         <Typography variant="h5">
                             Sede:
                             <Typography variant="h6">
-                                {lsEmployee.nameSede}
+                                {lsEmployee?.nameSede}
                             </Typography>
                         </Typography>
                     </Grid>
@@ -232,7 +232,7 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                         <Typography variant="h5">
                             Fecha de Contrato:
                             <Typography variant="h6">
-                                {lsEmployee.fechaContrato === null ? '' : ViewFormat(lsEmployee.fechaContrato)}
+                                {lsEmployee?.fechaContrato === null ? '' : ViewFormat(lsEmployee?.fechaContrato)}
                             </Typography>
                         </Typography>
                     </Grid>
@@ -247,55 +247,55 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
                 <Grid container spacing={2}>
                     <ViewData
                         icons={ViewEmployeeDetails[0].icons}
-                        nameData={lsEmployee.email}
+                        nameData={lsEmployee?.email}
                         label={ViewEmployeeDetails[0].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[1].icons}
-                        nameData={lsEmployee.celular}
+                        nameData={lsEmployee?.celular}
                         label={ViewEmployeeDetails[1].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[2].icons}
-                        nameData={lsEmployee.nameEscolaridad}
+                        nameData={lsEmployee?.nameEscolaridad}
                         label={ViewEmployeeDetails[2].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[3].icons}
-                        nameData={lsEmployee.nameCompany}
+                        nameData={lsEmployee?.nameCompany}
                         label={ViewEmployeeDetails[3].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[4].icons}
-                        nameData={lsEmployee.fechaNaci === null ? '' : ViewFormat(lsEmployee.fechaNaci)}
+                        nameData={lsEmployee?.fechaNaci === null ? '' : ViewFormat(lsEmployee?.fechaNaci)}
                         label={ViewEmployeeDetails[4].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[5].icons}
-                        nameData={lsEmployee.nameGenero}
+                        nameData={lsEmployee?.nameGenero}
                         label={ViewEmployeeDetails[5].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[6].icons}
-                        nameData={lsEmployee.nameEstadoCivil}
+                        nameData={lsEmployee?.nameEstadoCivil}
                         label={ViewEmployeeDetails[6].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[7].icons}
-                        nameData={lsEmployee.contacto}
+                        nameData={lsEmployee?.contacto}
                         label={ViewEmployeeDetails[7].label}
                     />
 
                     <ViewData
                         icons={ViewEmployeeDetails[8].icons}
-                        nameData={lsEmployee.telefonoContacto}
+                        nameData={lsEmployee?.telefonoContacto}
                         label={ViewEmployeeDetails[8].label}
                     />
                 </Grid>
@@ -361,8 +361,8 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                     <Grid item xs={3.2}>
                         <CardMedia
                             component="img"
-                            image={lsEmployee.imagenUrl === undefined ? user :
-                                lsEmployee.imagenUrl === '' ? user : lsEmployee.imagenUrl}
+                            image={lsEmployee?.imagenUrl === undefined ? user :
+                                lsEmployee?.imagenUrl === '' ? user : lsEmployee?.imagenUrl}
                             sx={{ width: 200, borderRadius: '150px' }}
                         />
                     </Grid>
@@ -384,28 +384,28 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                         >
                             <Grid container spacing={1}>
                                 <Grid item xs={4}>
-                                    <ViewDataDetails title="Rol" nameData={lsEmployee.nameType} />
-                                    <ViewDataDetails title="Tipo de Contrato" nameData={lsEmployee.nameTipoContrato} />
-                                    <ViewDataDetails title="Departamento" nameData={lsEmployee.nameDepartamento} />
-                                    <ViewDataDetails title="Área" nameData={lsEmployee.nameArea} />
-                                    <ViewDataDetails title="Subárea" nameData={lsEmployee.nameSubArea} />
+                                    <ViewDataDetails title="Rol" nameData={lsEmployee?.nameType} />
+                                    <ViewDataDetails title="Tipo de Contrato" nameData={lsEmployee?.nameTipoContrato} />
+                                    <ViewDataDetails title="Departamento" nameData={lsEmployee?.nameDepartamento} />
+                                    <ViewDataDetails title="Área" nameData={lsEmployee?.nameArea} />
+                                    <ViewDataDetails title="Subárea" nameData={lsEmployee?.nameSubArea} />
 
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <ViewDataDetails title="Grupo" nameData={lsEmployee.nameGrupo} />
-                                    <ViewDataDetails title="General Position" nameData={lsEmployee.nameGeneralPosition} />
-                                    <ViewDataDetails title="EPS" nameData={lsEmployee.nameEps} />
-                                    <ViewDataDetails title="AFP" nameData={lsEmployee.nameAfp} />
-                                    <ViewDataDetails title="Turno" nameData={lsEmployee.nameTurno} />
+                                    <ViewDataDetails title="Grupo" nameData={lsEmployee?.nameGrupo} />
+                                    <ViewDataDetails title="General Position" nameData={lsEmployee?.nameGeneralPosition} />
+                                    <ViewDataDetails title="EPS" nameData={lsEmployee?.nameEps} />
+                                    <ViewDataDetails title="AFP" nameData={lsEmployee?.nameAfp} />
+                                    <ViewDataDetails title="Turno" nameData={lsEmployee?.nameTurno} />
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <ViewDataDetails title="Departamento de Nacimiento" nameData={lsEmployee.nameDptoNacido} />
-                                    <ViewDataDetails title="Municipio de Nacimiento" nameData={lsEmployee.nameMunicipioNacido} />
-                                    <ViewDataDetails title="Departamento de Residencia" nameData={lsEmployee.nameDptoResidencia} />
-                                    <ViewDataDetails title="Municipio de Residencia" nameData={lsEmployee.nameMunicipioResidencia} />
-                                    <ViewDataDetails title="Dir. Residencia" nameData={lsEmployee.direccionResidencia} />
+                                    <ViewDataDetails title="Departamento de Nacimiento" nameData={lsEmployee?.nameDptoNacido} />
+                                    <ViewDataDetails title="Municipio de Nacimiento" nameData={lsEmployee?.nameMunicipioNacido} />
+                                    <ViewDataDetails title="Departamento de Residencia" nameData={lsEmployee?.nameDptoResidencia} />
+                                    <ViewDataDetails title="Municipio de Residencia" nameData={lsEmployee?.nameMunicipioResidencia} />
+                                    <ViewDataDetails title="Dir. Residencia" nameData={lsEmployee?.direccionResidencia} />
                                 </Grid>
                             </Grid>
                         </Accordion>

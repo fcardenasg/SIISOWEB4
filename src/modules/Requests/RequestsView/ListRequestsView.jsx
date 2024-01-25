@@ -62,7 +62,7 @@ const ListRequestsView = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'nameAreaRespuesta', 'nameTipoSolicitud', 'nameSede'];
+                const properties = ['id', 'nameAreaRespuesta', 'nameTipoSolicitud', 'nameSede', 'documento', 'nameEmpleado'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -84,6 +84,7 @@ const ListRequestsView = () => {
 
     const getAll = async () => {
         try {
+            setTimeWait(false);
             setMessageAtencion('');
             setLsRequests([]);
 
@@ -95,7 +96,7 @@ const ListRequestsView = () => {
                         setTimeWait(true);
                         setLsRequests(response.data);
                         setRows(response.data);
-                    }, 1500);
+                    }, 500);
                 }
             });
         } catch (error) { }

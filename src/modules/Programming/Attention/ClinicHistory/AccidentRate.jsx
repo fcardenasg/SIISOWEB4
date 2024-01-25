@@ -110,9 +110,12 @@ const AccidentRate = ({ documentoAT }) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200) {
-                setLsEmployee(lsServerEmployee.data);
-                setDocumento(idEmployee);
+            if (lsServerEmployee?.data.status === 200) {
+                setLsEmployee(lsServerEmployee.data.data);
+            } else {
+                setLsEmployee(lsServerEmployee?.data.data);
+                setOpenError(true);
+                setErrorMessage(lsServerEmployee?.data.message);
             }
         } catch (error) {
             setLsEmployee([]);

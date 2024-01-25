@@ -84,6 +84,7 @@ const ListAnsweredView = () => {
 
     const getAll = async () => {
         try {
+            setTimeWait(false);
             setMessageAtencion('');
             setLsRequests([]);
 
@@ -95,7 +96,7 @@ const ListAnsweredView = () => {
                         setTimeWait(true);
                         setLsRequests(response.data);
                         setRows(response.data);
-                    }, 1500);
+                    }, 500);
                 }
             });
         } catch (error) { }

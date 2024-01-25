@@ -109,13 +109,13 @@ const UpdateEmployee = () => {
         try {
 
             const lsServerEmployeeId = await GetByIdEmployee(id);
-            if (lsServerEmployeeId.status === 200) {
-                setEmployee(lsServerEmployeeId.data);
-                setImgSrc(lsServerEmployeeId.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId.data.imagenUrl);
+            if (lsServerEmployeeId.data.status === 200) {
+                setEmployee(lsServerEmployeeId.data.data);
+                setImgSrc(lsServerEmployeeId.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId.data.data.imagenUrl);
 
-                setDptoNacido(lsServerEmployeeId.data.dptoNacido);
-                setDptoResidenciaTrabaja(lsServerEmployeeId.data.dptoResidenciaTrabaja);
-                setDptoResidencia(lsServerEmployeeId.data.dptoResidencia);
+                setDptoNacido(lsServerEmployeeId.data.data.dptoNacido);
+                setDptoResidenciaTrabaja(lsServerEmployeeId.data.data.dptoResidenciaTrabaja);
+                setDptoResidencia(lsServerEmployeeId.data.data.dptoResidencia);
             }
 
             const lsServerCatalogo = await GetAllCatalog(0, 0);

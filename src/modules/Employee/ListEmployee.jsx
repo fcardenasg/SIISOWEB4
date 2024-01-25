@@ -277,7 +277,7 @@ const ListEmployee = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdEmployee(idCheck);
             const lsDataUser = await GetByMail(user.nameuser);
-            const dataPDFTwo = generateReportEmployee(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReportEmployee(lsDataReport?.data.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };

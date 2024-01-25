@@ -25,16 +25,19 @@ import InputText from 'components/input/InputText';
 import { PutRequests } from 'formatdata/RequestsForm';
 import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
+import ViewMail from '../ViewMail/ViewMail';
 
 const ModalAnsweredView = ({ lsCardRequests }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [documento, setDocumento] = useState('');
-    const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const [documento, setDocumento] = useState('');
+    const [openSuccess, setOpenSuccess] = useState(false);
+
     const [dataPDF, setDataPDF] = useState(null);
     const [openReport, setOpenReport] = useState(false);
 
@@ -50,8 +53,12 @@ const ModalAnsweredView = ({ lsCardRequests }) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200) {
-                setLsEmployee(lsServerEmployee.data);
+            if (lsServerEmployee?.data.status === 200) {
+                setLsEmployee(lsServerEmployee.data.data);
+            } else {
+                setLsEmployee(lsServerEmployee?.data.data);
+                setOpenError(true);
+                setErrorMessage(lsServerEmployee?.data.message);
             }
         } catch (error) {
             setLsEmployee([]);
@@ -283,7 +290,7 @@ const ModalAnsweredView = ({ lsCardRequests }) => {
                                     <Grid item xs={12}>
                                         <AnimateButton>
                                             <Button size="large" variant="contained" component="label" fullWidth startIcon={<UploadFileIcon />}>
-                                                {TitleButton.SubirArchivo}
+                                                Subir Guía
                                                 <input hidden accept="application/pdf" type="file" onChange={handleFile} />
                                             </Button>
                                         </AnimateButton>
@@ -298,13 +305,29 @@ const ModalAnsweredView = ({ lsCardRequests }) => {
                                     </Grid>
                                 </Grid>
                             </Grid>
+                        </Grid>
 
-                            <Grid item xs={2} sx={{ pt: 3 }}>
-                                <AnimateButton>
-                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                        {TitleButton.Actualizar}
-                                    </Button>
-                                </AnimateButton>
+                        <Grid item xs={12} sx={{ pt: 3 }}>
+                            <Grid container spacing={2.5}>
+                                <Grid item xs={1.5}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <ViewMail lsData={lsRequestsById} />
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            Descargar Documentos
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </SubCard>
