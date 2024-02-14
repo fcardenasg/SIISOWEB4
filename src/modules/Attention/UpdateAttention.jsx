@@ -432,7 +432,7 @@ const UpdateAttention = () => {
         try {
             const motivoFinal = motivo === undefined ? datos.motivo : motivo;
 
-            const DataToInsert = PutAttention(id, documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, undefined,
+            const DataToInsert = PutAttention(id, documento, datos.fecha, sede, tipoAtencion, atencion, datos.estadoCaso, undefined,
                 lsDataAtencion.numeroHistoria, "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita,
                 talla, peso, imc, lsDataAtencion.usuarioCierreAtencion, lsDataAtencion.fechaDigitacion, lsDataAtencion.fechaCierreAtencion,
                 lsDataAtencion.duracion, lsDataAtencion.usuarioRegistro, undefined, user.nameuser, undefined);
@@ -507,7 +507,7 @@ const UpdateAttention = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={FormatDate(lsDataAtencion.fecha)}
+                                            defaultValue={lsDataAtencion.fecha}
                                         />
                                     </FormProvider>
                                 </Grid>

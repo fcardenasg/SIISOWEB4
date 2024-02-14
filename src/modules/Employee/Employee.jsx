@@ -316,8 +316,8 @@ const Employee = () => {
         try {
             const fotoEmpleado = imgSrc === null ? '' : imgSrc;
 
-            const DataToInsert = PostEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido === null ? 1 : dptoNacido, FormatDate(datos.fechaContrato),
+            const DataToInsert = PostEmployee(datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido === null ? 1 : dptoNacido, datos.fechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidenciaTrabaja === null ? 1 : dptoNacido,
                 datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,

@@ -136,8 +136,6 @@ const UpdateOrdersIndividual = () => {
             const lsDataUser = await GetByMail(idUsuario);
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
-            /* console.log("dataPDFTwo => ", dataPDFTwo); */
-
             if (action === 'correo') {
                 if (lsEmployee.email !== '' || lsEmployee.email !== undefined) {
                     const Correo = {

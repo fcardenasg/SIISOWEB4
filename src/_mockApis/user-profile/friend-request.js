@@ -1,7 +1,7 @@
+// project imports
 import services from 'utils/mockAdapter';
 
 // friends list
-
 const friends = [
     {
         id: '#1Friends_Barney',
@@ -72,7 +72,7 @@ const friends = [
     {
         id: '#12Friends_Betty',
         avatar: 'user-12.png',
-        name: 'Betty',
+        name: 'John Doe',
         mutual: 99
     },
     {

@@ -265,7 +265,7 @@ const AccidentRate = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostAccidentRate(FormatDate(datos.fecha), documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
+            const DataToInsert = PostAccidentRate(datos.fecha, documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
                 1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
@@ -627,7 +627,6 @@ const AccidentRate = () => {
                             </Grid>
 
                             <Grid item xs={2}>
-
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/accident-rate/list")}>
                                         {TitleButton.Cancelar}

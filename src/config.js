@@ -7,7 +7,7 @@ const rutaEnergy = 'https://siiso.drummondenergy.com:44447/';
 
 const config = {
     typeDashboard: 'DLTD', //ENERGY - DLTD
-    rutaApi: rutaLtd,
+    rutaApi: rutaLocal,
     logotipo: LogoReportLtd,
 
     basename: '',
@@ -23,19 +23,15 @@ const config = {
         secret: 'SECRET-KEY',
         timeout: '1 days'
     },
-    firebase: {
-        apiKey: "AIzaSyCH-K9RO9vKLLP5KaLexNpU3QAlR-eLHxc",
-        authDomain: "siisoweb4.firebaseapp.com",
-        projectId: "siisoweb4",
-        storageBucket: "siisoweb4.appspot.com",
-        messagingSenderId: "193558178134",
-        appId: "1:193558178134:web:299e14502061ca65da8ef7",
-        measurementId: "G-NDSFV9BPT3"
-    },
     auth0: {
         client_id: '7T4IlWis4DKHSbG8JAye4Ipk0rvXkH9V',
         domain: 'dev-w0-vxep3.us.auth0.com'
     }
+};
+
+export const JWT_API = {
+    secret: 'SECRET-KEY',
+    timeout: '1 days'
 };
 
 export default config;

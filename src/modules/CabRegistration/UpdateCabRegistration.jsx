@@ -212,7 +212,7 @@ const UpdateCabRegistration = () => {
     }, [])
 
     const handleClick = async (datos) => {
-        const DataToUpdate = PutCabRegistration(id, documento, FormatDate(datos.fecha), datos.diagnostico,
+        const DataToUpdate = PutCabRegistration(id, documento, datos.fecha, datos.diagnostico,
             datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
             user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 

@@ -238,7 +238,7 @@ const Audiometry = () => {
             var savePdf = filePdf === null ? "" : filePdf;
 
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.fecha, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
                 datos.idProveedor, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', false, '',
@@ -255,7 +255,7 @@ const Audiometry = () => {
 
 
             if (Object.keys(datos.length !== 0)) {
-                
+
 
                 const result = await InsertParaclinics(DataToInsert);
                 if (result.status === 200) {
@@ -348,14 +348,13 @@ const Audiometry = () => {
                         </SubCard>
                     </Grid>
 
-
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">Antecedentes Otológicos y Personales</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={6} lg={2}>
                                     <FormProvider {...methods}>
                                         <InputCheckBox
-                                            label="Otalgia"
+                                            label="Otalgia" 
                                             name="otalgiaAOP"
                                             size={25}
                                             defaultValue={false}

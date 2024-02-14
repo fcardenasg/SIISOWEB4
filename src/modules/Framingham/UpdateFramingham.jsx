@@ -222,7 +222,7 @@ const UpdateFramingham = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PutFramingham(id, documento, FormatDate(datos.fecha), tencion, FormatDate(datos.fechaLaboratorioFRA), colesterol,
+            const DataToInsert = PutFramingham(id, documento, datos.fecha, tencion, datos.fechaLaboratorioFRA, colesterol,
                 hdl, trigliceridos, glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
                 frGlicemia, frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
                 undefined, undefined, user.nameuser, undefined);

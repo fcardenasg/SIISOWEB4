@@ -146,7 +146,7 @@ const ConceptofAptitude = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostConceptofAptitude(idConcepto, documento, FormatDate(datos.fecha), datos.idConceptoActitud,
+            const DataToInsert = PostConceptofAptitude(idConcepto, documento, datos.fecha, datos.idConceptoActitud,
                 datos.observacionesNEMTA, user.nameuser, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

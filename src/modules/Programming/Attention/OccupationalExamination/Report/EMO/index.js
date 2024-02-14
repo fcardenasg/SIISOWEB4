@@ -171,28 +171,49 @@ export function getHeaderQS(doc) {
   doc.line(5, 25, 210, 25);
 }
 
-function getPiePage(doc, lsDataUser, page, pageSize) {
+function getPiePage(doc, lsDataUser, page, pageSize, lsDataReport) {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.setLineWidth(1);
   doc.setDrawColor(255, 0, 0);
-  doc.line(
-    5,
-    doc.internal.pageSize.height - 10,
-    210,
-    doc.internal.pageSize.height - 10
-  );
 
+
+  if (lsDataReport.nameAtencion === 'CONTROL PERIODICO') {
+    doc.line(
+      5,
+      doc.internal.pageSize.height - 12,
+      210,
+      doc.internal.pageSize.height - 12
+    );
+
+    doc.setFontSize(6);
+    doc.text(
+      'Documento valido por 180 días desde la fecha de expedición',
+      90,
+      doc.internal.pageSize.height - 9
+    );
+  } else {
+    doc.line(
+      5,
+      doc.internal.pageSize.height - 9,
+      210,
+      doc.internal.pageSize.height - 9
+    );
+  }
+
+  doc.setFontSize(8);
   doc.text(
-    `FECHA DE SISTEMA:  ${new Date().toLocaleString()}`,
+    `FECHA DE IMPRESIÓN:  ${new Date().toLocaleString()}`,
     10,
     doc.internal.pageSize.height - 4
   );
+
   doc.text(
     `USUARIO ACTIVO:  ${lsDataUser.nombre}`,
     90,
     doc.internal.pageSize.height - 4
   );
+
   doc.text(
     `Pag. ${page} of ${pageSize}`,
     190,
@@ -214,126 +235,126 @@ export function generateReportIndex(
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateReportConceptAptitude(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 1, 18);
+  getPiePage(doc, lsDataUser, 1, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateReportDiagnosis(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 2, 18);
+  getPiePage(doc, lsDataUser, 2, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport, "SIG-0407");
   generateClinicHistoryOtherCompany(doc, lsDataReport, lsRiesgoHLDO, lsWorkHistoryOtherCompany);
-  getPiePage(doc, lsDataUser, 3, 18);
+  getPiePage(doc, lsDataUser, 3, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateClinicHistoryDLTD(doc, resultExpoDLTD, lsRiesgoHLD, lsWorkHistory);
-  getPiePage(doc, lsDataUser, 4, 18);
+  getPiePage(doc, lsDataUser, 4, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generatePathologicalAntecedents(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 5, 18);
+  getPiePage(doc, lsDataUser, 5, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateHabitsGineco(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 6, 18);
+  getPiePage(doc, lsDataUser, 6, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateSystemReview(doc, lsDataReport);
-  getPiePage(doc, lsDataUser, 7, 18);
+  getPiePage(doc, lsDataUser, 7, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateFunctionalExploration(doc, lsDataReport);
-  getPiePage(doc, lsDataUser, 8, 18);
+  getPiePage(doc, lsDataUser, 8, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeader(doc, lsDataReport);
   generateDefinitiveDiagnosis(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 9, 18);
+  getPiePage(doc, lsDataUser, 9, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderTA(doc, lsDataReport);
   pageCompanyNotification(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 10, 18);
+  getPiePage(doc, lsDataUser, 10, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderTA(doc, lsDataReport);
   pageWorkerNotification(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 11, 18);
+  getPiePage(doc, lsDataUser, 11, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderFR(doc, lsDataReport);
   pageFramingham(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 12, 18);
+  getPiePage(doc, lsDataUser, 12, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderEc(doc, lsDataReport);
   pageCompanyNotificationEC(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 13, 18);
+  getPiePage(doc, lsDataUser, 13, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderEc(doc, lsDataReport);
   pageWorkerNotificationEC(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 14, 18);
+  getPiePage(doc, lsDataUser, 14, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderQS(doc, lsDataReport);
   pageQuestionnaireRespiratorySymptomsOne(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 15, 18);
+  getPiePage(doc, lsDataUser, 15, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderQS(doc, lsDataReport);
   pageQuestionnaireRespiratorySymptomsTwo(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 16, 18);
+  getPiePage(doc, lsDataUser, 16, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderQS(doc, lsDataReport);
   pageQuestionnaireRespiratorySymptomsThree(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 17, 18);
+  getPiePage(doc, lsDataUser, 17, 18, lsDataReport);
 
   doc.addPage();
 
   doc.setFont("helvetica", "bold");
   getHeaderQS(doc, lsDataReport);
   pageQuestionnaireRespiratorySymptomsFour(doc, lsDataReport, lsDataUser);
-  getPiePage(doc, lsDataUser, 18, 18);
+  getPiePage(doc, lsDataUser, 18, 18, lsDataReport);
 
   var dataPDF = doc.output("bloburl");
   return dataPDF;

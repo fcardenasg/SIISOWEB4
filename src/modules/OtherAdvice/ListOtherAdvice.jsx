@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-import { FormatDate } from 'components/helpers/Format';
+import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -465,7 +465,7 @@ const ListOtherAdvice = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {FormatDate(row.fecha)}
+                                                    {ViewFormat(row.fecha)}
                                                 </Typography>
                                             </TableCell>
 

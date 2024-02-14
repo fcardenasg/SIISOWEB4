@@ -198,7 +198,7 @@ const UpdatePsychological = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
+            const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
                 datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, user.nameuser, undefined, user.nameuser, undefined);
 
@@ -303,7 +303,7 @@ const UpdatePsychological = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={FormatDate(lsAtencion.fecha)}
+                                            defaultValue={lsAtencion?.fecha}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -313,7 +313,7 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idEstadoCaso"
                                             label="Estado del Caso"
-                                            defaultValue={lsAtencion.estadoCaso}
+                                            defaultValue={lsAtencion?.estadoCaso}
                                             options={lsEstadoCaso}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
@@ -325,7 +325,7 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idMotivo"
                                             label="Motivo"
-                                            defaultValue={dataAttention.idMotivo}
+                                            defaultValue={dataAttention?.idMotivo}
                                             options={lsMotivo}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idMotivo}
@@ -338,7 +338,7 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idCausa"
                                             label="Causa de Asesoría"
-                                            defaultValue={dataAttention.idCausa}
+                                            defaultValue={dataAttention?.idCausa}
                                             options={causaAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idCausa}
@@ -351,7 +351,7 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idTipoAsesoria"
                                             label="Tipo Asesoría"
-                                            defaultValue={dataAttention.idTipoAsesoria}
+                                            defaultValue={dataAttention?.idTipoAsesoria}
                                             options={tipoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idTipoAsesoria}
@@ -365,7 +365,7 @@ const UpdatePsychological = () => {
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={dataAttention.motivo}
+                                            defaultValue={dataAttention?.motivo}
                                             name="motivoConsulta"
                                             label="Motivo de consulta"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -398,7 +398,7 @@ const UpdatePsychological = () => {
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={dataAttention.recomendaciones}
+                                            defaultValue={dataAttention?.recomendaciones}
                                             name="concepto"
                                             label="Concepto"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -442,7 +442,7 @@ const UpdatePsychological = () => {
                                         <InputText
                                             multiline
                                             rows={4}
-                                            defaultValue={dataAttention.pautas}
+                                            defaultValue={dataAttention?.pautas}
                                             name="pautasSeguir"
                                             label="Pautas a Seguir"
                                             size={matchesXS ? 'small' : 'medium'}
@@ -475,7 +475,7 @@ const UpdatePsychological = () => {
                                         <InputSelect
                                             name="idEstadoAsesoria"
                                             label="Estado"
-                                            defaultValue={dataAttention.idEstadoAsesoria}
+                                            defaultValue={dataAttention?.idEstadoAsesoria}
                                             options={estadoAsesoria}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />

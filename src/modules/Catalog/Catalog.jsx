@@ -23,6 +23,8 @@ import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enum
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
+import axios from 'axios';
+
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(ValidationMessage.Requerido),
     codigo: yup.string().required(ValidationMessage.Requerido),
@@ -82,9 +84,32 @@ const Catalog = () => {
         }
     };
 
+    const getOutlookEmails = async () => {
+        const token = 'YOUR_ACCESS_TOKEN'; // Aquí debes incluir el token de acceso obtenido durante la autenticación
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+
+        try {
+            const response = await axios.get('https://graph.microsoft.com/v1.0/me/messages', config);
+            console.log(response.data); // Aquí puedes manejar la respuesta de la API
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <MainCard title="Registrar Catálogo">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <AnimateButton>
+                <Button variant="outlined" onClick={getOutlookEmails}>
+                    Petición
+                </Button>
+            </AnimateButton>
+
+            {/* <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <form onSubmit={handleSubmit(handleClick)}>
@@ -148,7 +173,7 @@ const Catalog = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </form>
+            </form> */}
         </MainCard>
     );
 };

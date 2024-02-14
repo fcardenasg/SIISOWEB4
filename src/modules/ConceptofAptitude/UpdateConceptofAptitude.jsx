@@ -151,7 +151,7 @@ const UpdateOrderEPP = () => {
     const handleClick = async (datos) => {
         const idConceptoActitud_DATA = idConceptoActitud === '' ? datos.idConceptoActitud : idConceptoActitud;
 
-        const DataToUpdate = PutConceptofAptitude(id, idConcepto, documento, FormatDate(datos.fecha), idConceptoActitud_DATA,
+        const DataToUpdate = PutConceptofAptitude(id, idConcepto, documento, datos.fecha, idConceptoActitud_DATA,
             datos.observacionesNEMTA, user.nameuser, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 
         try {

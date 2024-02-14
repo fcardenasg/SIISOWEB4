@@ -1,9 +1,9 @@
-// project imports
-import services from 'utils/mockAdapter';
-
 // third-party
 import { sub } from 'date-fns';
 import { Chance } from 'chance';
+
+// project imports
+import services from 'utils/mockAdapter';
 
 const chance = new Chance();
 

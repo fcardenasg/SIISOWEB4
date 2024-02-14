@@ -112,7 +112,7 @@ const OrderEPP = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostOrderEPP(documento, FormatDate(datos.fecha), datos.idProvedor,
+            const DataToInsert = PostOrderEPP(documento, datos.fecha, datos.idProvedor,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

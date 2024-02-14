@@ -1,4 +1,6 @@
+// project imports
 import services from 'utils/mockAdapter';
+
 // followers list
 
 const followers = [
@@ -82,7 +84,7 @@ const followers = [
     {
         id: '#12Followers_Betty',
         avatar: 'user-6.png',
-        name: 'Betty',
+        name: 'John Doe',
         location: 'North Zole',
         follow: 1
     },

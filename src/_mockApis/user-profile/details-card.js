@@ -1,7 +1,7 @@
+// project imports
 import services from 'utils/mockAdapter';
 
 // user list
-
 const users = [
     {
         id: '#1Card_Phoebe',

@@ -231,7 +231,7 @@ const UpdateOtherAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, datos.idTipoAtencion, lsEmployee.sede,
+            const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, id, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
                 datos.recomendaciones, undefined, undefined, user.nameuser, undefined, user.nameuser, undefined);
 
@@ -398,7 +398,7 @@ const UpdateOtherAdvice = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={FormatDate(lsAtencion.fecha)}
+                                            defaultValue={lsAtencion.fecha}
                                         />
                                     </FormProvider>
                                 </Grid>

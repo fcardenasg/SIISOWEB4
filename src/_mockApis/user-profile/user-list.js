@@ -1,6 +1,13 @@
+// project imports
 import services from 'utils/mockAdapter';
+
+// asset
+import Avatar1 from 'assets/images/users/avatar-1.png';
+import Avatar2 from 'assets/images/users/avatar-2.png';
+import Avatar3 from 'assets/images/users/avatar-3.png';
+
 // user list
-const users = [
+const usersS1 = [
     {
         id: '01',
         avatar: 'user-1.png',
@@ -113,6 +120,44 @@ const users = [
     }
 ];
 
+const usersS2 = [
+    {
+        image: Avatar1,
+        name: 'Elnora',
+        designation: 'Lead Marketing Facilitator',
+        badgeStatus: 'active',
+        subContent: 'We need to generate the virtual CSS hard drive!',
+        email: 'Reid_OConnell4@yahoo.com',
+        phone: '506-654-1653',
+        location: 'Saucerize',
+        progressValue: '78%'
+    },
+    {
+        image: Avatar2,
+        name: 'Hirohito',
+        designation: 'Investor Creative Liaison',
+        badgeStatus: 'active',
+        subContent: 'If we synthesize the protocol, we can get to the RSS circuit through.',
+        email: 'Conner22@hotmail.com',
+        phone: '673-157-1670',
+        location: 'Port Narcos',
+        progressValue: '78%'
+    },
+    {
+        image: Avatar3,
+        name: 'Kathie',
+        designation: 'Human Accountability Strategist',
+        badgeStatus: 'inactive',
+        subContent: 'We need to generate the virtual CSS hard drive!',
+        email: 'Dangelo40@company.com',
+        phone: '506-654-1653',
+        location: 'Saucerize',
+        progressValue: '78%'
+    }
+];
+
 // ==============================|| MOCK SERVICES ||============================== //
 
-services.onGet('/api/user-list/list').reply(200, { users });
+services.onGet('/api/user-list/s1/list').reply(200, { users_s1: usersS1 });
+
+services.onGet('/api/user-list/s2/list').reply(200, { users_s2: usersS2 });

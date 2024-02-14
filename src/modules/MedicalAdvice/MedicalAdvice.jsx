@@ -226,14 +226,14 @@ const MedicalAdvice = () => {
         setLsEmployee([]);
         setDocumento('');
         setExtenderDescripcion(false);
-        setTextMotivo('');  
+        setTextMotivo('');
         setTextTipoAsesoria('');
         setLsSubmotivo([]);
     }
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutMedicalAdvice(resultData, documento, FormatDate(datos.fecha), 0, DefaultData.ASESORIA_MEDICA, lsEmployee.sede, undefined, undefined,
+            const DataToUpdate = PutMedicalAdvice(resultData, documento, datos.fecha, 0, DefaultData.ASESORIA_MEDICA, lsEmployee.sede, undefined, undefined,
                 undefined, undefined, textTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
                 user.nameuser, undefined, undefined, undefined);
 

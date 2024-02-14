@@ -339,8 +339,8 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
             const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(datos.fechaContrato),
+            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, datos.fechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
@@ -562,7 +562,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                     <InputDatePicker
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
-                                        defaultValue={FormatDate(employee.fechaContrato)}
+                                        defaultValue={employee.fechaContrato}
                                     />
                                 </FormProvider>
                             </Grid>

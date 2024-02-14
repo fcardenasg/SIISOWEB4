@@ -278,7 +278,7 @@ const UpdateMedicalAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede, undefined, undefined,
+            const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede, undefined, undefined,
                 undefined, undefined, idTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
                 user.nameuser, undefined, user.nameuser, undefined);
 
@@ -449,7 +449,7 @@ const UpdateMedicalAdvice = () => {
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={lsAtencion.fecha}
+                                                        defaultValue={lsAtencion?.fecha}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -468,7 +468,7 @@ const UpdateMedicalAdvice = () => {
                                             <Grid item xs={6}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
-                                                        defaultValue={dataAttention.idSubmotivo}
+                                                        defaultValue={dataAttention?.idSubmotivo}
                                                         name="idSubmotivo"
                                                         label="Submotivo"
                                                         options={lsSubmotivo}
@@ -507,7 +507,7 @@ const UpdateMedicalAdvice = () => {
                                                         <FormProvider {...methods}>
                                                             <InputText
                                                                 inputProps={{ maxLength: 4000 }}
-                                                                defaultValue={dataAttention.motivo}
+                                                                defaultValue={dataAttention?.motivo}
                                                                 multiline
                                                                 rows={20}
                                                                 fullWidth
@@ -552,7 +552,7 @@ const UpdateMedicalAdvice = () => {
                                                     <Grid item xs={12} sx={{ pt: 2 }}>
                                                         <FormProvider {...methods}>
                                                             <InputText
-                                                                defaultValue={dataAttention.recomendaciones}
+                                                                defaultValue={dataAttention?.recomendaciones}
                                                                 multiline
                                                                 rows={4}
                                                                 fullWidth

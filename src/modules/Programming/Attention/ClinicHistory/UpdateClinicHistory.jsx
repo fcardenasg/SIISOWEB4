@@ -71,35 +71,6 @@ import AccidentRate from './AccidentRate';
 import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import InputCheck from 'components/input/InputCheck';
 
-const validateLastData = (data, tipoCampo = "bool") => {
-    if (tipoCampo === "bool") {
-        if (data === undefined)
-            return false;
-        else return data;
-
-    } else if (tipoCampo === "string") {
-        if (data === undefined)
-            return undefined;
-        else return data;
-
-    } else if (tipoCampo === "date") {
-        if (data === null)
-            return null;
-        else return FormatDate(data);
-
-    } else if (tipoCampo === "number") {
-        if (data === undefined) {
-            return undefined;
-        }
-        else if (data === DefaultValue.SINREGISTRO_GLOBAL) {
-            return undefined;
-        }
-        else {
-            return data;
-        }
-    }
-}
-
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
     { title: 'Apuntes Personales', icons: <NoteAltIcon fontSize="small" /> },
@@ -445,12 +416,12 @@ const UpdateClinicHistory = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostAssistance(documento, FormatDate(datos.fecha), id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
+            const DataToInsert = PostAssistance(documento, datos.fecha, id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, descripAntecedente, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            const DataToUpdate = PutAssistance(resultData, documento, FormatDate(datos.fecha), id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
+            const DataToUpdate = PutAssistance(resultData, documento, datos.fecha, id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, descripAntecedente, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
                 lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, user.nameuser, FormatDate(new Date()));
@@ -670,7 +641,7 @@ const UpdateClinicHistory = () => {
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={new Date()}
+                                                        defaultValue={lsAtencion?.fecha}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -680,7 +651,7 @@ const UpdateClinicHistory = () => {
                                                     <InputSelect
                                                         name="atencion"
                                                         label="Atención"
-                                                        defaultValue={lsAtencion.atencion}
+                                                        defaultValue={lsAtencion?.atencion}
                                                         options={lsAssistance}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
@@ -707,7 +678,7 @@ const UpdateClinicHistory = () => {
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
-                                                        defaultValue={() => validateLastData(lsAtencion.motivoConsulta, "string")}
+                                                        defaultValue={lsAtencion?.motivoConsulta}
                                                         fullWidth
                                                         name="motivoConsulta"
                                                         label="Motivo de Consulta"
@@ -740,7 +711,7 @@ const UpdateClinicHistory = () => {
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
-                                                        defaultValue={() => validateLastData(lsAtencion.enfermedadActual, "string")}
+                                                        defaultValue={lsAtencion?.enfermedadActual}
                                                         fullWidth
                                                         name="enfermedadActual"
                                                         label="Enfermedad Actual"
@@ -829,7 +800,7 @@ const UpdateClinicHistory = () => {
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
-                                                        defaultValue={() => validateLastData(lsAtencion.revisionSistema, "string")}
+                                                        defaultValue={lsAtencion?.revisionSistema}
                                                         fullWidth
                                                         name="revisionSistema"
                                                         label="Revisión Por Sistemas"
@@ -862,7 +833,7 @@ const UpdateClinicHistory = () => {
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
-                                                        defaultValue={() => validateLastData(lsAtencion.examenFisico, "string")}
+                                                        defaultValue={lsAtencion?.examenFisico}
                                                         fullWidth
                                                         name="examenFisico"
                                                         label="Examen Fisico"
@@ -901,7 +872,7 @@ const UpdateClinicHistory = () => {
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
-                                                        defaultValue={() => validateLastData(lsAtencion.examenParaclinico, "string")}
+                                                        defaultValue={lsAtencion?.examenParaclinico}
                                                         fullWidth
                                                         name="examenParaclinico"
                                                         label="Examenes Paraclínicos"
@@ -958,7 +929,7 @@ const UpdateClinicHistory = () => {
                                                         <InputSelect
                                                             name="dx1"
                                                             label="Dx1"
-                                                            defaultValue={() => validateLastData(lsAtencion.dx1, "number")}
+                                                            defaultValue={lsAtencion?.dx1}
                                                             options={lsDx1}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
@@ -979,7 +950,7 @@ const UpdateClinicHistory = () => {
                                                         <InputSelect
                                                             name="dx2"
                                                             label="Dx2"
-                                                            defaultValue={() => validateLastData(lsAtencion.dx2, "number")}
+                                                            defaultValue={lsAtencion?.dx2}
                                                             options={lsDx2}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
@@ -1000,7 +971,7 @@ const UpdateClinicHistory = () => {
                                                         <InputSelect
                                                             name="dx3"
                                                             label="Dx3"
-                                                            defaultValue={() => validateLastData(lsAtencion.dx3, "number")}
+                                                            defaultValue={lsAtencion?.dx3}
                                                             options={lsDx3}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
@@ -1011,7 +982,7 @@ const UpdateClinicHistory = () => {
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText
-                                                        defaultValue={() => validateLastData(lsAtencion.planManejo, "string")}
+                                                        defaultValue={lsAtencion?.planManejo}
                                                         fullWidth
                                                         name="planManejo"
                                                         label="Plan de Manejo"
@@ -1052,7 +1023,7 @@ const UpdateClinicHistory = () => {
                                                     <InputSelect
                                                         name="idConceptoActitud"
                                                         label="Concepto De Aptitud Psicofísica"
-                                                        defaultValue={() => validateLastData(lsAtencion.idConceptoActitud, "number")}
+                                                        defaultValue={lsAtencion?.idConceptoActitud}
                                                         options={lsConceptoAptitud}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />

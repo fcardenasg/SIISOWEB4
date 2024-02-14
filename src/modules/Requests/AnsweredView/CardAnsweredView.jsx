@@ -26,9 +26,9 @@ const CardRequestsView = ({ lsRequests }) => {
 
             if (lsRequests.solicitudesSinResponder === 0) {
                 setEtiquetaColor({ colorChip: "success", colorCard: ColorDrummondltd.GreenDrummond });
-            } else if (lsRequests.solicitudesSinResponder > mitadSolicitud) {
+            } else if (lsRequests.solicitudesSinResponder >= mitadSolicitud) {
                 setEtiquetaColor({ colorChip: "warning", colorCard: ColorDrummondltd.YellowSeDrummond });
-            } else if (lsRequests.solicitudesSinResponder < mitadSolicitud) {
+            } else if (lsRequests.solicitudesSinResponder <= mitadSolicitud) {
                 setEtiquetaColor({ colorChip: "error", colorCard: ColorDrummondltd.RedDrummond });
             }
         }
@@ -71,7 +71,7 @@ const CardRequestsView = ({ lsRequests }) => {
                         <Grid item xs={12} alignItems="center">
                             <Grid container spacing={1}>
                                 <Grid item xs={12}>
-                                    <Typography fontSize={12}><b>{lsRequests?.documento} - {lsRequests?.nameEmpleado}</b></Typography>
+                                    <Typography variant="h6"><b>{lsRequests?.documento} - {lsRequests?.nameEmpleado}</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>

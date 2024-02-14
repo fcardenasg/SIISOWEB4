@@ -192,7 +192,7 @@ const CabRegistration = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostCabRegistration(documento, FormatDate(datos.fecha), datos.diagnostico,
+            const DataToInsert = PostCabRegistration(documento, datos.fecha, datos.diagnostico,
                 datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
                 user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 

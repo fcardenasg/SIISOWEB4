@@ -485,7 +485,7 @@ const OccupationalExamination = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInset = PostOccupationalExamination(
-                id, documento, FormatDate(datos.fecha), atencion,
+                id, documento, datos.fecha, atencion,
 
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
@@ -506,7 +506,7 @@ const OccupationalExamination = () => {
                 datos.cualFobiaHB,
 
                 datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
-                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, FormatDate(datos.fUPGO), FormatDate(datos.fURGO), datos.eTSGO, datos.cUALGO,
+                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, datos.fUPGO, datos.fURGO, datos.eTSGO, datos.cUALGO,
                 datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO, datos.ultimoAnioCitologiaGO,
                 datos.idResultadoGO, datos.observacionesGO,
 
@@ -539,7 +539,7 @@ const OccupationalExamination = () => {
 
                 datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
 
-                FormatDate(datos.fechaConceptoNETA), datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
+                datos.fechaConceptoNETA, datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
                 datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
 
                 datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
@@ -549,8 +549,8 @@ const OccupationalExamination = () => {
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
                 datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudNETA,
 
-                FormatDate(datos.fechaFRA), tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos, "", glicemia,
+                datos.fechaFRA, tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.fechaLaboratorioFRA, colesterol, hdl, trigliceridos, "", glicemia,
                 fuma, datos.observacionFRA,
 
                 frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
@@ -602,7 +602,7 @@ const OccupationalExamination = () => {
     const handleClickUpdate = async (datos) => {
         try {
             const DataToInset = PutOccupationalExamination(
-                resultData, id, documento, FormatDate(datos.fecha), atencion,
+                resultData, id, documento, datos.fecha, atencion,
 
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
@@ -623,7 +623,7 @@ const OccupationalExamination = () => {
                 datos.cualFobiaHB,
 
                 datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
-                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, FormatDate(datos.fUPGO), FormatDate(datos.fURGO), datos.eTSGO, datos.cUALGO,
+                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, datos.fUPGO, datos.fURGO, datos.eTSGO, datos.cUALGO,
                 datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO, datos.ultimoAnioCitologiaGO,
                 datos.idResultadoGO, datos.observacionesGO,
 
@@ -645,18 +645,18 @@ const OccupationalExamination = () => {
                 datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, indiceWellsEFU, datos.valorIndiceWellsEFU,
                 datos.observacionEFU,
 
-                FormatDate(datos.fechaRxToraxEPA), datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, FormatDate(datos.fechaEspirometriaEPA),
-                datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, FormatDate(datos.fechaAudiometriaEPA), datos.resultadoAudiometriaEPA,
-                datos.observacionesAudiometriaEPA, FormatDate(datos.fechaVisiometriaEPA), datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
-                FormatDate(datos.fechaLaboratorioClinicoEPA), datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA,
-                FormatDate(datos.fechaCuestionarioSintomaEPA), datos.resultadoCuestionarioSintomaEPA, datos.observacionesCuestionarioSintomaEPA,
-                FormatDate(datos.fechaEkgEPA), datos.resultadoEkgEPA, datos.observacionesEkgEPA, FormatDate(datos.fechaRnmLumbosacraEPA),
-                datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, FormatDate(datos.fechaRnmCervicalEPA), datos.resultadoRnmCervicalEPA,
+                datos.fechaRxToraxEPA, datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, datos.fechaEspirometriaEPA,
+                datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, datos.fechaAudiometriaEPA, datos.resultadoAudiometriaEPA,
+                datos.observacionesAudiometriaEPA, datos.fechaVisiometriaEPA, datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
+                datos.fechaLaboratorioClinicoEPA, datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA,
+                datos.fechaCuestionarioSintomaEPA, datos.resultadoCuestionarioSintomaEPA, datos.observacionesCuestionarioSintomaEPA,
+                datos.fechaEkgEPA, datos.resultadoEkgEPA, datos.observacionesEkgEPA, datos.fechaRnmLumbosacraEPA,
+                datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, datos.fechaRnmCervicalEPA, datos.resultadoRnmCervicalEPA,
                 datos.observacionesRnmCervicalEPA, datos.observacionEPA,
 
                 datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
 
-                FormatDate(datos.fechaConceptoNETA), datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
+                datos.fechaConceptoNETA, datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
                 datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
 
                 datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
@@ -666,8 +666,8 @@ const OccupationalExamination = () => {
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
                 datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudNETA,
 
-                FormatDate(datos.fechaFRA), tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                FormatDate(datos.fechaLaboratorioFRA), colesterol, hdl, trigliceridos, "", glicemia,
+                datos.fechaFRA, tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
+                datos.fechaLaboratorioFRA, colesterol, hdl, trigliceridos, "", glicemia,
                 fuma, datos.observacionFRA,
 
                 frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
@@ -888,7 +888,7 @@ const OccupationalExamination = () => {
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={FormatDate(new Date())}
+                                        defaultValue={lsAtencion.fecha}
                                     />
                                 </FormProvider>
                             </Grid>

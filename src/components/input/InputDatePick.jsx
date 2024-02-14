@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 import { Fragment } from 'react';
-import { FormatDate } from 'components/helpers/Format';
 
 const InputDatePick = ({ value, label, onChange, size, ...others }) => {
 
@@ -10,7 +9,7 @@ const InputDatePick = ({ value, label, onChange, size, ...others }) => {
             <TextField
                 id="fecha"
                 label={label}
-                value={FormatDate(value)}
+                value={value}
                 onChange={onChange}
                 type="date"
                 size={size}

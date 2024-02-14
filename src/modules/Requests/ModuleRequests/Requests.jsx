@@ -16,7 +16,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
-import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { InsertRequests } from 'api/clients/RequestsClient';
@@ -29,16 +28,14 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputOnChange from 'components/input/InputOnChange';
 
-
-import ViewPDF from 'components/components/ViewPDF';
 import InputDatePick from 'components/input/InputDatePick';
 import ListRequestsDetaills from './ListRequestsDetaills';
 import config from 'config';
 
 const validationSchema = yup.object().shape({
-    fechaReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
-    usuarioReciboDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
-    correoRecibioDLTD: yup.string().required(`${ValidationMessage.Requerido}`),
+    fechaReciboDLTD: yup.string().required(ValidationMessage.Requerido),
+    usuarioReciboDLTD: yup.string().required(ValidationMessage.Requerido),
+    correoRecibioDLTD: yup.string().required(ValidationMessage.Requerido),
 });
 
 const Requests = () => {
@@ -47,7 +44,6 @@ const Requests = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [openReport, setOpenReport] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
 
     const [openError, setOpenError] = useState(false);
@@ -65,31 +61,11 @@ const Requests = () => {
     const [fechaFin, setFechaFin] = useState(null);
 
     const [result, setResult] = useState('');
-    const [dataPDF, setDataPDF] = useState(null);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
     const { handleSubmit, formState: { errors } } = methods;
-
-    const allowedFiles = ['application/pdf'];
-    const handleFile = async (event) => {
-        let selectedFile = event.target.files[0];
-
-        if (selectedFile) {
-            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
-                let reader = new FileReader();
-                reader.readAsDataURL(selectedFile);
-                reader.onloadend = async (e) => {
-                    setDataPDF(e.target.result);
-                }
-            }
-            else {
-                setOpenError(true);
-                setErrorMessage('Este forma no es un PDF');
-            }
-        }
-    }
 
     const handleDocumento = async (event) => {
         try {
@@ -101,6 +77,11 @@ const Requests = () => {
 
                     if (lsServerEmployee?.data.status === 200) {
                         setLsEmployee(lsServerEmployee.data.data);
+                        setDatosEmpleado({
+                            correo: lsServerEmployee.data.data.email,
+                            direccion: lsServerEmployee.data.data.direccionResidencia,
+                            telefono: lsServerEmployee.data.data.celular
+                        });
                     } else {
                         setLsEmployee(lsServerEmployee?.data.data);
                         setOpenError(true);
@@ -112,6 +93,11 @@ const Requests = () => {
 
                     if (lsServerEmployee.data.status === 200) {
                         setLsEmployee(lsServerEmployee.data.data);
+                        setDatosEmpleado({
+                            correo: lsServerEmployee.data.data.email,
+                            direccion: lsServerEmployee.data.data.direccionResidencia,
+                            telefono: lsServerEmployee.data.data.celular
+                        });
                     }
                 }
             } else setLsEmployee([]);
@@ -157,15 +143,6 @@ const Requests = () => {
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
-            <ControlModal
-                title={Message.VistaReporte}
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>

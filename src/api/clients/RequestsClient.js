@@ -11,7 +11,6 @@ export const UpdateRequestsDataSend = async (solicitudes) => await putData(Url.S
 export const DeleteRequests = async (idSolicitudes) => await deleteData(Url.Solicitudes, { idSolicitudes });
 export const GetExcelRequests = async (parametroExcel) => await postData(Url.SolicitudesExcel, parametroExcel);
 
-
 /* SERVICIOS DE DETALLES DE SOLICITUD */
 export const GetAllRequestsDetaillsByIdSolicitud = async (idSolicitud) => await getData(Url.SolicitudDetalle, { idSolicitud });
 export const GetByIdRequestsDetaills = async (id) => await getData(Url.SolicitudDetalleId, { id });

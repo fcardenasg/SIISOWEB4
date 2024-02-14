@@ -209,6 +209,9 @@ const MenuParaclinics = Loadable(lazy(() => import('modules/Menu/MenuParaclinics
 const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParameterization')));
 const MenuExcel = Loadable(lazy(() => import('modules/Menu/MenuExcel')));
 
+const AppMail = Loadable(lazy(() => import('modules/SingleWindow/mail')));
+const ChatGPT = Loadable(lazy(() => import('modules/Chat')));
+
 const MenuExcelOccupationalHealth = Loadable(lazy(() => import('modules/Menu/MenuExcelOccupationalHealth')));
 const ListProgrammingUpdate = Loadable(lazy(() => import('modules/Programming/Update/ListProgrammingUpdate')));
 
@@ -892,7 +895,7 @@ const MainRoutes = {
             element: <UpdateRol />
         },
 
-        /*  */
+        /* Head Count */
         {
             path: '/headcount/add',
             element: <Headcount />
@@ -904,6 +907,17 @@ const MainRoutes = {
         {
             path: '/headcount/update/:id',
             element: <UpdateHeadcount />
+        },
+
+        /* Ventanilla Única */
+        {
+            path: '/single-window/view',
+            element: <AppMail />
+        },
+
+        {
+            path: '/chat-gpt/view',
+            element: <ChatGPT />
         },
     ]
 };

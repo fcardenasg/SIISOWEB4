@@ -89,16 +89,19 @@ const UpdateAlcoholAndDrugTesting = () => {
     const [resultData, setResultData] = useState([]);
     const [dataPDF, setDataPDF] = useState(null);
 
-    const handleLoadingDocumento = async (idEmployee) => {
+    const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
 
-            if (lsServerEmployee.status === 200) {
-                setLsEmployee(lsServerEmployee.data);
+            if (lsServerEmployee?.data.status === 200) {
+                setLsEmployee(lsServerEmployee.data.data);
+            } else {
+                setLsEmployee(lsServerEmployee?.data.data);
+                setOpenError(true);
+                setErrorMessage(lsServerEmployee?.data.message);
             }
         } catch (error) {
             setLsEmployee([]);
-            setOpenError(true);
             setErrorMessage(Message.ErrorDeDatos);
         }
     }
@@ -213,7 +216,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 const event = {
                     target: { value: lsAtencion.data.documento }
                 }
-                handleLoadingDocumento(event);
+                handleLoadingDocument(event);
             }
         } catch (error) { }
     }
@@ -228,7 +231,7 @@ const UpdateAlcoholAndDrugTesting = () => {
             var Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
             var concepto = realizada === DefaultValue.Opcion_NO ? 1 : conceptoAptitud;
 
-            const DataToInsert = PostAlcoholAndDrugTesting(documento, FormatDate(datos.fecha), id, motivo, datos.sustancia1,
+            const DataToInsert = PostAlcoholAndDrugTesting(documento, datos.fecha, id, motivo, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
                 datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
@@ -301,7 +304,6 @@ const UpdateAlcoholAndDrugTesting = () => {
                 <ViewPDF dataPDF={dataPDF} />
             </ControlModal>
 
-
             {timeWait ?
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -312,7 +314,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                             documento={documento}
                             onChange={(e) => setDocumento(e.target.value)}
                             lsEmployee={lsEmployee}
-                            handleDocumento={handleLoadingDocumento}
+                            handleDocumento={handleLoadingDocument}
                         />
                     </Grid>
 
@@ -324,7 +326,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={FormatDate(new Date())}
+                                            defaultValue={lsAtencion?.fecha}
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
                                     </FormProvider>

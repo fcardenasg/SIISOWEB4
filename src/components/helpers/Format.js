@@ -4,17 +4,18 @@ export function UpperFirstChar(cadena) {
     return cadena.charAt(0).toUpperCase() + cadena.slice(1).toLowerCase();
 }
 
-const FormatDate = (date) => {
+const FormatDate = (fecha) => {
     try {
-        if (date === null) {
+        if (fecha === null || fecha === undefined) {
             return null;
         } else {
-            const fechaFormat = new Date(date).toISOString().split('T')[0];
-            return fechaFormat;
+            let d = new Date(fecha);
+            let year = d.getFullYear();
+            let month = ('0' + (d.getMonth() + 1)).slice(-2);
+            let day = ('0' + d.getDate()).slice(-2);
+            return year + '-' + month + '-' + day;
         }
-
-    } catch (error) {
-    }
+    } catch (error) { }
 }
 
 const ViewFormat = (fecha) => {

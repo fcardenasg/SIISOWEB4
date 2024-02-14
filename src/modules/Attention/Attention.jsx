@@ -310,7 +310,7 @@ const Attention = () => {
         try {
             const motivoFinal = motivo !== null ? motivo : datos.motivoPsicologia !== undefined ? datos.motivoPsicologia : undefined;
 
-            const DataToInsert = PostAttention(documento, FormatDate(datos.fecha), sede, tipoAtencion, atencion, datos.estadoCaso, undefined, undefined,
+            const DataToInsert = PostAttention(documento, datos.fecha, sede, tipoAtencion, atencion, datos.estadoCaso, undefined, undefined,
                 "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, undefined,
                 undefined, undefined, undefined, user.nameuser, undefined, undefined, undefined);
 

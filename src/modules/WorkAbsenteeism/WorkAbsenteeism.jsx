@@ -316,8 +316,8 @@ const WorkAbsenteeism = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostWorkAbsenteeism(documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
-                datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
+            const DataToInsert = PostWorkAbsenteeism(documento, datos.incapacidad, datos.nroIncapacidad, fechaExpedicion, departa,
+                datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, fechaInicio, fechaFin, diasSinLaborar,
                 datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, undefined, datos.segmento, tipoSoporte, datos.idCategoria,
 
                 datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,

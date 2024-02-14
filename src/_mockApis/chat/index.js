@@ -320,7 +320,7 @@ services.onPost('/api/chat/users/id').reply((config) => {
     }
 });
 
-services.onPost('/api/chat/filter').reply((config) => {
+services.onPost('/api/chat/filter').reply(async (config) => {
     try {
         const { user } = JSON.parse(config.data);
         const result = chatHistories.filter((item) => item.from === user || item.to === user);

@@ -118,7 +118,7 @@ const UpdateOrderEPP = () => {
     }, []);
 
     const handleClick = async (datos) => {
-        const DataToUpdate = PutOrderEPP(id, documento, FormatDate(datos.fecha), datos.idProvedor,
+        const DataToUpdate = PutOrderEPP(id, documento, datos.fecha, datos.idProvedor,
             lsDataAtencion.usuarioRegistro, lsDataAtencion.fechaRegistro, user.nameuser, FormatDate(new Date()));
 
         try {

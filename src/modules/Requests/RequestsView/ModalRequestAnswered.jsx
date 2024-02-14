@@ -69,7 +69,11 @@ const ModalRequestAnswered = ({ idSolicitudDetalle, getAllRefresh }) => {
                 const result = await UpdateRequestsDetaills(UpdateToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
-                    getAllRefresh();
+                    setErrorMessage("Solicitud respondida con éxito");
+
+                    setTimeout(() => {
+                        getAllRefresh();
+                    }, 1500);
                 }
             } else {
                 setOpenError(true);
@@ -90,7 +94,7 @@ const ModalRequestAnswered = ({ idSolicitudDetalle, getAllRefresh }) => {
 
     return (
         <Fragment>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal

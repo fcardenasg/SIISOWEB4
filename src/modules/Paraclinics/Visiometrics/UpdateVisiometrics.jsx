@@ -274,7 +274,7 @@ const UpdateVisiometrics = () => {
             var savePdf = filePdf === null ? "" : filePdf;
 
             const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_VISIOMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
+                datos.fecha, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, datos.DxDerecho, datos.ojoIzquierdo, datos.DxIzquierdo, datos.add1,
                 datos.idLecturaAdd, datos.idControl, datos.remitidoOftalmo,
                 datos.requiereLentes, datos.DxDiagnostico, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBA, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',

@@ -109,13 +109,23 @@ const UpdateEmployee = () => {
         try {
 
             const lsServerEmployeeId = await GetByIdEmployee(id);
-            if (lsServerEmployeeId.data.status === 200) {
-                setEmployee(lsServerEmployeeId.data.data);
-                setImgSrc(lsServerEmployeeId.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId.data.data.imagenUrl);
+            if (lsServerEmployeeId?.data.status === 200) {
+                setEmployee(lsServerEmployeeId?.data.data);
+                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 
-                setDptoNacido(lsServerEmployeeId.data.data.dptoNacido);
-                setDptoResidenciaTrabaja(lsServerEmployeeId.data.data.dptoResidenciaTrabaja);
-                setDptoResidencia(lsServerEmployeeId.data.data.dptoResidencia);
+                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
+                setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
+                setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
+            } else {
+                setOpenError(true);
+                setErrorMessage(lsServerEmployeeId?.data.message);
+
+                setEmployee(lsServerEmployeeId?.data.data);
+                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
+
+                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
+                setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
+                setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
             }
 
             const lsServerCatalogo = await GetAllCatalog(0, 0);
@@ -372,8 +382,8 @@ const UpdateEmployee = () => {
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
             const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, FormatDate(datos.fechaNaci), datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, FormatDate(datos.fechaContrato),
+            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, datos.fechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
@@ -524,7 +534,7 @@ const UpdateEmployee = () => {
                                             <InputDatePicker
                                                 label="Fecha de Nacimiento"
                                                 name="fechaNaci"
-                                                defaultValue={FormatDate(employee.fechaNaci)}
+                                                defaultValue={employee.fechaNaci}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -589,7 +599,7 @@ const UpdateEmployee = () => {
                                     <InputDatePicker
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
-                                        defaultValue={FormatDate(employee.fechaContrato)}
+                                        defaultValue={employee.fechaContrato}
                                     />
                                 </FormProvider>
                             </Grid>

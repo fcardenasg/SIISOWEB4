@@ -5,12 +5,12 @@ import GraphInfo from './GraphInfo';
 import SubCard from 'ui-component/cards/SubCard';
 import ViewInfoMore from './ViewInfoMore';
 
-const ViewMore = () => {
+const ViewMore = ({ idRegistro }) => {
     return (
         <Fragment>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <SubCard title={<Typography variant="h4">Resumen</Typography>}>
+                    <SubCard title={<Typography variant="h4">Resumen {idRegistro}</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
                                 <ViewInfoMore />

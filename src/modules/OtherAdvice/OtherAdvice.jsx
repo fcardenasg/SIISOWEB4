@@ -195,7 +195,7 @@ const OtherAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, datos.idTipoAtencion, lsEmployee.sede,
+            const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, 0, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
                 datos.recomendaciones, undefined, undefined, user.nameuser, undefined, undefined, undefined);
 

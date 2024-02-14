@@ -51,7 +51,7 @@ const CardRequestsView = ({ lsRequests, getAll }) => {
                         <Grid item xs={12} alignItems="center">
                             <Grid container spacing={1}>
                                 <Grid item xs={12}>
-                                    <Typography fontSize={12}><b>{lsRequests?.documento} - {lsRequests?.nameEmpleado}</b></Typography>
+                                    <Typography variant="h6"><b>{lsRequests?.documento} - {lsRequests?.nameEmpleado}</b></Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>

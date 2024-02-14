@@ -243,9 +243,10 @@ const UpdateWorkAbsenteeism = () => {
                     }
                     handleLoadingDocument(event);
 
-                    setFechaInicio(lsServerData.data.fechaInicio);
-                    setFechaFin(lsServerData.data.fechaFin);
-                    setFechaExpedicion(lsServerData.data.fechaExpedicion);
+                    setFechaInicio(FormatDate(lsServerData.data.fechaInicio));
+                    setFechaFin(FormatDate(lsServerData.data.fechaFin));
+                    setFechaExpedicion(FormatDate(lsServerData.data.fechaExpedicion));
+
                     setDiasSinLaborar(lsServerData.data.diasSinLaborar);
                     setDepartaMedico(lsServerData.data.departamentoIPS);
                     setDeparta(lsServerData.data.departamento);
@@ -378,14 +379,14 @@ const UpdateWorkAbsenteeism = () => {
             const categoria_DATA = catalogoIncapacidad == '' ? datos.idCategoria : catalogoIncapacidad;
             const municipio_DATAMedico = municipioDatosMedico == '' ? datos.ciudadIPS : municipioDatosMedico;
 
-            const DataToInsert = PutWorkAbsenteeism(id, documento, datos.incapacidad, datos.nroIncapacidad, FormatDate(fechaExpedicion), departa,
-                municipio_DATAEmpresa, datos.tipoIncapacidad, datos.contingencia, FormatDate(fechaInicio), FormatDate(fechaFin), diasSinLaborar,
+            const DataToInsert = PutWorkAbsenteeism(id, documento, datos.incapacidad, datos.nroIncapacidad, fechaExpedicion, departa,
+                municipio_DATAEmpresa, datos.tipoIncapacidad, datos.contingencia, fechaInicio, fechaFin, diasSinLaborar,
                 datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, DefaultValue.SINREGISTRO_GLOBAL, datos.segmento, tipoSoporte, categoria_DATA,
 
                 datos.proveedor, departamentoIPS, municipio_DATAMedico, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
                 datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
 
-                datos.observacion, user.nameuser, FormatDate(fechaModifica), user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
+                datos.observacion, user.nameuser, fechaModifica, user.nameuser, FormatDate(new Date()), lsEmployee.tipoContrato, lsEmployee.type,
                 FormatDate(new Date()), user.nameuser);
 
             if (Object.keys(datos.length !== 0)) {

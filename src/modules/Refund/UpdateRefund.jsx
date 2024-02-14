@@ -247,10 +247,11 @@ const Refund = () => {
                     }
                     handleLoadingDocument(event);
 
+                    setFechaInicio(FormatDate(lsServerAtencion.data.fechaInicio));
+                    setFechaFin(FormatDate(lsServerAtencion.data.fechaFin));
+
                     setDocumento(lsServerAtencion.data.documento);
                     setLsRefund(lsServerAtencion.data);
-                    setFechaInicio(lsServerAtencion.data.fechaInicio);
-                    setFechaFin(lsServerAtencion.data.fechaFin);
                     setNumeroDia(lsServerAtencion.data.numeroDia);
                     setOrdenadoPor(lsServerAtencion.data.idOrdenadoPor);
                     setIdMedico(lsServerAtencion.data.idMedico);
@@ -296,10 +297,10 @@ const Refund = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutRefund(id, documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
-                datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, FormatDate(fechaInicio),
-                FormatDate(fechaFin), numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
-                datos.idConceptoReintegro, FormatDate(datos.inicioReubicacion), FormatDate(datos.finReubicacion), datos.descripcion,
-                datos.idTipoHorario, datos.idOrdenadoPorHorario, FormatDate(datos.fechaInicioHorario), FormatDate(datos.fechaFinHorario),
+                datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, fechaInicio,
+                fechaFin, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
+                datos.idConceptoReintegro, datos.inicioReubicacion, datos.finReubicacion, datos.descripcion,
+                datos.idTipoHorario, datos.idOrdenadoPorHorario, datos.fechaInicioHorario, datos.fechaFinHorario,
                 datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

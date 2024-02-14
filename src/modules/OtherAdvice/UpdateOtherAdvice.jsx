@@ -187,7 +187,7 @@ const UpdateOtherAdvice = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutMedicalAdvice(id, documento, FormatDate(datos.fecha), lsOtherAdvice.idRegistroAtencion, datos.idTipoAtencion, lsEmployee.sede,
+            const DataToUpdate = PutMedicalAdvice(id, documento, datos.fecha, lsOtherAdvice.idRegistroAtencion, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
                 datos.recomendaciones, undefined, undefined, undefined, undefined, user.nameuser, undefined);
 
@@ -215,7 +215,7 @@ const UpdateOtherAdvice = () => {
     setTimeout(() => {
         if (lsOtherAdvice.length !== 0)
             setTimeWait(true);
-    }, 1500);
+    }, 500);
 
     return (
         <Fragment>
@@ -340,7 +340,7 @@ const UpdateOtherAdvice = () => {
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={lsOtherAdvice.fecha}
+                                            defaultValue={lsOtherAdvice?.fecha}
                                         />
                                     </FormProvider>
                                 </Grid>
@@ -348,7 +348,7 @@ const UpdateOtherAdvice = () => {
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={lsOtherAdvice.idTipoAtencion}
+                                            defaultValue={lsOtherAdvice?.idTipoAtencion}
                                             name="idTipoAtencion"
                                             label="Tipo Atención"
                                             options={lsTipoAtencion}
@@ -360,7 +360,7 @@ const UpdateOtherAdvice = () => {
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={lsOtherAdvice.idMotivo}
+                                            defaultValue={lsOtherAdvice?.idMotivo}
                                             name="idMotivo"
                                             label="Motivo"
                                             options={lsMotivo}
@@ -372,7 +372,7 @@ const UpdateOtherAdvice = () => {
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            defaultValue={lsOtherAdvice.idTipoAsesoria}
+                                            defaultValue={lsOtherAdvice?.idTipoAsesoria}
                                             name="idTipoAsesoria"
                                             label="Tipo de Asesoría"
                                             options={tipoAsesoria}
@@ -388,7 +388,7 @@ const UpdateOtherAdvice = () => {
                                                 <InputText
                                                     multiline
                                                     rows={20}
-                                                    defaultValue={lsOtherAdvice.motivo}
+                                                    defaultValue={lsOtherAdvice?.motivo}
                                                     fullWidth
                                                     name="observaciones"
                                                     label="Descripción"
@@ -433,7 +433,7 @@ const UpdateOtherAdvice = () => {
                                                 <InputText
                                                     multiline
                                                     rows={4}
-                                                    defaultValue={lsOtherAdvice.recomendaciones}
+                                                    defaultValue={lsOtherAdvice?.recomendaciones}
                                                     fullWidth
                                                     name="recomendaciones"
                                                     label="Recomendaciones"

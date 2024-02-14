@@ -388,7 +388,7 @@ const UpdateNoteInfirmary = () => {
 
     const handleClick = async (datos) => {
         try {
-            const UpdateToInsert = PutNoteInfirmary(resultData, id, documento, FormatDate(datos.fecha), datos.idAtencion, datos.idContingencia, datos.dx1,
+            const UpdateToInsert = PutNoteInfirmary(resultData, id, documento, datos.fecha, datos.idAtencion, datos.idContingencia, datos.dx1,
                 datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad, user.nameuser, undefined, user.nameuser, undefined, procedimiento);
 
             if (resultIdRegistroAtencion) {
@@ -556,7 +556,7 @@ const UpdateNoteInfirmary = () => {
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
-                                                        defaultValue={lsAtencion.fecha}
+                                                        defaultValue={lsAtencion?.fecha}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -566,7 +566,7 @@ const UpdateNoteInfirmary = () => {
                                                     <InputSelect
                                                         name="idAtencion"
                                                         label="Atención"
-                                                        defaultValue={lsAtencion.atencion}
+                                                        defaultValue={lsAtencion?.atencion}
                                                         options={lsAtencionn}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />

@@ -8,6 +8,7 @@ import ViewInfoEmployee from "./ViewInfoEmployee";
 import Accordion from 'components/accordion/Accordion';
 import { IconGraph } from '@tabler/icons';
 import { GetDataEpidemiologica } from "api/clients/AttentionClient";
+import Cargando from "components/loading/Cargando";
 
 const lsAtencion = [
     {
@@ -25,13 +26,11 @@ const EpidemiologicalView = ({ documento }) => {
 
     async function getDataEpidemiologica() {
         try {
-            const dataEpidemiologica = await GetDataEpidemiologica(12568408);
+            setOpenView(true);
+
+            const dataEpidemiologica = await GetDataEpidemiologica(documento);
             if (dataEpidemiologica.status === 200) {
                 setDataEpidemi(dataEpidemiologica.data);
-
-                setTimeout(() => {
-                    setOpenView(true);
-                }, 1000);
             }
         } catch (error) { }
     }
@@ -39,45 +38,47 @@ const EpidemiologicalView = ({ documento }) => {
     return (
         <Fragment>
             <ControlModal
-                title="Vista Epidemiológica"
+                title="Vista Historico De Atenciones"
                 open={openView}
                 onClose={() => setOpenView(false)}
                 maxWidth="md"
             >
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <ViewInfoEmployee dataEpidemi={dataEpidemi} />
-                    </Grid>
+                {dataEpidemi.length !== 0 ?
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <ViewInfoEmployee dataEpidemi={dataEpidemi} />
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <Accordion title={<><IconGraph /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Reporte De Registro Atención</Typography></>}>
-                            <Grid container spacing={2}>
-                                {dataEpidemi.atenciones?.filter(fil => fil.idFilter === 0).map(aten => (
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <CardAtencion atencion={aten} />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </Accordion>
-                    </Grid>
+                        <Grid item xs={12}>
+                            <Accordion title={<><IconGraph /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Reporte De Registro Atención</Typography></>}>
+                                <Grid container spacing={2}>
+                                    {dataEpidemi.atenciones?.filter(fil => fil?.idFilter === 0).map(aten => (
+                                        <Grid item xs={12} md={6} lg={3}>
+                                            <CardAtencion atencion={aten} />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Accordion>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <Accordion title={<><IconGraph /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Reporte De Salud Ocupacional</Typography></>}>
-                            <Grid container spacing={2}>
-                                {dataEpidemi.atenciones?.filter(fil => fil.idFilter === 1).map(aten => ( 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <CardAtencion atencion={aten} />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </Accordion>
+                        <Grid item xs={12}>
+                            <Accordion title={<><IconGraph /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Reporte De Salud Ocupacional</Typography></>}>
+                                <Grid container spacing={2}>
+                                    {dataEpidemi.atenciones?.filter(fil => fil?.idFilter === 1).map(aten => (
+                                        <Grid item xs={12} md={6} lg={3}>
+                                            <CardAtencion atencion={aten} />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Accordion>
+                        </Grid>
                     </Grid>
-                </Grid>
+                    : <Cargando />}
             </ControlModal>
 
             <AnimateButton>
-                <Tooltip title="Ver Vista Epidemiológica">
-                    <Button onClick={() => getDataEpidemiologica()}>
+                <Tooltip title="Ver Vista Historico De Atenciones">
+                    <Button disabled={documento === '' ? true : false} onClick={() => getDataEpidemiologica()}>
                         <IconChartInfographic stroke={1.5} size="1.5rem" />
                     </Button>
                 </Tooltip>

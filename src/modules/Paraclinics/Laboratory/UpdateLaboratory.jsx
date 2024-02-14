@@ -164,7 +164,7 @@ const UpdateLaboratory = () => {
             var savePdf = filePdf === null ? "" : filePdf;
 
             const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_LABORATORIO, documento,
-                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
+                datos.fecha, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, '',
                 datos.ojoIzquierdo, '', datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.remitidoOftalmo,
                 datos.requiereLentes, '', DefaultValue.SINREGISTRO_GLOBAL,

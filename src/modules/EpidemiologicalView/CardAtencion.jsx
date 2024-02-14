@@ -7,7 +7,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Fragment, useState } from 'react';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewMore from './ViewMore';
-import { ViewFormat } from 'components/helpers/Format';
+import { UpperFirstChar, ViewFormat } from 'components/helpers/Format';
 import Chip from 'ui-component/extended/Chip';
 
 const CardAtencion = ({ atencion }) => {
@@ -17,12 +17,12 @@ const CardAtencion = ({ atencion }) => {
     return (
         <Fragment>
             <ControlModal
-                title={`Información De ${atencion?.nameTipoAtencion}`}
+                title={`Información De ${UpperFirstChar(atencion?.nameTipoAtencion)}`}
                 open={OpenModal}
                 onClose={() => setOpenModal(false)}
                 maxWidth="lg"
             >
-                <ViewMore />
+                <ViewMore idRegistro={atencion?.id} />
             </ControlModal>
 
             <Card
@@ -47,20 +47,20 @@ const CardAtencion = ({ atencion }) => {
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
                                 <Typography variant="caption">Última Atención/Tiempo</Typography>
-                                <Typography variant="h6">{ViewFormat(atencion?.fechaUltimoRegistro)} / {atencion?.tiempo} Días</Typography>
+                                <Typography variant="h6">{ViewFormat(atencion?.fechaUltimoRegistro)} / {atencion?.tiempo}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Typography variant="caption">Último Diagnóstico</Typography>
+                        <Typography variant="caption">{atencion?.nameTipoAtencion === 'ASESORIAS' ? 'Último Motivo' : 'Último Diagnóstico'}</Typography>
 
-                        <Tooltip placement="bottom" title={atencion?.codDx === 'N/A' || atencion?.codDx === null ? 'SIN REGISTRO DE DX' : atencion?.nameDx}>
+                        <Tooltip placement="bottom" title={atencion?.nameDx}>
                             <Typography>
                                 <Chip
                                     size="small"
-                                    label={atencion?.codDx === 'N/A' || atencion?.codDx === null ? 'SIN DX' : atencion?.codDx}
-                                    chipcolor={atencion?.codDx !== '' ? 'success' : 'error'}
+                                    label={atencion?.codDx}
+                                    chipcolor={atencion?.codDx !== 'N/A' ? 'success' : 'error'}
                                     sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
                                 />
                             </Typography>

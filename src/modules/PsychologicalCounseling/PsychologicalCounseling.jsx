@@ -149,7 +149,7 @@ const PsychologicalCounseling = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, FormatDate(datos.fecha), 0, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
+            const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, 0, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
                 datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, user.nameuser, undefined, undefined, undefined);
 

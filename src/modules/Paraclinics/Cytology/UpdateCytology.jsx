@@ -124,7 +124,7 @@ const UpdateCytologia = () => {
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
                 setLsCytologia(serverData.data);
-                
+
                 const event = {
                     target: { value: serverData.data.documento }
                 }
@@ -146,7 +146,7 @@ const UpdateCytologia = () => {
             var savePdf = filePdf === null ? "" : filePdf;
 
             const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_CITOLOGIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
+                datos.fecha, datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
                 false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,

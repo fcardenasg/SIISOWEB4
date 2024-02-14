@@ -1,3 +1,4 @@
+// project imports
 import services from 'utils/mockAdapter';
 
 // third-party
@@ -211,7 +212,7 @@ services.onPost('/api/products/filter').reply((config) => {
             return searchMatches && genderMatches && categoriesMatches && colorsMatches && priceMatches && ratingMatches;
         });
 
-        return [200, { results }];
+        return [200, results];
     } catch (err) {
         console.error(err);
         return [500, { message: 'Internal server error' }];
@@ -229,7 +230,7 @@ services.onPost('/api/product/details').reply((config) => {
             [results] = products.filter((product) => product.id === Number(id));
         }
 
-        return [200, { results }];
+        return [200, results];
     } catch (err) {
         console.error(err);
         return [500, { message: 'Internal server error' }];
@@ -242,7 +243,7 @@ services.onPost('/api/product/related').reply((config) => {
 
         const results = products.filter((product) => product.id !== Number(id));
 
-        return [200, { results }];
+        return [200, results];
     } catch (err) {
         console.error(err);
         return [500, { message: 'Internal server error' }];

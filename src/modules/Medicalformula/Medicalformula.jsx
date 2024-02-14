@@ -168,7 +168,7 @@ const MedicalFormula = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostMedicalFormula(FormatDate(datos.fecha), documento, datos.idContingencia, 0,
+            const DataToInsert = PostMedicalFormula(datos.fecha, documento, datos.idContingencia, 0,
                 datos.idTipoRemision, datos.diagnostico, datos.descripcion, user.nameuser, user.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 

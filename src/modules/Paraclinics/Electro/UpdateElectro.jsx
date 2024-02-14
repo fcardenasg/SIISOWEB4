@@ -127,7 +127,7 @@ const UpdateElectro = () => {
             if (serverData.status === 200) {
                 setDocumento(serverData.data.documento);
                 setLsElectro(serverData.data);
-                
+
                 const event = {
                     target: { value: serverData.data.documento }
                 }
@@ -149,7 +149,7 @@ const UpdateElectro = () => {
             var savePdf = filePdf === null ? "" : filePdf;
 
             const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_ELECTRO, documento,
-                FormatDate(datos.fecha), datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
+                datos.fecha, datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
                 false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,

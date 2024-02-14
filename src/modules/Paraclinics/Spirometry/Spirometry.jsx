@@ -139,7 +139,7 @@ const Spirometry = () => {
             var savePdf = filePdf === null ? "" : filePdf;
 
             const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_ESPIROMETRIA, documento,
-                FormatDate(datos.fecha), datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
+                datos.fecha, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
                 datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
                 false, '', datos.idTipoEPP, datos.fvc, datos.feV1, datos.fevfvc, datos.feV2575, datos.pef, datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
                 DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,

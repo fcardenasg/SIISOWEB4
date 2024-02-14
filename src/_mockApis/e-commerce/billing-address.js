@@ -1,3 +1,4 @@
+// project imports
 import services from 'utils/mockAdapter';
 
 // third-party
@@ -42,7 +43,7 @@ services.onGet('/api/address/list').reply(200, { address });
 
 services.onPost('/api/address/new').reply((request) => {
     try {
-        const { data } = JSON.parse(request.data);
+        const data = JSON.parse(request.data);
         const { name, destination, building, street, city, state, country, post, phone, isDefault } = data;
         const newAddress = {
             id: UIDV4(),
@@ -78,7 +79,7 @@ services.onPost('/api/address/new').reply((request) => {
 
 services.onPost('/api/address/edit').reply((request) => {
     try {
-        const { data } = JSON.parse(request.data);
+        const data = JSON.parse(request.data);
 
         if (data.isDefault) {
             address = address.map((item) => {

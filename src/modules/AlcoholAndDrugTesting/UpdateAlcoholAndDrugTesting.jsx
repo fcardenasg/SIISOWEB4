@@ -212,7 +212,7 @@ const UpdateAlcoholAndDrugTesting = () => {
             const Observacion = realizada === DefaultValue.Opcion_SI ? datos.observacionesSi : datos.observacionesNoAsistio;
             const concepto = realizada === DefaultValue.Opcion_NO ? 1 : conceptoAptitud;
 
-            const DataToUpdate = PutAlcoholAndDrugTesting(id, documento, FormatDate(datos.fecha), 0, motivo, datos.sustancia1,
+            const DataToUpdate = PutAlcoholAndDrugTesting(id, documento, datos.fecha, 0, motivo, datos.sustancia1,
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
                 datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
