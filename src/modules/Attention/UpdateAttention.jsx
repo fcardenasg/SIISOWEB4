@@ -17,7 +17,6 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -34,6 +33,38 @@ import Cargando from 'components/loading/Cargando';
 import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './ReportAtten';
 import ViewPDF from 'components/components/ViewPDF';
+
+const calculateImc = (peso, talla) => {
+    try {
+        var imcFinal = Number(peso) / Math.pow(talla, 2);
+        var imc = imcFinal.toFixed(1);
+
+        let clasificacion = "SIN CALCULAR";
+        let clasificacionColor = "info";
+
+        if (imc < 18.4) {
+            clasificacion = "BAJO DE PESO";
+            clasificacionColor = "info";
+        } else if (imc >= 18.5 && imc <= 24.9) {
+            clasificacion = "NORMAL";
+            clasificacionColor = "success";
+        } else if (imc >= 25 && imc <= 29.9) {
+            clasificacion = "SOBREPESO";
+            clasificacionColor = "warning";
+        } else if (imc >= 30 && imc <= 34.9) {
+            clasificacion = "OBESIDAD GRADO I";
+            clasificacionColor = "error";
+        } else if (imc >= 35 && imc <= 39.9) {
+            clasificacion = "OBESIDAD GRADO II";
+            clasificacionColor = "error";
+        } else if (imc > 40) {
+            clasificacion = "OBESIDAD GRADO III";
+            clasificacionColor = "error";
+        }
+
+        return { imc, clasificacion, clasificacionColor }
+    } catch (error) { }
+}
 
 const UpdateAttention = () => {
     const { user } = useAuth();
@@ -58,7 +89,7 @@ const UpdateAttention = () => {
     const [peso, setPeso] = useState('');
     const [talla, setTalla] = useState('');
     const [imc, setIMC] = useState('');
-    const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
+    const [clasificacion, setClasificacion] = useState('');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
     const [open, setOpen] = useState(false);
@@ -223,27 +254,26 @@ const UpdateAttention = () => {
     const handleChangeTalla = (event) => {
         try {
             setTalla(event.target.value);
-            var talla = event.target.value;
-            var imcFinal = peso / Math.pow(talla, 2);
+            var imcFinal = peso / Math.pow(event.target.value, 2);
             setIMC(imcFinal.toFixed(1));
 
             if (imcFinal < 18.4) {
-                setClasificacion("Bajo de Peso")
+                setClasificacion("BAJO DE PESO")
                 setClasificacionColor("info");
             } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-                setClasificacion("Normal")
+                setClasificacion("NORMAL")
                 setClasificacionColor("success");
             } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-                setClasificacion("Sobrepeso")
+                setClasificacion("SOBREPESO")
                 setClasificacionColor("warning");
             } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-                setClasificacion("Obesidad Grado I")
+                setClasificacion("OBESIDAD GRADO I")
                 setClasificacionColor("error");
             } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-                setClasificacion("Obesidad Grado II")
+                setClasificacion("OBESIDAD GRADO II")
                 setClasificacionColor("error");
             } else if (imcFinal > 40) {
-                setClasificacion("Obesidad Grado III")
+                setClasificacion("OBESIDAD GRADO III")
                 setClasificacionColor("error");
             }
         } catch (error) { }
@@ -252,27 +282,26 @@ const UpdateAttention = () => {
     const handleChangePeso = (event) => {
         try {
             setPeso(event.target.value);
-
             var imcFinal = event.target.value / Math.pow(talla, 2);
             setIMC(imcFinal.toFixed(1));
 
             if (imcFinal < 18.4) {
-                setClasificacion("Bajo de Peso")
+                setClasificacion("BAJO DE PESO")
                 setClasificacionColor("info");
             } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-                setClasificacion("Normal")
+                setClasificacion("NORMAL")
                 setClasificacionColor("success");
             } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-                setClasificacion("Sobrepeso")
+                setClasificacion("SOBREPESO")
                 setClasificacionColor("warning");
             } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-                setClasificacion("Obesidad Grado I")
+                setClasificacion("OBESIDAD GRADO I")
                 setClasificacionColor("error");
             } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-                setClasificacion("Obesidad Grado II")
+                setClasificacion("OBESIDAD GRADO II")
                 setClasificacionColor("error");
             } else if (imcFinal > 40) {
-                setClasificacion("Obesidad Grado III")
+                setClasificacion("OBESIDAD GRADO III")
                 setClasificacionColor("error");
             }
         } catch (error) { }
@@ -362,38 +391,23 @@ const UpdateAttention = () => {
                 }
                 handleLoadingDocument(event);
 
-                setDocumento(lsServerUpdate.data.documento);
-                setLsDataAtencion(lsServerUpdate.data);
-                setTipoAtencion(lsServerUpdate.data.tipo);
-                setAtencion(lsServerUpdate.data.atencion);
-                setMotivo(lsServerUpdate.data.motivo);
-                setSede(lsServerUpdate.data.sede);
+                setLsDataAtencion(lsServerUpdate?.data);
+                setDocumento(lsServerUpdate?.data?.documento);
+                setTipoAtencion(lsServerUpdate?.data?.tipo);
+                setAtencion(lsServerUpdate?.data?.atencion);
+                setMotivo(lsServerUpdate?.data?.motivo);
+                setSede(lsServerUpdate?.data?.sede);
 
-                setTalla(lsServerUpdate.data.talla);
-                setIMC(lsServerUpdate.data.imc);
-                setPeso(lsServerUpdate.data.peso);
-                setPeso(lsServerUpdate.data.peso);
+                setTalla(lsServerUpdate?.data?.talla);
+                setIMC(lsServerUpdate?.data?.imc);
+                setPeso(lsServerUpdate?.data?.peso);
 
-                var imcFinal = lsServerUpdate.data.peso / Math.pow(lsServerUpdate.data.talla, 2);
-                setIMC(imcFinal.toFixed(1));
+                var resultImc = calculateImc(lsServerUpdate?.data?.peso, lsServerUpdate?.data?.talla);
+                setIMC(resultImc?.imc);
+                setClasificacion(resultImc?.clasificacion);
+                setClasificacionColor(resultImc?.clasificacionColor);
 
-                if (imcFinal < 18.4) {
-                    setClasificacion("Bajo de Peso"); setClasificacionColor("info");
-                } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
-                    setClasificacion("Normal"); setClasificacionColor("success");
-                } else if (imcFinal >= 25 && imcFinal <= 29.9) {
-                    setClasificacion("Sobrepeso"); setClasificacionColor("warning");
-                } else if (imcFinal >= 30 && imcFinal <= 34.9) {
-                    setClasificacion("Obesidad Grado I"); setClasificacionColor("error");
-                } else if (imcFinal >= 35 && imcFinal <= 39.9) {
-                    setClasificacion("Obesidad Grado II"); setClasificacionColor("error");
-                } else if (imcFinal > 40) {
-                    setClasificacion("Obesidad Grado III"); setClasificacionColor("error");
-                }
-
-                var lsResulCode = String(lsServerTipoAtencion.data.entities
-                    .filter(code => code.idCatalogo === lsServerUpdate.data.tipo).map(code => code.codigo));
-
+                var lsResulCode = String(lsServerTipoAtencion.data.entities.filter(code => code.idCatalogo === lsServerUpdate.data.tipo).map(code => code.codigo));
                 var lsGetTipo = await GetAllBySubTipoCatalogo(0, 0, lsResulCode, 5);
                 if (lsGetTipo.status === 200) {
                     var resultMapsTipo = lsGetTipo.data.entities.map((item) => ({

@@ -253,9 +253,11 @@ const Refund = () => {
 
     const handleClick = async (datos) => {
         try {
+            var fechaFinFormateada = fechaFin === '' ? null : fechaFin;
+
             const DataToInsert = PostRefund(documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
                 datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, fechaInicio,
-                fechaFin, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
+                fechaFinFormateada, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, datos.inicioReubicacion, datos.finReubicacion, datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, datos.fechaInicioHorario, datos.fechaFinHorario,
                 datos.idEstadoCaso, user.nameuser, undefined, undefined, undefined);

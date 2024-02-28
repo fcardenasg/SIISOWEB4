@@ -96,25 +96,25 @@ const calculateImc = (peso, talla) => {
             var imcFinal = Number(peso) / Math.pow(talla, 2);
             var imc = imcFinal.toFixed(1);
 
-            var clasificacion = '';
-            var clasificacionColor = '';
+            let clasificacion = "SIN CALCULAR";
+            let clasificacionColor = "info";
 
-            if (imcFinal < 18.4) {
+            if (imc < 18.4) {
                 clasificacion = "BAJO DE PESO";
                 clasificacionColor = "info";
-            } else if (imcFinal >= 18.5 && imcFinal <= 24.9) {
+            } else if (imc >= 18.5 && imc <= 24.9) {
                 clasificacion = "NORMAL";
                 clasificacionColor = "success";
-            } else if (imcFinal >= 25 && imcFinal <= 29.9) {
+            } else if (imc >= 25 && imc <= 29.9) {
                 clasificacion = "SOBREPESO";
                 clasificacionColor = "warning";
-            } else if (imcFinal >= 30 && imcFinal <= 34.9) {
+            } else if (imc >= 30 && imc <= 34.9) {
                 clasificacion = "OBESIDAD GRADO I";
                 clasificacionColor = "error";
-            } else if (imcFinal >= 35 && imcFinal <= 39.9) {
+            } else if (imc >= 35 && imc <= 39.9) {
                 clasificacion = "OBESIDAD GRADO II";
                 clasificacionColor = "error";
-            } else if (imcFinal > 40) {
+            } else if (imc > 40) {
                 clasificacion = "OBESIDAD GRADO III";
                 clasificacionColor = "error";
             }
@@ -219,7 +219,7 @@ const OccupationalExamination = () => {
     const [talla, setTalla] = useState('');
     const [peso, setPeso] = useState('');
     const [imc, setIMC] = useState('');
-    const [clasificacion, setClasificacion] = useState('CLASIFICACIÓN');
+    const [clasificacion, setClasificacion] = useState('SIN CALCULAR');
     const [clasificacionColor, setClasificacionColor] = useState('info');
 
     const [indiceWellsEFU, setIndiceWellsEFU] = useState(false);
@@ -394,17 +394,18 @@ const OccupationalExamination = () => {
                     }
                     handleLoadingDocument(event);
 
-                    setIMC(lsServerAtencion.data.imc);
-                    setTalla(lsServerAtencion.data.talla);
-                    setPeso(lsServerAtencion.data.peso);
                     setLsAtencion(lsServerAtencion.data);
-                    setDocumento(lsServerAtencion.data.documento);
-                    setAtencion(lsServerAtencion.data.atencion);
+                    setDocumento(lsServerAtencion?.data?.documento);
+                    setAtencion(lsServerAtencion?.data?.atencion);
 
-                    var resultImc = calculateImc(lsServerAtencion.data.peso, lsServerAtencion.data.talla);
-                    setIMC(resultImc.imc);
-                    setClasificacion(resultImc.clasificacion);
-                    setClasificacionColor(resultImc.clasificacionColor);
+                    setIMC(lsServerAtencion?.data?.imc);
+                    setTalla(lsServerAtencion?.data?.talla);
+                    setPeso(lsServerAtencion?.data?.peso);
+
+                    var resultImc = calculateImc(lsServerAtencion?.data?.peso, lsServerAtencion?.data?.talla);
+                    setIMC(resultImc?.imc);
+                    setClasificacion(resultImc?.clasificacion);
+                    setClasificacionColor(resultImc?.clasificacionColor);
                 }
             } catch (error) { }
         }

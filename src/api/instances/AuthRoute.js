@@ -4,6 +4,7 @@ export const Url = {
     Base: config.rutaApi,
 
     Login: 'api/Login',
+    ConsultarCorreo: 'api/Login/mail-consult',
     RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',
     EnviarExamenesPorCorreo: 'api/Login/enviar-paraclinicos',
     ChangePassword: 'api/Login/ChangePassword',
@@ -106,6 +107,7 @@ export const Url = {
     RegistroAtencio_GetAllAtencion: 'api/RegistroAtencion/attention',
     RegistroAtencionId: 'api/RegistroAtencion/id',
     RegistroAtencionEpide: 'api/RegistroAtencion/consulta-epidemiologica',
+    RegistroAtencionEpideResumen: 'api/RegistroAtencion/consulta-epidemiologica-resumen',
 
     Paraclinicos: 'api/Paraclinicos',
     Paraclinicos_GetAllByDocumento: 'api/Paraclinicos/GetAllByDocumento',
@@ -136,6 +138,7 @@ export const Url = {
     AsesoriasReportePdf: 'api/Asesorias/reporte-pdf',
 
     OrdenesEPP: 'api/OrdenesEPP',
+    OrdenesEPPExcel: 'api/OrdenesEPP/excel',
     OrdenesEPPId: 'api/OrdenesEPP/id',
 
     ConceptosIND: 'api/ConceptosIND',

@@ -163,14 +163,14 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                     {selected.length > 0 && <EnhancedTableHead selected={selected} />}
                                     <TableBody>
                                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                            const isItemSelected = isSelected(row.profile.name);
+                                            const isItemSelected = isSelected(row?.profile?.name);
                                             const labelId = `enhanced-table-checkbox-${index}`;
 
                                             return (
                                                 <TableRow
                                                     hover
                                                     sx={{
-                                                        bgcolor: !row.isRead ? darkBG : '',
+                                                        bgcolor: !row?.isRead ? darkBG : '',
                                                         '& td:last-of-type>div': {
                                                             position: 'absolute',
                                                             top: '50%',
@@ -201,7 +201,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                         <Checkbox
                                                             checked={isItemSelected}
                                                             color="primary"
-                                                            onChange={(event) => handleClick(event, row.profile.name)}
+                                                            onChange={(event) => handleClick(event, row?.profile?.name)}
                                                             inputProps={{
                                                                 'aria-labelledby': labelId
                                                             }}
@@ -210,7 +210,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                             icon={<StarBorderTwoToneIcon />}
                                                             checkedIcon={<StarTwoToneIcon />}
                                                             sx={{ '&.Mui-checked': { color: theme.palette.warning.dark } }}
-                                                            checked={row.starred}
+                                                            checked={row?.starred}
                                                             onChange={(event) => handleStarredChange(event, row)}
                                                             size="small"
                                                         />
@@ -218,7 +218,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                             icon={<LabelOutlinedIcon />}
                                                             checkedIcon={<LabelTwoToneIcon />}
                                                             sx={{ '&.Mui-checked': { color: theme.palette.secondary.main } }}
-                                                            checked={row.important}
+                                                            checked={row?.important}
                                                             onChange={(event) => handleImportantChange(event, row)}
                                                             size="small"
                                                         />
@@ -235,11 +235,11 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                                         width: denseTable ? 30 : 40,
                                                                         height: denseTable ? 30 : 40
                                                                     }}
-                                                                    alt={row.profile.name}
+                                                                    alt={row?.profile?.name}
                                                                     src={
-                                                                        row.profile &&
-                                                                        row.profile.avatar &&
-                                                                        avatarImage(`./${row.profile.avatar}`)
+                                                                        row?.profile &&
+                                                                        row?.profile?.avatar &&
+                                                                        avatarImage(`./${row?.profile?.avatar}`)
                                                                     }
                                                                 />
                                                             </Grid>
@@ -247,10 +247,10 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                                 <ButtonBase disableRipple>
                                                                     <Typography
                                                                         align="left"
-                                                                        variant={row.isRead ? 'body2' : 'subtitle1'}
+                                                                        variant={row?.isRead ? 'body2' : 'subtitle1'}
                                                                         component="div"
                                                                     >
-                                                                        {row.profile.name}
+                                                                        {row?.profile?.name}
                                                                     </Typography>
                                                                 </ButtonBase>
                                                             </Grid>
@@ -270,7 +270,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                             }}
                                                         >
                                                             <Typography
-                                                                variant={row.isRead ? 'body2' : 'subtitle1'}
+                                                                variant={row?.isRead ? 'body2' : 'subtitle1'}
                                                                 sx={{
                                                                     overflow: 'hidden',
                                                                     textOverflow: 'ellipsis',
@@ -278,9 +278,9 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                                     display: 'block'
                                                                 }}
                                                             >
-                                                                {row.subject} - {row.message}
+                                                                {row?.subject} - {row?.message}
                                                             </Typography>
-                                                            {row.promotions && (
+                                                            {row?.promotions && (
                                                                 <Chip
                                                                     label="Promotions"
                                                                     size="small"
@@ -290,13 +290,13 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                                     }}
                                                                 />
                                                             )}
-                                                            {row.forums && (
+                                                            {row?.forums && (
                                                                 <Chip
                                                                     label="Forums"
                                                                     size="small"
                                                                     sx={{
-                                                                        ml: row.promotions ? 1 : 0,
-                                                                        mr: row.attach ? 1 : 0,
+                                                                        ml: row?.promotions ? 1 : 0,
+                                                                        mr: row?.attach ? 1 : 0,
                                                                         color: theme.palette.warning.dark,
                                                                         bgcolor: theme.palette.warning.light
                                                                     }}
@@ -305,14 +305,14 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                         </Box>
                                                     </TableCell>
                                                     <TableCell align="center">
-                                                        {row.attach && (
+                                                        {row?.attach && (
                                                             <IconButton size="large">
                                                                 <AttachmentTwoToneIcon fontSize="small" />
                                                             </IconButton>
                                                         )}
                                                     </TableCell>
                                                     <TableCell align="center" sx={{ position: 'relative' }}>
-                                                        {format(new Date(row.time), 'd MMM yy HH:mm a')}
+                                                        {format(new Date(row?.time), 'd MMM yy HH:mm a')}
                                                         <div>
                                                             <IconButton size="large">
                                                                 <ArchiveTwoToneIcon fontSize="small" />

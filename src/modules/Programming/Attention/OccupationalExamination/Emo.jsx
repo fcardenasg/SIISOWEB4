@@ -52,7 +52,6 @@ import TableExamenesPara from './TableEmo/TableExamenesPara';
 import { MessageError } from 'components/alert/AlertAll';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
-import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
 import { GetAntecedente } from 'api/clients/MedicalHistoryClient';
 import Framingham from './Framingham';
@@ -3987,7 +3986,7 @@ const Emo = ({
                                             <InputDatePicker
                                                 label="Fecha Del Concepto"
                                                 name="fechaConceptoNETA"
-                                                defaultValue={FormatDate(new Date())}
+                                                defaultValue={new Date()}
                                             />
                                         </FormProvider>
                                     </Grid>

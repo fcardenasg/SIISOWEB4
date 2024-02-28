@@ -861,11 +861,10 @@ const OccupationalMedicine = () => {
 
                                     <Grid item xs={12} md={6} lg={3}>
                                         <FormProvider {...methods}>
-                                            <InputText
-                                                type="number"
-                                                fullWidth
+                                            <InputSelect
                                                 name="juntaReCalificacionJRC"
                                                 label="Junta Recalificación"
+                                                options={lsJuntaCalificadaJRC}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
@@ -918,6 +917,7 @@ const OccupationalMedicine = () => {
                                             />
                                         </FormProvider>
                                     </Grid>
+
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
@@ -943,7 +943,7 @@ const OccupationalMedicine = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
-                                                label="Fecha Calificación Origen PCL"
+                                                label="Fecha Calificación PCL"
                                                 name="fechaCalificacionPclJNC"
                                                 defaultValue={null}
                                             />

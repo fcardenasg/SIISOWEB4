@@ -46,6 +46,7 @@ import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
 import config from 'config';
 import Cargando from 'components/loading/Cargando';
+import OrderEPPExcel from './OrderEPPExcel';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -81,8 +82,6 @@ const headCells = [
         label: 'ID',
         align: 'left'
     },
-
-
     {
         id: 'documento',
         numeric: false,
@@ -222,6 +221,11 @@ const ListOrderEPP = () => {
     const [lsOrderEPP, setLsOrderEPP] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [openReport, setOpenReport] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+
+    const [sede, setSede] = useState(0);
+    const [fechaInicio, setFechaInicio] = useState(null);
+    const [fechaFin, setFechaFin] = useState(null);
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -339,6 +343,11 @@ const ListOrderEPP = () => {
         setSelected([]);
         setIdCheck('');
         setDataPDF(null);
+
+        setSede(0);
+        setOpenModal(false);
+        setFechaInicio(null);
+        setFechaFin(null);
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -355,6 +364,19 @@ const ListOrderEPP = () => {
                 maxWidth="xl"
             >
                 <ViewPDF dataPDF={dataPDF} />
+            </ControlModal>
+
+            <ControlModal
+                title="Generar Excel"
+                open={openModal}
+                onClose={handleClose}
+                maxWidth="xs"
+            >
+                <OrderEPPExcel
+                    setSede={setSede} sede={sede}
+                    setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
+                    setFechaFin={setFechaFin} fechaFin={fechaFin}
+                />
             </ControlModal>
 
             <CardContent>
@@ -378,25 +400,11 @@ const ListOrderEPP = () => {
                     <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="LISTA DE ORDENES EPP">
-                                    <ExcelSheet data={lsOrderEPP} name="OrderEPP">
-                                        <ExcelColumn label="Id" value="idOrdenesEpp" />
-                                        <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                        <ExcelColumn label="Documento" value="documento" />
-                                        <ExcelColumn label="Nombre" value="nameEmpleado" />
-                                        <ExcelColumn label="Proveedor" value="nameProveedor" />
-                                        <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha de registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                        <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha que modifica" value={(fe) => ViewFormat(fe.fechaModifico)} />
-                                    </ExcelSheet>
-                                </ExcelFile>
+                                <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
+                                    <IconButton size="large">
+                                        <IconFileExport />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
 
                             <Grid item xs={5}>
@@ -568,7 +576,7 @@ const ListOrderEPP = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </MainCard>
+        </MainCard >
     );
 };
 

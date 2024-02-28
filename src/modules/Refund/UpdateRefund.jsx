@@ -70,6 +70,8 @@ const Refund = () => {
     const [fechaInicio, setFechaInicio] = useState(null);
 
     const [numeroDia, setNumeroDia] = useState('');
+
+
     const [documento, setDocumento] = useState('');
     const [lsRefund, setLsRefund] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
@@ -296,9 +298,11 @@ const Refund = () => {
 
     const handleClick = async (datos) => {
         try {
+            var fechaFinFormateada = fechaFin === '' ? null : fechaFin;
+
             const DataToInsert = PutRefund(id, documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
                 datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, fechaInicio,
-                fechaFin, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
+                fechaFinFormateada, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, datos.inicioReubicacion, datos.finReubicacion, datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, datos.fechaInicioHorario, datos.fechaFinHorario,
                 datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));

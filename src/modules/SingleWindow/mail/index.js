@@ -13,6 +13,7 @@ import { appDrawerWidth as drawerWidth, gridSpacing } from 'store/constant';
 import { useDispatch, useSelector } from 'store';
 import { getMails, filterMails, setImportant, setStarred, setRead } from 'store/slices/mail';
 import MainCard from 'ui-component/cards/MainCard';
+import { ConsultMail } from 'api/clients/MailClient';
 
 // drawer content element
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
@@ -74,8 +75,19 @@ const MailPage = () => {
     const mailState = useSelector((state) => state.mail);
 
     useEffect(() => {
-        setData(mailState?.mails);
-        setUnreadCounts(mailState?.unreadCount);
+        async function getAllMail() {
+            try {
+                const lsServer = await ConsultMail();
+                if (lsServer.status === 200) {
+                    setData(lsServer.data);
+                    /* setUnreadCounts(mailState?.unreadCount); */
+                }
+            } catch (error) {
+
+            }
+        }
+
+        getAllMail();
     }, [mailState]);
 
     useEffect(() => {

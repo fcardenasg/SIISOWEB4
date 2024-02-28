@@ -10,7 +10,7 @@ import ViewMore from './ViewMore';
 import { UpperFirstChar, ViewFormat } from 'components/helpers/Format';
 import Chip from 'ui-component/extended/Chip';
 
-const CardAtencion = ({ atencion }) => {
+const CardAtencion = ({ atencion, documento }) => {
     const theme = useTheme();
     const [OpenModal, setOpenModal] = useState(false);
 
@@ -22,7 +22,7 @@ const CardAtencion = ({ atencion }) => {
                 onClose={() => setOpenModal(false)}
                 maxWidth="lg"
             >
-                <ViewMore idRegistro={atencion?.id} />
+                <ViewMore documento={documento} dataAtencion={atencion} />
             </ControlModal>
 
             <Card
@@ -40,7 +40,7 @@ const CardAtencion = ({ atencion }) => {
                         <Typography variant="h4" component="div">
                             {atencion?.nameTipoAtencion}
                         </Typography>
-                        <Typography variant="caption">{atencion?.nameAtencion}</Typography>
+                        <Typography variant="caption" noWrap>{atencion?.nameAtencion}</Typography>
                     </Grid>
 
                     <Grid item xs={12}>

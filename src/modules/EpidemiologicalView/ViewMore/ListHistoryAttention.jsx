@@ -1,64 +1,47 @@
-import PropTypes from 'prop-types';
-
-// material-ui
-import { Button, CardActions, CardMedia, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-
-// third party
+import { Fragment } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { ViewFormat } from 'components/helpers/Format';
+import Chip from 'ui-component/extended/Chip';
 
-// project imports
-import MainCard from 'ui-component/cards/MainCard';
-
-// assets
-import Flag1 from 'assets/images/widget/AUSTRALIA.jpg';
-import Flag2 from 'assets/images/widget/BRAZIL.jpg';
-import Flag3 from 'assets/images/widget/GERMANY.jpg';
-import Flag4 from 'assets/images/widget/UK.jpg';
-import Flag5 from 'assets/images/widget/USA.jpg';
-
-// table data
-function createData(image, subject, dept, date) {
-    return { image, subject, dept, date };
-}
-const rows = [
-    createData(Flag1, 'Germany', 'Angelina Jolly', '56.23%'),
-    createData(Flag2, 'USA', 'John Deo', '25.23%'),
-    createData(Flag3, 'Australia', 'Jenifer Vintage', '12.45%')
-];
-
-// =========================|| DASHBOARD ANALYTICS - LATEST CUSTOMERS TABLE CARD ||========================= //
-
-const ListHistoryAttention = ({ title }) => (
-    <MainCard title={title} content={false}>
-        <PerfectScrollbar style={{ height: 220, padding: 0 }}>
+const ListHistoryAttention = ({ lsData }) => (
+    <Fragment>
+        <PerfectScrollbar style={{ height: 250, padding: 0 }}>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Id</TableCell>
-                            <TableCell>Atención</TableCell>
+                            <TableCell>Motivo</TableCell>
                             <TableCell>Fecha</TableCell>
-                            <TableCell>Diagnóstico</TableCell>
+                            <TableCell>Diagnóstico/Tipo</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row, index) => (
+                        {lsData?.map((row, index) => (
                             <TableRow hover key={index}>
-                                <TableCell>{row.subject}</TableCell>
-                                <TableCell>{row.subject}</TableCell>
-                                <TableCell>{row.subject}</TableCell>
-                                <TableCell>{row.subject}</TableCell>
+                                <TableCell>{row?.id}</TableCell>
+                                <TableCell>{row?.atencion === " / " || row?.atencion === null ? 'SIN REGISTRO DE MOTIVO' : row?.atencion}</TableCell>
+                                <TableCell>{ViewFormat(row?.fecha)}</TableCell>
+                                <TableCell>
+                                    <Tooltip placement="bottom" title={row?.dx === null ? 'SIN REGISTRO' : row?.dx}>
+                                        <Typography>
+                                            <Chip
+                                                size="small"
+                                                label={row?.dx === null ? "N/A" : row?.codDx}
+                                                chipcolor={row?.dx === null ? 'error' : 'success'}
+                                                sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                            />
+                                        </Typography>
+                                    </Tooltip>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
         </PerfectScrollbar>
-    </MainCard>
+    </Fragment>
 );
-
-ListHistoryAttention.propTypes = {
-    title: PropTypes.string
-};
 
 export default ListHistoryAttention;

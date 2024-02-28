@@ -6,3 +6,5 @@ export const GetByIdOrderEPP = async (id) => await getData(Url.OrdenesEPPId, { i
 export const InsertOrderEPP = async (ordenesepp) => await postData(Url.OrdenesEPP, ordenesepp);
 export const UpdateOrderEPPs = async (ordenesepp) => await putData(Url.OrdenesEPP, ordenesepp);
 export const DeleteOrderEPP = async (idOrdenesEpp) => await deleteData(Url.OrdenesEPP, { idOrdenesEpp });
+
+export const GetExcelOrderEPP = async (parametroExcel) => await postData(Url.OrdenesEPPExcel, parametroExcel);

@@ -16,7 +16,7 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
+
 import { GetByIdAttention, InsertAttention } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -77,7 +77,6 @@ const Attention = () => {
     const [result, setResult] = useState('');
 
     const methods = useForm();
-
     const { handleSubmit, reset } = methods;
 
     useEffect(() => {
