@@ -479,7 +479,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                                                     <Grid item xs={12} md={6} lg={4}>
                                                         <FormProvider {...methods}>
                                                             <InputCheckBox
-                                                                label="Morfina"
+                                                                label="Derivado Opioide"
                                                                 name="sustancia3"
                                                                 size={30}
                                                                 defaultValue={true}

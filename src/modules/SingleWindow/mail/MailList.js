@@ -348,6 +348,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                         <MailEmpty />
                     )}
                 </Grid>
+
                 <Grid item xs={12} sx={{ pt: '0 !important', display: { xs: 'block', sm: 'none' } }}>
                     {/* table pagination */}
                     <TablePagination

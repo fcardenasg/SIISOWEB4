@@ -258,7 +258,7 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
 
   doc.text("COCAÍNA:", 6, 106);
   doc.text("MARIHUANA:", 6, 116);
-  doc.text("MORFINA:", 6, 124);
+  doc.text("DERIVADO OPIOIDE:", 6, 124);
   doc.text("BENZODIAZEPINA: ", 6, 134);
   doc.text("ANFETAMINAS: ", 6, 144);
   doc.text("ALCOHOL: ", 6, 154);
