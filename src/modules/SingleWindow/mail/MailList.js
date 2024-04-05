@@ -95,7 +95,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
 
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
     const handleClick = (event, name) => {
         const selectedIndex = selected.indexOf(name);
@@ -119,7 +119,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event?.target.value, 10));
+        setRowsPerPage(parseInt(event?.target.value, 7));
         setPage(0);
     };
 

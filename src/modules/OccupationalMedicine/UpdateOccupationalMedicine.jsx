@@ -14,11 +14,12 @@ import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import UploadIcon from '@mui/icons-material/Upload';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdOccupationalMedicine, UpdateOccupationalMedicines } from 'api/clients/OccupationalMedicineClient';
@@ -291,6 +292,9 @@ const OccupationalMedicine = () => {
 
                     var diasCalculados = NumeroDias(lsServerAtencion.data.fechaCalificacionUltimaInstancia, lsServerAtencion.data.fechaInvestigacion);
                     setDiasDiferencia(diasCalculados);
+                    
+                    setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
+                    setFilePdf(lsServerAtencion.data.urlDocumento);
 
                     if (lsServerAtencion.data.codDx !== "") {
                         var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
@@ -302,8 +306,6 @@ const OccupationalMedicine = () => {
                             setLsDiagnistico(resultCie11);
                         }
                     }
-                    setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
-                    setFilePdf(lsServerAtencion.data.urlDocumento);
                 }
             } catch (error) { }
         }
@@ -440,7 +442,25 @@ const OccupationalMedicine = () => {
                 onClose={() => setOpenViewArchivo(false)}
                 maxWidth="md"
             >
-                <ViewPDF dataPDF={filePdfMin} />
+                <Grid container spacing={2}>
+                    <Grid item xs={3}>
+                        <Button variant="outlined" color="error" size={matchesXS ? 'small' : 'large'} /* fullWidth */
+                            onClick={() => setFilePdfMin(null)} startIcon={<RemoveCircleOutlineIcon fontSize="large" />}>
+                            Remover Archivo
+                        </Button>
+                    </Grid>
+
+                    <Grid item xs={3}>
+                        <Button fullWidth size={matchesXS ? 'small' : 'large'} variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                            {TitleButton.SubirArchivo}
+                            <input hidden accept="application/pdf" type="file" onChange={handleFile1} />
+                        </Button>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <ViewPDF dataPDF={filePdfMin} />
+                    </Grid>
+                </Grid>
             </ControlModal>
 
             {timeWait ?
@@ -471,7 +491,7 @@ const OccupationalMedicine = () => {
                                 disabledUpdate={false}
                                 disabledSave={false}
                                 showButton={false}
-                                threshold={510}
+                                threshold={550}
                             >
                                 <Grid item xs={12}>
                                     <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>

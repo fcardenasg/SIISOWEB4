@@ -89,7 +89,7 @@ const ListProgramming = () => {
             setMessageAtencion('');
             setLsProgramming([]);
 
-            await GetAllAtencion(DefaultValue.ATENCION_ATENDIDO, user.idsede).then(response => {
+            await GetAllAtencion(DefaultValue.ATENCION_ATENDIDO, user?.idsede).then(response => {
                 if (response.data.length === 0) {
                     setMessageAtencion(Message.NoRegistro);
                 } else if (response.data.length !== 0) {
@@ -123,7 +123,7 @@ const ListProgramming = () => {
             </Grid>
         );
     } else {
-        usersResult = <Grid item xs={12}><Cargando /></Grid>
+        usersResult = <Grid item xs={12}><Cargando /></Grid>;
     }
 
     return (

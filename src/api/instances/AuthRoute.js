@@ -131,6 +131,11 @@ export const Url = {
     IndicadoresExcel: 'api/Headcount/indicadores',
     IndicadoresId: 'api/Indicadores/id',
 
+    VentanillaUnica: 'api/VentanillaUnica',
+    VentanillaUnicaId: 'api/VentanillaUnica/id',
+
+    VentanillaUnicaDetalle: 'api/VentanillaUnicaDetalle',
+
     Asesorias: 'api/Asesorias',
     AsesoriasExcel: 'api/Asesorias/excel',
     AsesoriasAll: 'api/Asesorias/all',

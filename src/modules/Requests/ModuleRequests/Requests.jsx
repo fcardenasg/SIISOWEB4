@@ -104,17 +104,6 @@ const Requests = () => {
         } catch (error) { }
     }
 
-    const handleFechaInicio = (event) => {
-        try {
-            setFechaInicio(event.target.value);
-
-            var dias = 15;
-            var fecha = new Date(event.target.value);
-            fecha.setDate(fecha.getDate() + dias);
-            setFechaFin(fecha);
-        } catch (error) { }
-    }
-
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, datos.correoRecibioDLTD, FormatDate(fechaInicio),
@@ -203,7 +192,13 @@ const Requests = () => {
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>
                                     <InputDatePick
-                                        onChange={handleFechaInicio}
+                                        onChange={(e) => {
+                                            setFechaInicio(e.target.value);
+
+                                            var nuevaFecha = new Date(e.target.value);
+                                            nuevaFecha.setDate(nuevaFecha.getDate() + 15);
+                                            setFechaFin(FormatDate(nuevaFecha));
+                                        }}
                                         value={fechaInicio}
                                         label="Fecha de Recibido"
                                         size={matchesXS ? 'small' : 'medium'}

@@ -48,6 +48,8 @@ const ListCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/
 const CabRegistration = Loadable(lazy(() => import('modules/CabRegistration/CabRegistration')));
 const UpdateCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/UpdateCabRegistration')));
 
+const NewListRequests = Loadable(lazy(() => import('modules/Requests/NewList/NewListRequests')));
+const NewAddRequests = Loadable(lazy(() => import('modules/Requests/NewList/NewAddRequests')));
 const ListRequests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/ListRequests')));
 const Requests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/Requests')));
 const UpdateRequests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/UpdateRequests')));
@@ -403,6 +405,14 @@ const MainRoutes = {
         },
 
         /* Render de Solicituudes */
+        {
+            path: '/requests/new-addrequests',
+            element: <NewAddRequests />
+        },
+        {
+            path: '/requests/new-list',
+            element: <NewListRequests />
+        },
         {
             path: '/requests/list',
             element: <ListRequests />

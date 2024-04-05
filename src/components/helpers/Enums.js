@@ -25,6 +25,13 @@ export const CodCatalogo = {
     TIPO_SOLICITUD_DEREPETICION: 28,
     RESPONSABLE_RESPUESTA_DEREPETICION: 112,
 
+    VentanillaTipoPeticion: 219,
+    VentanillaMedioIngreso: 220,
+    VentanillaCondiciones: 221,
+    VentanillaNivelImportancia: 222,
+    VentanillaArea: 223,
+    VentanillaTipoDocumento: 224,
+
     TipoconceptoApAl: 192,
     EP_EMO_SintomasRespiratorios: 201,
 

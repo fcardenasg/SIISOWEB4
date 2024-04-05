@@ -373,7 +373,7 @@ const OccupationalMedicine = () => {
                         disabledUpdate={false}
                         disabledSave={disabledButttons}
                         showButton={false}
-                        threshold={510}
+                        threshold={lsEmployee.length !== 0 ? 550 : 480}
                     >
                         <Grid item xs={12}>
                             <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
@@ -577,7 +577,7 @@ const OccupationalMedicine = () => {
 
                         <Grid item xs={12}>
                             <Accordion title={<><IconReportMedical /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación EPS</Typography></>}>
-                                <Grid container spacing={2} sx={{ my: 2 }}>
+                                <Grid container spacing={2} sx={{ my: 1 }}>
                                     <Grid item xs={12} md={6}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
@@ -1467,7 +1467,7 @@ const OccupationalMedicine = () => {
                                     </Grid>
                                 </Grid>
 
-                                <Grid item xs={12} sx={{ pt: 4 }}>
+                                <Grid item xs={12} sx={{ py: 3 }}>
                                     {filePdf && (
                                         <object type="application/pdf"
                                             data={filePdf}

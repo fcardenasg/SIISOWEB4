@@ -27,7 +27,7 @@ import { MessageSuccess, MessageError, ParamDelete } from 'components/alert/Aler
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import InputSelect from 'components/input/InputSelect';
-import SubCard from 'ui-component/cards/SubCard';
+
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import swal from 'sweetalert';
 import { DeleteRequestsDetaills, GetAllRequestsDetaillsByIdSolicitud, InsertRequestsDetaills } from 'api/clients/RequestsClient';
