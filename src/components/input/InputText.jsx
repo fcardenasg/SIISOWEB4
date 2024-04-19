@@ -48,14 +48,3 @@ InputText.propTypes = {
     required: PropTypes.bool,
     fullWidth: PropTypes.bool
 };
-
-{/* <Controller render={({ field, formState }) => (
-    <TextField
-        {...field}
-        label="display name"
-        error={!!formState.errors?.displayName}
-        helperText={!!formState.errors?.displayName ? formState.errors?.displayName.message : null}
-    />
-
-)} name="displayName" control={control} defaultValue=""
-/> */}

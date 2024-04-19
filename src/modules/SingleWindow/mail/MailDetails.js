@@ -7,7 +7,6 @@ import { Button, CardContent, Checkbox, Collapse, Grid, IconButton, Menu, MenuIt
 
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import ReactQuill from 'react-quill';
@@ -35,8 +34,6 @@ import ForwardTwoToneIcon from '@mui/icons-material/ForwardTwoTone';
 
 const avatarImage = require.context('assets/images/profile', true);
 
-// ==============================|| MAIL DETAILS ||============================== //
-
 const MailDetails = ({ handleUserDetails, data, handleStarredChange, handleImportantChange }) => {
     const theme = useTheme();
     const { fontFamily } = useConfig();
@@ -58,7 +55,8 @@ const MailDetails = ({ handleUserDetails, data, handleStarredChange, handleImpor
     return (
         <MainCard
             sx={{
-                bgcolor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50]
+                bgcolor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
+                mt: 2
             }}
             content={false}
         >
@@ -72,8 +70,8 @@ const MailDetails = ({ handleUserDetails, data, handleStarredChange, handleImpor
                                         <KeyboardArrowLeftTwoToneIcon />
                                     </IconButton>
                                     <Avatar
-                                        alt={data?.profile.name}
-                                        src={data?.profile && data.profile.avatar && avatarImage(`./${data.profile.avatar}`)}
+                                        alt={data?.profile?.name}
+                                        src={data?.profile && data?.profile?.avatar && avatarImage(`./${data?.profile?.avatar}`)}
                                         size={matchDownSM ? 'xs' : 'sm'}
                                     />
                                     <Grid container alignItems="center">
@@ -83,20 +81,20 @@ const MailDetails = ({ handleUserDetails, data, handleStarredChange, handleImpor
                                                 alignItems={matchDownSM ? 'flex-start' : 'center'}
                                                 spacing={matchDownSM ? 0 : 1}
                                             >
-                                                <Typography variant={matchDownSM ? 'h5' : 'h4'}>{data?.profile.name}</Typography>
+                                                <Typography variant={matchDownSM ? 'h5' : 'h4'}>{data?.profile?.name}</Typography>
                                                 <Typography sx={{ display: { xs: 'block', sm: 'none' } }} variant="subtitle2">
-                                                    From: &lt;{data?.profile.to}&gt;
+                                                    From: &lt;{data?.profile?.to}&gt;
                                                 </Typography>
                                             </Stack>
                                         </Grid>
                                         <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-                                            <Typography variant="subtitle2">From: &lt;{data?.profile.to}&gt;</Typography>
+                                            <Typography variant="subtitle2">From: &lt;{data?.profile?.to}&gt;</Typography>
                                         </Grid>
                                     </Grid>
                                 </Stack>
                             </Grid>
                             <Grid item>
-                                <Typography variant="subtitle2">{format(new Date(data?.time), 'd MMM')}</Typography>
+                                {/* <Typography variant="subtitle2">{format(new Date(data?.time), 'd MMM')}</Typography> */}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -169,7 +167,7 @@ const MailDetails = ({ handleUserDetails, data, handleStarredChange, handleImpor
                                 <Grid item xs={12}>
                                     <Grid container spacing={gridSpacing}>
                                         <Grid item xs={12}>
-                                            <Typography variant="body2">Dear {data?.profile.name},</Typography>
+                                            <Typography variant="body2">Dear {data?.profile?.name},</Typography>
                                         </Grid>
                                         <Grid
                                             item
@@ -185,7 +183,7 @@ const MailDetails = ({ handleUserDetails, data, handleStarredChange, handleImpor
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Typography variant="body2">Kind Regards,</Typography>
-                                            <Typography variant="body2">{data?.sender.name}</Typography>
+                                            <Typography variant="body2">{data?.sender?.name}</Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>

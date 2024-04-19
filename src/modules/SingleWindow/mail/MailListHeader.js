@@ -37,7 +37,7 @@ const MailListHeader = ({
         <Grid container alignItems="center" justifyContent="space-between">
             <Grid item xs>
                 <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1.5}>
-                    <IconButton onClick={handleDrawerOpen} size="small">
+                    {/* <IconButton onClick={handleDrawerOpen} size="small">
                         <MenuRoundedIcon fontSize="small" />
                     </IconButton>
                     <IconButton onClick={handleDenseTable} size="small">
@@ -46,12 +46,14 @@ const MailListHeader = ({
                     <IconButton onClick={handleClickSort} size="small">
                         <MoreHorizTwoToneIcon fontSize="small" />
                     </IconButton>
+
                     <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleCloseSort}>
                         <MenuItem onClick={handleCloseSort}>Name</MenuItem>
                         <MenuItem onClick={handleCloseSort}>Date</MenuItem>
                         <MenuItem onClick={handleCloseSort}>Ratting</MenuItem>
                         <MenuItem onClick={handleCloseSort}>Unread</MenuItem>
-                    </Menu>
+                    </Menu> */}
+
                     <TextField
                         sx={{ display: { xs: 'block', sm: 'none' } }}
                         fullWidth={matchDownSM}
@@ -62,8 +64,9 @@ const MailListHeader = ({
                                 </InputAdornment>
                             )
                         }}
+                        label="Buscar correo"
                         onChange={handleSearch}
-                        placeholder="Search Mail"
+                        placeholder="Buscar correo"
                         value={search}
                         size="small"
                     />

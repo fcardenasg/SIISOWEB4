@@ -28,8 +28,9 @@ import { CodCatalogo, Message, ValidationMessage } from 'components/helpers/Enum
 import useAuth from 'hooks/useAuth';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import swal from 'sweetalert';
+import SelectOnChange from 'components/input/SelectOnChange';
 
 const validationSchema = yup.object().shape({
     idArea: yup.number().required(ValidationMessage.Requerido),
@@ -47,7 +48,9 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
 
     const [lsPeticiones, setLsPeticiones] = useState([]);
     const [lsArea, setLsArea] = useState([]);
+    const [lsAreaFiltro, setLsAreaFiltro] = useState([]);
     const [lsTipoDocumento, setLsTipoDocumento] = useState([]);
+    const [area, setTipoDocumento] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -59,9 +62,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
             try {
                 const lsServerTipoSolicitud = await GetByTipoCatalogoCombo(CodCatalogo.VentanillaArea);
                 setLsArea(lsServerTipoSolicitud.data);
-
-                const lsServerResponsable = await GetByTipoCatalogoCombo(CodCatalogo.VentanillaTipoDocumento);
-                setLsTipoDocumento(lsServerResponsable.data);
+                setLsAreaFiltro(lsServerTipoSolicitud.data);
             } catch (error) { }
         }
 
@@ -104,7 +105,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
             const DataToInsert = {
                 documento: documento,
                 idVentanillaUnica: idResult,
-                idArea: datos.idArea,
+                idArea: area,
                 idTipoDocumento: datos.idTipoDocumento,
                 observaciones: datos.observaciones,
 
@@ -122,6 +123,21 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+    const handleChangeArea = async (event) => {
+        setTipoDocumento(event.target.value);
+
+        var codigoDocumento = lsAreaFiltro.filter(code => code.value === event.target.value)[0].codigo;
+
+        var lsTipo = await GetAllBySubTipoCatalogo(0, 0, codigoDocumento, 7);
+        if (lsTipo.status === 200) {
+            var resultMapsTipo = lsTipo.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+
+            setLsTipoDocumento(resultMapsTipo);
+        }
+    }
 
     return (
         <Fragment>
@@ -129,15 +145,14 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <Grid item xs={6}>
-                <FormProvider {...methods}>
-                    <InputSelect
-                        name="idArea"
-                        label="Area"
-                        options={lsArea}
-                        size={matchesXS ? 'small' : 'medium'}
-                        bug={errors.idArea}
-                    />
-                </FormProvider>
+                <SelectOnChange
+                    name="idArea"
+                    label="Area"
+                    value={area}
+                    options={lsArea}
+                    onChange={handleChangeArea}
+                    size={matchesXS ? 'small' : 'medium'}
+                />
             </Grid>
 
             <Grid item xs={6}>

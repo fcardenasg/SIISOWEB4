@@ -4,7 +4,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Box, Button, Grid, Typography, useMediaQuery } from '@mui/material';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import MailDrawer from './MailDrawer';
+/* import MailDrawer from './MailDrawer'; */
 import MailDetails from './MailDetails';
 import MailList from './MailList';
 import { openDrawer } from 'store/slices/menu';
@@ -78,8 +78,7 @@ const MailPage = () => {
             try {
                 const lsServer = await ConsultMail();
                 if (lsServer.status === 200) {
-                    setData(lsServer.data);
-                    /* setUnreadCounts(mailState?.unreadCount); */
+                    setData(lsServer?.data);
                 }
             } catch (error) { }
         }
@@ -118,6 +117,7 @@ const MailPage = () => {
 
     // search email using name
     const [search, setSearch] = useState('');
+
     const handleSearch = (event) => {
         const newString = event.target.value;
         setSearch(newString);
@@ -149,19 +149,16 @@ const MailPage = () => {
     return (
         <Fragment>
             <SubCard
-                title={
-                    <Typography variant='h2'>Módulo En Desarrollo</Typography>
-                }
+                title={<Typography variant="h3">Ventanilla Única Digital</Typography>}
                 secondary={
                     <AnimateButton>
                         <Button
                             variant="contained"
-                            /* size="large" */
                             startIcon={<AddCircleOutlineOutlinedIcon />}
                             sx={{ px: 2.75, py: 1.5 }}
-                            onClick={() => setUserEdit(true)}
+                            onClick={() => setUserEdit(!userEdit)}
                         >
-                            Registrar
+                            Indexar
                         </Button>
                     </AnimateButton>
                 }
@@ -170,13 +167,13 @@ const MailPage = () => {
                     <Grid item xs zeroMinWidth sx={{ display: userEdit ? { xs: 'none', md: 'block' } : 'block' }}>
                         <Grid container alignItems="center" spacing={gridSpacing}>
                             <Box sx={{ display: 'flex' }}>
-                                <MailDrawer
+                                {/* <MailDrawer
                                     openMailSidebar={openMailSidebar}
                                     handleDrawerOpen={handleDrawerOpen}
                                     filter={filter}
                                     handleFilter={handleFilter}
                                     unreadCounts={unreadCounts}
-                                />
+                                /> */}
 
                                 <Main theme={theme} open={openMailSidebar}>
                                     <Grid container spacing={gridSpacing}>

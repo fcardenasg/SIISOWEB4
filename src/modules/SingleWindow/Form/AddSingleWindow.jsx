@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 import {
@@ -7,15 +6,15 @@ import {
     Divider,
     Grid,
     Typography,
-    useMediaQuery,
-    useScrollTrigger
+    useMediaQuery
 } from '@mui/material';
 
 import { IconUser, IconFileUpload, IconFiles, IconMail } from '@tabler/icons';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ClearIcon from '@mui/icons-material/Clear';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import UploadIcon from '@mui/icons-material/Upload';
+
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SubCard from 'ui-component/cards/SubCard';
 import { gridSpacing } from 'store/constant';
@@ -25,23 +24,22 @@ import InputText from 'components/input/InputText';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
-import { InsertVentanillaUnica, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
+import { GetAllDocumentoVentanilla, InsertVentanillaUnica, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import ListAddSingleWindow from './ListAddSingleWindow';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+
 import InputOnChange from 'components/input/InputOnChange';
 import useAuth from 'hooks/useAuth';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import SelectOnChange from 'components/input/SelectOnChange';
+import Upload from 'components/UploadDocument/Upload';
 
 const validationSchema = yup.object().shape({
     idTipo: yup.string().required(ValidationMessage.Requerido),
-    tiempoRespuesta: yup.string().required(ValidationMessage.Requerido),
-    numRadicado: yup.string().required(ValidationMessage.Requerido),
-
     idMedioIngreso: yup.string().required(ValidationMessage.Requerido),
     idImportancia: yup.string().required(ValidationMessage.Requerido),
     folios: yup.string().required(ValidationMessage.Requerido),
@@ -52,26 +50,15 @@ const validationSchema = yup.object().shape({
     direccion: yup.string().required(ValidationMessage.Requerido),
 });
 
-function ElevationScroll({ children, window }) {
-    const trigger = useScrollTrigger({
-        disableHysteresis: true,
-        threshold: 130,
-        target: window || undefined
-    });
-
+function ElevationScroll({ children }) {
     return React.cloneElement(children, {
         style: {
-            position: trigger ? 'fixed' : 'relative',
-            top: trigger ? 83 : 0,
-            width: trigger ? 318 : '100%'
+            position: 'relative',
+            top: 0,
+            width: '100%'
         }
     });
 }
-
-ElevationScroll.propTypes = {
-    children: PropTypes.node,
-    window: PropTypes.object
-};
 
 const AddSingleWindow = ({ onCancel, ...others }) => {
     const theme = useTheme();
@@ -79,26 +66,42 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [documento, setDocumento] = useState("");
-    const [idResult, setIdResult] = useState(0);
+    const [dataPerson, setDataPerson] = useState({
+        nombre: '',
+        telefono: '',
+        idMunicipio: '',
+        direccion: '',
+        correo: ''
+    });
+    const [tipoPeticion, setTipoPeticion] = useState("");
+    const [tiempoRespuesta, setTiempoRespuesta] = useState("");
+    const [numRadicado, setNumRadicado] = useState("");
+
+    const [idResult, setIdResult] = useState(1);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
     const [archivoAdjunto, setArchivoAdjunto] = useState(null);
     const [infoArchivoAdjunto, setInfoArchivoAdjunto] = useState([]);
+
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
-    const [lsEmployee, setLsEmployee] = useState([]);
+    const [lsEmployee, setLsEmployee] = useState({
+        listado: [],
+        estado: false
+    });
 
     const [lsTipo, setLsTipo] = useState([]);
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsCondiciones, setLsCondiciones] = useState([]);
     const [lsImportancia, setLsImportancia] = useState([]);
     const [lsMunicipio, setLsMunicipio] = useState([]);
+    const [lsRecibidoPor, setLsRecibidoPor] = useState([]);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const methods = useForm({
-        resolver: yupResolver(validationSchema),
+        resolver: yupResolver(validationSchema)
     });
 
     const { handleSubmit, formState: { errors } } = methods;
@@ -120,6 +123,9 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
                 const lsServerMunicipio = await GetByTipoCatalogoCombo(CodCatalogo.Municipio);
                 setLsMunicipio(lsServerMunicipio.data);
+
+                const lsServerRecibidoPor = await GetByTipoCatalogoCombo(CodCatalogo.VentanillaRecibidoPor);
+                setLsRecibidoPor(lsServerRecibidoPor.data);
             } catch (error) { }
         }
 
@@ -129,53 +135,52 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
+            setLsEmployee({ estado: false, listado: [] });
 
             if (event?.target.value !== '') {
                 if (event.key === 'Enter') {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
-
-                    if (lsServerEmployee?.data.status === 200) {
-                        setLsEmployee(lsServerEmployee.data.data);
-                    } else {
-                        setLsEmployee(lsServerEmployee?.data.data);
-                    }
-                } else {
-                    var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+                    var lsServerEmployee = await GetAllDocumentoVentanilla(event?.target.value);
 
                     if (lsServerEmployee.data.status === 200) {
-                        setLsEmployee(lsServerEmployee.data.data);
+                        setLsEmployee({ estado: true, listado: lsServerEmployee.data });
+                    } else if (lsServerEmployee.data.status === 500) {
+                        setLsEmployee({ estado: true, listado: [] });
                     }
                 }
-            } else setLsEmployee([]);
+            }
         } catch (error) { }
     }
 
     const allowedFiles = ['application/pdf'];
-    const handleFile = async (event) => {
-        let selectedFile = event.target.files[0];
-        setInfoArchivoAdjunto(selectedFile);
+    const handleDrop = useCallback(
+        (event) => {
+            setInfoArchivoAdjunto(null);
+            let selectedFile = event[0];
+            setInfoArchivoAdjunto(selectedFile);
 
-        if (selectedFile) {
-            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
-                let reader = new FileReader();
-                reader.readAsDataURL(selectedFile);
-                reader.onloadend = async (e) => {
-                    setArchivoAdjunto(e.target.result);
+            if (selectedFile) {
+                if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                    let reader = new FileReader();
+                    reader.readAsDataURL(selectedFile);
+                    reader.onloadend = async (e) => {
+                        setArchivoAdjunto(e.target.result);
+                    }
+                }
+                else {
+                    setOpenError(true);
+                    setErrorMessage('Este forma no es un PDF');
                 }
             }
-            else {
-                setOpenError(true);
-                setErrorMessage('Este forma no es un PDF');
-            }
-        }
-    }
+        },
+        [infoArchivoAdjunto]
+    );
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = {
                 id: idResult,
-                idTipo: datos.idTipo,
-                tiempoRespuesta: datos.tiempoRespuesta,
+                idTipo: Number(tipoPeticion),
+                tiempoRespuesta: Number(tiempoRespuesta),
                 numRadicado: datos.numRadicado,
                 idMedioIngreso: datos.idMedioIngreso,
                 idCondicion: datos.idCondicion,
@@ -184,15 +189,22 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                 fechaRecibido: fechaInicio,
                 fechaLimiteRespuesta: fechaFin,
 
+                recibidoPor: datos.recibidoPor,
+                nombreRecibe: datos.nombreRecibe,
+                correoRecibe: datos.correoRecibe,
+
                 documento: documento,
                 nombre: datos.nombre,
                 telefono: datos.telefono,
                 idMunicipio: datos.idMunicipio,
                 direccion: datos.direccion,
-                gmail: datos.gmail,
+                correo: datos.correo,
+                solicitadoPor: datos.solicitadoPor,
+                correoSolicitante: datos.correoSolicitante,
+
                 archivoRecibido: archivoAdjunto,
                 usuarioRegistro: user?.nameuser,
-            }
+            };
 
             if (idResult === 0) {
                 const result = await InsertVentanillaUnica(DataToInsert);
@@ -212,7 +224,33 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
         }
-    };
+    }
+
+    const handleTipo = (event) => {
+        try {
+            setTipoPeticion(event.target.value);
+
+            var lsTipoMemory = lsTipo;
+            var codigoTiempo = lsTipoMemory.filter(code => code.value === event.target.value)[0].codigo;
+
+            var numerotiempo = codigoTiempo.substring(4);
+            setTiempoRespuesta(numerotiempo);
+
+            if (fechaInicio != null) {
+                var nuevaFecha = new Date(fechaInicio);
+                nuevaFecha.setDate(nuevaFecha.getDate() + Number(numerotiempo));
+
+                setFechaFin(FormatDate(nuevaFecha));
+            }
+
+            var codigoRadicado = codigoTiempo.substring(0, 3);
+            var dateNow = new Date();
+            var numeroRadicado = `${codigoRadicado}${dateNow.getFullYear()}${dateNow.getMonth()}${dateNow.getDay()}${dateNow.getHours()}${dateNow.getMinutes()}${dateNow.getSeconds()}`;
+            setNumRadicado(numeroRadicado);
+        } catch (error) {
+
+        }
+    }
 
     return (
         <Fragment>
@@ -234,55 +272,54 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
             <ElevationScroll {...others}>
                 <SubCard
-                    /* title="Registro De La Solicitud" */
+                    title={<Typography variant='h4'>Indexación De Documentos Recibidos</Typography>}
                     sx={{
                         width: '100%',
                         maxWidth: 550
                     }}
                     content={false}
                 >
-                    <PerfectScrollbar style={{ height: 'calc(80vh - 0px)', overflowX: 'hidden' }}>
+                    <PerfectScrollbar style={{ height: 'calc(70vh - 0px)', overflowX: 'hidden' }}>
                         <Grid container spacing={gridSpacing} sx={{ p: 3 }}>
-
                             <Grid item xs={12}>
                                 <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información De La Solicitud</Typography></>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={5}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipo"
-                                                    label="Tipo"
-                                                    options={lsTipo}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idTipo}
-                                                />
-                                            </FormProvider>
+                                            <SelectOnChange
+                                                name="idTipo"
+                                                label="Tipo"
+                                                value={tipoPeticion}
+                                                options={lsTipo}
+                                                onChange={handleTipo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3.5}>
                                             <FormProvider {...methods}>
-                                                <InputText
+                                                <InputOnChange
+                                                    disabled
                                                     type="number"
                                                     fullWidth
                                                     name="tiempoRespuesta"
-                                                    label="Tiempo de Respuesta (Días)"
+                                                    onChange={(e) => setTiempoRespuesta(e.target.value)}
+                                                    value={tiempoRespuesta}
+                                                    label="Días de Respuesta (Días)"
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.tiempoRespuesta}
                                                 />
                                             </FormProvider>
                                         </Grid>
 
                                         <Grid item xs={3.5}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    fullWidth
-                                                    name="numRadicado"
-                                                    label="N° Radicado"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.numRadicado}
-                                                />
-                                            </FormProvider>
+                                            <InputOnChange
+                                                disabled
+                                                fullWidth
+                                                name="numRadicado"
+                                                onChange={(e) => setNumRadicado(e.target.value)}
+                                                value={numRadicado}
+                                                label="N° Radicado"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={6}>
@@ -345,7 +382,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                         setFechaInicio(e.target.value);
 
                                                         var nuevaFecha = new Date(e.target.value);
-                                                        nuevaFecha.setDate(nuevaFecha.getDate() + 15);
+                                                        nuevaFecha.setDate(nuevaFecha.getDate() + Number(tiempoRespuesta));
                                                         setFechaFin(FormatDate(nuevaFecha));
                                                     }}
                                                     value={fechaInicio}
@@ -358,6 +395,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                         <Grid item xs={6}>
                                             <FormProvider {...methods}>
                                                 <InputDatePick
+                                                    disabled
                                                     onChange={(e) => setFechaFin(e.target.value)}
                                                     value={fechaFin}
                                                     label="Fecha Limite de Respuesta"
@@ -366,15 +404,51 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 />
                                             </FormProvider>
                                         </Grid>
+
+                                        <Grid item xs={6}>
+                                            <FormProvider {...methods}>
+                                                <InputSelect
+                                                    name="recibidoPor"
+                                                    label="Recibido Por"
+                                                    options={lsRecibidoPor}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.recibidoPor}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="nombreRecibe"
+                                                    label="Nombre De Que Recibe"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.nombreRecibe}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="correoRecibe"
+                                                    label="Correo Del Que Recibe"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.correoRecibe}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
                                     </Grid>
                                 </Accordion>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Accordion title={<><IconMail /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Del Solicitante</Typography></>}>
+                                <Accordion title={<><IconMail /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Del Empleado Solicitante</Typography></>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
-                                            <Typography variant="caption">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
+                                            <Typography variant="body1">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
                                         </Grid>
 
                                         <Grid item xs={6}>
@@ -387,102 +461,126 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                             />
                                         </Grid>
 
-                                        {lsEmployee.length !== 0 ?
-                                            <Fragment>
-                                                <Grid item xs={6}>
-                                                    <FormProvider {...methods}>
-                                                        <InputText
-                                                            defaultValue={lsEmployee?.nombres}
-                                                            fullWidth
-                                                            name="nombre"
-                                                            label="Nombre"
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors.nombre}
-                                                        />
-                                                    </FormProvider>
-                                                </Grid>
+                                        <Grid item xs={6}>
+                                            <InputOnChange
+                                                disabled={dataPerson.telefono !== '' ? false : true}
+                                                label="Teléfono"
+                                                onChange={(e) => setDocumento(e?.target.value)}
+                                                value={documento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
 
-                                                <Grid item xs={6}>
-                                                    <FormProvider {...methods}>
-                                                        <InputText
-                                                            defaultValue={lsEmployee?.celular}
-                                                            fullWidth
-                                                            name="telefono"
-                                                            label="Teléfono"
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors.telefono}
-                                                        />
-                                                    </FormProvider>
-                                                </Grid>
+                                        <Grid item xs={12}>
+                                            <InputOnChange
+                                                disabled={dataPerson.nombre !== '' ? false : true}
+                                                label="Nombre"
+                                                onChange={(e) => setDocumento(e?.target.value)}
+                                                value={documento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
 
-                                                <Grid item xs={6}>
-                                                    <FormProvider {...methods}>
-                                                        <InputSelect
-                                                            defaultValue={lsEmployee?.municipioResidenciaTrabaja}
-                                                            name="idMunicipio"
-                                                            label="Municipio"
-                                                            options={lsMunicipio}
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors.idMunicipio}
-                                                        />
-                                                    </FormProvider>
-                                                </Grid>
+                                        <Grid item xs={6}>
+                                            <InputOnChange
+                                                disabled={dataPerson.idMunicipio !== '' ? false : true}
+                                                label="Municipio"
+                                                onChange={(e) => setDocumento(e?.target.value)}
+                                                value={documento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
 
-                                                <Grid item xs={6}>
-                                                    <FormProvider {...methods}>
-                                                        <InputText
-                                                            defaultValue={lsEmployee?.direccionResidencia}
-                                                            fullWidth
-                                                            name="direccion"
-                                                            label="Dirección"
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors.direccion}
-                                                        />
-                                                    </FormProvider>
-                                                </Grid>
+                                        <Grid item xs={6}>
+                                            <InputOnChange
+                                                disabled={dataPerson.direccion !== '' ? false : true}
+                                                label="Dirección"
+                                                onChange={(e) => setDocumento(e?.target.value)}
+                                                value={documento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
 
-                                                <Grid item xs={6}>
-                                                    <FormProvider {...methods}>
-                                                        <InputText
-                                                            defaultValue={lsEmployee?.email}
-                                                            fullWidth
-                                                            name="gmail"
-                                                            label="Correo Electrónico"
-                                                            size={matchesXS ? 'small' : 'medium'}
-                                                            bug={errors.gmail}
-                                                        />
-                                                    </FormProvider>
-                                                </Grid>
-                                            </Fragment> : null
-                                        }
+                                        <Grid item xs={12}>
+                                            <InputOnChange
+                                                disabled={dataPerson.correo !== '' ? false : true}
+                                                label="Correo Electrónico Del Empleado"
+                                                onChange={(e) => setDocumento(e?.target.value)}
+                                                value={documento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Typography variant="body1">Información Del Solicitante</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Divider />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="solicitadoPor"
+                                                    label="Solicitado Por"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.correoRecibe}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="correoSolicitante"
+                                                    label="Correo Del Solicitante"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.correoRecibe}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="direccionSolicitante"
+                                                    label="Dirección Del Solicitante"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.correoRecibe}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
                                     </Grid>
                                 </Accordion>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Accordion title={<><IconFileUpload /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Archivo Adjunto</Typography></>}>
+                                <Accordion title={<><IconFileUpload /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Cargar Archivo</Typography></>}>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button fullWidth variant="contained" component="label" endIcon={<UploadIcon fontSize="small" />}>
-                                                    <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                                    {TitleButton.SubirArchivo}
-                                                </Button>
-                                            </AnimateButton>
+                                        <Grid item xs={12}>
+                                            <Upload files={infoArchivoAdjunto} onDrop={handleDrop} />
                                         </Grid>
 
                                         <Grid item xs={6}>
                                             <AnimateButton>
                                                 <Button disabled={archivoAdjunto === null ? true : false} fullWidth variant="outlined" component="label"
-                                                    endIcon={<VisibilityIcon fontSize="small" />} onClick={() => setOpenViewArchivo(true)}>
+                                                    startIcon={<VisibilityIcon fontSize="small" />} onClick={() => setOpenViewArchivo(true)}>
                                                     {TitleButton.VerArchivo}
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>
 
-                                        <Grid item xs={12}>
-                                            <Typography variant="h5">Nombre: {infoArchivoAdjunto.name}</Typography>
-                                            <Typography variant="h5">Size: {infoArchivoAdjunto.size}</Typography>
+                                        <Grid item xs={6}>
+                                            <AnimateButton>
+                                                <Button fullWidth color="error" variant="outlined" component="label"
+                                                    startIcon={<ClearIcon fontSize="small" />} onClick={() => { setInfoArchivoAdjunto(null); setArchivoAdjunto(null); }}>
+                                                    Remover
+                                                </Button>
+                                            </AnimateButton>
                                         </Grid>
                                     </Grid>
                                 </Accordion>

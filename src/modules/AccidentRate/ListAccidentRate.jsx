@@ -227,8 +227,7 @@ const ListAccidentRate = () => {
             const lsServer = await GetAllAccidentRate();
             setlsAccidentRate(lsServer.data);
             setRows(lsServer.data);
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {

@@ -31,6 +31,7 @@ export const CodCatalogo = {
     VentanillaNivelImportancia: 222,
     VentanillaArea: 223,
     VentanillaTipoDocumento: 224,
+    VentanillaRecibidoPor: 231,
 
     TipoconceptoApAl: 192,
     EP_EMO_SintomasRespiratorios: 201,
