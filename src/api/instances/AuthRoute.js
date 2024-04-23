@@ -12,6 +12,7 @@ export const Url = {
 
     Usuarios: 'api/Usuarios',
     UsuariosCombo: 'api/Usuarios/combo',
+    UsuariosComboArea: 'api/Usuarios/combo-area',
     UsuariosUpdateSede: 'api/Usuarios/UpdateSede',
     UsuariosId: 'api/Usuarios/id',
     UsuariosEmail: 'api/Usuarios/email',
@@ -136,6 +137,9 @@ export const Url = {
     VentanillaUnicaId: 'api/VentanillaUnica/id',
 
     VentanillaUnicaDetalle: 'api/VentanillaUnicaDetalle',
+    VentanillaUnicaDetalleList: 'api/VentanillaUnicaDetalle/list-detalle',
+    VentanillaUnicaDetalleArea: 'api/VentanillaUnicaDetalle/list-area',
+    VentanillaUnicaDetalleArchivo: 'api/VentanillaUnicaDetalle/archivo',
 
     Asesorias: 'api/Asesorias',
     AsesoriasExcel: 'api/Asesorias/excel',

@@ -8,6 +8,9 @@ export const InsertVentanillaUnica = async (ventanillaUnica) => await postData(U
 export const UpdateVentanillaUnicas = async (ventanillaUnica) => await putData(Url.VentanillaUnica, ventanillaUnica);
 export const DeleteVentanillaUnica = async (idVentanillaUnica) => await deleteData(Url.VentanillaUnica, { idVentanillaUnica });
 
-export const GetByIdVentanillaUnicaDetalle = async (idVentanillaUnica) => await getData(Url.VentanillaUnicaDetalle, { idVentanillaUnica });
+export const GetAllVentanillaUnicaDetalleArea = async (idArea) => await getData(Url.VentanillaUnicaDetalleArea, { idArea });
+export const GetVentanillaUnicaDetalleArchivo = async (id) => await getData(Url.VentanillaUnicaDetalleArchivo, { id });
+export const GetAllVentanillaUnicaDetalle = async (idVentanilla, idArea, options) => await getData(Url.VentanillaUnicaDetalleList, { idVentanilla, idArea, options });
 export const InsertVentanillaUnicaDetalle = async (ventanillaUnicaDetalle) => await postData(Url.VentanillaUnicaDetalle, ventanillaUnicaDetalle);
+export const UpdateVentanillaUnicaDetalle = async (ventanillaUnicaDetalle) => await putData(Url.VentanillaUnicaDetalle, ventanillaUnicaDetalle);
 export const DeleteVentanillaUnicaDetalle = async (idVentanillaUnicaDetalle) => await deleteData(Url.VentanillaUnicaDetalle, { idVentanillaUnicaDetalle });

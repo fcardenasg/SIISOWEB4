@@ -1,18 +1,18 @@
-export function PostUser(documento, nombreUsuario, password, nombre, telefono,
+export function PostUser(documento, nombreUsuario, password, nombre, telefono, idArea,
     correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
     firma, estado, idSede, respondeReintegro) {
     return {
-        documento, nombreUsuario, password, nombre, telefono,
+        documento, nombreUsuario, password, nombre, telefono, idArea,
         correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
         firma, estado, idSede, respondeReintegro
     };
 }
 
-export function PutUser(id, documento, nombreUsuario, password, nombre, telefono,
+export function PutUser(id, documento, nombreUsuario, password, nombre, telefono, idArea,
     correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
     firma, estado, idSede, respondeReintegro) {
     return {
-        id, documento, nombreUsuario, password, nombre, telefono,
+        id, documento, nombreUsuario, password, nombre, telefono, idArea,
         correo, idRol, especialidad, registroMedico, licencia, tarjetaProfesional,
         firma, estado, idSede, respondeReintegro
     }

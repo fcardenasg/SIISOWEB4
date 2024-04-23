@@ -3,6 +3,7 @@ import { getData, deleteData, postData, putData } from '../UtilInstance';
 
 export const GetAllUser = async (page, pageSize) => await getData(Url.Usuarios, { page, pageSize });
 export const GetAllComboUser = async () => await getData(Url.UsuariosCombo);
+export const GetAllComboArea = async (idArea) => await getData(Url.UsuariosComboArea, { idArea });
 export const GetByIdUser = async (id) => await getData(Url.UsuariosId, { id });
 export const GetByMail = async (email) => await getData(Url.UsuariosEmail, { email });
 export const InsertUser = async (usuarios) => await postData(Url.Usuarios, usuarios);

@@ -50,6 +50,7 @@ const User = () => {
     const [lsEspecialidad, setLsEspecialidad] = useState([]);
     const [lsRolUser, setLsRolUser] = useState([]);
     const [lsSedeUser, setLsSedeUser] = useState([]);
+    const [lsArea, setLsArea] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -68,6 +69,13 @@ const User = () => {
                 label: item.nombre
             }));
             setLsEspecialidad(resultEspecialidad);
+
+            const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.VentanillaArea);
+            var resultArea = lsServerArea.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsArea(resultArea);
 
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
             var resultSede = lsServerSede.data.entities.map((item) => ({
@@ -108,9 +116,9 @@ const User = () => {
             const password = checkUsuario ? datos.nombreUsuario : "12345678";
             const firmaMedico = fileImg === null ? '' : fileImg;
 
-            const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
-                datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                firmaMedico, checkEstadoUsuario, datos.idSede);
+            const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono,
+                datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
+                datos.tarjetaProfesional, firmaMedico, checkEstadoUsuario, datos.idSede);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertUser(DataToInsert);
@@ -267,6 +275,19 @@ const User = () => {
                             options={lsSedeUser}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.idSede}
+                        />
+                    </FormProvider>
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={4}>
+                    <FormProvider {...methods}>
+                        <InputSelect
+                            name="idArea"
+                            label="Area"
+                            defaultValue=""
+                            options={lsArea}
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors.idArea}
                         />
                     </FormProvider>
                 </Grid>

@@ -52,6 +52,7 @@ const UpdateUser = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const [lsEspecialidad, setLsEspecialidad] = useState([]);
+    const [lsArea, setLsArea] = useState([]);
     const [lsRolUser, setLsRolUser] = useState([]);
     const [lsSedeUser, setLsSedeUser] = useState([]);
 
@@ -73,6 +74,13 @@ const UpdateUser = () => {
 
             const lsServerRol = await GetComboRol();
             setLsRolUser(lsServerRol.data);
+
+            const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.VentanillaArea);
+            var resultArea = lsServerArea.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsArea(resultArea);
 
             const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
             var resultEspecialidad = lsServerEspecialidad.data.entities.map((item) => ({
@@ -120,8 +128,8 @@ const UpdateUser = () => {
             const password = checkResetearPass ? datos.nombreUsuario : lsUsuario.password;
             const firmaMedico = fileImg === null ? '' : fileImg;
 
-            const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.correo,
-                datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
+            const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.idArea,
+                datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
                 firmaMedico, checkEstadoUsuario, datos.idSede, checkRespondeRein);
 
             if (Object.keys(datos.length !== 0)) {
@@ -274,8 +282,6 @@ const UpdateUser = () => {
                             </FormProvider>
                         </Grid>
 
-
-
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
@@ -285,6 +291,19 @@ const UpdateUser = () => {
                                     options={lsSedeUser}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.idSede}
+                                />
+                            </FormProvider>
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="idArea"
+                                    label="Area"
+                                    defaultValue={lsUsuario.idArea}
+                                    options={lsArea}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.idArea}
                                 />
                             </FormProvider>
                         </Grid>

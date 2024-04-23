@@ -97,7 +97,9 @@ export const JWTProvider = ({ children }) => {
                                 nameuser: data.nombreUsuario,
                                 namerol: data.rolUsuario,
                                 namesede: data.sedeUsuario,
-                                idsede: data.idSede
+                                idsede: data.idSede,
+                                idarea: data.idArea,
+                                namearea: data.nameArea
                             }
                         }
                     });
@@ -146,7 +148,9 @@ export const JWTProvider = ({ children }) => {
                         nameuser: dataUser.nombreUsuario,
                         namerol: dataUser.nombreRol,
                         namesede: dataUser.nombreSede,
-                        idsede: dataUser.idSede
+                        idsede: dataUser.idSede,
+                        idarea: dataUser.idArea,
+                        namearea: dataUser.nameArea
                     }
                 }
             });

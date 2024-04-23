@@ -22,7 +22,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import InputSelect from 'components/input/InputSelect';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputText from 'components/input/InputText';
-import { DeleteVentanillaUnicaDetalle, GetByIdVentanillaUnicaDetalle, InsertVentanillaUnicaDetalle } from 'api/clients/VentanillaUnicaClient';
+import { DeleteVentanillaUnicaDetalle, GetAllVentanillaUnicaDetalle, InsertVentanillaUnicaDetalle } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess, ParamDelete } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, ValidationMessage } from 'components/helpers/Enums';
 import useAuth from 'hooks/useAuth';
@@ -31,10 +31,11 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import swal from 'sweetalert';
 import SelectOnChange from 'components/input/SelectOnChange';
+import { GetAllComboArea } from 'api/clients/UserClient';
+import InputMultiSelects from 'components/input/InputMultiSelects';
 
 const validationSchema = yup.object().shape({
-    idArea: yup.number().required(ValidationMessage.Requerido),
-    idTipoDocumento: yup.number().required(ValidationMessage.Requerido)
+    idUsuario: yup.number().required(ValidationMessage.Requerido)
 });
 
 const ListAddSingleWindow = ({ documento, idResult }) => {
@@ -48,9 +49,11 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
 
     const [lsPeticiones, setLsPeticiones] = useState([]);
     const [lsArea, setLsArea] = useState([]);
+    const [lsUsuario, setLsUsuario] = useState([]);
     const [lsAreaFiltro, setLsAreaFiltro] = useState([]);
     const [lsTipoDocumento, setLsTipoDocumento] = useState([]);
-    const [area, setTipoDocumento] = useState([]);
+    const [area, setArea] = useState([]);
+    const [tipoDocumento, setTipoDocumento] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -71,7 +74,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
 
     async function getAllListSolicitudes() {
         try {
-            const lsServer = await GetByIdVentanillaUnicaDetalle(idResult);
+            const lsServer = await GetAllVentanillaUnicaDetalle(idResult, 0, true);
 
             if (lsServer.status === 200) {
                 setLsPeticiones(lsServer.data);
@@ -106,7 +109,8 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
                 documento: documento,
                 idVentanillaUnica: idResult,
                 idArea: area,
-                idTipoDocumento: datos.idTipoDocumento,
+                idTipoDocumento: tipoDocumento,
+                idUsuario: datos.idUsuario,
                 observaciones: datos.observaciones,
 
                 usuarioRegistro: user.nameuser,
@@ -124,7 +128,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
         }
     };
     const handleChangeArea = async (event) => {
-        setTipoDocumento(event.target.value);
+        setArea(event.target.value);
 
         var codigoDocumento = lsAreaFiltro.filter(code => code.value === event.target.value)[0].codigo;
 
@@ -137,6 +141,9 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
 
             setLsTipoDocumento(resultMapsTipo);
         }
+
+        const lsServerUsuario = await GetAllComboArea(event.target.value);
+        setLsUsuario(lsServerUsuario.data);
     }
 
     return (
@@ -158,18 +165,30 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
             <Grid item xs={6}>
                 <FormProvider {...methods}>
                     <InputSelect
-                        name="idTipoDocumento"
-                        label="Tipo De Documento"
-                        options={lsTipoDocumento}
+                        name="idUsuario"
+                        label="Usuario Responsable"
+                        options={lsUsuario}
                         size={matchesXS ? 'small' : 'medium'}
-                        bug={errors.idTipoDocumento}
+                        bug={errors.idUsuario}
                     />
                 </FormProvider>
             </Grid>
 
-            <Grid item xs={10}>
+            <Grid item xs={12}>
+                <InputMultiSelects
+                    fullWidth
+                    onChange={(event, value) => setTipoDocumento(value)}
+                    value={tipoDocumento}
+                    label="Tipo De Documento"
+                    options={lsTipoDocumento}
+                />
+            </Grid>
+
+            <Grid item xs={12}>
                 <FormProvider {...methods}>
                     <InputText
+                        multiline
+                        rows={3}
                         fullWidth
                         name="observaciones"
                         label="Observaciones"
@@ -179,7 +198,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
                 </FormProvider>
             </Grid>
 
-            <Grid item xs={2}>
+            <Grid item xs={3}>
                 <Button variant="contained" fullWidth size="medium" onClick={handleSubmit(handleClick)}>
                     Agregar
                 </Button>

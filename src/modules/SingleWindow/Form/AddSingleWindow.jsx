@@ -39,15 +39,9 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import Upload from 'components/UploadDocument/Upload';
 
 const validationSchema = yup.object().shape({
-    idTipo: yup.string().required(ValidationMessage.Requerido),
     idMedioIngreso: yup.string().required(ValidationMessage.Requerido),
     idImportancia: yup.string().required(ValidationMessage.Requerido),
     folios: yup.string().required(ValidationMessage.Requerido),
-
-    nombre: yup.string().required(ValidationMessage.Requerido),
-    telefono: yup.string().required(ValidationMessage.Requerido),
-    gmail: yup.string().required(ValidationMessage.Requerido),
-    direccion: yup.string().required(ValidationMessage.Requerido),
 });
 
 function ElevationScroll({ children }) {
@@ -77,17 +71,12 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
     const [tiempoRespuesta, setTiempoRespuesta] = useState("");
     const [numRadicado, setNumRadicado] = useState("");
 
-    const [idResult, setIdResult] = useState(1);
+    const [idResult, setIdResult] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
     const [archivoAdjunto, setArchivoAdjunto] = useState(null);
-    const [infoArchivoAdjunto, setInfoArchivoAdjunto] = useState([]);
-
+    const [infoArchivoAdjunto, setInfoArchivoAdjunto] = useState(null);
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
-    const [lsEmployee, setLsEmployee] = useState({
-        listado: [],
-        estado: false
-    });
 
     const [lsTipo, setLsTipo] = useState([]);
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
@@ -135,16 +124,24 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
     const handleDocumento = async (event) => {
         try {
             setDocumento(event?.target.value);
-            setLsEmployee({ estado: false, listado: [] });
 
             if (event?.target.value !== '') {
                 if (event.key === 'Enter') {
                     var lsServerEmployee = await GetAllDocumentoVentanilla(event?.target.value);
 
-                    if (lsServerEmployee.data.status === 200) {
-                        setLsEmployee({ estado: true, listado: lsServerEmployee.data });
-                    } else if (lsServerEmployee.data.status === 500) {
-                        setLsEmployee({ estado: true, listado: [] });
+                    if (lsServerEmployee.status === 200) {
+                        if (lsServerEmployee.data.nombre === null) {
+                            setOpenError(true);
+                            setErrorMessage("No hay registro de este numero de documento o nit");
+                        } else {
+                            setDataPerson({
+                                nombre: lsServerEmployee?.data.nombre,
+                                telefono: lsServerEmployee?.data.telefono,
+                                idMunicipio: lsServerEmployee?.data.idMunicipio,
+                                direccion: lsServerEmployee?.data.direccion,
+                                correo: lsServerEmployee?.data.correo
+                            });
+                        }
                     }
                 }
             }
@@ -194,11 +191,11 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                 correoRecibe: datos.correoRecibe,
 
                 documento: documento,
-                nombre: datos.nombre,
-                telefono: datos.telefono,
-                idMunicipio: datos.idMunicipio,
-                direccion: datos.direccion,
-                correo: datos.correo,
+                nombre: dataPerson.nombre,
+                telefono: dataPerson.telefono,
+                idMunicipio: dataPerson.idMunicipio,
+                direccion: dataPerson.direccion,
+                correo: dataPerson.correo,
                 solicitadoPor: datos.solicitadoPor,
                 correoSolicitante: datos.correoSolicitante,
 
@@ -448,75 +445,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                 <Accordion title={<><IconMail /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Del Empleado Solicitante</Typography></>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
-                                            <Typography variant="body1">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <InputOnChange
-                                                label="Documento / Nit"
-                                                onKeyDown={handleDocumento}
-                                                onChange={(e) => setDocumento(e?.target.value)}
-                                                value={documento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <InputOnChange
-                                                disabled={dataPerson.telefono !== '' ? false : true}
-                                                label="Teléfono"
-                                                onChange={(e) => setDocumento(e?.target.value)}
-                                                value={documento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <InputOnChange
-                                                disabled={dataPerson.nombre !== '' ? false : true}
-                                                label="Nombre"
-                                                onChange={(e) => setDocumento(e?.target.value)}
-                                                value={documento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <InputOnChange
-                                                disabled={dataPerson.idMunicipio !== '' ? false : true}
-                                                label="Municipio"
-                                                onChange={(e) => setDocumento(e?.target.value)}
-                                                value={documento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <InputOnChange
-                                                disabled={dataPerson.direccion !== '' ? false : true}
-                                                label="Dirección"
-                                                onChange={(e) => setDocumento(e?.target.value)}
-                                                value={documento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <InputOnChange
-                                                disabled={dataPerson.correo !== '' ? false : true}
-                                                label="Correo Electrónico Del Empleado"
-                                                onChange={(e) => setDocumento(e?.target.value)}
-                                                value={documento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
                                             <Typography variant="body1">Información Del Solicitante</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <Divider />
                                         </Grid>
 
                                         <Grid item xs={12}>
@@ -554,6 +483,71 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 />
                                             </FormProvider>
                                         </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Divider />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Typography variant="body1">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <InputOnChange
+                                                label="Documento / Nit"
+                                                onKeyDown={handleDocumento}
+                                                onChange={(e) => setDocumento(e.target.value)}
+                                                value={documento}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <InputOnChange
+                                                label="Teléfono"
+                                                onChange={(e) => setDataPerson({ ...dataPerson, telefono: e.target.value })}
+                                                value={dataPerson.telefono}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputOnChange
+                                                label="Nombre"
+                                                onChange={(e) => setDataPerson({ ...dataPerson, nombre: e.target.value })}
+                                                value={dataPerson.nombre}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <SelectOnChange
+                                                name="idMunicipio"
+                                                label="Municipio"
+                                                value={dataPerson.idMunicipio}
+                                                onChange={(e) => setDataPerson({ ...dataPerson, idMunicipio: e.target.value })}
+                                                options={lsMunicipio}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <InputOnChange
+                                                label="Dirección"
+                                                onChange={(e) => setDataPerson({ ...dataPerson, direccion: e.target.value })}
+                                                value={dataPerson.direccion}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputOnChange
+                                                label="Correo Electrónico Del Empleado"
+                                                onChange={(e) => setDataPerson({ ...dataPerson, correo: e.target.value })}
+                                                value={dataPerson.correo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
                                     </Grid>
                                 </Accordion>
                             </Grid>
@@ -586,17 +580,19 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                 </Accordion>
                             </Grid>
 
-                            {idResult !== 0 ?
-                                <Grid item xs={12}>
-                                    <Accordion title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución Del Tipo De Solicitud</Typography></>}>
-                                        <Grid container spacing={2}>
-                                            <ListAddSingleWindow documento={documento} idResult={idResult} />
-                                        </Grid>
-                                    </Accordion>
-                                </Grid> : null
-                            }
+                            <Grid item xs={12}>
+                                <Typography variant="body1"><b>Nota:</b> Al guardar el registro se habilitará la opción para agregar los tipos de solicitudes que el empleado solicito</Typography>
+                            </Grid>
 
                             <Grid item xs={12}>
+                                <Accordion disabled={idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución Del Tipo De Solicitud</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <ListAddSingleWindow documento={documento} idResult={idResult} />
+                                    </Grid>
+                                </Accordion>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ mt: 2 }}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={3}>
                                         <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>

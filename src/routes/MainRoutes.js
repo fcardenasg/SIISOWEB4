@@ -210,8 +210,11 @@ const MenuConsultancies = Loadable(lazy(() => import('modules/Menu/MenuConsultan
 const MenuParaclinics = Loadable(lazy(() => import('modules/Menu/MenuParaclinics')));
 const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParameterization')));
 const MenuExcel = Loadable(lazy(() => import('modules/Menu/MenuExcel')));
+const MenuVentanilla = Loadable(lazy(() => import('modules/Menu/MenuVentanilla')));
 
 const AppMail = Loadable(lazy(() => import('modules/SingleWindow/mail')));
+const ViewMonitoreo = Loadable(lazy(() => import('modules/SingleWindow/View/ViewMonitoreo')));
+const ViewRespuesta = Loadable(lazy(() => import('modules/SingleWindow/View/ViewRespuesta')));
 const ChatGPT = Loadable(lazy(() => import('modules/Chat')));
 
 const MenuExcelOccupationalHealth = Loadable(lazy(() => import('modules/Menu/MenuExcelOccupationalHealth')));
@@ -922,9 +925,21 @@ const MainRoutes = {
         /* Ventanilla Única */
         {
             path: '/single-window/view',
-            element: <AppMail />
+            element: <MenuVentanilla />
         },
 
+        {
+            path: '/single-window/index',
+            element: <AppMail />
+        },
+        {
+            path: '/single-window/reply',
+            element: <ViewRespuesta />
+        },
+        {
+            path: '/single-window/monitoring',
+            element: <ViewMonitoreo />
+        },
         {
             path: '/chat-gpt/view',
             element: <ChatGPT />
