@@ -585,7 +585,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Accordion disabled={idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución Del Tipo De Solicitud</Typography></>}>
+                                <Accordion disabled={!idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución Del Tipo De Solicitud</Typography></>}>
                                     <Grid container spacing={2}>
                                         <ListAddSingleWindow documento={documento} idResult={idResult} />
                                     </Grid>

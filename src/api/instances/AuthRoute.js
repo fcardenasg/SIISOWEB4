@@ -137,6 +137,7 @@ export const Url = {
     VentanillaUnicaId: 'api/VentanillaUnica/id',
 
     VentanillaUnicaDetalle: 'api/VentanillaUnicaDetalle',
+    VentanillaUnicaDetalleId: 'api/VentanillaUnicaDetalle/id',
     VentanillaUnicaDetalleList: 'api/VentanillaUnicaDetalle/list-detalle',
     VentanillaUnicaDetalleArea: 'api/VentanillaUnicaDetalle/list-area',
     VentanillaUnicaDetalleArchivo: 'api/VentanillaUnicaDetalle/archivo',

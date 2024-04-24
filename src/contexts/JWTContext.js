@@ -71,7 +71,6 @@ const setRenderMenu = (systemMenu) => {
     }
 };
 
-// ==============================|| JWT CONTEXT & PROVIDER ||============================== //
 const JWTContext = createContext(null);
 
 export const JWTProvider = ({ children }) => {

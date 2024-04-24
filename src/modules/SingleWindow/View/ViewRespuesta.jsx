@@ -19,9 +19,7 @@ import {
     TextField,
     Typography,
     Button,
-    Menu,
-    MenuItem,
-    ListItemIcon
+    Tooltip
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
@@ -29,14 +27,12 @@ import { MessageDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useAuth from 'hooks/useAuth';
 import { GetAllVentanillaUnicaDetalleArea } from 'api/clients/VentanillaUnicaClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReplyIcon from '@mui/icons-material/Reply';
-import MoveDownIcon from '@mui/icons-material/MoveDown';
 import ControlModal from 'components/controllers/ControlModal';
 import ListReplay from './ListReplay';
 
@@ -159,9 +155,6 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
 const ViewRespuesta = () => {
     const { user } = useAuth();
 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-
     const navigate = useNavigate();
     const [lsRespuesta, setLsRespuesta] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
@@ -179,7 +172,7 @@ const ViewRespuesta = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllVentanillaUnicaDetalleArea(user?.idarea);
+            const lsServer = await GetAllVentanillaUnicaDetalleArea(user?.idarea, user.id);
             setLsRespuesta(lsServer.data);
             setRows(lsServer.data);
         } catch (error) { }
@@ -225,14 +218,6 @@ const ViewRespuesta = () => {
     const handleChangeRowsPerPage = (event) => {
         if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
         setPage(0);
-    };
-
-    const handleClickResponder = (idVentanilla) => {
-
-    };
-
-    const handleClickTrasladar = (idVentanilla) => {
-
     };
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRespuesta.length) : 0;
@@ -414,43 +399,11 @@ const ViewRespuesta = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <IconButton
-                                                    aria-label="more"
-                                                    id="long-button"
-                                                    aria-controls={open ? 'long-menu' : undefined}
-                                                    aria-expanded={open ? 'true' : undefined}
-                                                    aria-haspopup="true"
-                                                    onClick={(event) => setAnchorEl(event.currentTarget)}
-                                                >
-                                                    <MoreVertIcon />
-                                                </IconButton>
-                                                <Menu
-                                                    id="long-menu"
-                                                    MenuListProps={{
-                                                        'aria-labelledby': 'long-button',
-                                                    }}
-                                                    anchorEl={anchorEl}
-                                                    open={open}
-                                                    onClose={() => setAnchorEl(null)}
-                                                >
-                                                    <MenuItem onClick={() => { setOpenModal(true); setAnchorEl(null); setIdVentanilla(row?.id) }}>
-                                                        <ListItemIcon>
-                                                            <ReplyIcon fontSize="small" />
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit" noWrap>
-                                                            Responder
-                                                        </Typography>
-                                                    </MenuItem>
-
-                                                    <MenuItem onClick={() => handleClickTrasladar(row.id)}>
-                                                        <ListItemIcon>
-                                                            <MoveDownIcon fontSize="small" />
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit" noWrap>
-                                                            Trasladar
-                                                        </Typography>
-                                                    </MenuItem>
-                                                </Menu>
+                                                <Tooltip title="Responder" onClick={() => { setOpenModal(true); setIdVentanilla(row?.id) }}>
+                                                    <IconButton size="large">
+                                                        <ReplyIcon sx={{ fontSize: '1.5rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     );

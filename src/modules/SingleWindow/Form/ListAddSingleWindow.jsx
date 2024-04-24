@@ -127,6 +127,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
     const handleChangeArea = async (event) => {
         setArea(event.target.value);
 
