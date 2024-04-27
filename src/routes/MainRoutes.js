@@ -927,7 +927,6 @@ const MainRoutes = {
             path: '/single-window/view',
             element: <MenuVentanilla />
         },
-
         {
             path: '/single-window/index',
             element: <AppMail />

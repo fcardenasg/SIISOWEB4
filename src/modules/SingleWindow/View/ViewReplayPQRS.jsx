@@ -191,17 +191,19 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                            <Grid item>
-                                <Typography variant="h4">Fecha :</Typography>
-                            </Grid>
+                    {lsData?.fechaModifico !== null ?
+                        <Grid item xs={12}>
+                            <Grid container spacing={1}>
+                                <Grid item>
+                                    <Typography variant="h4">Fecha de Respuesta:</Typography>
+                                </Grid>
 
-                            <Grid item>
-                                <Typography variant="h5">{lsData?.nameTipoDocumento}</Typography>
+                                <Grid item>
+                                    <Typography variant="h5">{new Date(lsData?.fechaModifico).toLocaleString()}</Typography>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid>
+                        </Grid> : null
+                    }
 
                     <Grid item xs={12}>
                         <Divider />

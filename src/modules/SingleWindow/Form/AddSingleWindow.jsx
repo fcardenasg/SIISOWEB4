@@ -24,7 +24,7 @@ import InputText from 'components/input/InputText';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
-import { GetAllDocumentoVentanilla, InsertVentanillaUnica, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
+import { GetAllDocumentoVentanilla, InsertVentanillaUnica, NotifyVentanillaUnica, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import ListAddSingleWindow from './ListAddSingleWindow';
@@ -79,6 +79,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
 
     const [lsTipo, setLsTipo] = useState([]);
+    const [dataVentanilla, setDataVentanilla] = useState([]);
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsCondiciones, setLsCondiciones] = useState([]);
     const [lsImportancia, setLsImportancia] = useState([]);
@@ -172,57 +173,6 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
         [infoArchivoAdjunto]
     );
 
-    const handleClick = async (datos) => {
-        try {
-            const DataToInsert = {
-                id: idResult,
-                idTipo: Number(tipoPeticion),
-                tiempoRespuesta: Number(tiempoRespuesta),
-                numRadicado: datos.numRadicado,
-                idMedioIngreso: datos.idMedioIngreso,
-                idCondicion: datos.idCondicion,
-                idImportancia: datos.idImportancia,
-                folios: datos.folios,
-                fechaRecibido: fechaInicio,
-                fechaLimiteRespuesta: fechaFin,
-
-                recibidoPor: datos.recibidoPor,
-                nombreRecibe: datos.nombreRecibe,
-                correoRecibe: datos.correoRecibe,
-
-                documento: documento,
-                nombre: dataPerson.nombre,
-                telefono: dataPerson.telefono,
-                idMunicipio: dataPerson.idMunicipio,
-                direccion: dataPerson.direccion,
-                correo: dataPerson.correo,
-                solicitadoPor: datos.solicitadoPor,
-                correoSolicitante: datos.correoSolicitante,
-
-                archivoRecibido: archivoAdjunto,
-                usuarioRegistro: user?.nameuser,
-            };
-
-            if (idResult === 0) {
-                const result = await InsertVentanillaUnica(DataToInsert);
-                if (result.status === 200) {
-                    setIdResult(result.data);
-                    setOpenSuccess(true);
-                }
-            } else {
-                const result = await UpdateVentanillaUnicas(DataToInsert);
-                if (result.status === 200) {
-                    setIdResult(result.data);
-                    setOpenSuccess(true);
-                }
-            }
-
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
-        }
-    }
-
     const handleTipo = (event) => {
         try {
             setTipoPeticion(event.target.value);
@@ -249,6 +199,70 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
         }
     }
 
+    const handleNotifi = async () => {
+        try {
+            try {
+
+            } catch (error) {
+            }
+        } catch (error) {
+
+        }
+    }
+
+    const handleClick = async (datos) => {
+        try {
+            const DataToInsert = {
+                id: idResult,
+                idTipo: Number(tipoPeticion),
+                tiempoRespuesta: Number(tiempoRespuesta),
+                numRadicado: numRadicado,
+                idMedioIngreso: datos.idMedioIngreso,
+                idCondicion: datos.idCondicion,
+                idImportancia: datos.idImportancia,
+                folios: datos.folios,
+                fechaRecibido: fechaInicio,
+                fechaLimiteRespuesta: fechaFin,
+
+                recibidoPor: datos.recibidoPor,
+                nombreRecibe: datos.nombreRecibe,
+                correoRecibe: datos.correoRecibe,
+
+                documento: documento,
+                nombre: dataPerson.nombre,
+                telefono: dataPerson.telefono,
+                idMunicipio: dataPerson.idMunicipio,
+                direccion: dataPerson.direccion,
+                correo: dataPerson.correo,
+                solicitadoPor: datos.solicitadoPor,
+                correoSolicitante: datos.correoSolicitante,
+
+                archivoRecibido: archivoAdjunto,
+                usuarioRegistro: user?.nameuser,
+            };
+
+            setDataVentanilla(DataToInsert);
+
+            if (idResult === 0) {
+                const result = await InsertVentanillaUnica(DataToInsert);
+                if (result.status === 200) {
+                    setIdResult(result.data);
+                    setOpenSuccess(true);
+                }
+            } else {
+                const result = await UpdateVentanillaUnicas(DataToInsert);
+                if (result.status === 200) {
+                    setIdResult(result.data);
+                    setOpenSuccess(true);
+                }
+            }
+
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    }
+
     return (
         <Fragment>
             {idResult === 0 ?
@@ -269,7 +283,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
             <ElevationScroll {...others}>
                 <SubCard
-                    title={<Typography variant='h4'>Indexación De Documentos Recibidos</Typography>}
+                    title={<Typography variant='h4'>Indexación de documentos recibidos</Typography>}
                     sx={{
                         width: '100%',
                         maxWidth: 550
@@ -279,7 +293,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                     <PerfectScrollbar style={{ height: 'calc(70vh - 0px)', overflowX: 'hidden' }}>
                         <Grid container spacing={gridSpacing} sx={{ p: 3 }}>
                             <Grid item xs={12}>
-                                <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información De La Solicitud</Typography></>}>
+                                <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información de la solicitud</Typography></>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={5}>
                                             <SelectOnChange
@@ -442,10 +456,10 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Accordion title={<><IconMail /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Del Empleado Solicitante</Typography></>}>
+                                <Accordion title={<><IconMail /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información del solicitante</Typography></>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
-                                            <Typography variant="body1">Información Del Solicitante</Typography>
+                                            <Typography variant="body1">Entidad que solicita</Typography>
                                         </Grid>
 
                                         <Grid item xs={12}>
@@ -553,7 +567,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Accordion title={<><IconFileUpload /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Cargar Archivo</Typography></>}>
+                                <Accordion title={<><IconFileUpload /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Cargar archivo</Typography></>}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             <Upload files={infoArchivoAdjunto} onDrop={handleDrop} />
@@ -585,9 +599,9 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Accordion disabled={!idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución Del Tipo De Solicitud</Typography></>}>
+                                <Accordion disabled={idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución Del Tipo De Solicitud</Typography></>}>
                                     <Grid container spacing={2}>
-                                        <ListAddSingleWindow documento={documento} idResult={idResult} />
+                                        <ListAddSingleWindow documento={documento} idResult={idResult} dataVentanilla={dataVentanilla} />
                                     </Grid>
                                 </Accordion>
                             </Grid>
@@ -603,6 +617,12 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                     <Grid item xs={3}>
                                         <Button variant="outlined" fullWidth onClick={onCancel}>
                                             Cerrar
+                                        </Button>
+                                    </Grid>
+
+                                    <Grid item xs={5}>
+                                        <Button variant="outlined" fullWidth onClick={handleNotifi}>
+                                            Enviar Notificación
                                         </Button>
                                     </Grid>
                                 </Grid>

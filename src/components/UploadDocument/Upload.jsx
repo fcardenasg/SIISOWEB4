@@ -7,6 +7,11 @@ import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import UploadIllustration from './UploadIllustration';
 
+import animation from 'assets/img/animation.json';
+import animation2 from 'assets/img/animation2.json';
+import Lottie from 'lottie-react';
+
+
 export default function Upload({
     disabled,
     multiple = false,
@@ -35,7 +40,15 @@ export default function Upload({
 
     const renderPlaceholder = (
         <Stack spacing={3} alignItems="center" justifyContent="center" flexWrap="wrap">
-            <UploadIllustration sx={{ width: 1, maxWidth: 200 }} />
+            {!isDragActive ? (
+                <Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
+                    <Lottie animationData={animation} />
+                </Box>
+            ) : (
+                <Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
+                    <Lottie animationData={animation2} />
+                </Box>
+            )}
             <Stack spacing={1} sx={{ textAlign: 'center' }}>
                 <Typography variant="h">Soltar o seleccionar archivo</Typography>
                 <Typography variant="body1" sx={{ color: 'text.secondary' }}>

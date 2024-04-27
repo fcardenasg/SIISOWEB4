@@ -45,10 +45,11 @@ const ListReplay = ({ idVentanilla }) => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Tipo Documento</TableCell>
-                            <TableCell>Fecha Limite / Días Restantes</TableCell>
-                            <TableCell>Usuario Respondio</TableCell>
-                            <TableCell>Fecha de Respuesta</TableCell>
-                            <TableCell>Estado</TableCell>
+                            <TableCell>Fecha Límite de Respuesta</TableCell>
+                            <TableCell>Días Restantes</TableCell>
+                            <TableCell>Atendido Por</TableCell>
+                            <TableCell>Fecha de Atención</TableCell>
+                            <TableCell>Estado de Atención</TableCell>
                             <TableCell>Acción</TableCell>
                         </TableRow>
                     </TableHead>
@@ -57,16 +58,13 @@ const ListReplay = ({ idVentanilla }) => {
                         {lsTipoDocumento?.map((row) => (
                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
                                 <TableCell component="th" scope="row">{row?.nameTipoDocumento}</TableCell>
-                                <TableCell>{ViewFormat(row?.fechaLimite)} / {row?.diasRestantes}</TableCell>
+                                <TableCell>{ViewFormat(row?.fechaLimite)}</TableCell>
+                                <TableCell>{row?.diasRestantes}</TableCell>
                                 <TableCell>{row?.usuarioModifico}</TableCell>
-                                <TableCell>{new Date(row?.fechaModifico).toLocaleString()}</TableCell>
+                                <TableCell>{row?.fechaModifico !== null ? new Date(row?.fechaModifico).toLocaleString() : null}</TableCell>
                                 <TableCell>
-                                    {row?.estado ?
-                                        <Tooltip title={row?.usuarioModifico}>
-                                            <Chip label="Respondido" size="small" chipcolor="success" />
-                                        </Tooltip>
-                                        : <Chip label="Sin Respuesta" size="small" chipcolor="error" />
-                                    }
+                                    {row?.estado ? <Chip label="Atendido" size="small" chipcolor="success" />
+                                        : <Chip label="Sin Atender" size="small" chipcolor="error" />}
                                 </TableCell>
 
                                 <TableCell>

@@ -3,12 +3,13 @@ import { getData, deleteData, postData, putData } from '../UtilInstance';
 
 export const GetByIdVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaId, { id });
 export const GetAllVentanillaUnica = async () => await getData(Url.VentanillaUnica);
+export const GetAllVentanillaUnicaMonitoreo = async () => await getData(Url.VentanillaUnicaMonitoreo);
 export const GetAllDocumentoVentanilla = async (documento) => await getData(Url.VentanillaUnicaDocumento, { documento });
 export const InsertVentanillaUnica = async (ventanillaUnica) => await postData(Url.VentanillaUnica, ventanillaUnica);
 export const UpdateVentanillaUnicas = async (ventanillaUnica) => await putData(Url.VentanillaUnica, ventanillaUnica);
 export const DeleteVentanillaUnica = async (idVentanillaUnica) => await deleteData(Url.VentanillaUnica, { idVentanillaUnica });
 
-export const GetAllVentanillaUnicaDetalleArea = async (idArea, idUsuario) => await getData(Url.VentanillaUnicaDetalleArea, { idArea, idUsuario });
+export const GetAllVentanillaUnicaDetalleArea = async (idUsuario) => await getData(Url.VentanillaUnicaDetalleArea, { idUsuario });
 export const GetVentanillaUnicaDetalleArchivo = async (id) => await getData(Url.VentanillaUnicaDetalleArchivo, { id });
 export const GetByIdVentanillaUnicaDetalle = async (id) => await getData(Url.VentanillaUnicaDetalleId, { id });
 export const GetAllVentanillaUnicaDetalle = async (idVentanilla, idArea, options) => await getData(Url.VentanillaUnicaDetalleList, { idVentanilla, idArea, options });

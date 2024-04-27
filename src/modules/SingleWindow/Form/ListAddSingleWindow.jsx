@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -38,7 +37,7 @@ const validationSchema = yup.object().shape({
     idUsuario: yup.number().required(ValidationMessage.Requerido)
 });
 
-const ListAddSingleWindow = ({ documento, idResult }) => {
+const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
     const theme = useTheme();
     const { user } = useAuth();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -58,7 +57,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset, setValue } = methods;
 
     useEffect(() => {
         async function getAll() {
@@ -113,6 +112,12 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
                 idUsuario: datos.idUsuario,
                 observaciones: datos.observaciones,
 
+                numRadicado: dataVentanilla.numRadicado,
+                solicitadoPor: dataVentanilla.solicitadoPor,
+                nombre: dataVentanilla.nombre,
+                idTipo: dataVentanilla.idTipo,
+                fechaLimite: dataVentanilla.fechaLimiteRespuesta,
+                fechaRecibido: dataVentanilla.fechaRecibido,
                 usuarioRegistro: user.nameuser,
             }
 
@@ -129,6 +134,10 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
     };
 
     const handleChangeArea = async (event) => {
+        setTipoDocumento([]);
+        setLsTipoDocumento([]);
+        setValue('idUsuario', '');
+        setValue('observaciones', '');
         setArea(event.target.value);
 
         var codigoDocumento = lsAreaFiltro.filter(code => code.value === event.target.value)[0].codigo;

@@ -28,13 +28,16 @@ import { TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import SearchIcon from '@mui/icons-material/Search';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useAuth from 'hooks/useAuth';
 import { GetAllVentanillaUnicaDetalleArea } from 'api/clients/VentanillaUnicaClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ReplyIcon from '@mui/icons-material/Reply';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ControlModal from 'components/controllers/ControlModal';
 import ListReplay from './ListReplay';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import Chip from 'ui-component/extended/Chip';
+import RadioButton from '../Components/RadioButton';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -64,7 +67,7 @@ const headCells = [
         id: 'nRadicado',
         numeric: false,
         label: 'Nº Radicado',
-        align: 'center'
+        align: 'left'
     },
     {
         id: 'solicitadoPor',
@@ -75,37 +78,43 @@ const headCells = [
     {
         id: 'documento',
         numeric: false,
-        label: 'Nº Documento',
+        label: 'Documento',
         align: 'left'
     },
     {
         id: 'nombre',
         numeric: false,
-        label: 'Nombre',
+        label: 'Nombres',
         align: 'left'
     },
     {
         id: 'tipo',
         numeric: false,
-        label: 'Tipo',
+        label: 'Tipo Solicitud',
         align: 'left'
     },
     {
         id: 'fechaRecibido',
         numeric: false,
-        label: 'Fecha',
+        label: 'Fecha Recibido',
         align: 'left'
     },
     {
         id: 'fechaLimite',
         numeric: false,
-        label: 'Fecha Limite',
+        label: 'Fecha Limite Respuesta',
         align: 'left'
     },
     {
         id: 'diasRestantes',
         numeric: false,
         label: 'Días Restantes',
+        align: 'left'
+    },
+    {
+        id: 'estadoRespuesta',
+        numeric: false,
+        label: 'Documentos Atendidos / Documentos Solicitados',
         align: 'left'
     }
 ];
@@ -160,6 +169,7 @@ const ViewRespuesta = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [idVentanilla, setIdVentanilla] = useState('');
+    //const [por, setIdVentanilla] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -172,7 +182,7 @@ const ViewRespuesta = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllVentanillaUnicaDetalleArea(user?.idarea, user.id);
+            const lsServer = await GetAllVentanillaUnicaDetalleArea(user.id);
             setLsRespuesta(lsServer.data);
             setRows(lsServer.data);
         } catch (error) { }
@@ -220,6 +230,10 @@ const ViewRespuesta = () => {
         setPage(0);
     };
 
+    const handleChangePor = (event) => {
+        console.log("event => ", event);
+    };
+
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRespuesta.length) : 0;
 
     return (
@@ -230,7 +244,7 @@ const ViewRespuesta = () => {
                 maxWidth="md"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Responder"
+                title="Solicitudes Por Responder"
             >
                 <ListReplay idVentanilla={idVentanilla} />
             </ControlModal>
@@ -253,11 +267,33 @@ const ViewRespuesta = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={4} sx={{ textAlign: 'right' }}>
-                        <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                            onClick={() => navigate("/single-window/view")}>
-                            {TitleButton.Cancelar}
-                        </Button>
+                    <Grid item xs={6} sx={{ textAlign: 'right' }}>
+                        <Grid container direction="row" justifyContent="flex-end" alignItems="center">
+                            <Grid item xs={4}>
+                                <RadioButton
+                                    label="Por Atender"
+                                    onChange={handleChangePor}
+                                    value={porAtender}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <RadioButton
+                                    label="Por Atender"
+                                    onChange={handleChangePor}
+                                    value={porAtender}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <AnimateButton>
+                                    <Button variant="contained" size="large" startIcon={<ArrowBackIosIcon />}
+                                        onClick={() => navigate("/single-window/view")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
@@ -395,6 +431,22 @@ const ViewRespuesta = () => {
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
                                                     {row.diasRestantes}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row?.numTotal === row?.numeroRespondido ?
+                                                        <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
+                                                        : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />}
                                                 </Typography>
                                             </TableCell>
 

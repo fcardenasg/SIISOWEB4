@@ -8631,6 +8631,18 @@
   dependencies:
     "js-tokens" "^3.0.0 || ^4.0.0"
 
+"lottie-react@^2.4.0":
+  "integrity" "sha512-pDJGj+AQlnlyHvOHFK7vLdsDcvbuqvwPZdMlJ360wrzGFurXeKPr8SiRCjLf3LrNYKANQtSsh5dz9UYQHuqx4w=="
+  "resolved" "https://registry.npmjs.org/lottie-react/-/lottie-react-2.4.0.tgz"
+  "version" "2.4.0"
+  dependencies:
+    "lottie-web" "^5.10.2"
+
+"lottie-web@^5.10.2":
+  "integrity" "sha512-uvhvYPC8kGPjXT3MyKMrL3JitEAmDMp30lVkuq/590Mw9ok6pWcFCwXJveo0t5uqYw1UREQHofD+jVpdjBv8wg=="
+  "resolved" "https://registry.npmjs.org/lottie-web/-/lottie-web-5.12.2.tgz"
+  "version" "5.12.2"
+
 "lower-case@^2.0.2":
   "integrity" "sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg=="
   "resolved" "https://registry.npmjs.org/lower-case/-/lower-case-2.0.2.tgz"
@@ -11050,7 +11062,7 @@
   "resolved" "https://registry.npmjs.org/react-dom-factories/-/react-dom-factories-1.0.2.tgz"
   "version" "1.0.2"
 
-"react-dom@^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@^16.7.0 || ^17", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^16.8.5 || ^17.0.0", "react-dom@^16.x || 17.x || 18.x", "react-dom@^17.0.0 || ^18.0.0", "react-dom@^17.0.2", "react-dom@^17.0.2 || ^18.0.0", "react-dom@>= 0.14.0 < 18.0.0", "react-dom@>= 16.8.0", "react-dom@>=15.3.0", "react-dom@>=16.3.3", "react-dom@>=16.6.0", "react-dom@>=16.8", "react-dom@>=16.8 || ^17.0.0":
+"react-dom@^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@^16.7.0 || ^17", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0", "react-dom@^16.8.5 || ^17.0.0", "react-dom@^16.x || 17.x || 18.x", "react-dom@^17.0.0 || ^18.0.0", "react-dom@^17.0.2", "react-dom@^17.0.2 || ^18.0.0", "react-dom@>= 0.14.0 < 18.0.0", "react-dom@>= 16.8.0", "react-dom@>=15.3.0", "react-dom@>=16.3.3", "react-dom@>=16.6.0", "react-dom@>=16.8", "react-dom@>=16.8 || ^17.0.0":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"

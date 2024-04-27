@@ -4,7 +4,6 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Box, Button, Grid, Typography, useMediaQuery } from '@mui/material';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-/* import MailDrawer from './MailDrawer'; */
 import MailDetails from './MailDetails';
 import MailList from './MailList';
 import { openDrawer } from 'store/slices/menu';
@@ -16,6 +15,9 @@ import { ConsultMail } from 'api/clients/MailClient';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import AddSingleWindow from '../Form/AddSingleWindow';
 import SubCard from 'ui-component/cards/SubCard';
+import { TitleButton } from 'components/helpers/Enums';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useNavigate } from 'react-router-dom';
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
     width: 'calc(100% - 320px)',
@@ -41,12 +43,15 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 
 const MailPage = () => {
     const theme = useTheme();
+    const navigate = useNavigate();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('xl'));
     const dispatch = useDispatch();
 
     const [userEdit, setUserEdit] = useState(false);
     const [emailDetails, setEmailDetailsValue] = useState(false);
     const [selectedMail, setSelectedMail] = useState(null);
+    const [search, setSearch] = useState('');
+
     const handleUserChange = async (data) => {
         if (data) {
             await dispatch(setRead(data.id));
@@ -87,11 +92,8 @@ const MailPage = () => {
     }, [mailState]);
 
     useEffect(() => {
-        // hide left drawer when email app opens
         dispatch(openDrawer(false));
-        // getData();
         dispatch(getMails());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [filter, setFilter] = useState('all');
@@ -114,9 +116,6 @@ const MailPage = () => {
             handleFilter(filter);
         }
     };
-
-    // search email using name
-    const [search, setSearch] = useState('');
 
     const handleSearch = (event) => {
         const newString = event.target.value;
@@ -151,34 +150,47 @@ const MailPage = () => {
             <SubCard
                 title={<Typography variant="h3">Ventanilla Única Digital</Typography>}
                 secondary={
-                    <AnimateButton>
-                        <Button
-                            variant="contained"
-                            startIcon={<AddCircleOutlineOutlinedIcon />}
-                            sx={{ px: 2.75, py: 1.5 }}
-                            onClick={() => setUserEdit(!userEdit)}
-                        >
-                            Indexar
-                        </Button>
-                    </AnimateButton>
+                    <Fragment>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        sx={{ px: 2.75, py: 1.5 }}
+                                        onClick={() => setUserEdit(!userEdit)}
+                                        size="small"
+                                    >
+                                        Indexar
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<ArrowBackIosIcon />}
+                                        sx={{ px: 2.75, py: 1.5 }}
+                                        onClick={() => navigate("/single-window/view")}
+                                        size="small"
+                                    >
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
+                    </Fragment>
                 }
             >
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs zeroMinWidth sx={{ display: userEdit ? { xs: 'none', md: 'block' } : 'block' }}>
                         <Grid container alignItems="center" spacing={gridSpacing}>
                             <Box sx={{ display: 'flex' }}>
-                                {/* <MailDrawer
-                                    openMailSidebar={openMailSidebar}
-                                    handleDrawerOpen={handleDrawerOpen}
-                                    filter={filter}
-                                    handleFilter={handleFilter}
-                                    unreadCounts={unreadCounts}
-                                /> */}
 
                                 <Main theme={theme} open={openMailSidebar}>
                                     <Grid container spacing={gridSpacing}>
                                         <Grid item xs={12}>
-                                            {/* mail details & list */}
                                             {emailDetails ? (
                                                 <MailDetails
                                                     data={selectedMail}
@@ -205,7 +217,7 @@ const MailPage = () => {
                     </Grid>
 
                     {userEdit && (
-                        <Grid item sx={{ width: 550, margin: { xs: '0 auto'/* , md: 'initial' */ } }}>
+                        <Grid item sx={{ width: 550, margin: { xs: '0 auto' } }}>
                             <AddSingleWindow onCancel={() => setUserEdit(false)} />
                         </Grid>
                     )}
