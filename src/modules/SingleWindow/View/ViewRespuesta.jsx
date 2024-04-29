@@ -19,12 +19,17 @@ import {
     TextField,
     Typography,
     Button,
-    Tooltip
+    Tooltip,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 import { MessageDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -165,11 +170,14 @@ const ViewRespuesta = () => {
     const { user } = useAuth();
 
     const navigate = useNavigate();
-    const [lsRespuesta, setLsRespuesta] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [idVentanilla, setIdVentanilla] = useState('');
-    //const [por, setIdVentanilla] = useState('');
+
+    const [lsRespuesta, setLsRespuesta] = useState([]);
+    const [messageAtencion, setMessageAtencion] = useState('');
+    const [radioSearch, setRadioSearch] = useState(0);
+    const [timeWait, setTimeWait] = useState(false);
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -180,17 +188,29 @@ const ViewRespuesta = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function getAll() {
-        try {
-            const lsServer = await GetAllVentanillaUnicaDetalleArea(user.id);
-            setLsRespuesta(lsServer.data);
-            setRows(lsServer.data);
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                setTimeWait(false);
+                setMessageAtencion('');
+                setLsRespuesta([]);
+
+                await GetAllVentanillaUnicaDetalleArea(user?.id, radioSearch).then(response => {
+                    if (response.data.length === 0) {
+                        setMessageAtencion(Message.NoRegistro);
+                    } else if (response.data.length !== 0) {
+                        setTimeout(() => {
+                            setTimeWait(true);
+                            setLsRespuesta(response.data);
+                            setRows(response.data);
+                        }, 1000);
+                    }
+                });
+            } catch (error) { }
+        }
+
         getAll();
-    }, [])
+    }, [radioSearch])
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -230,11 +250,167 @@ const ViewRespuesta = () => {
         setPage(0);
     };
 
-    const handleChangePor = (event) => {
-        console.log("event => ", event);
-    };
-
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRespuesta.length) : 0;
+
+    let usersResult = <></>;
+
+    if (timeWait) {
+        usersResult = stableSort(lsRespuesta, getComparator(order, orderBy))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((row, index) => {
+
+                if (typeof row === 'string') return null;
+                const labelId = `enhanced-table-checkbox-${index}`;
+
+                return (
+                    <TableRow
+                        hover
+                        tabIndex={-1}
+                        key={index}
+                    >
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.nRadicado}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.solicitadoPor}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.documento}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.nombre}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.tipo}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {ViewFormat(row?.fechaRecibido)}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {ViewFormat(row?.fechaLimite)}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.diasRestantes}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.numTotal === row?.numeroRespondido ?
+                                    <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
+                                    : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell align="center" sx={{ pr: 3 }}>
+                            <Tooltip title="Responder" onClick={() => { setOpenModal(true); setIdVentanilla(row?.id) }}>
+                                <IconButton size="large">
+                                    <ReplyIcon sx={{ fontSize: '1.5rem' }} />
+                                </IconButton>
+                            </Tooltip>
+                        </TableCell>
+                    </TableRow>
+                );
+            });
+    } else if (messageAtencion !== '') {
+        usersResult = <Typography sx={{ m: 7 }} variant="h3">{messageAtencion}</Typography>;
+    } else {
+        usersResult = <Cargando myy={8} mxx={8} />;
+    }
 
     return (
         <MainCard title="Responder PQRSD" content={false}>
@@ -251,7 +427,7 @@ const ViewRespuesta = () => {
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="flex-end" spacing={2}>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -267,22 +443,21 @@ const ViewRespuesta = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={6} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={5} sx={{ textAlign: 'right' }}>
                         <Grid container direction="row" justifyContent="flex-end" alignItems="center">
-                            <Grid item xs={4}>
-                                <RadioButton
-                                    label="Por Atender"
-                                    onChange={handleChangePor}
-                                    value={porAtender}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <RadioButton
-                                    label="Por Atender"
-                                    onChange={handleChangePor}
-                                    value={porAtender}
-                                />
+                            <Grid item xs={8}>
+                                <FormControl>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-controlled-radio-buttons-group"
+                                        name="controlled-radio-buttons-group"
+                                        value={radioSearch}
+                                        onChange={(e) => setRadioSearch(e.target.value)}
+                                    >
+                                        <FormControlLabel value={0} control={<Radio />} label="Por Atender" />
+                                        <FormControlLabel value={1} control={<Radio />} label="Atendidos" />
+                                    </RadioGroup>
+                                </FormControl>
                             </Grid>
 
                             <Grid item xs={4}>
@@ -299,190 +474,42 @@ const ViewRespuesta = () => {
             </CardContent>
 
             <TableContainer>
-                {lsRespuesta.length === 0 ? <Cargando size={220} myy={6} /> :
-                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                    {messageAtencion === '' && lsRespuesta.length !== 0 ?
                         <EnhancedTableHead
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
                             theme={theme}
-                        />
+                        /> : null}
 
-                        <TableBody>
-                            {stableSort(lsRespuesta, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
+                    <TableBody>
+                        {usersResult}
 
-                                    if (typeof row === 'string') return null;
-                                    const labelId = `enhanced-table-checkbox-${index}`;
-
-                                    return (
-                                        <TableRow
-                                            hover
-                                            tabIndex={-1}
-                                            key={index}
-                                        >
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.nRadicado}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.solicitadoPor}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.documento}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.nombre}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.tipo}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {ViewFormat(row.fechaRecibido)}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {ViewFormat(row.fechaLimite)}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.diasRestantes}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row?.numTotal === row?.numeroRespondido ?
-                                                        <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
-                                                        : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Responder" onClick={() => { setOpenModal(true); setIdVentanilla(row?.id) }}>
-                                                    <IconButton size="large">
-                                                        <ReplyIcon sx={{ fontSize: '1.5rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: 53 * emptyRows
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                }
+                        {emptyRows > 0 && (
+                            <TableRow
+                                style={{
+                                    height: 53 * emptyRows
+                                }}
+                            >
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </TableContainer>
 
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={lsRespuesta.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+
+            {messageAtencion === '' && lsRespuesta.length !== 0 ?
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={lsRespuesta.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                /> : null}
         </MainCard>
     );
 };
