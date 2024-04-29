@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
 import { useTheme } from '@mui/material/styles';
@@ -19,23 +19,34 @@ import {
     TextField,
     Typography,
     Button,
-    Tooltip
+    FormControl,
+    RadioGroup,
+    FormControlLabel,
+    Radio
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 import { MessageDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
+import { styled, alpha } from '@mui/material/styles';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MailIcon from '@mui/icons-material/Mail';
+import PreviewIcon from '@mui/icons-material/Preview';
+
 import SearchIcon from '@mui/icons-material/Search';
-import useAuth from 'hooks/useAuth';
-import { GetAllVentanillaUnicaDetalleArea, GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
+import { GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
 import { ViewFormat } from 'components/helpers/Format';
-import ReplyIcon from '@mui/icons-material/Reply';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ControlModal from 'components/controllers/ControlModal';
 import ListReplay from './ListReplay';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import Chip from 'ui-component/extended/Chip';
+import useAuth from 'hooks/useAuth';
+import ViewEnviarSolicitud from './ViewEnviarSolicitud';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -76,31 +87,31 @@ const headCells = [
     {
         id: 'documento',
         numeric: false,
-        label: 'Nº Documento',
+        label: 'Documento',
         align: 'left'
     },
     {
         id: 'nombre',
         numeric: false,
-        label: 'Nombre',
+        label: 'Nombres',
         align: 'left'
     },
     {
         id: 'tipo',
         numeric: false,
-        label: 'Tipo',
+        label: 'Tipo Solicitud',
         align: 'left'
     },
     {
         id: 'fechaRecibido',
         numeric: false,
-        label: 'Fecha',
+        label: 'Fecha Recibido',
         align: 'left'
     },
     {
         id: 'fechaLimite',
         numeric: false,
-        label: 'Fecha Limite',
+        label: 'Fecha Limite Respuesta',
         align: 'left'
     },
     {
@@ -108,10 +119,16 @@ const headCells = [
         numeric: false,
         label: 'Días Restantes',
         align: 'left'
+    },
+    {
+        id: 'estadoRespuesta',
+        numeric: false,
+        label: 'Documentos Atendidos / Documentos Solicitados',
+        align: 'left'
     }
 ];
 
-function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
+function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSort, theme }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -153,12 +170,21 @@ function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }
     );
 }
 
-const ViewMonitoreo = () => {
+const ViewRespuesta = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
-    const [lsMonitoreo, setLsMonitoreo] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [openEnviarModal, setOpenEnviarModal] = useState(false);
     const [idVentanilla, setIdVentanilla] = useState('');
+
+    const [lsRespuesta, setLsRespuesta] = useState([]);
+    const [messageAtencion, setMessageAtencion] = useState('');
+    const [radioSearch, setRadioSearch] = useState(0);
+    const [timeWait, setTimeWait] = useState(false);
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -169,17 +195,33 @@ const ViewMonitoreo = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function getAll() {
-        try {
-            const lsServer = await GetAllVentanillaUnicaMonitoreo();
-            setLsMonitoreo(lsServer.data);
-            setRows(lsServer.data);
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                setTimeWait(false);
+                setMessageAtencion('');
+                setLsRespuesta([]);
+
+                if (user?.idarea === 0) {
+                    await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
+                        if (response.data.length === 0) {
+                            setMessageAtencion(Message.NoRegistro);
+                        } else if (response.data.length !== 0) {
+                            setTimeout(() => {
+                                setTimeWait(true);
+                                setLsRespuesta(response.data);
+                                setRows(response.data);
+                            }, 500);
+                        }
+                    });
+                } else {
+                    setMessageAtencion("Usted no esta autorizado para monitorizar las peticiones");
+                }
+            } catch (error) { }
+        }
+
         getAll();
-    }, [])
+    }, [radioSearch])
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -203,11 +245,12 @@ const ViewMonitoreo = () => {
                 }
                 return matches;
             });
-            setLsMonitoreo(newRows);
+            setLsRespuesta(newRows);
         } else {
-            setLsMonitoreo(rows);
+            setLsRespuesta(rows);
         }
     };
+
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -218,24 +261,223 @@ const ViewMonitoreo = () => {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMonitoreo.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRespuesta.length) : 0;
+
+    let usersResult = <></>;
+
+    if (timeWait) {
+        usersResult = stableSort(lsRespuesta, getComparator(order, orderBy))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((row, index) => {
+
+                if (typeof row === 'string') return null;
+                const labelId = `enhanced-table-checkbox-${index}`;
+
+                return (
+                    <TableRow
+                        hover
+                        tabIndex={-1}
+                        key={index}
+                    >
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.nRadicado}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.solicitadoPor}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.documento}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.nombre}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.tipo}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {ViewFormat(row?.fechaRecibido)}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {ViewFormat(row?.fechaLimite)}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.diasRestantes}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.numTotal === row?.numeroRespondido ?
+                                    <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
+                                    : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell align="center" sx={{ pr: 3 }}>
+                            <IconButton
+                                aria-label="more"
+                                id="long-button"
+                                aria-controls={open ? 'long-menu' : undefined}
+                                aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                onClick={(event) => setAnchorEl(event.currentTarget)}
+                            >
+                                <MoreVertIcon />
+                            </IconButton>
+
+                            <Menu
+                                id="long-menu"
+                                MenuListProps={{
+                                    'aria-labelledby': 'long-button',
+                                }}
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={() => setAnchorEl(null)}
+                                PaperProps={{
+                                    style: {
+                                        maxHeight: 48 * 4.5,
+                                        width: '25ch',
+                                    },
+                                }}
+                            >
+                                <MenuItem onClick={() => { setOpenModal(true); setIdVentanilla(row?.id); setAnchorEl(null) }}>
+                                    <PreviewIcon sx={{ fontSize: '1.5rem' }} /> <Typography sx={{ ml: 1.5 }} variant="h5">Ver Atenciones</Typography>
+                                </MenuItem>
+
+                                <MenuItem disabled={row?.numeroRespondido !== row?.numTotal ? false : true}
+                                    onClick={() => { setOpenEnviarModal(true); setIdVentanilla(row?.id); setAnchorEl(null) }}>
+                                    <MailIcon sx={{ fontSize: '1.5rem' }} /> <Typography sx={{ ml: 1.5 }} variant="h5">Enviar Respuesta</Typography>
+                                </MenuItem>
+                            </Menu>
+                        </TableCell>
+                    </TableRow>
+                );
+            });
+    } else if (messageAtencion !== '') {
+        usersResult = <Typography sx={{ m: 7 }} variant="h3">{messageAtencion}</Typography>;
+    } else {
+        usersResult = <Cargando myy={8} mxx={8} />;
+    }
 
     return (
         <MainCard title="Monitoreo de Solicitudes" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                maxWidth="md"
+                maxWidth="lg"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Responder"
+                title="Solicitudes Por Responder"
             >
-                <ListReplay idVentanilla={idVentanilla} />
+                <ListReplay idVentanilla={idVentanilla} options={1} />
+            </ControlModal>
+
+            <ControlModal
+                maxWidth="sm"
+                open={openEnviarModal}
+                onClose={() => setOpenEnviarModal(false)}
+                title="Enviar Solicitudes"
+            >
+                <ViewEnviarSolicitud idVentanilla={idVentanilla} />
             </ControlModal>
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="flex-end" spacing={2}>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -251,190 +493,75 @@ const ViewMonitoreo = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={4} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={5} sx={{ textAlign: 'right' }}>
                         <Grid container direction="row" justifyContent="flex-end" alignItems="center">
-                            <AnimateButton>
-                                <Button variant="contained" size="large" startIcon={<ArrowBackIosIcon />}
-                                    onClick={() => navigate("/single-window/view")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
+                            <Grid item xs={8}>
+                                <FormControl>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-controlled-radio-buttons-group"
+                                        name="controlled-radio-buttons-group"
+                                        value={radioSearch}
+                                        onChange={(e) => setRadioSearch(e.target.value)}
+                                    >
+                                        <FormControlLabel value={0} control={<Radio />} label="Por Atender" />
+                                        <FormControlLabel value={1} control={<Radio />} label="Atendidos" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <AnimateButton>
+                                    <Button variant="contained" size="large" startIcon={<ArrowBackIosIcon />}
+                                        onClick={() => navigate("/single-window/view")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
 
             <TableContainer>
-                {lsMonitoreo.length === 0 ? <Cargando size={220} myy={6} /> :
-                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                    {messageAtencion === '' && lsRespuesta.length !== 0 ?
                         <EnhancedTableHead
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
                             theme={theme}
-                        />
+                        /> : null}
 
-                        <TableBody>
-                            {stableSort(lsMonitoreo, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
+                    <TableBody>
+                        {usersResult}
 
-                                    if (typeof row === 'string') return null;
-                                    const labelId = `enhanced-table-checkbox-${index}`;
-
-                                    return (
-                                        <TableRow
-                                            hover
-                                            tabIndex={-1}
-                                            key={index}
-                                        >
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.nRadicado}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.solicitadoPor}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.documento}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.nombre}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.tipo}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {ViewFormat(row.fechaRecibido)}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {ViewFormat(row.fechaLimite)}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.diasRestantes}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Responder" onClick={() => { setOpenModal(true); setIdVentanilla(row?.id) }}>
-                                                    <IconButton size="large">
-                                                        <ReplyIcon sx={{ fontSize: '1.5rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: 53 * emptyRows
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                }
+                        {emptyRows > 0 && (
+                            <TableRow
+                                style={{
+                                    height: 53 * emptyRows
+                                }}
+                            >
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </TableContainer>
 
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={lsMonitoreo.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+
+            {messageAtencion === '' && lsRespuesta.length !== 0 ?
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={lsRespuesta.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                /> : null}
         </MainCard>
     );
 };
 
-export default ViewMonitoreo;
+export default ViewRespuesta;

@@ -42,7 +42,6 @@ import ControlModal from 'components/controllers/ControlModal';
 import ListReplay from './ListReplay';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
-import RadioButton from '../Components/RadioButton';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -203,7 +202,7 @@ const ViewRespuesta = () => {
                             setTimeWait(true);
                             setLsRespuesta(response.data);
                             setRows(response.data);
-                        }, 1000);
+                        }, 500);
                     }
                 });
             } catch (error) { }

@@ -26,13 +26,17 @@ import { GetComboRol } from 'api/clients/RolClient';
 import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
-    documento: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombreUsuario: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombre: yup.string().required(`${ValidationMessage.Requerido}`),
-    telefono: yup.string().required(`${ValidationMessage.Requerido}`),
-    correo: yup.string().required(`${ValidationMessage.Requerido}`),
-    idRol: yup.string().required(`${ValidationMessage.Requerido}`),
+    documento: yup.string().required(ValidationMessage.Requerido),
+    nombreUsuario: yup.string().required(ValidationMessage.Requerido),
+    nombre: yup.string().required(ValidationMessage.Requerido),
+    telefono: yup.string().required(ValidationMessage.Requerido),
+    correo: yup.string().required(ValidationMessage.Requerido),
+    idRol: yup.string().required(ValidationMessage.Requerido),
 });
+
+const lsData = [
+    { value: 0, label: "TODOS" }
+]
 
 const UpdateUser = () => {
     const { id } = useParams();
@@ -62,43 +66,44 @@ const UpdateUser = () => {
 
     const { handleSubmit, formState: { errors } } = methods;
 
-    async function getAll() {
-        try {
-            const lsServerUpdate = await GetByIdUser(id);
-            if (lsServerUpdate.status === 200) {
-                setLsUsuario(lsServerUpdate.data);
-                setFileImg(lsServerUpdate.data.firma);
-                setCheckEstadoUsuario(lsServerUpdate.data.estado);
-                setCheckRespondeRein(lsServerUpdate.data.respondeReintegro);
-            }
-
-            const lsServerRol = await GetComboRol();
-            setLsRolUser(lsServerRol.data);
-
-            const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.VentanillaArea);
-            var resultArea = lsServerArea.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsArea(resultArea);
-
-            const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
-            var resultEspecialidad = lsServerEspecialidad.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsEspecialidad(resultEspecialidad);
-
-            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
-            var resultSede = lsServerSede.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSedeUser(resultSede);
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServerUpdate = await GetByIdUser(id);
+                if (lsServerUpdate.status === 200) {
+                    setLsUsuario(lsServerUpdate.data);
+                    setFileImg(lsServerUpdate.data.firma);
+                    setCheckEstadoUsuario(lsServerUpdate.data.estado);
+                    setCheckRespondeRein(lsServerUpdate.data.respondeReintegro);
+                }
+
+                const lsServerRol = await GetComboRol();
+                setLsRolUser(lsServerRol.data);
+
+                const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.VentanillaArea);
+                var resultArea = lsServerArea.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                const arrayArea = lsData.concat(resultArea);
+                setLsArea(arrayArea);
+
+                const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
+                var resultEspecialidad = lsServerEspecialidad.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEspecialidad(resultEspecialidad);
+
+                const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
+                var resultSede = lsServerSede.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsSedeUser(resultSede);
+            } catch (error) { }
+        }
+
         getAll();
     }, []);
 

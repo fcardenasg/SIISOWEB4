@@ -81,10 +81,10 @@ const MailPage = () => {
     useEffect(() => {
         async function getAllMail() {
             try {
-                const lsServer = await ConsultMail();
+                /* const lsServer = await ConsultMail();
                 if (lsServer.status === 200) {
                     setData(lsServer?.data);
-                }
+                } */
             } catch (error) { }
         }
 

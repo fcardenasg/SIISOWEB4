@@ -227,6 +227,8 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                 recibidoPor: datos.recibidoPor,
                 nombreRecibe: datos.nombreRecibe,
                 correoRecibe: datos.correoRecibe,
+                telefonoNotificion: datos.telefonoNotificion,
+                ciudadEnvio: datos.ciudadEnvio,
 
                 documento: documento,
                 nombre: dataPerson.nombre,
@@ -494,6 +496,30 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                     label="Dirección Del Solicitante"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.correoRecibe}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="ciudadEnvio"
+                                                    label="Teléfono Noticicación"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.ciudadEnvio}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="telefonoNotificion"
+                                                    label="Ciudad Notificación"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.telefonoNotificion}
                                                 />
                                             </FormProvider>
                                         </Grid>

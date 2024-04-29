@@ -3,13 +3,11 @@ import { Button, Divider, Grid, Typography, useMediaQuery } from "@mui/material"
 import SelectOnChange from "components/input/SelectOnChange";
 import { useTheme } from '@mui/material/styles';
 import { MessageError, MessageSuccess } from "components/alert/AlertAll";
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import UploadIcon from '@mui/icons-material/Upload';
 import PersonIcon from '@mui/icons-material/Person';
 
 import AnimateButton from "ui-component/extended/AnimateButton";
-import { TitleButton, ValidationMessage } from "components/helpers/Enums";
+import { TitleButton } from "components/helpers/Enums";
 import ControlModal from "components/controllers/ControlModal";
 import ViewPDF from "components/components/ViewPDF";
 

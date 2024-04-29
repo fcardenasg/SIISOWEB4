@@ -33,6 +33,10 @@ const validationSchema = yup.object().shape({
     idRol: yup.string().required(ValidationMessage.Requerido),
 });
 
+const lsData = [
+    { value: 0, label: "TODOS" }
+]
+
 const User = () => {
     const navigate = useNavigate();
     const theme = useTheme();
@@ -76,6 +80,8 @@ const User = () => {
                 label: item.nombre
             }));
             setLsArea(resultArea);
+            const arrayArea = lsData.concat(resultArea);
+            setLsArea(arrayArea);
 
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
             var resultSede = lsServerSede.data.entities.map((item) => ({
