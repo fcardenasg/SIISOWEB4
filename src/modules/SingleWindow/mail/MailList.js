@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import * as React from 'react';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Avatar,
@@ -10,6 +8,7 @@ import {
     Checkbox,
     Grid,
     IconButton,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -22,16 +21,12 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-// third-party
 import { format } from 'date-fns';
-
-// project imports
-import MailEmpty from './MailEmpty';
+import loadingmail from 'assets/img/loadingmail.json';
 import MailListHeader from './MailListHeader';
 import Chip from 'ui-component/extended/Chip';
 import MainCard from 'ui-component/cards/MainCard';
 
-// assets
 import AttachmentTwoToneIcon from '@mui/icons-material/AttachmentTwoTone';
 import StarBorderTwoToneIcon from '@mui/icons-material/StarBorderTwoTone';
 import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
@@ -41,10 +36,11 @@ import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveTwoTone';
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone';
+import Lottie from 'lottie-react';
+import { Fragment, useState } from 'react';
+import MailEmpty from './MailEmpty';
 
 const avatarImage = require.context('assets/images/profile', true);
-
-// ==============================|| TABLE HEADER ||============================== //
 
 function EnhancedTableHead({ selected }) {
     return (
@@ -61,8 +57,6 @@ function EnhancedTableHead({ selected }) {
 EnhancedTableHead.propTypes = {
     selected: PropTypes.array
 };
-
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
 
 const EnhancedTableToolbar = ({ numSelected }) => (
     <Toolbar
@@ -87,15 +81,13 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired
 };
 
-// ==============================|| CUSTOMER LIST ||============================== //
-
-const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDetails, handleStarredChange, handleImportantChange }) => {
+const MailList = ({ data, search, handleSearch, handleUserDetails, handleStarredChange, handleImportantChange }) => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(7);
+    const [selected, setSelected] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(7);
 
     const handleClick = (event, name) => {
         const selectedIndex = selected.indexOf(name);
@@ -124,14 +116,7 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
     };
 
     const isSelected = (name) => selected.indexOf(name) !== -1;
-
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
-
-    const [denseTable, setDenseTable] = React.useState(false);
-    const handleDenseTable = () => {
-        setDenseTable(!denseTable);
-    };
-
     const darkBG = theme.palette.mode === 'dark' ? 'dark.main' : 'grey.100';
 
     return (
@@ -146,19 +131,16 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                         page={page}
                         handleChangePage={handleChangePage}
                         handleChangeRowsPerPage={handleChangeRowsPerPage}
-                        handleDrawerOpen={handleDrawerOpen}
-                        handleDenseTable={handleDenseTable}
                     />
                 </Grid>
+
                 <Grid item xs={12}>
                     {data?.length ? (
                         <MainCard content={false} sx={{ bgcolor: theme.palette.mode === 'dark' ? 'dark.800' : 'grey.50' }}>
-                            {/* table */}
                             <TableContainer>
                                 <Table
-                                    size={denseTable ? 'small' : undefined}
                                     aria-labelledby="tableTitle"
-                                    sx={{ minWidth: 320, '& td': { whiteSpace: 'nowrap', px: 0.75, py: denseTable ? 0.5 : 1.25 } }}
+                                    sx={{ minWidth: 320, '& td': { whiteSpace: 'nowrap', px: 0.75, py: 1.25 } }}
                                 >
                                     {selected.length > 0 && <EnhancedTableHead selected={selected} />}
                                     <TableBody>
@@ -232,8 +214,8 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                                                             <Grid item>
                                                                 <Avatar
                                                                     sx={{
-                                                                        width: denseTable ? 30 : 40,
-                                                                        height: denseTable ? 30 : 40
+                                                                        width: 40,
+                                                                        height: 40
                                                                     }}
                                                                     alt={row?.profile?.name}
                                                                     src={
@@ -345,12 +327,24 @@ const MailList = ({ data, search, handleSearch, handleDrawerOpen, handleUserDeta
                             </TableContainer>
                         </MainCard>
                     ) : (
-                        <MailEmpty />
+
+                        <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
+                            <Grid item xs={12}>
+                                <Box sx={{ alignContent: 'center', maxWidth: 450 }}>
+                                    <Lottie animationData={loadingmail} />
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Typography variant="h3" color="inherit" component="div">
+                                    Cargando Correos Electrónicos
+                                </Typography>
+                            </Grid>
+                        </Grid>
                     )}
                 </Grid>
 
                 <Grid item xs={12} sx={{ pt: '0 !important', display: { xs: 'block', sm: 'none' } }}>
-                    {/* table pagination */}
                     <TablePagination
                         rowsPerPageOptions={[]}
                         component="div"

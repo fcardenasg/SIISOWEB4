@@ -22,7 +22,8 @@ import {
     FormControl,
     RadioGroup,
     FormControlLabel,
-    Radio
+    Radio,
+    Tooltip
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
@@ -30,10 +31,6 @@ import { MessageDelete } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
-import { styled, alpha } from '@mui/material/styles';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MailIcon from '@mui/icons-material/Mail';
 import PreviewIcon from '@mui/icons-material/Preview';
 
@@ -149,7 +146,7 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
                                 direction={orderBy === headCell.id ? order : 'asc'}
                                 onClick={createSortHandler(headCell.id)}
                             >
-                                {headCell.label}
+                                <Typography variant='h6'>{headCell.label}</Typography>
                                 {orderBy === headCell.id ? (
                                     <Box component="span" sx={visuallyHidden}>
                                         {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -175,16 +172,12 @@ const ViewRespuesta = () => {
     const navigate = useNavigate();
     const [openDelete, setOpenDelete] = useState(false);
     const [openModal, setOpenModal] = useState(false);
-    const [openEnviarModal, setOpenEnviarModal] = useState(false);
     const [idVentanilla, setIdVentanilla] = useState('');
 
     const [lsRespuesta, setLsRespuesta] = useState([]);
     const [messageAtencion, setMessageAtencion] = useState('');
-    const [radioSearch, setRadioSearch] = useState(0);
+    const [radioSearch, setRadioSearch] = useState(1);
     const [timeWait, setTimeWait] = useState(false);
-
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
@@ -215,7 +208,7 @@ const ViewRespuesta = () => {
                         }
                     });
                 } else {
-                    setMessageAtencion("Usted no esta autorizado para monitorizar las peticiones");
+                    setMessageAtencion("Usted no esta autorizado para monitorear las peticiones");
                 }
             } catch (error) { }
         }
@@ -251,7 +244,6 @@ const ViewRespuesta = () => {
         }
     };
 
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -286,7 +278,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.nRadicado}
@@ -300,7 +292,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.solicitadoPor}
@@ -314,7 +306,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.documento}
@@ -328,7 +320,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.nombre}
@@ -342,7 +334,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.tipo}
@@ -356,7 +348,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {ViewFormat(row?.fechaRecibido)}
@@ -370,7 +362,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {ViewFormat(row?.fechaLimite)}
@@ -384,7 +376,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.diasRestantes}
@@ -398,7 +390,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.numTotal === row?.numeroRespondido ?
@@ -407,42 +399,15 @@ const ViewRespuesta = () => {
                             </Typography>
                         </TableCell>
 
-                        <TableCell align="center" sx={{ pr: 3 }}>
-                            <IconButton
-                                aria-label="more"
-                                id="long-button"
-                                aria-controls={open ? 'long-menu' : undefined}
-                                aria-expanded={open ? 'true' : undefined}
-                                aria-haspopup="true"
-                                onClick={(event) => setAnchorEl(event.currentTarget)}
-                            >
-                                <MoreVertIcon />
-                            </IconButton>
+                        <TableCell align="center">
+                            <Tooltip title={radioSearch == 1 ? "Ver Atenciones" : "Enviar Respuesta"}
+                                onClick={() => { setIdVentanilla(row?.id); setOpenModal(true); }}>
+                                <IconButton size="large">
+                                    {radioSearch == 1 ? <PreviewIcon color="info" sx={{ fontSize: '1.5rem' }} />
+                                        : <MailIcon color="error" sx={{ fontSize: '1.5rem' }} />}
+                                </IconButton>
+                            </Tooltip>
 
-                            <Menu
-                                id="long-menu"
-                                MenuListProps={{
-                                    'aria-labelledby': 'long-button',
-                                }}
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={() => setAnchorEl(null)}
-                                PaperProps={{
-                                    style: {
-                                        maxHeight: 48 * 4.5,
-                                        width: '25ch',
-                                    },
-                                }}
-                            >
-                                <MenuItem onClick={() => { setOpenModal(true); setIdVentanilla(row?.id); setAnchorEl(null) }}>
-                                    <PreviewIcon sx={{ fontSize: '1.5rem' }} /> <Typography sx={{ ml: 1.5 }} variant="h5">Ver Atenciones</Typography>
-                                </MenuItem>
-
-                                <MenuItem disabled={row?.numeroRespondido !== row?.numTotal ? false : true}
-                                    onClick={() => { setOpenEnviarModal(true); setIdVentanilla(row?.id); setAnchorEl(null) }}>
-                                    <MailIcon sx={{ fontSize: '1.5rem' }} /> <Typography sx={{ ml: 1.5 }} variant="h5">Enviar Respuesta</Typography>
-                                </MenuItem>
-                            </Menu>
                         </TableCell>
                     </TableRow>
                 );
@@ -454,25 +419,16 @@ const ViewRespuesta = () => {
     }
 
     return (
-        <MainCard title="Monitoreo de Solicitudes" content={false}>
+        <MainCard title="Monitoreo de solicitudes" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                maxWidth="lg"
+                maxWidth={radioSearch == 1 ? "lg" : "sm"}
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Solicitudes Por Responder"
+                title={radioSearch == 1 ? "Solicitudes por responder" : "Enviar solicitudes"}
             >
-                <ListReplay idVentanilla={idVentanilla} options={1} />
-            </ControlModal>
-
-            <ControlModal
-                maxWidth="sm"
-                open={openEnviarModal}
-                onClose={() => setOpenEnviarModal(false)}
-                title="Enviar Solicitudes"
-            >
-                <ViewEnviarSolicitud idVentanilla={idVentanilla} />
+                {radioSearch == 1 ? <ListReplay idVentanilla={idVentanilla} options={1} /> : <ViewEnviarSolicitud idVentanilla={idVentanilla} />}
             </ControlModal>
 
             <CardContent>
@@ -504,8 +460,8 @@ const ViewRespuesta = () => {
                                         value={radioSearch}
                                         onChange={(e) => setRadioSearch(e.target.value)}
                                     >
-                                        <FormControlLabel value={0} control={<Radio />} label="Por Atender" />
-                                        <FormControlLabel value={1} control={<Radio />} label="Atendidos" />
+                                        <FormControlLabel value={1} control={<Radio />} label="Por Atender" />
+                                        <FormControlLabel value={2} control={<Radio />} label="Atendidos" />
                                     </RadioGroup>
                                 </FormControl>
                             </Grid>

@@ -1,8 +1,8 @@
-import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import React, { Fragment, useEffect, useState } from "react";
 import AnimateButton from "ui-component/extended/AnimateButton";
 
-import { GetAllVentanillaUnicaDetalle } from "api/clients/VentanillaUnicaClient";
+import { GetAllVentanillaUnicaDetalle, GetVentanillaUnicaDetalleArchivo } from "api/clients/VentanillaUnicaClient";
 import useAuth from "hooks/useAuth";
 import { ViewFormat } from "components/helpers/Format";
 
@@ -10,11 +10,13 @@ import ControlModal from "components/controllers/ControlModal";
 import Chip from "ui-component/extended/Chip";
 import ReplyIcon from '@mui/icons-material/Reply';
 import ViewReplayPQRS from "./ViewReplayPQRS";
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { DownloadFile } from "components/helpers/ConvertToBytes";
 
-const ListReplay = ({ idVentanilla, options = 0 }) => {
+const ListReplay = ({ idVentanilla, getAllList, options = 0 }) => {
     const { user } = useAuth();
-    const [openModalReplay, setOpenModalReplay] = useState(false);
 
+    const [openModalReplay, setOpenModalReplay] = useState(false);
     const [lsTipoDocumento, setLsTipoDocumento] = useState([]);
     const [idVentanillaDetalle, setIdVentanillaDetalle] = useState("");
 
@@ -34,6 +36,17 @@ const ListReplay = ({ idVentanilla, options = 0 }) => {
         getAll();
     }, [idVentanilla]);
 
+    async function downloadFileReplay(idVent, nombre) {
+        try {
+            var nombreFormat = nombre.toLowerCase().replace(/\s/g, "_");
+            const archivoPdf = await GetVentanillaUnicaDetalleArchivo(idVent);
+
+            if (archivoPdf.status === 200) {
+                DownloadFile(`${nombreFormat}_${new Date().getTime()}.pdf`, archivoPdf.data);
+            }
+        } catch (error) { }
+    }
+
     return (
         <Fragment>
             <ControlModal
@@ -42,14 +55,14 @@ const ListReplay = ({ idVentanilla, options = 0 }) => {
                 onClose={() => setOpenModalReplay(false)}
                 title="Responder"
             >
-                <ViewReplayPQRS idVentanillaDetalle={idVentanillaDetalle} getAllReplay={getAll} />
+                <ViewReplayPQRS idVentanillaDetalle={idVentanillaDetalle} getAllReplay={getAll} getAllList={getAllList} />
             </ControlModal>
 
             <TableContainer>
                 <Table aria-label="collapsible table">
                     <TableHead>
                         <TableRow>
-                            {options === 1 ? <TableCell>Area</TableCell> : null}
+                            <TableCell>Area</TableCell>
                             <TableCell>Tipo Documento</TableCell>
                             <TableCell>Fecha Límite de Respuesta</TableCell>
                             <TableCell>Días Restantes</TableCell>
@@ -63,7 +76,7 @@ const ListReplay = ({ idVentanilla, options = 0 }) => {
                     <TableBody>
                         {lsTipoDocumento?.map((row) => (
                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-                                {options === 1 ? <TableCell component="th" scope="row">{row?.nameArea}</TableCell> : null}
+                                <TableCell component="th" scope="row">{row?.nameArea}</TableCell>
                                 <TableCell component="th" scope="row">{row?.nameTipoDocumento}</TableCell>
                                 <TableCell>{ViewFormat(row?.fechaLimite)}</TableCell>
                                 <TableCell>{row?.diasRestantes}</TableCell>
@@ -74,14 +87,29 @@ const ListReplay = ({ idVentanilla, options = 0 }) => {
                                         : <Chip label="Sin Atender" size="small" chipcolor="error" />}
                                 </TableCell>
 
-                                <TableCell>
-                                    <AnimateButton>
-                                        <Tooltip title="Responder" onClick={() => { setIdVentanillaDetalle(row.id); setOpenModalReplay(true); }}>
-                                            <IconButton size="small">
-                                                <ReplyIcon sx={{ fontSize: '1.6rem' }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </AnimateButton>
+                                <TableCell sx={{ pr: 5 }}>
+                                    <Grid container spacing={2.5}>
+                                        <Grid item xs={6}>
+                                            <AnimateButton>
+                                                <Tooltip title="Responder" onClick={() => { setIdVentanillaDetalle(row.id); setOpenModalReplay(true); }}>
+                                                    <IconButton size="small">
+                                                        <ReplyIcon color="info" sx={{ fontSize: '1.6rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <AnimateButton>
+                                                <Tooltip disabled={row?.estado ? false : true} title="Descargar archivo"
+                                                    onClick={() => downloadFileReplay(row?.id, row?.nameTipoDocumento)}>
+                                                    <IconButton size="small">
+                                                        <DownloadForOfflineIcon color={row?.estado ? "error" : "inherit"} sx={{ fontSize: '1.6rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
                                 </TableCell>
                             </TableRow>))}
                     </TableBody>

@@ -1,15 +1,14 @@
-import PropTypes from 'prop-types';
 import { useDropzone } from 'react-dropzone';
-
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import UploadIllustration from './UploadIllustration';
 
 import animation from 'assets/img/animation.json';
 import animation2 from 'assets/img/animation2.json';
+import fileuploaded from 'assets/img/fileuploaded.json';
 import Lottie from 'lottie-react';
+import { Fragment } from 'react';
 
 
 export default function Upload({
@@ -38,32 +37,45 @@ export default function Upload({
     const hasFile = !!file && !multiple;
     const hasError = isDragReject || !!error;
 
+    let usersResult = <></>;
+
+    if (!isDragActive) {
+        if (files === null) {
+            usersResult = (<Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
+                <Lottie animationData={animation} />
+            </Box>);
+        } else {
+            usersResult = (<Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
+                <Lottie animationData={fileuploaded} />
+            </Box>);
+        }
+    } else {
+        usersResult = (<Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
+            <Lottie animationData={animation2} />
+        </Box>);
+    }
+
     const renderPlaceholder = (
         <Stack spacing={3} alignItems="center" justifyContent="center" flexWrap="wrap">
-            {!isDragActive ? (
-                <Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
-                    <Lottie animationData={animation} />
-                </Box>
-            ) : (
-                <Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
-                    <Lottie animationData={animation2} />
-                </Box>
-            )}
+            {usersResult}
+
             <Stack spacing={1} sx={{ textAlign: 'center' }}>
-                <Typography variant="h">Soltar o seleccionar archivo</Typography>
-                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                    Suelte los archivos aquí o haga clic
-                    <Box
-                        component="span"
-                        sx={{
-                            mx: 0.5,
-                            color: 'primary.main',
-                            textDecoration: 'underline',
-                        }}
-                    >
-                        aquí
-                    </Box>
-                </Typography>
+                {files === null ? <Fragment>
+                    <Typography variant="h4">Soltar o seleccionar archivo</Typography>
+                    <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                        Suelte los archivos aquí o haga clic
+                        <Box
+                            component="span"
+                            sx={{
+                                mx: 0.5,
+                                color: 'primary.main',
+                                textDecoration: 'underline',
+                            }}
+                        >
+                            aquí
+                        </Box>
+                    </Typography>
+                </Fragment> : <Typography variant="h4">Archivo cargado exitosamente</Typography>}
             </Stack>
         </Stack>
     );
@@ -111,18 +123,3 @@ export default function Upload({
         </Box>
     );
 }
-
-Upload.propTypes = {
-    disabled: PropTypes.object,
-    error: PropTypes.bool,
-    file: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    files: PropTypes.array,
-    helperText: PropTypes.object,
-    multiple: PropTypes.bool,
-    onDelete: PropTypes.func,
-    onRemove: PropTypes.func,
-    onRemoveAll: PropTypes.func,
-    onUpload: PropTypes.func,
-    sx: PropTypes.object,
-    thumbnail: PropTypes.bool,
-};

@@ -200,7 +200,7 @@ const HistoryWorkAbsenteeism = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id_Inc', 'cedula', 'nameEmpleado', 'dx', 'usuarioRegistro'];
+                const properties = ['id_Inc', 'cedula', 'nameEmpleado', /* 'dx', */ 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

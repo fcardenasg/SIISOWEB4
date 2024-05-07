@@ -27,6 +27,7 @@ export const CodCatalogo = {
 
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
+    VentanillaEmpresaMensajeria: 226,
     VentanillaCondiciones: 221,
     VentanillaNivelImportancia: 222,
     VentanillaArea: 223,
@@ -319,7 +320,7 @@ export const TitleButton = {
     Imprimir: 'Imprimir',
     Cancelar: 'Cerrar',
     Limpiar: 'Limpiar',
-    VerArchivo: 'Ver Archivo',
+    VerArchivo: 'Ver archivo',
     Cerrar: 'Cancelar',
     Actualizar: 'Actualizar',
     Eliminar: 'Eliminar',

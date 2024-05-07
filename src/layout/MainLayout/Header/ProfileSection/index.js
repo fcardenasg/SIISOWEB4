@@ -168,6 +168,7 @@ const ProfileSection = () => {
                                                 </Typography>
                                             </Stack>
                                             <Typography variant="subtitle2">Rol: {user?.namerol} - Sede: {user?.namesede}</Typography>
+                                            <Typography variant="subtitle2">Area: {user?.namearea}</Typography>
                                         </Stack>
                                     </Box>
 

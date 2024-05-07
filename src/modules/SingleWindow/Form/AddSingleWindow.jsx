@@ -24,7 +24,7 @@ import InputText from 'components/input/InputText';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
-import { GetAllDocumentoVentanilla, InsertVentanillaUnica, NotifyVentanillaUnica, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
+import { GetAllDocumentoVentanilla, InsertVentanillaUnica, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import ListAddSingleWindow from './ListAddSingleWindow';
@@ -167,6 +167,8 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                 else {
                     setOpenError(true);
                     setErrorMessage('Este forma no es un PDF');
+                    setInfoArchivoAdjunto(null);
+                    setArchivoAdjunto("");
                 }
             }
         },
@@ -223,6 +225,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                 folios: datos.folios,
                 fechaRecibido: fechaInicio,
                 fechaLimiteRespuesta: fechaFin,
+                direccionSolicitante: datos.direccionSolicitante,
 
                 recibidoPor: datos.recibidoPor,
                 nombreRecibe: datos.nombreRecibe,
@@ -317,7 +320,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                     name="tiempoRespuesta"
                                                     onChange={(e) => setTiempoRespuesta(e.target.value)}
                                                     value={tiempoRespuesta}
-                                                    label="Días de Respuesta (Días)"
+                                                    label="Días de respuesta (Días)"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </FormProvider>
@@ -330,7 +333,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 name="numRadicado"
                                                 onChange={(e) => setNumRadicado(e.target.value)}
                                                 value={numRadicado}
-                                                label="N° Radicado"
+                                                label="N° radicado"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </Grid>
@@ -339,7 +342,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                             <FormProvider {...methods}>
                                                 <InputSelect
                                                     name="idMedioIngreso"
-                                                    label="Medio de Ingreso"
+                                                    label="Medio de ingreso"
                                                     options={lsMedioIngreso}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.idMedioIngreso}
@@ -399,7 +402,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                         setFechaFin(FormatDate(nuevaFecha));
                                                     }}
                                                     value={fechaInicio}
-                                                    label="Fecha Recibido"
+                                                    label="Fecha recibido"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </FormProvider>
@@ -411,7 +414,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                     disabled
                                                     onChange={(e) => setFechaFin(e.target.value)}
                                                     value={fechaFin}
-                                                    label="Fecha Limite de Respuesta"
+                                                    label="Fecha límite de respuesta"
                                                     name="fechaLimiteRespuesta"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -422,7 +425,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                             <FormProvider {...methods}>
                                                 <InputSelect
                                                     name="recibidoPor"
-                                                    label="Recibido Por"
+                                                    label="Recibido por"
                                                     options={lsRecibidoPor}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.recibidoPor}
@@ -435,7 +438,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 <InputText
                                                     fullWidth
                                                     name="nombreRecibe"
-                                                    label="Nombre De Que Recibe"
+                                                    label="Nombre del que recibe"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.nombreRecibe}
                                                 />
@@ -447,7 +450,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 <InputText
                                                     fullWidth
                                                     name="correoRecibe"
-                                                    label="Correo Del Que Recibe"
+                                                    label="Correo del que recibe"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.correoRecibe}
                                                 />
@@ -469,7 +472,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 <InputText
                                                     fullWidth
                                                     name="solicitadoPor"
-                                                    label="Solicitado Por"
+                                                    label="Solicitado por"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.correoRecibe}
                                                 />
@@ -481,7 +484,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 <InputText
                                                     fullWidth
                                                     name="correoSolicitante"
-                                                    label="Correo Del Solicitante"
+                                                    label="Correo del solicitante"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.correoRecibe}
                                                 />
@@ -493,21 +496,9 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 <InputText
                                                     fullWidth
                                                     name="direccionSolicitante"
-                                                    label="Dirección Del Solicitante"
+                                                    label="Dirección del solicitante"
                                                     size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.correoRecibe}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="ciudadEnvio"
-                                                    label="Teléfono Noticicación"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.ciudadEnvio}
+                                                    bug={errors.direccionSolicitante}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -517,9 +508,21 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 <InputText
                                                     fullWidth
                                                     name="telefonoNotificion"
-                                                    label="Ciudad Notificación"
+                                                    label="Teléfono notificación"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.telefonoNotificion}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <FormProvider {...methods}>
+                                                <InputText
+                                                    fullWidth
+                                                    name="ciudadEnvio"
+                                                    label="Ciudad notificación"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.ciudadEnvio}
                                                 />
                                             </FormProvider>
                                         </Grid>
@@ -582,7 +585,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
                                         <Grid item xs={12}>
                                             <InputOnChange
-                                                label="Correo Electrónico Del Empleado"
+                                                label="Correo electrónico del empleado"
                                                 onChange={(e) => setDataPerson({ ...dataPerson, correo: e.target.value })}
                                                 value={dataPerson.correo}
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -625,7 +628,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Accordion disabled={idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución Del Tipo De Solicitud</Typography></>}>
+                                <Accordion disabled={idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución del tipo de solicitud</Typography></>}>
                                     <Grid container spacing={2}>
                                         <ListAddSingleWindow documento={documento} idResult={idResult} dataVentanilla={dataVentanilla} />
                                     </Grid>
@@ -634,19 +637,19 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
                             <Grid item xs={12} sx={{ mt: 2 }}>
                                 <Grid container spacing={1}>
-                                    <Grid item xs={3}>
+                                    <Grid item>
                                         <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                             {idResult === 0 ? "Registrar" : TitleButton.Actualizar}
                                         </Button>
                                     </Grid>
 
-                                    <Grid item xs={3}>
+                                    <Grid item>
                                         <Button variant="outlined" fullWidth onClick={onCancel}>
                                             Cerrar
                                         </Button>
                                     </Grid>
 
-                                    <Grid item xs={5}>
+                                    <Grid item>
                                         <Button variant="outlined" fullWidth onClick={handleNotifi}>
                                             Enviar Notificación
                                         </Button>

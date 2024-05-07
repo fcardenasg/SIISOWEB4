@@ -146,24 +146,26 @@ const UpdateOrdersIndividual = () => {
                     const result = await SendParaclinicalExams(Correo);
                     if (result.status === 200) {
                         if (result.data === 'Correo enviado') {
-
                             setTimeout(() => {
                                 if (result.status === 200) {
-                                    setErrorMessage(result.data);
+                                    setErrorMessage("Correo enviado");
                                     setOpenSuccess(true);
                                     setLoading(false);
                                 }
-                            }, 2000);
+                            }, 1000);
                         } else {
+                            setLoading(false);
                             setOpenError(true);
                             setErrorMessage(Message.CorreoNoEnviado);
                         }
                     }
                 } else {
+                    setLoading(false);
                     setOpenError(true);
                     setErrorMessage(Message.SinCorreo);
                 }
             } else {
+                setLoading(false);
                 setOpenReport(true);
                 setDataPDF(dataPDFTwo.dataPDF);
             }
@@ -190,7 +192,7 @@ const UpdateOrdersIndividual = () => {
 
     return (
         <Fragment>
-            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} message={openError} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal

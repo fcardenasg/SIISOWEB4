@@ -45,9 +45,11 @@ const MailPage = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('xl'));
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const dispatch = useDispatch();
 
     const [userEdit, setUserEdit] = useState(false);
+    const [openMailSidebar, setOpenMailSidebar] = useState(true);
     const [emailDetails, setEmailDetailsValue] = useState(false);
     const [selectedMail, setSelectedMail] = useState(null);
     const [search, setSearch] = useState('');
@@ -61,10 +63,6 @@ const MailPage = () => {
         setEmailDetailsValue((prev) => !prev);
     };
 
-    const [openMailSidebar, setOpenMailSidebar] = useState(true);
-    const handleDrawerOpen = () => {
-        setOpenMailSidebar((prevState) => !prevState);
-    };
 
     useEffect(() => {
         if (matchDownSM) {
@@ -75,16 +73,15 @@ const MailPage = () => {
     }, [matchDownSM]);
 
     const [data, setData] = useState([]);
-    const [unreadCounts, setUnreadCounts] = useState();
     const mailState = useSelector((state) => state.mail);
 
     useEffect(() => {
         async function getAllMail() {
             try {
-                /* const lsServer = await ConsultMail();
+                const lsServer = await ConsultMail();
                 if (lsServer.status === 200) {
                     setData(lsServer?.data);
-                } */
+                }
             } catch (error) { }
         }
 
@@ -148,10 +145,10 @@ const MailPage = () => {
     return (
         <Fragment>
             <SubCard
-                title={<Typography variant="h3">Ventanilla Única Digital</Typography>}
+                title={<Typography variant="h3">Ventanilla única digital</Typography>}
                 secondary={
                     <Fragment>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <AnimateButton>
                                     <Button
@@ -159,7 +156,7 @@ const MailPage = () => {
                                         startIcon={<AddCircleOutlineOutlinedIcon />}
                                         sx={{ px: 2.75, py: 1.5 }}
                                         onClick={() => setUserEdit(!userEdit)}
-                                        size="small"
+                                        size={matchesXS ? 'small' : 'medium'}
                                     >
                                         Indexar
                                     </Button>
@@ -173,7 +170,7 @@ const MailPage = () => {
                                         startIcon={<ArrowBackIosIcon />}
                                         sx={{ px: 2.75, py: 1.5 }}
                                         onClick={() => navigate("/single-window/view")}
-                                        size="small"
+                                        size={matchesXS ? 'small' : 'medium'}
                                     >
                                         {TitleButton.Cancelar}
                                     </Button>
@@ -187,7 +184,6 @@ const MailPage = () => {
                     <Grid item xs zeroMinWidth sx={{ display: userEdit ? { xs: 'none', md: 'block' } : 'block' }}>
                         <Grid container alignItems="center" spacing={gridSpacing}>
                             <Box sx={{ display: 'flex' }}>
-
                                 <Main theme={theme} open={openMailSidebar}>
                                     <Grid container spacing={gridSpacing}>
                                         <Grid item xs={12}>
@@ -201,7 +197,6 @@ const MailPage = () => {
                                             ) : (
                                                 <MailList
                                                     handleUserDetails={(e, d) => handleUserChange(d)}
-                                                    handleDrawerOpen={handleDrawerOpen}
                                                     handleImportantChange={handleImportantChange}
                                                     handleStarredChange={handleStarredChange}
                                                     data={data}

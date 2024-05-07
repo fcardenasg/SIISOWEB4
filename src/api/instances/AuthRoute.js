@@ -133,6 +133,7 @@ export const Url = {
     IndicadoresId: 'api/Indicadores/id',
 
     VentanillaUnica: 'api/VentanillaUnica',
+    UpdateVentanillaUnicaEnvio: 'api/VentanillaUnica/notificar-respuesta',
     VentanillaUnicaMonitoreo: 'api/VentanillaUnica/list-monitoreo',
     VentanillaUnicaDocumento: 'api/VentanillaUnica/documento',
     VentanillaUnicaId: 'api/VentanillaUnica/id',

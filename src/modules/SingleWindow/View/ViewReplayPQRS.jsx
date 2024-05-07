@@ -11,7 +11,7 @@ import { TitleButton } from "components/helpers/Enums";
 import ControlModal from "components/controllers/ControlModal";
 import ViewPDF from "components/components/ViewPDF";
 
-import { GetByIdVentanillaUnicaDetalle, UpdateVentanillaUnicaDetalle } from "api/clients/VentanillaUnicaClient";
+import { GetByIdVentanillaUnicaDetalle, GetVentanillaUnicaDetalleArchivo, UpdateVentanillaUnicaDetalle } from "api/clients/VentanillaUnicaClient";
 import { FormProvider, useForm } from "react-hook-form";
 import { GetAllComboArea } from "api/clients/UserClient";
 import InputSelect from "components/input/InputSelect";
@@ -20,20 +20,20 @@ import Cargando from "components/loading/Cargando";
 import Upload from "components/UploadDocument/Upload";
 import Accordion from "components/accordion/Accordion";
 import useAuth from "hooks/useAuth";
+import { DownloadFile } from "components/helpers/ConvertToBytes";
 
 const lsRespuesta = [
     { value: 0, label: "ATENDIDO" },
     { value: 1, label: "TRASLADO" }
 ]
 
-const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
+const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay, getAllList }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsData, setLsData] = useState([]);
     const [lsUsuario, setLsUsuario] = useState([]);
-
     const [idRespuesta, setIdRespuesta] = useState(0);
     const [infoArchivoAdjunto, setInfoArchivoAdjunto] = useState(null);
 
@@ -84,11 +84,24 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                 else {
                     setOpenError(true);
                     setErrorMessage('Este forma no es un PDF');
+                    setInfoArchivoAdjunto(null);
+                    setArchivoAdjunto("");
                 }
             }
         },
         [infoArchivoAdjunto]
     );
+
+    async function downloadFileReplay() {
+        try {
+            var nombreFormat = lsData?.nameTipoDocumento.toLowerCase().replace(/\s/g, "_");
+            const archivoPdf = await GetVentanillaUnicaDetalleArchivo(idVentanillaDetalle);
+
+            if (archivoPdf.status === 200) {
+                DownloadFile(`${nombreFormat}_${new Date().getTime()}.pdf`, archivoPdf.data);
+            }
+        } catch (error) { }
+    }
 
     const handleClick = async (datos) => {
         try {
@@ -107,8 +120,8 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                     if (result.status === 200) {
                         setTimeout(() => {
                             setOpenSuccess(true);
-                            setArchivoAdjunto("");
                             getAllReplay();
+                            getAllList();
                             reset();
                         }, 500);
 
@@ -123,8 +136,8 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                 if (result.status === 200) {
                     setTimeout(() => {
                         setOpenSuccess(true);
-                        setArchivoAdjunto("");
                         getAllReplay();
+                        getAllList();
                         reset();
                     }, 500);
 
@@ -180,7 +193,7 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                     <Grid item xs={12}>
                         <Grid container spacing={1}>
                             <Grid item>
-                                <Typography variant="h4">Tipo de Documento:</Typography>
+                                <Typography variant="h4">Tipo de documento:</Typography>
                             </Grid>
 
                             <Grid item>
@@ -193,7 +206,7 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                         <Grid item xs={12}>
                             <Grid container spacing={1}>
                                 <Grid item>
-                                    <Typography variant="h4">Fecha de Respuesta:</Typography>
+                                    <Typography variant="h4">Fecha de respuesta:</Typography>
                                 </Grid>
 
                                 <Grid item>
@@ -208,7 +221,7 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Accordion title={<><PersonIcon /><Typography sx={{ pl: 2 }} align='right' variant="h4" color="inherit">Información Del Empleado</Typography></>}>
+                        <Accordion title={<><PersonIcon /><Typography sx={{ pl: 2 }} align='right' variant="h4" color="inherit">Información del empleado</Typography></>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <Typography variant="h4">Empleado</Typography>
@@ -221,7 +234,7 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <Typography variant="h4">Telefono</Typography>
+                                    <Typography variant="h4">Teléfono</Typography>
                                     <Typography variant="h5">{lsData?.nameTelefono}</Typography>
                                 </Grid>
 
@@ -231,7 +244,7 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <Typography variant="h4">Solicitado Por</Typography>
+                                    <Typography variant="h4">Solicitado por</Typography>
                                     <Typography variant="h5">{lsData?.nameSolicitadoPor}</Typography>
                                 </Grid>
 
@@ -260,13 +273,23 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
 
                     {idRespuesta === 0 ?
                         <Grid item xs={12}>
-                            <Accordion title={<><UploadIcon /><Typography sx={{ pl: 2 }} align='right' variant="h4" color="inherit">Subir Archivo De Respuesta</Typography></>}>
+                            <Accordion title={<><UploadIcon /><Typography sx={{ pl: 2 }} align='right' variant="h4" color="inherit">Subir archivo de respuesta</Typography></>}>
                                 <Upload files={infoArchivoAdjunto} onDrop={handleDrop} />
 
                                 <Grid sx={{ mt: 1 }} spacing={1} container direction="row" justifyContent="flex-end" alignItems="center">
                                     <Grid item>
                                         <AnimateButton>
-                                            <Button disabled={archivoAdjunto === "" ? true : false} variant="outlined" size="medium" onClick={() => setOpenModal(true)}>
+                                            <Button disabled={archivoAdjunto === "" ? true : false}
+                                                variant="outlined" size="medium" onClick={downloadFileReplay}>
+                                                Descargar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item>
+                                        <AnimateButton>
+                                            <Button disabled={archivoAdjunto === "" ? true : false}
+                                                variant="outlined" size="medium" onClick={() => setOpenModal(true)}>
                                                 {TitleButton.VerArchivo}
                                             </Button>
                                         </AnimateButton>
@@ -274,8 +297,9 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay }) => {
 
                                     <Grid item>
                                         <AnimateButton>
-                                            <Button variant="outlined" color="error" size="medium" onClick={() => { setArchivoAdjunto(""); setInfoArchivoAdjunto(null); }}>
-                                                Remover Archivo
+                                            <Button variant="outlined" color="error" size="medium"
+                                                onClick={() => { setArchivoAdjunto(""); setInfoArchivoAdjunto(null); }}>
+                                                Remover archivo
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

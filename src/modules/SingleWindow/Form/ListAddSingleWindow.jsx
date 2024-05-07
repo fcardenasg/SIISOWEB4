@@ -57,7 +57,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
-    const { handleSubmit, formState: { errors }, reset, setValue } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     useEffect(() => {
         async function getAll() {
@@ -125,6 +125,8 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
             if (result.status === 200) {
                 getAllListSolicitudes();
                 setOpenSuccess(true);
+                setTipoDocumento([]);
+                setLsTipoDocumento([]);
                 reset();
             }
         } catch (error) {
@@ -136,8 +138,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
     const handleChangeArea = async (event) => {
         setTipoDocumento([]);
         setLsTipoDocumento([]);
-        setValue('idUsuario', '');
-        setValue('observaciones', '');
+        reset();
         setArea(event.target.value);
 
         var codigoDocumento = lsAreaFiltro.filter(code => code.value === event.target.value)[0].codigo;
@@ -176,7 +177,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                 <FormProvider {...methods}>
                     <InputSelect
                         name="idUsuario"
-                        label="Usuario Responsable"
+                        label="Usuario responsable"
                         options={lsUsuario}
                         size={matchesXS ? 'small' : 'medium'}
                         bug={errors.idUsuario}
@@ -189,7 +190,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                     fullWidth
                     onChange={(event, value) => setTipoDocumento(value)}
                     value={tipoDocumento}
-                    label="Tipo De Documento"
+                    label="Tipo de documento"
                     options={lsTipoDocumento}
                 />
             </Grid>
@@ -220,7 +221,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Area</TableCell>
-                                <TableCell>Tipo De Documento</TableCell>
+                                <TableCell>Tipo de documento</TableCell>
                                 <TableCell>Acción</TableCell>
                             </TableRow>
                         </TableHead>

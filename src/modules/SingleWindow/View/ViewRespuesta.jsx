@@ -21,7 +21,6 @@ import {
     Button,
     Tooltip,
     FormControl,
-    FormLabel,
     RadioGroup,
     FormControlLabel,
     Radio
@@ -144,7 +143,7 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
                                 direction={orderBy === headCell.id ? order : 'asc'}
                                 onClick={createSortHandler(headCell.id)}
                             >
-                                {headCell.label}
+                                <Typography variant='h6'>{headCell.label}</Typography>
                                 {orderBy === headCell.id ? (
                                     <Box component="span" sx={visuallyHidden}>
                                         {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -160,6 +159,7 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
                         </Typography>
                     </TableCell>
                 )}
+
             </TableRow>
         </TableHead>
     );
@@ -187,27 +187,27 @@ const ViewRespuesta = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
+    async function getAll() {
+        try {
+            setTimeWait(false);
+            setMessageAtencion('');
+            setLsRespuesta([]);
+
+            await GetAllVentanillaUnicaDetalleArea(user?.id, radioSearch).then(response => {
+                if (response.data.length === 0) {
+                    setMessageAtencion(Message.NoRegistro);
+                } else if (response.data.length !== 0) {
+                    setTimeout(() => {
+                        setTimeWait(true);
+                        setLsRespuesta(response.data);
+                        setRows(response.data);
+                    }, 500);
+                }
+            });
+        } catch (error) { }
+    }
+
     useEffect(() => {
-        async function getAll() {
-            try {
-                setTimeWait(false);
-                setMessageAtencion('');
-                setLsRespuesta([]);
-
-                await GetAllVentanillaUnicaDetalleArea(user?.id, radioSearch).then(response => {
-                    if (response.data.length === 0) {
-                        setMessageAtencion(Message.NoRegistro);
-                    } else if (response.data.length !== 0) {
-                        setTimeout(() => {
-                            setTimeWait(true);
-                            setLsRespuesta(response.data);
-                            setRows(response.data);
-                        }, 500);
-                    }
-                });
-            } catch (error) { }
-        }
-
         getAll();
     }, [radioSearch])
 
@@ -274,7 +274,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.nRadicado}
@@ -288,7 +288,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.solicitadoPor}
@@ -302,7 +302,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.documento}
@@ -316,7 +316,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.nombre}
@@ -330,7 +330,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.tipo}
@@ -344,7 +344,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {ViewFormat(row?.fechaRecibido)}
@@ -358,7 +358,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {ViewFormat(row?.fechaLimite)}
@@ -372,7 +372,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.diasRestantes}
@@ -386,7 +386,7 @@ const ViewRespuesta = () => {
                             sx={{ cursor: 'pointer' }}
                         >
                             <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.numTotal === row?.numeroRespondido ?
@@ -396,11 +396,13 @@ const ViewRespuesta = () => {
                         </TableCell>
 
                         <TableCell align="center" sx={{ pr: 3 }}>
-                            <Tooltip title="Responder" onClick={() => { setOpenModal(true); setIdVentanilla(row?.id) }}>
-                                <IconButton size="large">
-                                    <ReplyIcon sx={{ fontSize: '1.5rem' }} />
-                                </IconButton>
-                            </Tooltip>
+                            <AnimateButton>
+                                <Tooltip title="Responder" onClick={() => { setOpenModal(true); setIdVentanilla(row?.id) }}>
+                                    <IconButton size="large">
+                                        <ReplyIcon color="info" sx={{ fontSize: '1.5rem' }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </AnimateButton>
                         </TableCell>
                     </TableRow>
                 );
@@ -416,12 +418,12 @@ const ViewRespuesta = () => {
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                maxWidth="md"
+                maxWidth="lg"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Solicitudes Por Responder"
+                title="Solicitudes por responder"
             >
-                <ListReplay idVentanilla={idVentanilla} />
+                <ListReplay idVentanilla={idVentanilla} getAllList={getAll} />
             </ControlModal>
 
             <CardContent>

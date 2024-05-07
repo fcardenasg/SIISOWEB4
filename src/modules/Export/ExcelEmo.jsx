@@ -8,25 +8,18 @@ import InputDatePick from "components/input/InputDatePick";
 import SelectOnChange from "components/input/SelectOnChange";
 import { ParametrosExcel } from "formatdata/ParametrosForm";
 import AnimateButton from "ui-component/extended/AnimateButton";
-import ReactExport from "react-export-excel";
-import { ViewFormat } from "components/helpers/Format";
+
 import { Fragment } from "react";
 import { MessageError } from "components/alert/AlertAll";
 import LoadingGenerate from "components/loading/LoadingGenerate";
 import { GetExcelOccupationalExamination } from "api/clients/OccupationalExaminationClient";
 import { DownloadFile } from "components/helpers/ConvertToBytes";
 
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-
 const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsSede, setLsSede] = useState([]);
-    const [lsDataExport, setLsDataExport] = useState([]);
-    const [statusData, setStatusData] = useState(false);
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
