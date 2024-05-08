@@ -14,6 +14,8 @@ import InputText from "components/input/InputText";
 import Cargando from "components/loading/Cargando";
 import useAuth from "hooks/useAuth";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import ViewMail from "./ViewMail";
 
 const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const { user } = useAuth();
@@ -121,6 +123,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idMedioEnvio"
+                                    defaultValue={lsData?.idMedioEnvio}
                                     label="Medio Envío"
                                     options={lsMedioIngreso}
                                     size={matchesXS ? 'small' : 'medium'}
@@ -133,6 +136,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idEmpresaMensajeria"
+                                    defaultValue={lsData?.idEmpresaMensajeria}
                                     label="Empresa Mensajería"
                                     options={lsEmpresaMensajeria}
                                     size={matchesXS ? 'small' : 'medium'}
@@ -146,6 +150,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                                 <InputText
                                     fullWidth
                                     name="numGuia"
+                                    defaultValue={lsData?.numGuia}
                                     label="Número Guía"
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.numGuia}
@@ -237,10 +242,20 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={4} sx={{ pt: 2 }}>
-                        <Button variant="contained" onClick={handleSubmit(handleClick)}>
-                            Guardar
-                        </Button>
+                    <Grid container spacing={2} sx={{ pt: 2 }}>
+                        <Grid item>
+                            <AnimateButton>
+                                <Button variant="contained" onClick={handleSubmit(handleClick)}>
+                                    Guardar
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item>
+                            <AnimateButton>
+                                <ViewMail lsData={lsData} />
+                            </AnimateButton>
+                        </Grid>
                     </Grid>
                 </Fragment> : <Cargando />
             }

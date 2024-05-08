@@ -7,6 +7,8 @@ import {
     Typography,
 } from '@mui/material';
 
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import HistoryIcon from '@mui/icons-material/History';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -15,12 +17,12 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { PostWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
-import { FormatDate, NumeroDias } from 'components/helpers/Format';
+import { NumeroDias } from 'components/helpers/Format';
 import { GetAllWorkAbsenteeismNumeroDia, InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import InputOnChange from 'components/input/InputOnChange';
@@ -50,6 +52,10 @@ const ColorCard = (numeroDias) => {
 
     return theme.palette.grey[400];
 }
+
+const validationSchema = yup.object().shape({
+    nroIncapacidad: yup.string().required(ValidationMessage.Requerido)
+});
 
 const WorkAbsenteeism = () => {
     const theme = useTheme();
@@ -96,8 +102,10 @@ const WorkAbsenteeism = () => {
     const [fechaFin, setFechaFin] = useState(null);
     const [fechaModifica, setFechaModifica] = useState(new Date().toLocaleString());
 
-    const methods = useForm();
-    const { handleSubmit, errors } = methods;
+    const methods = useForm({
+        resolver: yupResolver(validationSchema)
+    });
+    const { handleSubmit, formState: { errors } } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -380,7 +388,6 @@ const WorkAbsenteeism = () => {
                                         label="Incapacidad"
                                         options={lsIncapacidad}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -393,7 +400,7 @@ const WorkAbsenteeism = () => {
                                         name="nroIncapacidad"
                                         label="Nro. de Incapacidad"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
+                                        bug={errors.nroIncapacidad}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -424,7 +431,6 @@ const WorkAbsenteeism = () => {
                                         label="Ciudad de Expedición"
                                         options={lsMunicipio}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -442,7 +448,6 @@ const WorkAbsenteeism = () => {
                                         label="Tipo de Incapacidad"
                                         options={lsTipoInca}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -454,7 +459,6 @@ const WorkAbsenteeism = () => {
                                         label="Contingencia"
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -504,7 +508,6 @@ const WorkAbsenteeism = () => {
                                         label="Diagnóstico"
                                         options={lsCIE11}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -516,7 +519,6 @@ const WorkAbsenteeism = () => {
                                         label="Estado de Caso"
                                         options={lsEstadoCaso}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                         defaultValue={DefaultValue.INCAPACIDAD_ANTIGUO}
                                     />
                                 </FormProvider>
@@ -529,7 +531,6 @@ const WorkAbsenteeism = () => {
                                         label="Segmento Agrupado"
                                         options={lsSegmentoAgrupado}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -541,7 +542,6 @@ const WorkAbsenteeism = () => {
                                         label="Segmento"
                                         options={lsSubsegmento}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -564,7 +564,6 @@ const WorkAbsenteeism = () => {
                                         label="Categoria"
                                         options={lsCategoria}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -582,7 +581,6 @@ const WorkAbsenteeism = () => {
                                         name="proveedor"
                                         label="Proveedor"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -605,7 +603,6 @@ const WorkAbsenteeism = () => {
                                         label="Ciudad"
                                         options={lsMunicipioMedico}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -617,7 +614,6 @@ const WorkAbsenteeism = () => {
                                         name="nombreProfesional"
                                         label="Nombre de Profesional"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -629,7 +625,6 @@ const WorkAbsenteeism = () => {
                                         name="especialidad"
                                         label="Profesión/Especialidad"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -641,7 +636,6 @@ const WorkAbsenteeism = () => {
                                         name="registroProfesional"
                                         label="Reg. Profesional"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -654,7 +648,6 @@ const WorkAbsenteeism = () => {
                                         label="Tipo de Atención"
                                         options={lsTipoAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -667,7 +660,6 @@ const WorkAbsenteeism = () => {
                                         label="Cumplimiento Requisito"
                                         options={lsCumplimientoRequisito}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -680,7 +672,6 @@ const WorkAbsenteeism = () => {
                                         label="Red que expide"
                                         options={lsRedExpide}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -692,7 +683,6 @@ const WorkAbsenteeism = () => {
                                         name="observacionCumplimiento"
                                         label="Observacion Cumplimiento"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                         multiline
                                         rows={4}
                                     />
@@ -712,7 +702,6 @@ const WorkAbsenteeism = () => {
                                         name="observacion"
                                         label="Observación/Descripción"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                         multiline
                                         rows={4}
                                     />
@@ -727,7 +716,6 @@ const WorkAbsenteeism = () => {
                                         name="usuarioModificacion"
                                         label="Usuario Modifica"
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors}
                                     />
                                 </FormProvider>
                             </Grid>

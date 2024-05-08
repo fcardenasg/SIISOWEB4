@@ -452,7 +452,7 @@ const UpdateWorkAbsenteeism = () => {
                                         <InputText
                                             defaultValue={lsWorkAbsenteeism.nroIncapacidad}
                                             type="number"
-                                            fullWidth
+                                            fullWidths
                                             name="nroIncapacidad"
                                             label="Nro. de Incapacidad"
                                             size={matchesXS ? 'small' : 'medium'}

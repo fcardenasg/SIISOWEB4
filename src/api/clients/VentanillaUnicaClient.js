@@ -2,6 +2,9 @@ import { Url } from '../instances/AuthRoute';
 import { getData, deleteData, postData, putData } from '../UtilInstance';
 
 export const GetByIdVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaId, { id });
+export const NotificarUsuarios = async (id) => await getData(Url.VentaUnicaNotiUsuarios, { id });
+export const NotificarSolicitante = async (correo) => await postData(Url.VentaUnicaNotiSolicitante, correo);
+
 export const GetAllVentanillaUnica = async () => await getData(Url.VentanillaUnica);
 export const GetAllVentanillaUnicaMonitoreo = async (options) => await getData(Url.VentanillaUnicaMonitoreo, { options });
 export const GetAllDocumentoVentanilla = async (documento) => await getData(Url.VentanillaUnicaDocumento, { documento });

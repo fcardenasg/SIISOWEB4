@@ -19,12 +19,13 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import SubCard from 'ui-component/cards/SubCard';
 import { gridSpacing } from 'store/constant';
 import InputSelect from 'components/input/InputSelect';
+import SendIcon from '@mui/icons-material/Send';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputText from 'components/input/InputText';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
 import Accordion from 'components/accordion/Accordion';
-import { GetAllDocumentoVentanilla, InsertVentanillaUnica, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
+import { GetAllDocumentoVentanilla, InsertVentanillaUnica, NotificarUsuarios, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import ListAddSingleWindow from './ListAddSingleWindow';
@@ -37,6 +38,8 @@ import ControlModal from 'components/controllers/ControlModal';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import SelectOnChange from 'components/input/SelectOnChange';
 import Upload from 'components/UploadDocument/Upload';
+import swal from 'sweetalert';
+import { LoadingButton } from '@mui/lab';
 
 const validationSchema = yup.object().shape({
     idMedioIngreso: yup.string().required(ValidationMessage.Requerido),
@@ -59,6 +62,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
     const { user } = useAuth();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [idResult, setIdResult] = useState(0);
     const [documento, setDocumento] = useState("");
     const [dataPerson, setDataPerson] = useState({
         nombre: '',
@@ -71,7 +75,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
     const [tiempoRespuesta, setTiempoRespuesta] = useState("");
     const [numRadicado, setNumRadicado] = useState("");
 
-    const [idResult, setIdResult] = useState(0);
+    const [loading, setLoading] = useState(false);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
     const [archivoAdjunto, setArchivoAdjunto] = useState(null);
@@ -80,7 +84,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
     const [lsTipo, setLsTipo] = useState([]);
     const [dataVentanilla, setDataVentanilla] = useState([]);
-    const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
+    const [lsMedioIngreso, setLsMedioIngreso] = useState([]); 
     const [lsCondiciones, setLsCondiciones] = useState([]);
     const [lsImportancia, setLsImportancia] = useState([]);
     const [lsMunicipio, setLsMunicipio] = useState([]);
@@ -203,12 +207,41 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
     const handleNotifi = async () => {
         try {
-            try {
+            setLoading(true);
 
-            } catch (error) {
-            }
+            swal({
+                title: "Enviar correo de notificación a usuarios",
+                text: "Está a punto de enviar la notificación a cada de uno de los usuarios asignados para responder, ¿Está seguro de realizar esta acción?",
+                icon: "warning",
+                buttons: ["Cancelar", "Si"],
+                dangerMode: true,
+                confirm: {
+                    text: "Si",
+                },
+                cancel: {
+                    text: "Cancelar",
+                },
+            }).then(async (willDelete) => {
+                if (willDelete) {
+                    var result = await NotificarUsuarios(idResult);
+                    if (result.data === "Ok") {
+                        setTimeout(() => {
+                            setErrorMessage("Se notifico correctamente a cada usuario");
+                            setOpenSuccess(true);
+                            setLoading(false);
+                        }, 500);
+                    } else {
+                        setLoading(false);
+                        setOpenError(true);
+                        setErrorMessage(result.data);
+                    }
+                } else
+                    setLoading(false);
+            });
         } catch (error) {
-
+            setLoading(false);
+            setOpenError(true);
+            setErrorMessage("Error: No se pudo enviar la notificación");
         }
     }
 
@@ -251,12 +284,14 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
             if (idResult === 0) {
                 const result = await InsertVentanillaUnica(DataToInsert);
                 if (result.status === 200) {
+                    setErrorMessage(Message.Guardar);
                     setIdResult(result.data);
                     setOpenSuccess(true);
                 }
             } else {
                 const result = await UpdateVentanillaUnicas(DataToInsert);
                 if (result.status === 200) {
+                    setErrorMessage(Message.Actualizar);
                     setIdResult(result.data);
                     setOpenSuccess(true);
                 }
@@ -270,11 +305,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
     return (
         <Fragment>
-            {idResult === 0 ?
-                <MessageSuccess message={Message.Guardar} open={openSuccess} onClose={() => setOpenSuccess(false)} /> :
-                <MessageSuccess message={Message.Actualizar} open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            }
-
+            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -638,21 +669,35 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                             <Grid item xs={12} sx={{ mt: 2 }}>
                                 <Grid container spacing={1}>
                                     <Grid item>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {idResult === 0 ? "Registrar" : TitleButton.Actualizar}
-                                        </Button>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                {idResult === 0 ? "Registrar" : TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
 
                                     <Grid item>
-                                        <Button variant="outlined" fullWidth onClick={onCancel}>
-                                            Cerrar
-                                        </Button>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={onCancel}>
+                                                Cerrar
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
 
                                     <Grid item>
-                                        <Button variant="outlined" fullWidth onClick={handleNotifi}>
-                                            Enviar Notificación
-                                        </Button>
+                                        <AnimateButton>
+                                            <LoadingButton
+                                                fullWidth
+                                                disabled={idResult === 0 ? true : false}
+                                                onClick={handleNotifi}
+                                                loading={loading}
+                                                loadingPosition="end"
+                                                startIcon={<SendIcon />}
+                                                variant="outlined"
+                                            >
+                                                Enviar Notificación
+                                            </LoadingButton>
+                                        </AnimateButton>
                                     </Grid>
                                 </Grid>
                             </Grid>

@@ -134,6 +134,8 @@ export const Url = {
 
     VentanillaUnica: 'api/VentanillaUnica',
     UpdateVentanillaUnicaEnvio: 'api/VentanillaUnica/notificar-respuesta',
+    VentaUnicaNotiSolicitante: 'api/VentanillaUnica/notificar-solicitante',
+    VentaUnicaNotiUsuarios: 'api/VentanillaUnica/notificar',
     VentanillaUnicaMonitoreo: 'api/VentanillaUnica/list-monitoreo',
     VentanillaUnicaDocumento: 'api/VentanillaUnica/documento',
     VentanillaUnicaId: 'api/VentanillaUnica/id',
