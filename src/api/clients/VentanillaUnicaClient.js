@@ -4,8 +4,12 @@ import { getData, deleteData, postData, putData } from '../UtilInstance';
 export const GetByIdVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaId, { id });
 export const NotificarUsuarios = async (id) => await getData(Url.VentaUnicaNotiUsuarios, { id });
 export const NotificarSolicitante = async (correo) => await postData(Url.VentaUnicaNotiSolicitante, correo);
+export const DescargarDocumentoVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaDescargarDocumento, { id });
 
 export const GetAllVentanillaUnica = async () => await getData(Url.VentanillaUnica);
+export const GetAllVentanillaUnicaComboUsuario = async (id) => await getData(Url.VentanillaUnicaComboUsuario, { id });
+export const NotificarUsuario = async (id, idUsuario) => await getData(Url.VentanillaUnicaNotificarUsuario, { id, idUsuario });
+
 export const GetAllVentanillaUnicaMonitoreo = async (options) => await getData(Url.VentanillaUnicaMonitoreo, { options });
 export const GetAllDocumentoVentanilla = async (documento) => await getData(Url.VentanillaUnicaDocumento, { documento });
 export const InsertVentanillaUnica = async (ventanillaUnica) => await postData(Url.VentanillaUnica, ventanillaUnica);

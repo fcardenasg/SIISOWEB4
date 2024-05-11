@@ -46,7 +46,6 @@ const validationSchema = yup.object().shape({
     nombres: yup.string().required(`${ValidationMessage.Requerido}`),
     celular: yup.string().required(`${ValidationMessage.Requerido}`),
     empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
     sede: yup.string().required(`${ValidationMessage.Requerido}`),
     genero: yup.string().required(`${ValidationMessage.Requerido}`),
     estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -100,6 +99,8 @@ const UpdateEmployee = () => {
     const [dptoResidencia, setDptoResidencia] = useState('');
     const [municipioNacido, setMunicipioNacido] = useState('');
     const [municipioResidencia, setMunicipioResidencia] = useState('');
+
+    const [idTipoContrato, setIdTipoContrato] = useState(null);
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -114,6 +115,7 @@ const UpdateEmployee = () => {
                 setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 
                 setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
+                setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
             } else {
@@ -123,6 +125,7 @@ const UpdateEmployee = () => {
                 setEmployee(lsServerEmployeeId?.data.data);
                 setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 
+                setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
@@ -377,14 +380,16 @@ const UpdateEmployee = () => {
     const handleClick = async (datos) => {
         try {
             const fotoEmpleado = imgSrc === null ? '' : imgSrc;
+            var fechaContrato = idTipoContrato === 9717 ? null : datos.fechaContrato;
+            var fechaNaci = datos.fechaNaci === "" ? null : datos.fechaNaci;
 
             const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
             const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, datos.fechaContrato,
-                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
+            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, fechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, fechaContrato,
+                datos.rosterPosition, idTipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
@@ -597,6 +602,7 @@ const UpdateEmployee = () => {
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
                                         defaultValue={employee.fechaContrato}
@@ -604,16 +610,14 @@ const UpdateEmployee = () => {
                                 </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="tipoContrato"
-                                        label="Tipo de Contrato"
-                                        defaultValue={employee.tipoContrato}
-                                        options={lsTipoContrato}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.tipoContrato}
-                                    />
-                                </FormProvider>
+                                <SelectOnChange
+                                    name="tipoContrato"
+                                    label="Tipo de Contrato"
+                                    value={idTipoContrato}
+                                    options={lsTipoContrato}
+                                    onChange={(e) => setIdTipoContrato(e.target.value)}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>

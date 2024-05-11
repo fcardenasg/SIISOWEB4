@@ -339,8 +339,11 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
             const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
             const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
 
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, datos.fechaContrato,
+            var fechaContrato = datos.fechaContrato === "" ? null : datos.fechaContrato;
+            var fechaNaci = datos.fechaNaci === "" ? null : datos.fechaNaci;
+
+            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, fechaNaci, datos.type, datos.departamento,
+                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, fechaContrato,
                 datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
                 municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
@@ -942,9 +945,3 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
 };
 
 export default UpdateEmployee;
-
-UpdateEmployee.propTypes = {
-    idEmpleado: PropTypes.string,
-    setOpenUpdateTwo: PropTypes.any,
-    getDataAttention: PropTypes.func,
-};

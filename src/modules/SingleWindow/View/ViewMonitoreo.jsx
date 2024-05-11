@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
     CardContent,
@@ -23,19 +22,22 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    Tooltip
+    Tooltip,
+    useMediaQuery
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import EmailIcon from '@mui/icons-material/Email';
+import { useTheme } from '@mui/material/styles';
 
-import { MessageDelete } from 'components/alert/AlertAll';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-
+import SendIcon from '@mui/icons-material/Send';
 import MailIcon from '@mui/icons-material/Mail';
 import PreviewIcon from '@mui/icons-material/Preview';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
+import { GetAllVentanillaUnicaComboUsuario, GetAllVentanillaUnicaMonitoreo, NotificarUsuario } from 'api/clients/VentanillaUnicaClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ControlModal from 'components/controllers/ControlModal';
@@ -44,6 +46,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
 import useAuth from 'hooks/useAuth';
 import ViewEnviarSolicitud from './ViewEnviarSolicitud';
+import SelectOnChange from 'components/input/SelectOnChange';
+import { LoadingButton } from '@mui/lab';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -168,18 +172,26 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
 }
 
 const ViewRespuesta = () => {
+    const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [openSuccess, setOpenSuccess] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [idVentanilla, setIdVentanilla] = useState('');
 
     const [lsRespuesta, setLsRespuesta] = useState([]);
+    const [messageError, setMessageError] = useState('');
     const [messageAtencion, setMessageAtencion] = useState('');
     const [radioSearch, setRadioSearch] = useState(1);
     const [timeWait, setTimeWait] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [openNotificar, setOpenNotificar] = useState(false);
+    const [idUsuarioNotificacion, setIdUsuarioNotificacion] = useState('');
+    const [lsUsuarios, setLsUsuarios] = useState([]);
 
-    const theme = useTheme();
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
@@ -214,7 +226,7 @@ const ViewRespuesta = () => {
         }
 
         getAll();
-    }, [radioSearch])
+    }, [radioSearch]);
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -242,6 +254,45 @@ const ViewRespuesta = () => {
         } else {
             setLsRespuesta(rows);
         }
+    };
+
+    const handleClickNotificar = async () => {
+        try {
+            setLoading(true);
+
+            if (idUsuarioNotificacion !== '') {
+                const server = await NotificarUsuario(idVentanilla, idUsuarioNotificacion);
+                if (server.data === "Ok") {
+                    setTimeout(() => {
+                        setOpenNotificar(false);
+                        setMessageError("Se notifico correctamente al usuario");
+                        setOpenSuccess(true);
+                        setLoading(false);
+                    }, 1000);
+                } else {
+                    setLoading(false);
+                    setOpenDelete(true);
+                    setMessageError(server.data);
+                }
+            } else {
+                setLoading(false);
+                setOpenDelete(true);
+                setMessageError("Por favor seleccione un usuario para notificar.");
+            }
+        } catch (error) { setLoading(false); }
+    };
+
+    const handleClickOpen = async () => {
+        try {
+            setLsUsuarios([]);
+            setIdUsuarioNotificacion('');
+            setOpenNotificar(true);
+
+            var lsServer = await GetAllVentanillaUnicaComboUsuario(idVentanilla);
+            if (lsServer.status === 200) {
+                setLsUsuarios(lsServer.data);
+            }
+        } catch (error) { }
     };
 
     const handleChangePage = (event, newPage) => {
@@ -420,13 +471,66 @@ const ViewRespuesta = () => {
 
     return (
         <MainCard title="Monitoreo de solicitudes" content={false}>
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <MessageSuccess message={messageError} open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={messageError} open={openDelete} onClose={() => setOpenDelete(false)} />
+
+            <ControlModal
+                title="Notificar al usuario"
+                open={openNotificar}
+                onClose={() => setOpenNotificar(false)}
+                maxWidth="xs"
+            >
+                <Grid container spacing={2} alignItems="center" alignContent="center">
+                    <Grid item xs={8}>
+                        <SelectOnChange
+                            name="idUsuario"
+                            label="Usuarios"
+                            value={idUsuarioNotificacion}
+                            onChange={(e) => setIdUsuarioNotificacion(e.target.value)}
+                            options={lsUsuarios}
+                            size={matchesXS ? 'small' : 'medium'}
+                        />
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <AnimateButton>
+                            <LoadingButton
+                                fullWidth
+                                onClick={handleClickNotificar}
+                                loading={loading}
+                                loadingPosition="end"
+                                endIcon={<SendIcon />}
+                                variant="outlined"
+                                size={matchesXS ? 'medium' : 'large'}
+                            >
+                                Notificar
+                            </LoadingButton>
+                        </AnimateButton>
+                    </Grid>
+                </Grid>
+            </ControlModal>
 
             <ControlModal
                 maxWidth={radioSearch == 1 ? "lg" : "sm"}
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title={radioSearch == 1 ? "Solicitudes por responder" : "Enviar solicitudes"}
+                title={radioSearch == 1 ?
+                    <Fragment>
+                        <Grid container spacing={2} alignItems="center" alignContent="center">
+                            <Grid item>
+                                <Typography variant="h4">Solicitudes por responder</Typography>
+                            </Grid>
+
+                            <Grid item>
+                                <AnimateButton>
+                                    <Button variant="text" startIcon={<EmailIcon />} onClick={handleClickOpen}>
+                                        Notificar Retraso
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
+                    </Fragment>
+                    : "Enviar solicitudes"}
             >
                 {radioSearch == 1 ? <ListReplay idVentanilla={idVentanilla} options={1} /> : <ViewEnviarSolicitud idVentanilla={idVentanilla} />}
             </ControlModal>

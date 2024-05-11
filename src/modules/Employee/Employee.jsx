@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
@@ -18,7 +18,7 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
 import PhotoModel from 'components/form/PhotoModel';
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { InsertEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
@@ -30,14 +30,12 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { PostEmployee } from 'formatdata/EmployeeForm';
-import { Fragment } from 'react';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
     nombres: yup.string().required(ValidationMessage.Requerido),
     celular: yup.string().required(ValidationMessage.Requerido),
     empresa: yup.string().required(ValidationMessage.Requerido),
-    tipoContrato: yup.string().required(ValidationMessage.Requerido),
     sede: yup.string().required(ValidationMessage.Requerido),
     genero: yup.string().required(ValidationMessage.Requerido),
     estadoCivil: yup.string().required(ValidationMessage.Requerido),
@@ -88,6 +86,8 @@ const Employee = () => {
     const [lsOficio, setOficio] = useState([]);
     const [open, setOpen] = useState(false);
 
+    const [idTipoContrato, setIdTipoContrato] = useState(null);
+
     const methods = useForm(
         { resolver: yupResolver(validationSchema) }
     );
@@ -114,7 +114,6 @@ const Employee = () => {
             }
         } catch (error) {
             setOpenError(true);
-
         }
     }
 
@@ -318,26 +317,22 @@ const Employee = () => {
 
             const DataToInsert = PostEmployee(datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
                 datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido === null ? 1 : dptoNacido, datos.fechaContrato,
-                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
+                datos.rosterPosition, idTipoContrato, datos.generalPosition, datos.genero, datos.sede,
                 datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidenciaTrabaja === null ? 1 : dptoNacido,
                 datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,
                 datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
                 datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
                 DefaultValue.BANDERA_DRUMMOND, datos.ges, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), fotoEmpleado, datos.oficio);
 
-
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertEmployee(DataToInsert);
-                if (result.status === 200) {
-                    setOpenUpdate(true);
-                    CleanCombo();
-                    reset();
-                }
+            const result = await InsertEmployee(DataToInsert);
+            if (result.status === 200) {
+                setOpenUpdate(true);
+                CleanCombo();
+                reset();
             } else {
                 setOpenError(true);
                 setErrorMessage('Hubo un problemas al guardo los datos');
             }
-
         } catch (error) {
             setOpenError(true);
             setErrorMessage(`${Message.RegistroNoGuardado}`);
@@ -347,7 +342,7 @@ const Employee = () => {
     return (
         <MainCard>
             <Fragment>
-                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageSuccess open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
                 <SubCard darkTitle title={<Typography variant="h4">Datos Personales</Typography>}>
@@ -522,21 +517,21 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputDatePicker
+                                    disabled={idTipoContrato === 9717 ? true : false}
                                     label="Fecha de Contrato"
                                     name="fechaContrato"
                                 />
                             </FormProvider>
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="tipoContrato"
-                                    label="Tipo de Contrato"
-                                    options={lsTipoContrato}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.tipoContrato}
-                                />
-                            </FormProvider>
+                            <SelectOnChange
+                                name="tipoContrato"
+                                label="Tipo de Contrato"
+                                value={idTipoContrato}
+                                options={lsTipoContrato}
+                                onChange={(e) => setIdTipoContrato(e.target.value)}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>

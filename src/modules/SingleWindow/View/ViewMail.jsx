@@ -5,7 +5,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useTheme } from '@mui/material/styles';
 import { Button, Dialog, DialogContent, Grid, IconButton, Slide, Typography, useMediaQuery } from '@mui/material';
 import ReactQuill from 'react-quill';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import 'react-quill/dist/quill.snow.css';
+import SendIcon from '@mui/icons-material/Send';
 
 import { gridSpacing } from 'store/constant';
 import AddCircleOutlineTwoToneIcon from '@mui/icons-material/AddCircleOutlineTwoTone';
@@ -14,10 +16,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import InputText from 'components/input/InputText';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ValidationMessage } from 'components/helpers/Enums';
-import SendIcon from '@mui/icons-material/Send';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { NotificarSolicitante } from 'api/clients/VentanillaUnicaClient';
+import { DescargarDocumentoVentanillaUnica, NotificarSolicitante } from 'api/clients/VentanillaUnicaClient';
 import { LoadingButton } from '@mui/lab';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import CardButton from 'components/buttons/CardButton';
 
 const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
@@ -43,6 +46,21 @@ const ViewMail = ({ lsData }) => {
 
     const { handleSubmit, formState: { errors } } = methods;
 
+    const handleClickDescargar = async () => {
+        try {
+            const result = await DescargarDocumentoVentanillaUnica(lsData.id);
+            if (result.status === 200) {
+                DownloadFile(`ventanillaunicadocumentos${new Date().getTime()}.zip`, result.data);
+            } else {
+                setOpenError(true);
+                setErrorMessage(result.data);
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage("No se pudo descargar los archivos");
+        }
+    };
+
     const handleClick = async (datos) => {
         try {
             if (stateMensaje !== '') {
@@ -60,6 +78,7 @@ const ViewMail = ({ lsData }) => {
                     setTimeout(() => {
                         setErrorMessage("Se notifico correctamente a cada usuario");
                         setOpenSuccess(true);
+                        setOpen(false);
                         setLoading(false);
                     }, 1000);
                 } else {
@@ -167,14 +186,14 @@ const ViewMail = ({ lsData }) => {
                                 <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="center">
                                     <Grid item>
                                         <AnimateButton>
-                                            <Button variant="contained" onClick={() => setOpen(true)} fullWidth startIcon={<AddCircleOutlineTwoToneIcon />}>
-                                                Descargar
-                                            </Button>
+                                            <CardButton
+                                                bgcolor={theme.palette.grey[500]}
+                                                onClick={handleClickDescargar}
+                                                iconPrimary={DownloadForOfflineIcon}
+                                                secondary={`${lsData?.numDocumento} Archivos cargados con éxito`}
+                                                color={theme.palette.info.main}
+                                            />
                                         </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item>
-                                        <Typography variant="h4">{lsData?.numDocumento} Archivos cargados con éxito</Typography>
                                     </Grid>
 
                                     <Grid item>

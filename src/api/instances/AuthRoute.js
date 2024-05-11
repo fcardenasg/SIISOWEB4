@@ -133,7 +133,10 @@ export const Url = {
     IndicadoresId: 'api/Indicadores/id',
 
     VentanillaUnica: 'api/VentanillaUnica',
+    VentanillaUnicaComboUsuario: 'api/VentanillaUnica/combo-usuario',
+    VentanillaUnicaNotificarUsuario: 'api/VentanillaUnica/notificar-usuario',
     UpdateVentanillaUnicaEnvio: 'api/VentanillaUnica/notificar-respuesta',
+    VentanillaUnicaDescargarDocumento: 'api/VentanillaUnica/comprimir-zid',
     VentaUnicaNotiSolicitante: 'api/VentanillaUnica/notificar-solicitante',
     VentaUnicaNotiUsuarios: 'api/VentanillaUnica/notificar',
     VentanillaUnicaMonitoreo: 'api/VentanillaUnica/list-monitoreo',
@@ -257,5 +260,5 @@ export const Url = {
 
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',
-    CuestionarioId: 'api/CuestionarioPrevencion/id',
+    CuestionarioId: 'api/CuestionarioPrevencion/id'
 }

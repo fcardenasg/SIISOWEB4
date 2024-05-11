@@ -84,7 +84,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
 
     const [lsTipo, setLsTipo] = useState([]);
     const [dataVentanilla, setDataVentanilla] = useState([]);
-    const [lsMedioIngreso, setLsMedioIngreso] = useState([]); 
+    const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsCondiciones, setLsCondiciones] = useState([]);
     const [lsImportancia, setLsImportancia] = useState([]);
     const [lsMunicipio, setLsMunicipio] = useState([]);
@@ -692,7 +692,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                                                 onClick={handleNotifi}
                                                 loading={loading}
                                                 loadingPosition="end"
-                                                startIcon={<SendIcon />}
+                                                endIcon={<SendIcon />}
                                                 variant="outlined"
                                             >
                                                 Enviar Notificación

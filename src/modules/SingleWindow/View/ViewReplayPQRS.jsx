@@ -95,11 +95,10 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay, getAllList }) => {
     async function downloadFileReplay() {
         try {
             var nombreFormat = lsData?.nameTipoDocumento.toLowerCase().replace(/\s/g, "_");
-            const archivoPdf = await GetVentanillaUnicaDetalleArchivo(idVentanillaDetalle);
+            var archivoFormat = archivoAdjunto;
 
-            if (archivoPdf.status === 200) {
-                DownloadFile(`${nombreFormat}_${new Date().getTime()}.pdf`, archivoPdf.data);
-            }
+            DownloadFile(`${nombreFormat}_${new Date().getTime()}.pdf`, archivoFormat.replace("data:application/pdf;base64,", ""));
+
         } catch (error) { }
     }
 
