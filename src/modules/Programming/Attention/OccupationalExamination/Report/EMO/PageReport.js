@@ -812,7 +812,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text("DOCUMENTO:", 7, 43);
   doc.text("GENERO:", 7, 48);
   doc.text("FECHA DE NACIMIENTO:", 7, 53);
-  doc.text("TURNO:", 7, 58);
+  doc.text(DefaultValue.EMO_ATENCION_CONTRO === lsDataReport.idAtencion ? "" : "TURNO:", 7, 58);
   doc.text("CELULAR:", 7, 63);
   doc.text("EMAIL:", 7, 68);
   doc.text("DPTO. DE NACIMIENTO:", 7, 73);
@@ -823,8 +823,8 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text("EDAD:", 112, 48);
   doc.text("ESTADO CIVIL:", 112, 53);
   doc.text("DIRECCIÓN:", 112, 58);
-  doc.text("GRUPO:", 112, 63);
-  doc.text("ARL:", 112, 68);
+  doc.text(DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : "GRUPO:", 112, 63);
+  doc.text(DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : "ARL:", 112, 68);
   doc.text("CIUDAD DE NACIMIENTO:", 112, 73);
   doc.text("CONTACTO:", 112, 78);
 
@@ -833,7 +833,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${lsDataReport.documento}`, 32, 43);
   doc.text(`${lsDataReport.nameGenero}`, 26, 48);
   doc.text(`${ViewFormat(lsDataReport.fechaNacimiento)}`, 51, 53);
-  doc.text(`${lsDataReport.nameTurno}`, 22, 58);
+  doc.text(`${DefaultValue.EMO_ATENCION_CONTRO === lsDataReport.idAtencion ? "" : lsDataReport.nameTurno}`, 22, 58);
   doc.text(`${lsDataReport.celularEmpleado}`, 30, 63);
   doc.text(`${lsDataReport.correoEmpleado}`, 21, 68);
   doc.text(`${lsDataReport.nameDptoNacimiento}`, 49, 73);
@@ -846,8 +846,8 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 125, 48);
   doc.text(`${lsDataReport.nameEstadoCivil}`, 139, 53);
   doc.text(`${lsDataReport.direccionEmpleado}`, 134, 58);
-  doc.text(`${lsDataReport.nameGrupo}`, 128, 63);
-  doc.text(`${lsDataReport.nameArl}`, 122, 68);
+  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : lsDataReport.nameGrupo}`, 128, 63);
+  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : lsDataReport.nameArl}`, 122, 68);
   doc.text(`${lsDataReport.nameCiudadNacimiento}`, 158, 73);
   doc.text(`${lsDataReport.nameContacto}`, 135, 78);
 
@@ -863,7 +863,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text("POSICIÓN:", 7, 110);
   /* SEGUNDA COLUMNA */
   doc.text("DPTO. TRABAJO:", 112, 96);
-  doc.text("GRUPO:", 112, 103);
+  doc.text(DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : "GRUPO:", 112, 103);
   doc.text("ANTIGUEDAD:", 112, 110);
 
   /* 2. RENDERIZADO */
@@ -873,7 +873,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${lsDataReport.nameCargo}`, 30, 110);
 
   doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 145, 96);
-  doc.text(`${lsDataReport.nameGrupo}`, 145, 103);
+  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : lsDataReport.nameGrupo}`, 145, 103);
   doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)} AÑOS`, 145, 110);
 
   /* 3. ANTECEDENTES LABORALES */

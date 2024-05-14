@@ -947,6 +947,7 @@ const OccupationalExamination = () => {
 
                     <TabPanel value={value} index={0}>
                         <PersonalData
+                            atencion={atencion}
                             lsEmployee={lsEmployee}
                             getDataAttention={handleLoadingDocument}
                         />

@@ -27,6 +27,7 @@ import RoomPreferencesIcon from '@mui/icons-material/RoomPreferences';
 import BusinessIcon from '@mui/icons-material/Business';
 import SchoolIcon from '@mui/icons-material/School';
 import { useState } from 'react';
+import { DefaultValue } from 'components/helpers/Enums';
 
 const DetailsViewOne = [
     {
@@ -73,7 +74,7 @@ const DetailsViewTwo = [
     { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
 ]
 
-const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
+const PersonalData = ({ lsEmployee = [], getDataAttention, atencion }) => {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     return (
@@ -152,7 +153,7 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
                         <Typography variant="h4" sx={{ my: 2 }}>Información De Seguridad Social</Typography>
                         <ListDetailsAll icons={DetailsViewOne[6].icons} name={DetailsViewOne[6].name} campoRender={lsEmployee.nameEps} />
                         <ListDetailsAll icons={DetailsViewOne[7].icons} name={DetailsViewOne[7].name} campoRender={lsEmployee.nameAfp} />
-                        <ListDetailsAll icons={DetailsViewOne[8].icons} name={DetailsViewOne[8].name} campoRender={lsEmployee.nameArl} />
+                        {DefaultValue.EMO_ATENCION_INGRESO === atencion ? null : <ListDetailsAll icons={DetailsViewOne[8].icons} name={DetailsViewOne[8].name} campoRender={lsEmployee.nameArl} />}
                     </List>
                 </SubCard>
             </Grid >
@@ -172,10 +173,10 @@ const PersonalData = ({ lsEmployee = [], getDataAttention }) => {
                         <ListDetails name={DetailsViewTwo[3].name} campoRender={lsEmployee.nameDepartamento} />
                         <ListDetails name={DetailsViewTwo[4].name} campoRender={lsEmployee.nameArea} />
                         <ListDetails name={`Posición/Cargo Del ${lsEmployee.nameTipoContrato1}`} campoRender={lsEmployee.nameRosterPosition} />
-                        <ListDetails name={DetailsViewTwo[6].name} campoRender={lsEmployee.nameGrupo} />
-                        <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.nameTurno} />
+                        {DefaultValue.EMO_ATENCION_INGRESO === atencion ? null : <ListDetails name={DetailsViewTwo[6].name} campoRender={lsEmployee.nameGrupo} />}
+                        {DefaultValue.EMO_ATENCION_CONTRO === atencion ? null : <ListDetails name={DetailsViewTwo[7].name} campoRender={lsEmployee.nameTurno} />}
                         <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.nameTipoContrato} />
-                        <ListDetails name={DetailsViewTwo[9].name} campoRender={ViewFormat(lsEmployee.fechaContrato)} />
+                        {DefaultValue.EMO_ATENCION_INGRESO === atencion ? null : <ListDetails name={DetailsViewTwo[9].name} campoRender={ViewFormat(lsEmployee.fechaContrato)} />}
                         <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.nameGes} />
                     </Grid>
                 </SubCard>
