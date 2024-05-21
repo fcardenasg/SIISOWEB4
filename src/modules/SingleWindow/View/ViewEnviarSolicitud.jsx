@@ -4,9 +4,6 @@ import { useTheme } from '@mui/material/styles';
 import { MessageError, MessageSuccess } from "components/alert/AlertAll";
 
 import { CodCatalogo } from "components/helpers/Enums";
-import ControlModal from "components/controllers/ControlModal";
-import ViewPDF from "components/components/ViewPDF";
-
 import { GetByIdVentanillaUnica, UpdateVentanillaUnicaEnvio } from "api/clients/VentanillaUnicaClient";
 import { FormProvider, useForm } from "react-hook-form";
 import InputSelect from "components/input/InputSelect";
@@ -26,9 +23,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsEmpresaMensajeria, setLsEmpresaMensajeria] = useState([]);
 
-    const [archivoAdjunto, setArchivoAdjunto] = useState("");
     const [openError, setOpenError] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -92,15 +87,6 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
 
     return (
         <Fragment>
-            <ControlModal
-                maxWidth="sm"
-                open={openModal}
-                onClose={() => setOpenModal(false)}
-                title="Vista del Archivo"
-            >
-                <ViewPDF dataPDF={archivoAdjunto} height={490} width={550} />
-            </ControlModal>
-
             <MessageSuccess message="Archivo subido y guardado con éxito" open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
