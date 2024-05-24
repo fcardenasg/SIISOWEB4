@@ -38,9 +38,7 @@ const validationSchema = yup.object().shape({
     empresa: yup.string().required(ValidationMessage.Requerido),
     sede: yup.string().required(ValidationMessage.Requerido),
     genero: yup.string().required(ValidationMessage.Requerido),
-    estadoCivil: yup.string().required(ValidationMessage.Requerido),
-    grupo: yup.string().required(ValidationMessage.Requerido),
-    type: yup.string().required(ValidationMessage.Requerido),
+    estadoCivil: yup.string().required(ValidationMessage.Requerido)
 });
 
 const Employee = () => {
@@ -92,7 +90,7 @@ const Employee = () => {
         { resolver: yupResolver(validationSchema) }
     );
 
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, setValue, formState: { errors }, reset } = methods;
 
     const CapturePhoto = useCallback(() => {
         const imageSrc = WebCamRef.current.getScreenshot();
@@ -306,6 +304,7 @@ const Employee = () => {
 
     const CleanCombo = () => {
         setImgSrc(null);
+        setIdTipoContrato(null);
         setDptoResidencia('');
         setDptoNacido('');
         setDptoResidenciaTrabaja('');
@@ -313,16 +312,50 @@ const Employee = () => {
 
     const handleClick = async (datos) => {
         try {
-            const fotoEmpleado = imgSrc === null ? '' : imgSrc;
-
-            const DataToInsert = PostEmployee(datos.documento, datos.nombres, datos.fechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, datos.municipioNacido, dptoNacido === null ? 1 : dptoNacido, datos.fechaContrato,
-                datos.rosterPosition, idTipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.direccionResidenciaTrabaja, datos.municipioResidencia, dptoResidenciaTrabaja === null ? 1 : dptoNacido,
-                datos.municipioResidenciaTrabaja, dptoResidencia === null ? 1 : dptoNacido, datos.celular, datos.eps,
-                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
-                DefaultValue.BANDERA_DRUMMOND, datos.ges, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), fotoEmpleado, datos.oficio);
+            const DataToInsert = {
+                documento: datos.documento,
+                nombres: datos.nombres,
+                fechaNaci: datos.fechaNaci === "" ? null : datos.fechaNaci,
+                type: datos.type === "" ? null : datos.type,
+                departamento: datos.departamento === "" ? null : datos.departamento,
+                area: datos.area === "" ? null : datos.area,
+                subArea: datos.subArea === "" ? null : datos.subArea,
+                grupo: datos.grupo === "" ? null : datos.grupo,
+                municipioNacido: datos.municipioNacido === "" ? null : datos.municipioNacido,
+                dptoNacido: datos.dptoNacido === "" ? null : datos.dptoNacido,
+                fechaContrato: datos.fechaContrato === "" ? null : datos.fechaContrato,
+                rosterPosition: datos.rosterPosition === "" ? null : datos.rosterPosition,
+                tipoContrato: idTipoContrato,
+                generalPosition: datos.generalPosition === "" ? null : datos.generalPosition,
+                genero: datos.genero === "" ? null : datos.genero,
+                sede: datos.sede === "" ? null : datos.sede,
+                direccionResidencia: datos.direccionResidencia === "" ? null : datos.direccionResidencia,
+                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja === "" ? null : datos.direccionResidenciaTrabaja,
+                dptoResidenciaTrabaja: dptoResidenciaTrabaja,
+                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja === "" ? null : datos.municipioResidenciaTrabaja,
+                municipioResidencia: datos.municipioResidencia === "" ? null : datos.municipioResidencia,
+                dptoResidencia: dptoNacido,
+                celular: datos.celular === "" ? null : datos.celular,
+                eps: datos.eps === "" ? null : datos.eps,
+                afp: datos.afp === "" ? null : datos.afp,
+                turno: datos.turno === "" ? null : datos.turno,
+                email: datos.email === "" ? null : datos.email,
+                telefonoContacto: datos.telefonoContacto === "" ? null : datos.telefonoContacto,
+                estadoCivil: datos.estadoCivil === "" ? null : datos.estadoCivil,
+                empresa: datos.empresa === "" ? null : datos.empresa,
+                arl: datos.arl === "" ? null : datos.arl,
+                contacto: datos.contacto === "" ? null : datos.contacto,
+                escolaridad: datos.escolaridad === "" ? null : datos.escolaridad,
+                cesantias: datos.cesantias === "" ? null : datos.cesantias,
+                rotation: datos.rotation === "" ? null : datos.rotation,
+                payStatus: datos.payStatus === "" ? null : datos.payStatus,
+                termDate: null,
+                imagenUrl: imgSrc,
+                bandera: DefaultValue.BANDERA_DRUMMOND,
+                ges: datos.ges === "" ? null : datos.ges,
+                usuarioRegistro: user.nameuser,
+                oficio: datos.oficio === "" ? null : datos.oficio
+            };
 
             const result = await InsertEmployee(DataToInsert);
             if (result.status === 200) {
@@ -335,7 +368,7 @@ const Employee = () => {
             }
         } catch (error) {
             setOpenError(true);
-            setErrorMessage(`${Message.RegistroNoGuardado}`);
+            setErrorMessage(Message.RegistroNoGuardado);
         }
     };
 
@@ -373,6 +406,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            defaultValue=""
                                             fullWidth
                                             type="number"
                                             name="documento"
@@ -385,6 +419,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            defaultValue=""
                                             fullWidth
                                             name="nombres"
                                             label="Nombres"
@@ -408,6 +443,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
+                                            defaultValue=""
                                             fullWidth
                                             name="celular"
                                             label="Celular"
@@ -419,6 +455,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue=""
                                             name="escolaridad"
                                             label="Escolaridad"
                                             options={lsEscolaridad}
@@ -430,6 +467,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue=""
                                             name="empresa"
                                             label="Empresa"
                                             options={company}
@@ -441,6 +479,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue=""
                                             name="sede"
                                             label="Sede"
                                             options={lsSede}
@@ -452,6 +491,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
+                                            defaultValue=""
                                             label="Fecha de Nacimiento"
                                             name="fechaNaci"
                                             bug={errors.fechaNaci}
@@ -462,6 +502,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue=""
                                             name="genero"
                                             label="Genero"
                                             options={lsGenero}
@@ -474,6 +515,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
+                                            defaultValue=""
                                             name="estadoCivil"
                                             label="Estado civil"
                                             options={lsEstadoCivil}
@@ -515,27 +557,43 @@ const Employee = () => {
                 <SubCard darkTitle title={<Typography variant="h4">Información Contractual</Typography>}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputDatePicker
-                                    disabled={idTipoContrato === 9717 ? true : false}
-                                    label="Fecha de Contrato"
-                                    name="fechaContrato"
-                                />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="tipoContrato"
                                 label="Tipo de Contrato"
                                 value={idTipoContrato}
                                 options={lsTipoContrato}
-                                onChange={(e) => setIdTipoContrato(e.target.value)}
+                                onChange={(e) => {
+                                    setIdTipoContrato(e.target.value);
+
+                                    if (e.target.value === 9717) {
+                                        setValue("fechaContrato", "");
+                                        setValue("turno", "");
+                                        setValue("grupo", "");
+                                        setValue("rotation", "");
+                                        setValue("generalPosition", "");
+                                        setValue("arl", "");
+                                    }
+                                }}
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <FormProvider {...methods}>
+                                <InputDatePicker
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
+                                    label="Fecha de Contrato"
+                                    name="fechaContrato"
+                                    bug={errors.fechaContrato}
+                                />
+                            </FormProvider>
+                        </Grid>
+
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="type"
                                     label="Rol"
                                     options={lsRol}
@@ -547,6 +605,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="rosterPosition"
                                     label="Roster Position"
                                     options={lsRosterPosition}
@@ -558,6 +617,8 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
                                     name="generalPosition"
                                     label="General Position"
                                     options={lsGeneralPosition}
@@ -569,6 +630,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="departamento"
                                     label="Departamento"
                                     options={lsDepartEmpresa}
@@ -580,6 +642,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="area"
                                     label="Area"
                                     options={lsArea}
@@ -591,6 +654,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="subArea"
                                     label="Subarea"
                                     options={lsSubArea}
@@ -602,6 +666,8 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
                                     name="grupo"
                                     label="Grupo"
                                     options={lsGrupo}
@@ -613,6 +679,8 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
                                     name="turno"
                                     label="Turno"
                                     options={lsTurno}
@@ -626,6 +694,7 @@ const Employee = () => {
                                 <InputText
                                     defaultValue=""
                                     fullWidth
+                                    disabled={idTipoContrato === 9717 ? true : false}
                                     name="rotation"
                                     label="Rotación"
                                     size={matchesXS ? 'small' : 'medium'}
@@ -637,6 +706,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="oficio"
                                     label="Profesión"
                                     options={lsOficio}
@@ -649,6 +719,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="ges"
                                     label="Ges"
                                     options={lsGes}
@@ -661,6 +732,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="payStatus"
                                     label="Estado"
                                     options={lsEstado}
@@ -688,6 +760,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="municipioNacido"
                                     label="Municipio de Nacimiento"
                                     options={lsMunicipioN}
@@ -710,6 +783,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="municipioResidencia"
                                     label="Municipio de Residencia"
                                     options={lsMunicipioR}
@@ -743,6 +817,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="municipioResidenciaTrabaja"
                                     label="Municipio de Residencia Laboral"
                                     options={lsMunicipioTrabaja}
@@ -772,6 +847,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="eps"
                                     label="EPS"
                                     options={lsEps}
@@ -783,6 +859,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="afp"
                                     label="AFP"
                                     options={lsAfp}
@@ -794,6 +871,8 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
                                     name="arl"
                                     label="ARL"
                                     options={lsArl}
@@ -805,6 +884,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
+                                    defaultValue=""
                                     name="cesantias"
                                     label="Cesantias"
                                     options={lsCesantias}

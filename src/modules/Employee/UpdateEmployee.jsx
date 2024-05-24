@@ -25,7 +25,6 @@ import useAuth from 'hooks/useAuth';
 import PhotoModel from 'components/form/PhotoModel';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
-import { PutEmployee } from 'formatdata/EmployeeForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import { GetByIdEmployee, UpdateEmployees } from 'api/clients/EmployeeClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
@@ -33,24 +32,21 @@ import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'ap
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { TitleButton, ValidationMessage, CodCatalogo, Message } from 'components/helpers/Enums';
+import { TitleButton, ValidationMessage, CodCatalogo, Message, DefaultValue } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
 import userEmpleado from 'assets/img/user.png';
 
 const validationSchema = yup.object().shape({
-    documento: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombres: yup.string().required(`${ValidationMessage.Requerido}`),
-    celular: yup.string().required(`${ValidationMessage.Requerido}`),
-    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-    sede: yup.string().required(`${ValidationMessage.Requerido}`),
-    genero: yup.string().required(`${ValidationMessage.Requerido}`),
-    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
-    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
-    type: yup.string().required(`${ValidationMessage.Requerido}`),
+    documento: yup.string().required(ValidationMessage.Requerido),
+    nombres: yup.string().required(ValidationMessage.Requerido),
+    celular: yup.string().required(ValidationMessage.Requerido),
+    empresa: yup.string().required(ValidationMessage.Requerido),
+    sede: yup.string().required(ValidationMessage.Requerido),
+    genero: yup.string().required(ValidationMessage.Requerido),
+    estadoCivil: yup.string().required(ValidationMessage.Requerido)
 });
 
 const UpdateEmployee = () => {
@@ -63,7 +59,7 @@ const UpdateEmployee = () => {
     const { id } = useParams();
 
     const [openUpdate, setOpenUpdate] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");
     const [openError, setOpenError] = useState(false);
 
     const [lsCatalogo, setLsCatalogo] = useState([]);
@@ -93,12 +89,12 @@ const UpdateEmployee = () => {
     const [lsArl, setArl] = useState([]);
     const [lsCesantias, setCesantias] = useState([]);
     const [lsMunicipioTrabaja, setLsMunicipioTrabaja] = useState([]);
-    const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState('');
-    const [dptoNacido, setDptoNacido] = useState('');
-    const [municipioResidenciaTrabaja, setMunicipioResidenciaTrabaja] = useState('');
-    const [dptoResidencia, setDptoResidencia] = useState('');
-    const [municipioNacido, setMunicipioNacido] = useState('');
-    const [municipioResidencia, setMunicipioResidencia] = useState('');
+    const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState("");
+    const [dptoNacido, setDptoNacido] = useState("");
+    const [municipioResidenciaTrabaja, setMunicipioResidenciaTrabaja] = useState("");
+    const [dptoResidencia, setDptoResidencia] = useState("");
+    const [municipioNacido, setMunicipioNacido] = useState("");
+    const [municipioResidencia, setMunicipioResidencia] = useState("");
 
     const [idTipoContrato, setIdTipoContrato] = useState(null);
     const [imgSrc, setImgSrc] = useState(null);
@@ -112,7 +108,7 @@ const UpdateEmployee = () => {
             const lsServerEmployeeId = await GetByIdEmployee(id);
             if (lsServerEmployeeId?.data.status === 200) {
                 setEmployee(lsServerEmployeeId?.data.data);
-                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
+                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === "" ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 
                 setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
                 setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
@@ -123,7 +119,7 @@ const UpdateEmployee = () => {
                 setErrorMessage(lsServerEmployeeId?.data.message);
 
                 setEmployee(lsServerEmployeeId?.data.data);
-                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === '' ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
+                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === "" ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 
                 setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
@@ -313,7 +309,7 @@ const UpdateEmployee = () => {
         { resolver: yupResolver(validationSchema) }
     );
 
-    const { handleSubmit, formState: { errors } } = methods;
+    const { handleSubmit, setValue, formState: { errors } } = methods;
 
     async function GetSubString(codigo) {
         try {
@@ -379,31 +375,54 @@ const UpdateEmployee = () => {
 
     const handleClick = async (datos) => {
         try {
-            const fotoEmpleado = imgSrc === null ? '' : imgSrc;
-            var fechaContrato = idTipoContrato === 9717 ? null : datos.fechaContrato;
-            var fechaNaci = datos.fechaNaci === "" ? null : datos.fechaNaci;
+            const DataToUpdate = {
+                documento: datos.documento,
+                nombres: datos.nombres,
+                fechaNaci: datos.fechaNaci === "" ? null : datos.fechaNaci,
+                type: datos.type === "" ? null : datos.type,
+                departamento: datos.departamento === "" ? null : datos.departamento,
+                area: datos.area === "" ? null : datos.area,
+                subArea: datos.subArea === "" ? null : datos.subArea,
+                grupo: datos.grupo === "" ? null : datos.grupo,
+                municipioNacido: datos.municipioNacido === "" ? null : datos.municipioNacido,
+                dptoNacido: datos.dptoNacido === "" ? null : datos.dptoNacido,
+                fechaContrato: datos.fechaContrato === "" ? null : datos.fechaContrato,
+                rosterPosition: datos.rosterPosition === "" ? null : datos.rosterPosition,
+                tipoContrato: idTipoContrato,
+                generalPosition: datos.generalPosition === "" ? null : datos.generalPosition,
+                genero: datos.genero === "" ? null : datos.genero,
+                sede: datos.sede === "" ? null : datos.sede,
+                direccionResidencia: datos.direccionResidencia === "" ? null : datos.direccionResidencia,
+                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja === "" ? null : datos.direccionResidenciaTrabaja,
+                dptoResidenciaTrabaja: dptoResidenciaTrabaja,
+                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja === "" ? null : datos.municipioResidenciaTrabaja,
+                municipioResidencia: datos.municipioResidencia === "" ? null : datos.municipioResidencia,
+                dptoResidencia: dptoNacido,
+                celular: datos.celular === "" ? null : datos.celular,
+                eps: datos.eps === "" ? null : datos.eps,
+                afp: datos.afp === "" ? null : datos.afp,
+                turno: datos.turno === "" ? null : datos.turno,
+                email: datos.email === "" ? null : datos.email,
+                telefonoContacto: datos.telefonoContacto === "" ? null : datos.telefonoContacto,
+                estadoCivil: datos.estadoCivil === "" ? null : datos.estadoCivil,
+                empresa: datos.empresa === "" ? null : datos.empresa,
+                arl: datos.arl === "" ? null : datos.arl,
+                contacto: datos.contacto === "" ? null : datos.contacto,
+                escolaridad: datos.escolaridad === "" ? null : datos.escolaridad,
+                cesantias: datos.cesantias === "" ? null : datos.cesantias,
+                rotation: datos.rotation === "" ? null : datos.rotation,
+                payStatus: datos.payStatus === "" ? null : datos.payStatus,
+                termDate: null,
+                imagenUrl: imgSrc,
+                bandera: DefaultValue.BANDERA_DRUMMOND,
+                ges: datos.ges === "" ? null : datos.ges,
+                usuarioRegistro: user.nameuser,
+                oficio: datos.oficio === "" ? null : datos.oficio
+            };
 
-            const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
-            const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
-            const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
-
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, fechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, fechaContrato,
-                datos.rosterPosition, idTipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
-                municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
-                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
-                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.nameuser, FormatDate(new Date()), fotoEmpleado, datos.oficio);
-
-            if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateEmployees(DataToUpdate);
-                if (result.status === 200) {
-                    setOpenUpdate(true);
-                }
-            } else {
-                setOpenError(true);
-                setErrorMessage('Hubo un problemas al guardo los datos');
+            const result = await UpdateEmployees(DataToUpdate);
+            if (result.status === 200) {
+                setOpenUpdate(true);
             }
         } catch (error) {
             setOpenError(true);
@@ -600,6 +619,27 @@ const UpdateEmployee = () => {
                     <SubCard darkTitle title={<Typography variant="h4">Información Contractual</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
+                                <SelectOnChange
+                                    name="tipoContrato"
+                                    label="Tipo de Contrato"
+                                    value={idTipoContrato}
+                                    options={lsTipoContrato}
+                                    onChange={(e) => {
+                                        setIdTipoContrato(e.target.value);
+
+                                        if (e.target.value === 9717) {
+                                            setValue("fechaContrato", "");
+                                            setValue("turno", "");
+                                            setValue("grupo", "");
+                                            setValue("rotation", "");
+                                            setValue("generalPosition", "");
+                                            setValue("arl", "");
+                                        }
+                                    }}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         disabled={idTipoContrato === 9717 ? true : false}
@@ -609,16 +649,7 @@ const UpdateEmployee = () => {
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <SelectOnChange
-                                    name="tipoContrato"
-                                    label="Tipo de Contrato"
-                                    value={idTipoContrato}
-                                    options={lsTipoContrato}
-                                    onChange={(e) => setIdTipoContrato(e.target.value)}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -648,6 +679,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="generalPosition"
                                         label="General Position"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         defaultValue={employee.generalPosition}
                                         options={lsGeneralPosition}
                                         size={matchesXS ? 'small' : 'medium'}
@@ -695,6 +727,7 @@ const UpdateEmployee = () => {
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="grupo"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="Grupo"
                                         defaultValue={employee.grupo}
                                         options={lsGrupo}
@@ -707,6 +740,7 @@ const UpdateEmployee = () => {
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="turno"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="Turno"
                                         defaultValue={employee.turno}
                                         options={lsTurno}
@@ -719,6 +753,7 @@ const UpdateEmployee = () => {
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue={employee.rotation}
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         fullWidth
                                         name="rotation"
                                         label="Rotación"
@@ -930,6 +965,7 @@ const UpdateEmployee = () => {
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="arl"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="ARL"
                                         defaultValue={employee.arl}
                                         options={lsArl}

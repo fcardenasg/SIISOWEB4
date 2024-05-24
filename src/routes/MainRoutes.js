@@ -48,8 +48,6 @@ const ListCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/
 const CabRegistration = Loadable(lazy(() => import('modules/CabRegistration/CabRegistration')));
 const UpdateCabRegistration = Loadable(lazy(() => import('modules/CabRegistration/UpdateCabRegistration')));
 
-const NewListRequests = Loadable(lazy(() => import('modules/Requests/NewList/NewListRequests')));
-const NewAddRequests = Loadable(lazy(() => import('modules/Requests/NewList/NewAddRequests')));
 const ListRequests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/ListRequests')));
 const Requests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/Requests')));
 const UpdateRequests = Loadable(lazy(() => import('modules/Requests/ModuleRequests/UpdateRequests')));
@@ -212,7 +210,9 @@ const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParame
 const MenuExcel = Loadable(lazy(() => import('modules/Menu/MenuExcel')));
 const MenuVentanilla = Loadable(lazy(() => import('modules/Menu/MenuVentanilla')));
 
-const AppMail = Loadable(lazy(() => import('modules/SingleWindow/mail')));
+const AddSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/AddSingleWindow')));
+const UpdateSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/UpdateSingleWindow')));
+const ListSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/ListSingleWindow')));
 const ViewMonitoreo = Loadable(lazy(() => import('modules/SingleWindow/View/ViewMonitoreo')));
 const ViewRespuesta = Loadable(lazy(() => import('modules/SingleWindow/View/ViewRespuesta')));
 const ChatGPT = Loadable(lazy(() => import('modules/Chat')));
@@ -408,14 +408,6 @@ const MainRoutes = {
         },
 
         /* Render de Solicituudes */
-        {
-            path: '/requests/new-addrequests',
-            element: <NewAddRequests />
-        },
-        {
-            path: '/requests/new-list',
-            element: <NewListRequests />
-        },
         {
             path: '/requests/list',
             element: <ListRequests />
@@ -924,12 +916,20 @@ const MainRoutes = {
 
         /* Ventanilla Única */
         {
+            path: '/single-window/add',
+            element: <AddSingleWindow />
+        },
+        {
+            path: '/single-window/update/:id',
+            element: <UpdateSingleWindow />
+        },
+        {
             path: '/single-window/view',
             element: <MenuVentanilla />
         },
         {
             path: '/single-window/index',
-            element: <AppMail />
+            element: <ListSingleWindow />
         },
         {
             path: '/single-window/reply',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
 import {
@@ -22,32 +22,23 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    Tooltip,
-    useMediaQuery
+    Tooltip
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import EmailIcon from '@mui/icons-material/Email';
 import { useTheme } from '@mui/material/styles';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 
-import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import SendIcon from '@mui/icons-material/Send';
-import MailIcon from '@mui/icons-material/Mail';
-import PreviewIcon from '@mui/icons-material/Preview';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllVentanillaUnicaComboUsuario, GetAllVentanillaUnicaMonitoreo, NotificarUsuario } from 'api/clients/VentanillaUnicaClient';
+import { GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ControlModal from 'components/controllers/ControlModal';
-import ListReplay from './ListReplay';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
 import useAuth from 'hooks/useAuth';
-import ViewEnviarSolicitud from './ViewEnviarSolicitud';
-import SelectOnChange from 'components/input/SelectOnChange';
-import { LoadingButton } from '@mui/lab';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -173,24 +164,14 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
 
 const ViewRespuesta = () => {
     const theme = useTheme();
-    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const { user } = useAuth();
     const navigate = useNavigate();
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
-    const [idVentanilla, setIdVentanilla] = useState('');
 
     const [lsRespuesta, setLsRespuesta] = useState([]);
-    const [messageError, setMessageError] = useState('');
     const [messageAtencion, setMessageAtencion] = useState('');
     const [radioSearch, setRadioSearch] = useState(1);
     const [timeWait, setTimeWait] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [openNotificar, setOpenNotificar] = useState(false);
-    const [idUsuarioNotificacion, setIdUsuarioNotificacion] = useState('');
-    const [lsUsuarios, setLsUsuarios] = useState([]);
 
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('id');
@@ -200,31 +181,32 @@ const ViewRespuesta = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function getAll() {
-        try {
-            setTimeWait(false);
-            setMessageAtencion('');
-            setLsRespuesta([]);
-
-            if (user?.idarea === 0) {
-                await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
-                    if (response.data.length === 0) {
-                        setMessageAtencion(Message.NoRegistro);
-                    } else if (response.data.length !== 0) {
-                        setTimeout(() => {
-                            setTimeWait(true);
-                            setLsRespuesta(response.data);
-                            setRows(response.data);
-                        }, 500);
-                    }
-                });
-            } else {
-                setMessageAtencion("Usted no esta autorizado para monitorear las peticiones");
-            }
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                setTimeWait(false);
+                setMessageAtencion('');
+                setLsRespuesta([]);
+
+                if (user?.idarea === 0) {
+                    await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
+                        console.log("response => ", response);
+                        if (response.data.length === 0) {
+                            setMessageAtencion(Message.NoRegistro);
+                        } else if (response.data.length !== 0) {
+                            setTimeout(() => {
+                                setTimeWait(true);
+                                setLsRespuesta(response.data);
+                                setRows(response.data);
+                            }, 500);
+                        }
+                    });
+                } else {
+                    setMessageAtencion("Usted no esta autorizado para monitorear las peticiones");
+                }
+            } catch (error) { }
+        }
+
         getAll();
     }, [radioSearch]);
 
@@ -256,45 +238,6 @@ const ViewRespuesta = () => {
         }
     };
 
-    const handleClickNotificar = async () => {
-        try {
-            setLoading(true);
-
-            if (idUsuarioNotificacion !== '') {
-                const server = await NotificarUsuario(idVentanilla, idUsuarioNotificacion);
-                if (server.data === "Ok") {
-                    setTimeout(() => {
-                        setOpenNotificar(false);
-                        setMessageError("Se notifico correctamente al usuario");
-                        setOpenSuccess(true);
-                        setLoading(false);
-                    }, 1000);
-                } else {
-                    setLoading(false);
-                    setOpenDelete(true);
-                    setMessageError(server.data);
-                }
-            } else {
-                setLoading(false);
-                setOpenDelete(true);
-                setMessageError("Por favor seleccione un usuario para notificar.");
-            }
-        } catch (error) { setLoading(false); }
-    };
-
-    const handleClickOpen = async () => {
-        try {
-            setLsUsuarios([]);
-            setIdUsuarioNotificacion('');
-            setOpenNotificar(true);
-
-            var lsServer = await GetAllVentanillaUnicaComboUsuario(idVentanilla);
-            if (lsServer.status === 200) {
-                setLsUsuarios(lsServer.data);
-            }
-        } catch (error) { }
-    };
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -312,7 +255,6 @@ const ViewRespuesta = () => {
         usersResult = stableSort(lsRespuesta, getComparator(order, orderBy))
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
-
                 if (typeof row === 'string') return null;
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -451,14 +393,11 @@ const ViewRespuesta = () => {
                         </TableCell>
 
                         <TableCell align="center">
-                            <Tooltip title={radioSearch == 1 ? "Ver Atenciones" : "Enviar Respuesta"}
-                                onClick={() => { setIdVentanilla(row?.id); setOpenModal(true); }}>
+                            <Tooltip title="Actualizar" onClick={() => navigate(`/single-window/update/${row.id}`)}>
                                 <IconButton size="large">
-                                    {radioSearch == 1 ? <PreviewIcon color="info" sx={{ fontSize: '1.5rem' }} />
-                                        : <MailIcon color="error" sx={{ fontSize: '1.5rem' }} />}
+                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                 </IconButton>
                             </Tooltip>
-
                         </TableCell>
                     </TableRow>
                 );
@@ -470,74 +409,11 @@ const ViewRespuesta = () => {
     }
 
     return (
-        <MainCard title="Monitoreo de solicitudes" content={false}>
-            <MessageSuccess message={messageError} open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={messageError} open={openDelete} onClose={() => setOpenDelete(false)} />
-
-            <ControlModal
-                title="Notificar al usuario"
-                open={openNotificar}
-                onClose={() => setOpenNotificar(false)}
-                maxWidth="xs"
-            >
-                <Grid container spacing={2} alignItems="center" alignContent="center">
-                    <Grid item xs={8}>
-                        <SelectOnChange
-                            name="idUsuario"
-                            label="Usuarios"
-                            value={idUsuarioNotificacion}
-                            onChange={(e) => setIdUsuarioNotificacion(e.target.value)}
-                            options={lsUsuarios}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid>
-
-                    <Grid item xs={4}>
-                        <AnimateButton>
-                            <LoadingButton
-                                fullWidth
-                                onClick={handleClickNotificar}
-                                loading={loading}
-                                loadingPosition="end"
-                                endIcon={<SendIcon />}
-                                variant="outlined"
-                                size={matchesXS ? 'medium' : 'large'}
-                            >
-                                Notificar
-                            </LoadingButton>
-                        </AnimateButton>
-                    </Grid>
-                </Grid>
-            </ControlModal>
-
-            <ControlModal
-                maxWidth={radioSearch == 1 ? "lg" : "sm"}
-                open={openModal}
-                onClose={() => setOpenModal(false)}
-                title={radioSearch == 1 ?
-                    <Fragment>
-                        <Grid container spacing={2} alignItems="center" alignContent="center">
-                            <Grid item>
-                                <Typography variant="h4">Solicitudes por responder</Typography>
-                            </Grid>
-
-                            <Grid item>
-                                <AnimateButton>
-                                    <Button variant="text" startIcon={<EmailIcon />} onClick={handleClickOpen}>
-                                        Notificar Retraso
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Fragment>
-                    : "Enviar solicitudes"}
-            >
-                {radioSearch == 1 ? <ListReplay getAllList={getAll} idVentanilla={idVentanilla} options={1} /> : <ViewEnviarSolicitud idVentanilla={idVentanilla} />}
-            </ControlModal>
+        <MainCard title="Lista de ventanilla única" content={false}>
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="flex-end" spacing={2}>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={6}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -553,9 +429,9 @@ const ViewRespuesta = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={5} sx={{ textAlign: 'right' }}>
-                        <Grid container direction="row" justifyContent="flex-end" alignItems="center">
-                            <Grid item xs={8}>
+                    <Grid item xs={12} md={6} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2} direction="row" justifyContent="flex-end" alignItems="center">
+                            <Grid item xs={12} md={6}>
                                 <FormControl>
                                     <RadioGroup
                                         row
@@ -570,7 +446,14 @@ const ViewRespuesta = () => {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={6} md={3}>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/single-window/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={6} md={3}>
                                 <AnimateButton>
                                     <Button variant="contained" size="large" startIcon={<ArrowBackIosIcon />}
                                         onClick={() => navigate("/single-window/view")}>

@@ -11,7 +11,7 @@ export function PostOccupationalMedicine(cedula, resumenCaso, situacionEmpleado,
     aplica, motivoIE, estadoEnfermedadLaboral, resultadoOrigen, fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion, diferenciaDia, resumenWR,
     accTrabajador, resumenSG, accSistema, peligroAsociadoEnfermedad, fechaEntregaMin, pdfMinisterio, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
 
-    fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC) {
+    fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC, salaCalificadoraPCLJNC, medicoCalificadorPCLJNC) {
     return {
         cedula, resumenCaso, situacionEmpleado, fechaRetiro, segmentoAgrupado, segmentoAfectado, subsegmento, codDx, nroFurel, regionInfoLaboral,
         lateralidad, entidadQueMotivaEnvio, entidadDondeEnvia, fechaEntrega, fechaEnvio, investigado, observaciones, fechaCalificacionEps, origenEps, noSolicitudARL1, noSolicitudARL2,
@@ -26,7 +26,7 @@ export function PostOccupationalMedicine(cedula, resumenCaso, situacionEmpleado,
         aplica, motivoIE, estadoEnfermedadLaboral, resultadoOrigen, fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion, diferenciaDia, resumenWR,
         accTrabajador, resumenSG, accSistema, peligroAsociadoEnfermedad, fechaEntregaMin, pdfMinisterio, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
 
-        fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC
+        fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC, salaCalificadoraPCLJNC, medicoCalificadorPCLJNC
     };
 }
 
@@ -43,7 +43,7 @@ export function PutOccupationalMedicine(id, cedula, resumenCaso, situacionEmplea
     aplica, motivoIE, estadoEnfermedadLaboral, resultadoOrigen, fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion, diferenciaDia, resumenWR,
     accTrabajador, resumenSG, accSistema, peligroAsociadoEnfermedad, fechaEntregaMin, pdfMinisterio, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
 
-    fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC) {
+    fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC, salaCalificadoraPCLJNC, medicoCalificadorPCLJNC) {
     return {
         id, cedula, resumenCaso, situacionEmpleado, fechaRetiro, segmentoAgrupado, segmentoAfectado, subsegmento, codDx, nroFurel, regionInfoLaboral,
         lateralidad, entidadQueMotivaEnvio, entidadDondeEnvia, fechaEntrega, fechaEnvio, investigado, observaciones, fechaCalificacionEps, origenEps, noSolicitudARL1, noSolicitudARL2,
@@ -58,6 +58,6 @@ export function PutOccupationalMedicine(id, cedula, resumenCaso, situacionEmplea
         aplica, motivoIE, estadoEnfermedadLaboral, resultadoOrigen, fechaCalificacionUltimaInstancia, fechaInvestigacion, origenInvestigacion, diferenciaDia, resumenWR,
         accTrabajador, resumenSG, accSistema, peligroAsociadoEnfermedad, fechaEntregaMin, pdfMinisterio, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico,
 
-        fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC
+        fechaEstimadaInicioCaso, vistoBueno, pclInstaFinal, fechaEstructuracionJRC, salaCalificadoraJNC, medicoCalificadorJNC, salaCalificadoraPCLJNC, medicoCalificadorPCLJNC
     };
 }

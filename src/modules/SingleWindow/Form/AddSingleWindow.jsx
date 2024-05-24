@@ -9,22 +9,19 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-import { IconUser, IconFileUpload, IconFiles, IconMail } from '@tabler/icons';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ClearIcon from '@mui/icons-material/Clear';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import SubCard from 'ui-component/cards/SubCard';
-import { gridSpacing } from 'store/constant';
 import InputSelect from 'components/input/InputSelect';
 import SendIcon from '@mui/icons-material/Send';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputText from 'components/input/InputText';
 import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
-import Accordion from 'components/accordion/Accordion';
+import DownloadIcon from '@mui/icons-material/Download';
 import { GetAllDocumentoVentanilla, InsertVentanillaUnica, NotificarUsuarios, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
@@ -40,6 +37,8 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import Upload from 'components/UploadDocument/Upload';
 import swal from 'sweetalert';
 import { LoadingButton } from '@mui/lab';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object().shape({
     idMedioIngreso: yup.string().required(ValidationMessage.Requerido),
@@ -47,37 +46,28 @@ const validationSchema = yup.object().shape({
     folios: yup.string().required(ValidationMessage.Requerido),
 });
 
-function ElevationScroll({ children }) {
-    return React.cloneElement(children, {
-        style: {
-            position: 'relative',
-            top: 0,
-            width: '100%'
-        }
-    });
-}
-
-const AddSingleWindow = ({ onCancel, ...others }) => {
+const AddSingleWindow = () => {
     const theme = useTheme();
     const { user } = useAuth();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const navigate = useNavigate();
     const [idResult, setIdResult] = useState(0);
     const [documento, setDocumento] = useState("");
     const [dataPerson, setDataPerson] = useState({
-        nombre: '',
-        telefono: '',
-        idMunicipio: '',
-        direccion: '',
-        correo: ''
+        nombre: "",
+        telefono: "",
+        idMunicipio: "",
+        direccion: "",
+        correo: ""
     });
     const [tipoPeticion, setTipoPeticion] = useState("");
     const [tiempoRespuesta, setTiempoRespuesta] = useState("");
     const [numRadicado, setNumRadicado] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [fechaInicio, setFechaInicio] = useState(null);
-    const [fechaFin, setFechaFin] = useState(null);
+    const [fechaInicio, setFechaInicio] = useState("");
+    const [fechaFin, setFechaFin] = useState("");
     const [archivoAdjunto, setArchivoAdjunto] = useState(null);
     const [infoArchivoAdjunto, setInfoArchivoAdjunto] = useState(null);
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
@@ -98,7 +88,9 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
         resolver: yupResolver(validationSchema)
     });
 
-    const { handleSubmit, formState: { errors } } = methods;
+    const { handleSubmit, reset, formState: { errors } } = methods;
+
+    async function downloadFile() { DownloadFile(`ventanillaunica${new Date().getTime()}.pdf`, archivoAdjunto.replace("data:application/pdf;base64,", "")); }
 
     useEffect(() => {
         async function getAll() {
@@ -189,7 +181,7 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
             var numerotiempo = codigoTiempo.substring(4);
             setTiempoRespuesta(numerotiempo);
 
-            if (fechaInicio != null) {
+            if (fechaInicio !== "") {
                 var nuevaFecha = new Date(fechaInicio);
                 nuevaFecha.setDate(nuevaFecha.getDate() + Number(numerotiempo));
 
@@ -200,9 +192,27 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
             var dateNow = new Date();
             var numeroRadicado = `${codigoRadicado}${dateNow.getFullYear()}${dateNow.getMonth()}${dateNow.getDay()}${dateNow.getHours()}${dateNow.getMinutes()}${dateNow.getSeconds()}`;
             setNumRadicado(numeroRadicado);
-        } catch (error) {
+        } catch (error) { }
+    }
 
-        }
+    const handleClear = () => {
+        reset();
+        setDataPerson({
+            nombre: "",
+            telefono: "",
+            idMunicipio: "",
+            direccion: "",
+            correo: ""
+        });
+        setIdResult(0);
+        setNumRadicado("");
+        setTiempoRespuesta("");
+        setTipoPeticion("");
+        setFechaInicio("");
+        setFechaFin("");
+        setDocumento("");
+        setArchivoAdjunto(null);
+        setInfoArchivoAdjunto(null);
     }
 
     const handleNotifi = async () => {
@@ -249,35 +259,37 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
         try {
             const DataToInsert = {
                 id: idResult,
-                idTipo: Number(tipoPeticion),
-                tiempoRespuesta: Number(tiempoRespuesta),
-                numRadicado: numRadicado,
-                idMedioIngreso: datos.idMedioIngreso,
-                idCondicion: datos.idCondicion,
-                idImportancia: datos.idImportancia,
-                folios: datos.folios,
-                fechaRecibido: fechaInicio,
-                fechaLimiteRespuesta: fechaFin,
-                direccionSolicitante: datos.direccionSolicitante,
+                idTipo: tipoPeticion !== "" ? Number(tipoPeticion) : null,
+                tiempoRespuesta: tiempoRespuesta !== "" ? Number(tiempoRespuesta) : null,
+                numRadicado: numRadicado !== "" ? numRadicado : null,
+                idMedioIngreso: datos.idMedioIngreso !== "" ? datos.idMedioIngreso : null,
+                idCondicion: datos.idCondicion !== "" ? datos.idCondicion : null,
+                idImportancia: datos.idImportancia !== "" ? datos.idImportancia : null,
+                folios: datos.folios !== "" ? datos.folios : null,
+                fechaRecibido: fechaInicio !== "" ? fechaInicio : null,
+                fechaLimiteRespuesta: fechaFin !== "" ? fechaFin : null,
+                direccionSolicitante: datos.direccionSolicitante !== "" ? datos.direccionSolicitante : null,
 
-                recibidoPor: datos.recibidoPor,
-                nombreRecibe: datos.nombreRecibe,
-                correoRecibe: datos.correoRecibe,
-                telefonoNotificion: datos.telefonoNotificion,
-                ciudadEnvio: datos.ciudadEnvio,
+                recibidoPor: datos.recibidoPor !== "" ? datos.recibidoPor : null,
+                nombreRecibe: datos.nombreRecibe !== "" ? datos.nombreRecibe : null,
+                correoRecibe: datos.correoRecibe !== "" ? datos.correoRecibe : null,
+                telefonoNotificion: datos.telefonoNotificion !== "" ? datos.telefonoNotificion : null,
+                ciudadEnvio: datos.ciudadEnvio !== "" ? datos.ciudadEnvio : null,
 
                 documento: documento,
-                nombre: dataPerson.nombre,
-                telefono: dataPerson.telefono,
-                idMunicipio: dataPerson.idMunicipio,
-                direccion: dataPerson.direccion,
-                correo: dataPerson.correo,
-                solicitadoPor: datos.solicitadoPor,
-                correoSolicitante: datos.correoSolicitante,
+                nombre: dataPerson.nombre !== "" ? dataPerson.nombre : null,
+                telefono: dataPerson.telefono !== "" ? dataPerson.telefono : null,
+                idMunicipio: dataPerson.idMunicipio !== "" ? dataPerson.idMunicipio : null,
+                direccion: dataPerson.direccion !== "" ? dataPerson.direccion : null,
+                correo: dataPerson.correo !== "" ? dataPerson.correo : null,
+                solicitadoPor: datos.solicitadoPor !== "" ? datos.solicitadoPor : null,
+                correoSolicitante: datos.correoSolicitante !== "" ? datos.correoSolicitante : null,
 
                 archivoRecibido: archivoAdjunto,
                 usuarioRegistro: user?.nameuser,
             };
+
+            console.log("DataToInsert => ", DataToInsert);
 
             setDataVentanilla(DataToInsert);
 
@@ -317,395 +329,405 @@ const AddSingleWindow = ({ onCancel, ...others }) => {
                 <ViewPDF dataPDF={archivoAdjunto} />
             </ControlModal>
 
-            <ElevationScroll {...others}>
-                <SubCard
-                    title={<Typography variant='h4'>Indexación de documentos recibidos</Typography>}
-                    sx={{
-                        width: '100%',
-                        maxWidth: 550
-                    }}
-                    content={false}
-                >
-                    <PerfectScrollbar style={{ height: 'calc(70vh - 0px)', overflowX: 'hidden' }}>
-                        <Grid container spacing={gridSpacing} sx={{ p: 3 }}>
-                            <Grid item xs={12}>
-                                <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información de la solicitud</Typography></>}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={5}>
-                                            <SelectOnChange
-                                                name="idTipo"
-                                                label="Tipo"
-                                                value={tipoPeticion}
-                                                options={lsTipo}
-                                                onChange={handleTipo}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
+            <SubCard title={<Typography variant='h4'>Indexación de documentos recibidos</Typography>}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <SubCard title={<Typography variant="h4">Información de la solicitud</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <SelectOnChange
+                                        name="idTipo"
+                                        label="Tipo"
+                                        value={tipoPeticion}
+                                        options={lsTipo}
+                                        onChange={handleTipo}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                                        <Grid item xs={3.5}>
-                                            <FormProvider {...methods}>
-                                                <InputOnChange
-                                                    disabled
-                                                    type="number"
-                                                    fullWidth
-                                                    name="tiempoRespuesta"
-                                                    onChange={(e) => setTiempoRespuesta(e.target.value)}
-                                                    value={tiempoRespuesta}
-                                                    label="Días de respuesta (Días)"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputOnChange
+                                        disabled
+                                        type="number"
+                                        fullWidth
+                                        name="tiempoRespuesta"
+                                        onChange={(e) => setTiempoRespuesta(e.target.value)}
+                                        value={tiempoRespuesta}
+                                        label="Días de respuesta (Días)"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                                        <Grid item xs={3.5}>
-                                            <InputOnChange
-                                                disabled
-                                                fullWidth
-                                                name="numRadicado"
-                                                onChange={(e) => setNumRadicado(e.target.value)}
-                                                value={numRadicado}
-                                                label="N° radicado"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputOnChange
+                                        disabled
+                                        fullWidth
+                                        name="numRadicado"
+                                        onChange={(e) => setNumRadicado(e.target.value)}
+                                        value={numRadicado}
+                                        label="N° radicado"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                                        <Grid item xs={6}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idMedioIngreso"
-                                                    label="Medio de ingreso"
-                                                    options={lsMedioIngreso}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idMedioIngreso}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="idMedioIngreso"
+                                            label="Medio de ingreso"
+                                            options={lsMedioIngreso}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idMedioIngreso}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={6}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idCondicion"
-                                                    label="Condición"
-                                                    options={lsCondiciones}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idCondicion}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="idCondicion"
+                                            label="Condición"
+                                            options={lsCondiciones}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idCondicion}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={8}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idImportancia"
-                                                    label="Importancia"
-                                                    options={lsImportancia}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idImportancia}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="idImportancia"
+                                            label="Importancia"
+                                            options={lsImportancia}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idImportancia}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    fullWidth
-                                                    name="folios"
-                                                    label="Folios"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.folios}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            type="number"
+                                            fullWidth
+                                            name="folios"
+                                            label="Folios"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.folios}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={12}>
-                                            <Divider />
-                                        </Grid>
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
 
-                                        <Grid item xs={6}>
-                                            <FormProvider {...methods}>
-                                                <InputDatePick
-                                                    onChange={(e) => {
-                                                        setFechaInicio(e.target.value);
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePick
+                                            onChange={(e) => {
+                                                setFechaFin("");
+                                                setFechaInicio(e.target.value);
 
-                                                        var nuevaFecha = new Date(e.target.value);
-                                                        nuevaFecha.setDate(nuevaFecha.getDate() + Number(tiempoRespuesta));
-                                                        setFechaFin(FormatDate(nuevaFecha));
-                                                    }}
-                                                    value={fechaInicio}
-                                                    label="Fecha recibido"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                                if (e.target.value !== "") {
+                                                    var nuevaFecha = new Date(e.target.value);
+                                                    nuevaFecha.setDate(nuevaFecha.getDate() + Number(tiempoRespuesta));
+                                                    setFechaFin(FormatDate(nuevaFecha));
+                                                } else
+                                                    setFechaFin("");
+                                            }}
+                                            value={fechaInicio}
+                                            label="Fecha recibido"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={6}>
-                                            <FormProvider {...methods}>
-                                                <InputDatePick
-                                                    disabled
-                                                    onChange={(e) => setFechaFin(e.target.value)}
-                                                    value={fechaFin}
-                                                    label="Fecha límite de respuesta"
-                                                    name="fechaLimiteRespuesta"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePick
+                                            disabled
+                                            onChange={(e) => setFechaFin(e.target.value)}
+                                            value={fechaFin}
+                                            label="Fecha límite de respuesta"
+                                            name="fechaLimiteRespuesta"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={6}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="recibidoPor"
-                                                    label="Recibido por"
-                                                    options={lsRecibidoPor}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.recibidoPor}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="recibidoPor"
+                                            label="Recibido por"
+                                            options={lsRecibidoPor}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.recibidoPor}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={6}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="nombreRecibe"
-                                                    label="Nombre del que recibe"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.nombreRecibe}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="nombreRecibe"
+                                            label="Nombre del que recibe"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.nombreRecibe}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="correoRecibe"
-                                                    label="Correo del que recibe"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.correoRecibe}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-                                    </Grid>
-                                </Accordion>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Accordion title={<><IconMail /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información del solicitante</Typography></>}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12}>
-                                            <Typography variant="body1">Entidad que solicita</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="solicitadoPor"
-                                                    label="Solicitado por"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.correoRecibe}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="correoSolicitante"
-                                                    label="Correo del solicitante"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.correoRecibe}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="direccionSolicitante"
-                                                    label="Dirección del solicitante"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.direccionSolicitante}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="telefonoNotificion"
-                                                    label="Teléfono notificación"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.telefonoNotificion}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    name="ciudadEnvio"
-                                                    label="Ciudad notificación"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.ciudadEnvio}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <Divider />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <Typography variant="body1">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <InputOnChange
-                                                label="Documento / Nit"
-                                                onKeyDown={handleDocumento}
-                                                onChange={(e) => setDocumento(e.target.value)}
-                                                value={documento}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <InputOnChange
-                                                label="Teléfono"
-                                                onChange={(e) => setDataPerson({ ...dataPerson, telefono: e.target.value })}
-                                                value={dataPerson.telefono}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <InputOnChange
-                                                label="Nombre"
-                                                onChange={(e) => setDataPerson({ ...dataPerson, nombre: e.target.value })}
-                                                value={dataPerson.nombre}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <SelectOnChange
-                                                name="idMunicipio"
-                                                label="Municipio"
-                                                value={dataPerson.idMunicipio}
-                                                onChange={(e) => setDataPerson({ ...dataPerson, idMunicipio: e.target.value })}
-                                                options={lsMunicipio}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <InputOnChange
-                                                label="Dirección"
-                                                onChange={(e) => setDataPerson({ ...dataPerson, direccion: e.target.value })}
-                                                value={dataPerson.direccion}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <InputOnChange
-                                                label="Correo electrónico del empleado"
-                                                onChange={(e) => setDataPerson({ ...dataPerson, correo: e.target.value })}
-                                                value={dataPerson.correo}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Accordion>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Accordion title={<><IconFileUpload /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Cargar archivo</Typography></>}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12}>
-                                            <Upload files={infoArchivoAdjunto} onDrop={handleDrop} />
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button disabled={archivoAdjunto === null ? true : false} fullWidth variant="outlined" component="label"
-                                                    startIcon={<VisibilityIcon fontSize="small" />} onClick={() => setOpenViewArchivo(true)}>
-                                                    {TitleButton.VerArchivo}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Button fullWidth color="error" variant="outlined" component="label"
-                                                    startIcon={<ClearIcon fontSize="small" />} onClick={() => { setInfoArchivoAdjunto(null); setArchivoAdjunto(null); }}>
-                                                    Remover
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                    </Grid>
-                                </Accordion>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Typography variant="body1"><b>Nota:</b> Al guardar el registro se habilitará la opción para agregar los tipos de solicitudes que el empleado solicito</Typography>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Accordion disabled={idResult !== 0 ? false : true} title={<><IconFiles /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Distribución del tipo de solicitud</Typography></>}>
-                                    <Grid container spacing={2}>
-                                        <ListAddSingleWindow documento={documento} idResult={idResult} dataVentanilla={dataVentanilla} />
-                                    </Grid>
-                                </Accordion>
-                            </Grid>
-
-                            <Grid item xs={12} sx={{ mt: 2 }}>
-                                <Grid container spacing={1}>
-                                    <Grid item>
-                                        <AnimateButton>
-                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                                {idResult === 0 ? "Registrar" : TitleButton.Actualizar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={onCancel}>
-                                                Cerrar
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item>
-                                        <AnimateButton>
-                                            <LoadingButton
-                                                fullWidth
-                                                disabled={idResult === 0 ? true : false}
-                                                onClick={handleNotifi}
-                                                loading={loading}
-                                                loadingPosition="end"
-                                                endIcon={<SendIcon />}
-                                                variant="outlined"
-                                            >
-                                                Enviar Notificación
-                                            </LoadingButton>
-                                        </AnimateButton>
-                                    </Grid>
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="correoRecibe"
+                                            label="Correo del que recibe"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.correoRecibe}
+                                        />
+                                    </FormProvider>
                                 </Grid>
                             </Grid>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard title={<Typography variant="h4">Información del solicitante</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <Typography variant="body1">Entidad que solicita</Typography>
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="solicitadoPor"
+                                            label="Solicitado por"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.correoRecibe}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="correoSolicitante"
+                                            label="Correo del solicitante"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.correoRecibe}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="direccionSolicitante"
+                                            label="Dirección del solicitante"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.direccionSolicitante}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="telefonoNotificion"
+                                            label="Teléfono notificación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.telefonoNotificion}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="ciudadEnvio"
+                                            label="Ciudad notificación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.ciudadEnvio}
+                                        />
+                                    </FormProvider>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography variant="body1">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputOnChange
+                                        label="Documento / Nit"
+                                        onKeyDown={handleDocumento}
+                                        onChange={(e) => setDocumento(e.target.value)}
+                                        value={documento}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputOnChange
+                                        label="Nombre"
+                                        onChange={(e) => setDataPerson({ ...dataPerson, nombre: e.target.value })}
+                                        value={dataPerson.nombre}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputOnChange
+                                        label="Teléfono"
+                                        onChange={(e) => setDataPerson({ ...dataPerson, telefono: e.target.value })}
+                                        value={dataPerson.telefono}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <SelectOnChange
+                                        name="idMunicipio"
+                                        label="Municipio"
+                                        value={dataPerson.idMunicipio}
+                                        onChange={(e) => setDataPerson({ ...dataPerson, idMunicipio: e.target.value })}
+                                        options={lsMunicipio}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputOnChange
+                                        label="Dirección"
+                                        onChange={(e) => setDataPerson({ ...dataPerson, direccion: e.target.value })}
+                                        value={dataPerson.direccion}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputOnChange
+                                        label="Correo electrónico del empleado"
+                                        onChange={(e) => setDataPerson({ ...dataPerson, correo: e.target.value })}
+                                        value={dataPerson.correo}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard title={<Typography variant="h4">Cargar archivo</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <Upload files={infoArchivoAdjunto} onDrop={handleDrop} />
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" onClick={downloadFile} disabled={archivoAdjunto === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                            Descargar
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" color="error" onClick={() => { setArchivoAdjunto(null); setInfoArchivoAdjunto(null); }} disabled={archivoAdjunto === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                            Eliminar
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+                    {idResult !== 0 ?
+                        <Grid item xs={12}>
+                            <SubCard title={<Typography variant="h4">Distribución del tipo de solicitud</Typography>}>
+                                <Grid container spacing={2}>
+                                    <ListAddSingleWindow documento={documento} idResult={idResult} dataVentanilla={dataVentanilla} />
+                                </Grid>
+                            </SubCard>
+                        </Grid> :
+                        <Grid item xs={12}>
+                            <Typography variant="body1"><b>Nota:</b> Al guardar el registro se habilitará la opción para agregar los tipos de solicitudes que el empleado solicito</Typography>
                         </Grid>
-                    </PerfectScrollbar>
-                </SubCard>
-            </ElevationScroll>
-        </Fragment>
+                    }
+
+                    <Grid item xs={12} sx={{ mt: 2 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6} md={1.8}>
+                                <AnimateButton>
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        {idResult === 0 ? "Registrar" : TitleButton.Actualizar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={6} md={1.8}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={handleClear}>
+                                        Limpiar
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={6} md={1.8}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/single-window/index")}>
+                                        Cerrar
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={12} md={3}>
+                                <AnimateButton>
+                                    <LoadingButton
+                                        fullWidth
+                                        disabled={idResult === 0 ? true : false}
+                                        onClick={handleNotifi}
+                                        loading={loading}
+                                        loadingPosition="end"
+                                        endIcon={<SendIcon />}
+                                        variant="outlined"
+                                    >
+                                        Enviar Notificación
+                                    </LoadingButton>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </SubCard>
+        </Fragment >
     );
 };
 

@@ -13,6 +13,8 @@ import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate, useParams } from 'react-router-dom';
 import ControlModal from 'components/controllers/ControlModal';
+import ClearIcon from '@mui/icons-material/Clear';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import { FormProvider, useForm } from 'react-hook-form';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -25,7 +27,6 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
-import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -46,6 +47,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReport } from '../AccidentRate/ReporteAccidentRate';
 import ViewPDF from 'components/components/ViewPDF';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -98,6 +100,8 @@ const UpdateAccidentRate = () => {
         resolver: yupResolver(validationSchema),
     });
     const { handleSubmit, formState: { errors } } = methods;
+
+    async function downloadFileReplay() { DownloadFile(`${documento}accidentetrabajo${new Date().getTime()}.pdf`, urlFile.replace("data:application/pdf;base64,", "")); }
 
     useEffect(() => {
         async function getData() {
@@ -651,24 +655,31 @@ const UpdateAccidentRate = () => {
 
                             <Grid item xs={12} sx={{ pt: 2 }}>
                                 <MainCard title="Registro Fotográfico">
-                                    <Grid container spacing={12}>
-                                        <Grid textAlign="center" item xs={12}>
-                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                Actualizar Registro en PDF
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            </Button>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                    {TitleButton.SubirArchivo}
+                                                    <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                                </Button>
+                                            </AnimateButton>
                                         </Grid>
-                                    </Grid>
 
-                                    <Grid item xs={12} sx={{ pt: 4 }}>
-                                        {urlFile && (
-                                            <object type="application/pdf"
-                                                data={urlFile}
-                                                width="1180"
-                                                height="500"
-                                                onLoad={<Cargando />}
-                                            />
-                                        )}
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" onClick={downloadFileReplay} disabled={urlFile === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                                    Descargar
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" color="error" onClick={() => setUrlFile(null)} disabled={urlFile === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                                    Eliminar
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </MainCard>
                             </Grid>

@@ -21,9 +21,10 @@ import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import InputDatePicker from 'components/input/InputDatePicker';
 import ControllerListen from 'components/controllers/ControllerListen';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import ClearIcon from '@mui/icons-material/Clear';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import DetailedIcon from 'components/controllers/DetailedIcon';
-import { FormatDate } from 'components/helpers/Format'
+import DownloadIcon from '@mui/icons-material/Download';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
@@ -44,6 +45,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReport } from '../AccidentRate/ReporteAccidentRate';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -102,6 +104,7 @@ const AccidentRate = () => {
                 }
             }
             else {
+                setUrlFile(null);
                 setOpenError(true);
                 setErrorMessage('Este forma no es un PDF');
             }
@@ -186,6 +189,8 @@ const AccidentRate = () => {
             setErrorMessage('Hubo un problema al buscar el Diagnóstico');
         }
     }
+
+    async function downloadFileReplay() { DownloadFile(`${documento}accidentetrabajo${new Date().getTime()}.pdf`, urlFile.replace("data:application/pdf;base64,", "")); }
 
     async function getAll() {
         try {
@@ -584,27 +589,31 @@ const AccidentRate = () => {
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
                             <MainCard title="Registro Fotográfico">
-                                <Grid container spacing={12}>
-                                    <Grid textAlign="center" item xs={12}>
-                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                            {TitleButton.SubirArchivo}
-                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                        </Button>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                {TitleButton.SubirArchivo}
+                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
-                                </Grid>
 
-                                <Grid item xs={12} sx={{ pt: 4 }}>
-                                    {urlFile && (
-                                        <Typography align='center'>
-                                            {urlFile && (
-                                                <object type="application/pdf"
-                                                    data={urlFile}
-                                                    width={matchesXS ? '350' : '800'}
-                                                    height="500"
-                                                />
-                                            )}
-                                        </Typography>
-                                    )}
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" onClick={downloadFileReplay} disabled={urlFile === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                                Descargar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" color="error" onClick={() => setUrlFile(null)} disabled={urlFile === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                                Eliminar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
                             </MainCard>
                         </Grid>

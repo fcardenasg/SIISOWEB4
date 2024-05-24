@@ -45,7 +45,7 @@ export default function Upload({
                 <Lottie animationData={animation} />
             </Box>);
         } else {
-            usersResult = (<Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
+            usersResult = (<Box sx={{ alignContent: 'center', width: '130px', height: '130px', marginX: 'auto' }}>
                 <Lottie animationData={fileuploaded} />
             </Box>);
         }

@@ -34,7 +34,7 @@ import { GetAllComboArea } from 'api/clients/UserClient';
 import InputMultiSelects from 'components/input/InputMultiSelects';
 
 const validationSchema = yup.object().shape({
-    idUsuario: yup.number().required(ValidationMessage.Requerido)
+    idUsuario: yup.string().required(ValidationMessage.Requerido)
 });
 
 const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
@@ -57,7 +57,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, setValue, formState: { errors }, reset } = methods;
 
     useEffect(() => {
         async function getAll() {
@@ -74,7 +74,6 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
     async function getAllListSolicitudes() {
         try {
             const lsServer = await GetAllVentanillaUnicaDetalle(idResult, 0, true);
-
             if (lsServer.status === 200) {
                 setLsPeticiones(lsServer.data);
             }
@@ -109,8 +108,8 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                 idVentanillaUnica: idResult,
                 idArea: area,
                 idTipoDocumento: tipoDocumento,
-                idUsuario: datos.idUsuario,
-                observaciones: datos.observaciones,
+                idUsuario: datos.idUsuario !== "" ? datos.idUsuario : null,
+                observaciones: datos.observaciones !== "" ? datos.observaciones : null,
 
                 numRadicado: dataVentanilla.numRadicado,
                 solicitadoPor: dataVentanilla.solicitadoPor,
@@ -123,11 +122,19 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
 
             const result = await InsertVentanillaUnicaDetalle(DataToInsert);
             if (result.status === 200) {
-                getAllListSolicitudes();
-                setOpenSuccess(true);
-                setTipoDocumento([]);
-                setLsTipoDocumento([]);
-                reset();
+                if (result.data === Message.Guardar) {
+                    getAllListSolicitudes();
+                    setOpenSuccess(true);
+
+                    setArea("");
+                    setTipoDocumento([]);
+                    setLsTipoDocumento([]);
+                    setLsUsuario([]);
+                    reset();
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data);
+                }
             }
         } catch (error) {
             setOpenError(true);
@@ -140,6 +147,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
         setLsTipoDocumento([]);
         reset();
         setArea(event.target.value);
+        setValue("idUsuario", "")
 
         var codigoDocumento = lsAreaFiltro.filter(code => code.value === event.target.value)[0].codigo;
 
@@ -162,7 +170,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
                 <SelectOnChange
                     name="idArea"
                     label="Area"
@@ -173,9 +181,10 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                 />
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
                 <FormProvider {...methods}>
                     <InputSelect
+                        defaultValue=""
                         name="idUsuario"
                         label="Usuario responsable"
                         options={lsUsuario}
@@ -198,6 +207,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
             <Grid item xs={12}>
                 <FormProvider {...methods}>
                     <InputText
+                        defaultValue=""
                         multiline
                         rows={3}
                         fullWidth
@@ -209,7 +219,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                 </FormProvider>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 <Button variant="contained" fullWidth size="medium" onClick={handleSubmit(handleClick)}>
                     Agregar
                 </Button>
@@ -236,7 +246,7 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <AnimateButton>
-                                                    <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                                    <Tooltip disabled={row.estado ? true : false} title="Eliminar" onClick={() => handleDelete(row.id)}>
                                                         <IconButton color="error" size="small">
                                                             <HighlightOffIcon sx={{ fontSize: '2rem' }} />
                                                         </IconButton>

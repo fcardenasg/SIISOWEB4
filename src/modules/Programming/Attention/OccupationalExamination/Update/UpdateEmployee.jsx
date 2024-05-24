@@ -12,47 +12,41 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import PropTypes from 'prop-types';
 
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
 import PhotoModel from 'components/form/PhotoModel';
 import ModalChildren from 'components/form/ModalChildren';
 import WebCamCapture from 'components/form/WebCam';
-import { PutEmployee } from 'formatdata/EmployeeForm';
 import { GetByIdEmployee, UpdateEmployees } from 'api/clients/EmployeeClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage, Message, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
 
 const validationSchema = yup.object().shape({
-    documento: yup.string().required(`${ValidationMessage.Requerido}`),
-    nombres: yup.string().required(`${ValidationMessage.Requerido}`),
-    celular: yup.string().required(`${ValidationMessage.Requerido}`),
-    empresa: yup.string().required(`${ValidationMessage.Requerido}`),
-    tipoContrato: yup.string().required(`${ValidationMessage.Requerido}`),
-    sede: yup.string().required(`${ValidationMessage.Requerido}`),
-    genero: yup.string().required(`${ValidationMessage.Requerido}`),
-    estadoCivil: yup.string().required(`${ValidationMessage.Requerido}`),
-    grupo: yup.string().required(`${ValidationMessage.Requerido}`),
-    type: yup.string().required(`${ValidationMessage.Requerido}`),
+    documento: yup.string().required(ValidationMessage.Requerido),
+    nombres: yup.string().required(ValidationMessage.Requerido),
+    celular: yup.string().required(ValidationMessage.Requerido),
+    empresa: yup.string().required(ValidationMessage.Requerido),
+    sede: yup.string().required(ValidationMessage.Requerido),
+    genero: yup.string().required(ValidationMessage.Requerido),
+    estadoCivil: yup.string().required(ValidationMessage.Requerido)
 });
 
-const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention }) => {
+const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention }) => {
     const { user } = useAuth();
     const WebCamRef = useRef(null);
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [openUpdate, setOpenUpdate] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");
     const [openError, setOpenError] = useState(false);
 
     const [lsCatalogo, setLsCatalogo] = useState([]);
@@ -82,12 +76,13 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
     const [lsArl, setArl] = useState([]);
     const [lsCesantias, setCesantias] = useState([]);
     const [lsMunicipioTrabaja, setLsMunicipioTrabaja] = useState([]);
-    const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState('');
-    const [dptoNacido, setDptoNacido] = useState('');
-    const [municipioResidenciaTrabaja, setMunicipioResidenciaTrabaja] = useState('');
-    const [dptoResidencia, setDptoResidencia] = useState('');
-    const [municipioNacido, setMunicipioNacido] = useState('');
-    const [municipioResidencia, setMunicipioResidencia] = useState('');
+    const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState("");
+    const [dptoNacido, setDptoNacido] = useState("");
+    const [municipioResidenciaTrabaja, setMunicipioResidenciaTrabaja] = useState("");
+    const [idTipoContrato, setIdTipoContrato] = useState(null);
+    const [dptoResidencia, setDptoResidencia] = useState("");
+    const [municipioNacido, setMunicipioNacido] = useState("");
+    const [municipioResidencia, setMunicipioResidencia] = useState("");
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -100,6 +95,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                 setEmployee(lsServerEmployeeId?.data.data);
                 setImgSrc(lsServerEmployeeId?.data.data.imagenUrl);
                 setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
+                setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
             } else {
@@ -107,6 +103,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
 
                 setImgSrc(lsServerEmployeeId?.data.data.imagenUrl);
                 setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
+                setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
             }
@@ -283,7 +280,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
         { resolver: yupResolver(validationSchema) }
     );
 
-    const { handleSubmit, formState: { errors } } = methods;
+    const { handleSubmit, setValue, formState: { errors } } = methods;
 
     async function GetSubString(codigo) {
         try {
@@ -335,42 +332,59 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
 
     const handleClick = async (datos) => {
         try {
-            const municipioResidencia_DATA = municipioResidencia == '' ? datos.municipioResidencia : municipioResidencia;
-            const municipioNacido_DATA = municipioNacido == '' ? datos.municipioNacido : municipioNacido;
-            const municipioTrabaja_DATA = municipioResidenciaTrabaja == '' ? datos.municipioResidenciaTrabaja : municipioResidenciaTrabaja;
+            const DataToUpdate = {
+                documento: datos.documento,
+                nombres: datos.nombres,
+                fechaNaci: datos.fechaNaci === "" ? null : datos.fechaNaci,
+                type: datos.type === "" ? null : datos.type,
+                departamento: datos.departamento === "" ? null : datos.departamento,
+                area: datos.area === "" ? null : datos.area,
+                subArea: datos.subArea === "" ? null : datos.subArea,
+                grupo: datos.grupo === "" ? null : datos.grupo,
+                municipioNacido: datos.municipioNacido === "" ? null : datos.municipioNacido,
+                dptoNacido: datos.dptoNacido === "" ? null : datos.dptoNacido,
+                fechaContrato: datos.fechaContrato === "" ? null : datos.fechaContrato,
+                rosterPosition: datos.rosterPosition === "" ? null : datos.rosterPosition,
+                tipoContrato: idTipoContrato,
+                generalPosition: datos.generalPosition === "" ? null : datos.generalPosition,
+                genero: datos.genero === "" ? null : datos.genero,
+                sede: datos.sede === "" ? null : datos.sede,
+                direccionResidencia: datos.direccionResidencia === "" ? null : datos.direccionResidencia,
+                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja === "" ? null : datos.direccionResidenciaTrabaja,
+                dptoResidenciaTrabaja: dptoResidenciaTrabaja,
+                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja === "" ? null : datos.municipioResidenciaTrabaja,
+                municipioResidencia: datos.municipioResidencia === "" ? null : datos.municipioResidencia,
+                dptoResidencia: dptoNacido,
+                celular: datos.celular === "" ? null : datos.celular,
+                eps: datos.eps === "" ? null : datos.eps,
+                afp: datos.afp === "" ? null : datos.afp,
+                turno: datos.turno === "" ? null : datos.turno,
+                email: datos.email === "" ? null : datos.email,
+                telefonoContacto: datos.telefonoContacto === "" ? null : datos.telefonoContacto,
+                estadoCivil: datos.estadoCivil === "" ? null : datos.estadoCivil,
+                empresa: datos.empresa === "" ? null : datos.empresa,
+                arl: datos.arl === "" ? null : datos.arl,
+                contacto: datos.contacto === "" ? null : datos.contacto,
+                escolaridad: datos.escolaridad === "" ? null : datos.escolaridad,
+                cesantias: datos.cesantias === "" ? null : datos.cesantias,
+                rotation: datos.rotation === "" ? null : datos.rotation,
+                payStatus: datos.payStatus === "" ? null : datos.payStatus,
+                termDate: null,
+                imagenUrl: imgSrc,
+                bandera: DefaultValue.BANDERA_DRUMMOND,
+                ges: datos.ges === "" ? null : datos.ges,
+                usuarioRegistro: user.nameuser,
+                oficio: datos.oficio === "" ? null : datos.oficio
+            };
 
-            var fechaContrato = datos.fechaContrato === "" ? null : datos.fechaContrato;
-            var fechaNaci = datos.fechaNaci === "" ? null : datos.fechaNaci;
-
-            const DataToUpdate = PutEmployee(datos.documento, datos.nombres, fechaNaci, datos.type, datos.departamento,
-                datos.area, datos.subArea, datos.grupo, municipioNacido_DATA, dptoNacido, fechaContrato,
-                datos.rosterPosition, datos.tipoContrato, datos.generalPosition, datos.genero, datos.sede,
-                datos.direccionResidencia, datos.direccionResidenciaTrabaja, municipioResidencia_DATA, dptoResidenciaTrabaja,
-                municipioTrabaja_DATA, dptoResidencia, datos.celular, datos.eps,
-                datos.afp, datos.turno, datos.email, datos.telefonoContacto, datos.estadoCivil, datos.empresa, datos.arl,
-                datos.contacto, datos.escolaridad, datos.cesantias, datos.rotation, datos.payStatus, FormatDate(new Date()),
-                1, datos.ges, employee.usuarioRegistro, employee.fechaRegistro, user.nameuser, FormatDate(new Date()), imgSrc,
-                datos.oficio);
-
-            if (imgSrc !== null) {
-                if (Object.keys(datos.length !== 0)) {
-                    const result = await UpdateEmployees(DataToUpdate);
-                    if (result.status === 200) {
-                        const event = {
-                            target: { value: result.data.documento }
-                        }
-                        getDataAttention(event);
-                        setOpenUpdate(true);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Hubo un problemas al guardo los datos');
-                }
-            } else {
-                setOpenError(true);
-                setErrorMessage('Exiten campos vacios aún');
+            const result = await UpdateEmployees(DataToUpdate);
+            if (result.status === 200) {
+                setOpenUpdate(true);
             }
-        } catch (error) { }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
     };
 
     setTimeout(() => {
@@ -386,7 +400,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                     <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                     <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS PERSONALES</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Datos Personales</Typography>}>
                         <ModalChildren
                             open={open}
                             onClose={() => setOpen(false)}
@@ -416,6 +430,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                             <InputText
                                                 defaultValue={employee.documento}
                                                 fullWidth
+                                                type="number"
                                                 name="documento"
                                                 label="Documento"
                                                 size={matchesXS ? 'small' : 'medium'}
@@ -558,29 +573,40 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CONTRACTUAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Información Contractual</Typography>}>
                         <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <SelectOnChange
+                                    name="tipoContrato"
+                                    label="Tipo de Contrato"
+                                    value={idTipoContrato}
+                                    options={lsTipoContrato}
+                                    onChange={(e) => {
+                                        setIdTipoContrato(e.target.value);
+
+                                        if (e.target.value === 9717) {
+                                            setValue("fechaContrato", "");
+                                            setValue("turno", "");
+                                            setValue("grupo", "");
+                                            setValue("rotation", "");
+                                            setValue("generalPosition", "");
+                                            setValue("arl", "");
+                                        }
+                                    }}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
                                         defaultValue={employee.fechaContrato}
                                     />
                                 </FormProvider>
                             </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="tipoContrato"
-                                        label="Tipo de Contrato"
-                                        defaultValue={employee.tipoContrato}
-                                        options={lsTipoContrato}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.tipoContrato}
-                                    />
-                                </FormProvider>
-                            </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
@@ -610,6 +636,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                     <InputSelect
                                         name="generalPosition"
                                         label="General Position"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         defaultValue={employee.generalPosition}
                                         options={lsGeneralPosition}
                                         size={matchesXS ? 'small' : 'medium'}
@@ -657,6 +684,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="grupo"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="Grupo"
                                         defaultValue={employee.grupo}
                                         options={lsGrupo}
@@ -669,6 +697,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="turno"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="Turno"
                                         defaultValue={employee.turno}
                                         options={lsTurno}
@@ -681,23 +710,12 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                 <FormProvider {...methods}>
                                     <InputText
                                         defaultValue={employee.rotation}
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         fullWidth
                                         name="rotation"
                                         label="Rotación"
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.rotation}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="payStatus"
-                                        label="Estado"
-                                        defaultValue={employee.payStatus}
-                                        options={lsEstado}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.payStatus}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -727,11 +745,24 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                     />
                                 </FormProvider>
                             </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="payStatus"
+                                        label="Estado"
+                                        defaultValue={employee.payStatus}
+                                        options={lsEstado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.payStatus}
+                                    />
+                                </FormProvider>
+                            </Grid>
                         </Grid>
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN DEMOGRÁFICA</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Información Demográfica</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
@@ -861,7 +892,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">SEGURIDAD SOCIAL</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Seguridad Social</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
@@ -891,6 +922,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="arl"
+                                        disabled={idTipoContrato === 9717 ? true : false}
                                         label="ARL"
                                         defaultValue={employee.arl}
                                         options={lsArl}
@@ -915,7 +947,7 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                     </SubCard>
                     <Grid sx={{ pb: 2 }} />
 
-                    <Grid item xs={12} sx={{ pt: 2 }}>
+                    <Grid item xs={12} sx={{ pb: 2 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
@@ -924,7 +956,6 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-
                             <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" onClick={() => setOpenUpdateTwo(false)} fullWidth>
@@ -937,7 +968,9 @@ const UpdateEmployee = ({ idEmpleado = '', setOpenUpdateTwo, getDataAttention })
                 </Grid>
             ) :
                 <Grid container spacing={3} sx={{ m: 5 }}>
-                    <Cargando />
+                    <Grid item xs={12}>
+                        <Cargando />
+                    </Grid>
                 </Grid>
             }
         </Grid>

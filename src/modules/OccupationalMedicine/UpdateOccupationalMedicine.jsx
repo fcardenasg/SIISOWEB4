@@ -5,14 +5,16 @@ import {
     Grid,
     useMediaQuery,
     Typography,
+    Tooltip,
 } from '@mui/material';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { FormatDate, NumeroDias } from 'components/helpers/Format';
+import DownloadIcon from '@mui/icons-material/Download';
+import ClearIcon from '@mui/icons-material/Clear';
+import { NumeroDias } from 'components/helpers/Format';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
@@ -41,6 +43,8 @@ import {
     IconClipboardText, IconReportSearch,
     IconReport, IconStatusChange, IconReportAnalytics
 } from '@tabler/icons';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const OccupationalMedicine = () => {
     const { user } = useAuth();
@@ -93,6 +97,9 @@ const OccupationalMedicine = () => {
 
     const methods = useForm();
     const { handleSubmit } = methods;
+
+    async function downloadFile() { DownloadFile(`${documento}medicinallaboral${new Date().getTime()}.pdf`, filePdf.replace("data:application/pdf;base64,", "")); }
+    async function downloadFileMin() { DownloadFile(`${documento}medicinallaboral${new Date().getTime()}.pdf`, filePdfMin.replace("data:application/pdf;base64,", "")); }
 
     const handleFechaInicio = async (event) => {
         try {
@@ -292,7 +299,7 @@ const OccupationalMedicine = () => {
 
                     var diasCalculados = NumeroDias(lsServerAtencion.data.fechaCalificacionUltimaInstancia, lsServerAtencion.data.fechaInvestigacion);
                     setDiasDiferencia(diasCalculados);
-                    
+
                     setFilePdfMin(lsServerAtencion.data.pdfMinisterio);
                     setFilePdf(lsServerAtencion.data.urlDocumento);
 
@@ -388,7 +395,7 @@ const OccupationalMedicine = () => {
                 }
             }
             else {
-                setFilePdfMin('');
+                setFilePdfMin(null);
                 setOpenError(true);
                 setErrorMessage('Este forma no es un PDF');
             }
@@ -417,7 +424,8 @@ const OccupationalMedicine = () => {
                 datos.origenInvestigacion, diasDiferencia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
                 datos.fechaEntregaMin, filePdfMin, lsOccupationalMedicine.usuarioRegistro, lsOccupationalMedicine.fechaRegistro, user.nameuser, undefined,
 
-                datos.fechaEstimadaInicioCaso, datos.vistoBueno, datos.pclInstaFinal, datos.fechaEstructuracionJRC, datos.salaCalificadoraJNC, datos.medicoCalificadorJNC);
+                datos.fechaEstimadaInicioCaso, datos.vistoBueno, datos.pclInstaFinal, datos.fechaEstructuracionJRC, datos.salaCalificadoraJNC, datos.medicoCalificadorJNC,
+                datos.salaCalificadoraPCLJNC, datos.medicoCalificadorPCLJNC);
 
             const result = await UpdateOccupationalMedicines(DataToUpdate);
             if (result.status === 200) {
@@ -1089,7 +1097,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
                                                         label="Fecha Calificación PCL"
@@ -1099,7 +1107,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputText
                                                         defaultValue={lsOccupationalMedicine.noDictamenPclJNC}
@@ -1111,7 +1119,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputText
                                                         defaultValue={lsOccupationalMedicine.pclJNC}
@@ -1124,7 +1132,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
                                                         label="Fecha Estructura"
@@ -1134,17 +1142,17 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
-                                                        label="Fecha Calificación Origen"
+                                                        label="Fecha Recalificación Origen"
                                                         name="fechaRecalificacionPclJNC"
                                                         defaultValue={lsOccupationalMedicine.fechaRecalificacionPclJNC}
                                                     />
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputText
                                                         defaultValue={lsOccupationalMedicine.noDictamenRecalificacionJNC}
@@ -1156,7 +1164,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputText
                                                         defaultValue={lsOccupationalMedicine.pclRecalificacionJNC}
@@ -1169,7 +1177,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={6} lg={3}>
                                                 <FormProvider {...methods}>
                                                     <InputText
                                                         defaultValue={lsOccupationalMedicine.pclInstaFinal}
@@ -1182,7 +1190,7 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={6} lg={4}>
+                                            <Grid item xs={12} md={3}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
                                                         defaultValue={lsOccupationalMedicine.salaCalificadoraJNC}
@@ -1194,12 +1202,36 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={12} md={10} lg={8}>
+                                            <Grid item xs={12} md={9}>
                                                 <FormProvider {...methods}>
                                                     <InputText
                                                         defaultValue={lsOccupationalMedicine.medicoCalificadorJNC}
                                                         fullWidth
                                                         name="medicoCalificadorJNC"
+                                                        label="Médico Calificador"
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={12} md={3}>
+                                                <FormProvider {...methods}>
+                                                    <InputSelect
+                                                        defaultValue={lsOccupationalMedicine.salaCalificadoraPCLJNC}
+                                                        name="salaCalificadoraPCLJNC"
+                                                        label="Sala Calificadora PCL"
+                                                        options={lsSalaCalificadora}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={12} md={9}>
+                                                <FormProvider {...methods}>
+                                                    <InputText
+                                                        defaultValue={lsOccupationalMedicine.medicoCalificadorPCLJNC}
+                                                        fullWidth
+                                                        name="medicoCalificadorPCLJNC"
                                                         label="Médico Calificador"
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
@@ -1508,18 +1540,29 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
-                                            <Grid item xs={6} md={2}>
-                                                <Button fullWidth size={matchesXS ? 'small' : 'large'} variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                    {TitleButton.SubirArchivo}
-                                                    <input hidden accept="application/pdf" type="file" onChange={handleFile1} />
-                                                </Button>
+                                            <Grid item xs={4} md={2} lg={1.3}>
+                                                <Tooltip title={TitleButton.SubirArchivo}>
+                                                    <Button fullWidth size={matchesXS ? 'small' : 'large'} variant="outlined" component="label">
+                                                        <input hidden accept="application/pdf" type="file" onChange={handleFile1} />
+                                                        <UploadIcon fontSize="medium" />
+                                                    </Button>
+                                                </Tooltip>
                                             </Grid>
 
-                                            <Grid item xs={6} md={2}>
-                                                <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="info" size={matchesXS ? 'small' : 'large'} fullWidth
-                                                    onClick={() => setOpenViewArchivo(true)} startIcon={<VisibilityIcon fontSize="large" />}>
-                                                    {TitleButton.VerArchivo}
-                                                </Button>
+                                            <Grid item xs={4} md={2} lg={1.3}>
+                                                <Tooltip title="Descargar">
+                                                    <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="info" size={matchesXS ? 'small' : 'large'} fullWidth onClick={downloadFileMin}>
+                                                        <DownloadIcon fontSize="medium" />
+                                                    </Button>
+                                                </Tooltip>
+                                            </Grid>
+
+                                            <Grid item xs={4} md={2} lg={1.3}>
+                                                <Tooltip title={TitleButton.Eliminar}>
+                                                    <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="error" size={matchesXS ? 'small' : 'large'} fullWidth onClick={() => setFilePdfMin(null)}>
+                                                        <ClearIcon fontSize="medium" />
+                                                    </Button>
+                                                </Tooltip>
                                             </Grid>
 
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1639,24 +1682,31 @@ const OccupationalMedicine = () => {
 
                                 <Grid item xs={12}>
                                     <Accordion title={<><IconReportAnalytics /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Resultado Investigación Laboral</Typography></>}>
-                                        <Grid container spacing={12}>
-                                            <Grid textAlign="center" item xs={12}>
-                                                <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                    SUBIR RESULTADO EN PDF
-                                                    <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                                </Button>
+                                        <Grid container spacing={2} sx={{ pb: 5 }}>
+                                            <Grid item xs={6} md={4} lg={2}>
+                                                <AnimateButton>
+                                                    <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                        {TitleButton.SubirArchivo}
+                                                        <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                                    </Button>
+                                                </AnimateButton>
                                             </Grid>
-                                        </Grid>
 
-                                        <Grid item xs={12} sx={{ pt: 4 }}>
-                                            {filePdf && (
-                                                <object
-                                                    type="application/pdf"
-                                                    data={filePdf}
-                                                    width="1100"
-                                                    height="500"
-                                                />
-                                            )}
+                                            <Grid item xs={6} md={4} lg={2}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" onClick={downloadFile} disabled={filePdf === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                                        Descargar
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={6} md={4} lg={2}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" color="error" onClick={() => setFilePdf(null)} disabled={filePdf === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                                        Eliminar
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
                                         </Grid>
                                     </Accordion>
                                 </Grid>
