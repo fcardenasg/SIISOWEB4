@@ -214,6 +214,7 @@ const AddSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/Ad
 const UpdateSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/UpdateSingleWindow')));
 const ListSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/ListSingleWindow')));
 const ViewMonitoreo = Loadable(lazy(() => import('modules/SingleWindow/View/ViewMonitoreo')));
+const ViewResponse = Loadable(lazy(() => import('modules/SingleWindow/View/ViewResponse')));
 const ViewRespuesta = Loadable(lazy(() => import('modules/SingleWindow/View/ViewRespuesta')));
 const ChatGPT = Loadable(lazy(() => import('modules/Chat')));
 
@@ -938,6 +939,10 @@ const MainRoutes = {
         {
             path: '/single-window/monitoring',
             element: <ViewMonitoreo />
+        },
+        {
+            path: '/single-window/send-reply',
+            element: <ViewResponse />
         },
         {
             path: '/chat-gpt/view',

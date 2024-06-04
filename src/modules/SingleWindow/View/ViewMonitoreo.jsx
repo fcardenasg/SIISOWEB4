@@ -451,11 +451,9 @@ const ViewRespuesta = () => {
                         </TableCell>
 
                         <TableCell align="center">
-                            <Tooltip title={radioSearch == 1 ? "Ver Atenciones" : "Enviar Respuesta"}
-                                onClick={() => { setIdVentanilla(row?.id); setOpenModal(true); }}>
+                            <Tooltip title="Ver Atenciones" onClick={() => { setIdVentanilla(row?.id); setOpenModal(true); }}>
                                 <IconButton size="large">
-                                    {radioSearch == 1 ? <PreviewIcon color="info" sx={{ fontSize: '1.5rem' }} />
-                                        : <MailIcon color="error" sx={{ fontSize: '1.5rem' }} />}
+                                    <PreviewIcon color="info" sx={{ fontSize: '1.5rem' }} />
                                 </IconButton>
                             </Tooltip>
 
@@ -511,7 +509,7 @@ const ViewRespuesta = () => {
             </ControlModal>
 
             <ControlModal
-                maxWidth={radioSearch == 1 ? "lg" : "sm"}
+                maxWidth="lg"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
                 title={radioSearch == 1 ?
@@ -524,15 +522,15 @@ const ViewRespuesta = () => {
                             <Grid item>
                                 <AnimateButton>
                                     <Button variant="text" startIcon={<EmailIcon />} onClick={handleClickOpen}>
-                                        Notificar Retraso
+                                        Notificar retraso
                                     </Button>
                                 </AnimateButton>
                             </Grid>
                         </Grid>
                     </Fragment>
-                    : "Enviar solicitudes"}
+                    : "Solicitudes respondidas"}
             >
-                {radioSearch == 1 ? <ListReplay getAllList={getAll} idVentanilla={idVentanilla} options={1} /> : <ViewEnviarSolicitud idVentanilla={idVentanilla} />}
+                <ListReplay getAllList={getAll} idVentanilla={idVentanilla} options={1} monitoreo={radioSearch == 1 ? false : true} />
             </ControlModal>
 
             <CardContent>

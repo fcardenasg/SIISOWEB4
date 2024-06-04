@@ -190,7 +190,6 @@ const ViewRespuesta = () => {
 
                 if (user?.idarea === 0) {
                     await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
-                        console.log("response => ", response);
                         if (response.data.length === 0) {
                             setMessageAtencion(Message.NoRegistro);
                         } else if (response.data.length !== 0) {

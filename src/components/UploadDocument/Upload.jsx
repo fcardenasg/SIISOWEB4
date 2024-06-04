@@ -10,7 +10,6 @@ import fileuploaded from 'assets/img/fileuploaded.json';
 import Lottie from 'lottie-react';
 import { Fragment } from 'react';
 
-
 export default function Upload({
     disabled,
     multiple = false,

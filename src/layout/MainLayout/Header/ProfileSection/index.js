@@ -30,6 +30,7 @@ import User1 from 'assets/images/users/user-round.svg';
 import { IconLogout, IconSettings, IconHome } from '@tabler/icons';
 import ControlModal from 'components/controllers/ControlModal';
 import ChangeSede from './ChangeSede';
+import { ColorDrummondltd } from 'themes/colors';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -100,12 +101,12 @@ const ProfileSection = () => {
                     alignItems: 'center',
                     borderRadius: '27px',
                     transition: 'all .2s ease-in-out',
-                    borderColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.primary.light,
-                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.primary.light,
+                    borderColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.error.light,
+                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.error.light,
                     '&[aria-controls="menu-list-grow"], &:hover': {
-                        borderColor: theme.palette.primary.main,
-                        background: `${theme.palette.primary.main}!important`,
-                        color: theme.palette.primary.light,
+                        borderColor: ColorDrummondltd.RedDrummond,
+                        background: `${ColorDrummondltd.RedDrummond}!important`,
+                        color: ColorDrummondltd.RedDrummond,
                         '& svg': {
                             stroke: theme.palette.primary.light
                         }
@@ -116,19 +117,21 @@ const ProfileSection = () => {
                 }}
                 icon={
                     <Avatar
-                        src={User1}
                         sx={{
                             ...theme.typography.mediumAvatar,
                             margin: '8px 0 8px 8px !important',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            bgcolor: ColorDrummondltd.RedDrummond
                         }}
                         ref={anchorRef}
                         aria-controls={open ? 'menu-list-grow' : undefined}
                         aria-haspopup="true"
                         color="inherit"
-                    />
+                    >
+                        <Typography sx={{ color: 'white' }} >{user?.nameuser.charAt(0)}</Typography>
+                    </Avatar>
                 }
-                label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
+                label={<IconSettings stroke={1.5} size="1.5rem" color={ColorDrummondltd.RedDrummond} />}
                 variant="outlined"
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}

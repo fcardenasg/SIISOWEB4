@@ -9,7 +9,6 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import ClearIcon from '@mui/icons-material/Clear';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,10 +18,9 @@ import InputSelect from 'components/input/InputSelect';
 import SendIcon from '@mui/icons-material/Send';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputText from 'components/input/InputText';
-import InputDatePick from 'components/input/InputDatePick';
 import { FormatDate } from 'components/helpers/Format';
 import DownloadIcon from '@mui/icons-material/Download';
-import { GetAllDocumentoVentanilla, GetByIdVentanillaUnica, InsertVentanillaUnica, NotificarUsuarios, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
+import { GetAllDocumentoVentanilla, GetByIdVentanillaUnica, NotificarUsuarios, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import ListAddSingleWindow from './ListAddSingleWindow';
@@ -33,18 +31,18 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import SelectOnChange from 'components/input/SelectOnChange';
 import Upload from 'components/UploadDocument/Upload';
 import swal from 'sweetalert';
 import { LoadingButton } from '@mui/lab';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import { useNavigate, useParams } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
+import InputDatePicker from 'components/input/InputDatePicker';
 
 const validationSchema = yup.object().shape({
-    idMedioIngreso: yup.string().required(ValidationMessage.Requerido),
-    idImportancia: yup.string().required(ValidationMessage.Requerido),
-    folios: yup.string().required(ValidationMessage.Requerido),
+    idCondicion: yup.string().required(ValidationMessage.Requerido),
+    idTipo: yup.string().required(ValidationMessage.Requerido),
+    fechaRecibido: yup.string().required(ValidationMessage.Requerido),
 });
 
 const UpdateSingleWindow = () => {
@@ -55,22 +53,9 @@ const UpdateSingleWindow = () => {
 
     const navigate = useNavigate();
     const [documento, setDocumento] = useState("");
-    const [dataPerson, setDataPerson] = useState({
-        nombre: "",
-        telefono: "",
-        idMunicipio: "",
-        direccion: "",
-        correo: ""
-    });
-    const [tipoPeticion, setTipoPeticion] = useState("");
-    const [tiempoRespuesta, setTiempoRespuesta] = useState("");
-    const [numRadicado, setNumRadicado] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [fechaInicio, setFechaInicio] = useState("");
-    const [fechaFin, setFechaFin] = useState("");
     const [archivoAdjunto, setArchivoAdjunto] = useState(null);
-    const [infoArchivoAdjunto, setInfoArchivoAdjunto] = useState(null);
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
 
     const [lsTipo, setLsTipo] = useState([]);
@@ -89,7 +74,8 @@ const UpdateSingleWindow = () => {
         resolver: yupResolver(validationSchema)
     });
 
-    const { handleSubmit, formState: { errors } } = methods;
+    const { handleSubmit, setValue, watch, formState: { errors } } = methods;
+    const values = watch();
 
     async function downloadFile() { DownloadFile(`ventanillaunica${new Date().getTime()}.pdf`, archivoAdjunto.replace("data:application/pdf;base64,", "")); }
 
@@ -120,30 +106,45 @@ const UpdateSingleWindow = () => {
     }, []);
 
     useEffect(() => {
+        if (values.idTipo) {
+            var lsTipoMemory = lsTipo;
+            var codigoTiempo = lsTipoMemory.filter(code => code.value === values.idTipo)[0].codigo;
+
+            var numerotiempo = codigoTiempo.substring(4);
+            setValue("tiempoRespuesta", numerotiempo);
+
+            if (values.fechaRecibido) {
+                var nuevaFecha = new Date(values.fechaRecibido);
+                nuevaFecha.setDate(nuevaFecha.getDate() + Number(numerotiempo));
+                setValue("fechaLimiteRespuesta", FormatDate(nuevaFecha));
+            }
+
+            var codigoRadicado = codigoTiempo.substring(0, 3);
+            var dateNow = new Date();
+            var numeroRadicado = `${codigoRadicado}${dateNow.getFullYear()}${dateNow.getMonth()}${dateNow.getDay()}${dateNow.getHours()}${dateNow.getMinutes()}${dateNow.getSeconds()}`;
+            setValue("numRadicado", numeroRadicado);
+        }
+    }, [values.idTipo]);
+
+    useEffect(() => {
+        if (values.fechaRecibido) {
+            var nuevaFecha = new Date(values.fechaRecibido);
+            nuevaFecha.setDate(nuevaFecha.getDate() + Number(values.tiempoRespuesta));
+            setValue("fechaLimiteRespuesta", FormatDate(nuevaFecha));
+        }
+    }, [values.fechaRecibido]);
+
+    useEffect(() => {
         async function getById() {
             try {
                 const lsServer = await GetByIdVentanillaUnica(id);
                 if (lsServer.status === 200) {
-                    console.log("lsServer => ", lsServer.data);
-                    setArchivoAdjunto(lsServer.data.archivoRecibido);
-                    setInfoArchivoAdjunto(lsServer.data.archivoRecibido);
-                    setTipoPeticion(lsServer.data.idTipo);
-                    setNumRadicado(lsServer.data.numRadicado);
-                    setTiempoRespuesta(lsServer.data.tiempoRespuesta);
-                    setFechaInicio(FormatDate(lsServer.data.fechaRecibido));
-                    setFechaFin(FormatDate(lsServer.data.fechaLimiteRespuesta));
                     setDocumento(lsServer.data.documento);
-                    setDataPerson({
-                        nombre: lsServer.data.nombre,
-                        telefono: lsServer.data.telefono,
-                        idMunicipio: lsServer.data.idMunicipio,
-                        direccion: lsServer.data.direccion,
-                        correo: lsServer.data.correo
-                    });
+                    setArchivoAdjunto(lsServer.data.archivoRecibido);
 
                     setTimeout(() => {
                         setDataSingle(lsServer.data);
-                    }, 1000);
+                    }, 500);
                 }
             } catch (error) { }
         }
@@ -164,13 +165,11 @@ const UpdateSingleWindow = () => {
                             setOpenError(true);
                             setErrorMessage("No hay registro de este numero de documento o nit");
                         } else {
-                            setDataPerson({
-                                nombre: lsServerEmployee?.data.nombre,
-                                telefono: lsServerEmployee?.data.telefono,
-                                idMunicipio: lsServerEmployee?.data.idMunicipio,
-                                direccion: lsServerEmployee?.data.direccion,
-                                correo: lsServerEmployee?.data.correo
-                            });
+                            setValue("nombre", lsServerEmployee?.data.nombre);
+                            setValue("telefono", lsServerEmployee?.data.telefono);
+                            setValue("idMunicipio", lsServerEmployee?.data.idMunicipio);
+                            setValue("direccion", lsServerEmployee?.data.direccion);
+                            setValue("correo", lsServerEmployee?.data.correo);
                         }
                     }
                 }
@@ -179,54 +178,24 @@ const UpdateSingleWindow = () => {
     }
 
     const allowedFiles = ['application/pdf'];
-    const handleDrop = useCallback(
-        (event) => {
-            setInfoArchivoAdjunto(null);
-            let selectedFile = event[0];
-            setInfoArchivoAdjunto(selectedFile);
+    const handleDrop = useCallback((event) => {
+        let selectedFile = event[0];
 
-            if (selectedFile) {
-                if (selectedFile && allowedFiles.includes(selectedFile.type)) {
-                    let reader = new FileReader();
-                    reader.readAsDataURL(selectedFile);
-                    reader.onloadend = async (e) => {
-                        setArchivoAdjunto(e.target.result);
-                    }
-                }
-                else {
-                    setOpenError(true);
-                    setErrorMessage('Este forma no es un PDF');
-                    setInfoArchivoAdjunto(null);
-                    setArchivoAdjunto("");
+        if (selectedFile) {
+            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
+                let reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = async (e) => {
+                    setArchivoAdjunto(e.target.result);
                 }
             }
-        },
-        [infoArchivoAdjunto]
-    );
-
-    const handleTipo = (event) => {
-        try {
-            setTipoPeticion(event.target.value);
-
-            var lsTipoMemory = lsTipo;
-            var codigoTiempo = lsTipoMemory.filter(code => code.value === event.target.value)[0].codigo;
-
-            var numerotiempo = codigoTiempo.substring(4);
-            setTiempoRespuesta(numerotiempo);
-
-            if (fechaInicio !== "") {
-                var nuevaFecha = new Date(fechaInicio);
-                nuevaFecha.setDate(nuevaFecha.getDate() + Number(numerotiempo));
-
-                setFechaFin(FormatDate(nuevaFecha));
+            else {
+                setOpenError(true);
+                setErrorMessage('Este forma no es un PDF');
+                setArchivoAdjunto(null);
             }
-
-            var codigoRadicado = codigoTiempo.substring(0, 3);
-            var dateNow = new Date();
-            var numeroRadicado = `${codigoRadicado}${dateNow.getFullYear()}${dateNow.getMonth()}${dateNow.getDay()}${dateNow.getHours()}${dateNow.getMinutes()}${dateNow.getSeconds()}`;
-            setNumRadicado(numeroRadicado);
-        } catch (error) { }
-    }
+        }
+    }, [archivoAdjunto]);
 
     const handleNotifi = async () => {
         try {
@@ -272,15 +241,16 @@ const UpdateSingleWindow = () => {
         try {
             const DataToInsert = {
                 id,
-                idTipo: tipoPeticion !== "" ? Number(tipoPeticion) : null,
-                tiempoRespuesta: tiempoRespuesta !== "" ? Number(tiempoRespuesta) : null,
-                numRadicado: numRadicado !== "" ? numRadicado : null,
+                idTipo: datos.idTipo,
+                tiempoRespuesta: datos.tiempoRespuesta,
+                numRadicado: datos.numRadicado,
+                idCondicion: datos.idCondicion,
+
                 idMedioIngreso: datos.idMedioIngreso !== "" ? datos.idMedioIngreso : null,
-                idCondicion: datos.idCondicion !== "" ? datos.idCondicion : null,
                 idImportancia: datos.idImportancia !== "" ? datos.idImportancia : null,
                 folios: datos.folios !== "" ? datos.folios : null,
-                fechaRecibido: fechaInicio !== "" ? fechaInicio : null,
-                fechaLimiteRespuesta: fechaFin !== "" ? fechaFin : null,
+                fechaRecibido: datos.fechaRecibido,
+                fechaLimiteRespuesta: datos.fechaLimiteRespuesta,
                 direccionSolicitante: datos.direccionSolicitante !== "" ? datos.direccionSolicitante : null,
 
                 recibidoPor: datos.recibidoPor !== "" ? datos.recibidoPor : null,
@@ -290,11 +260,11 @@ const UpdateSingleWindow = () => {
                 ciudadEnvio: datos.ciudadEnvio !== "" ? datos.ciudadEnvio : null,
 
                 documento: documento,
-                nombre: dataPerson.nombre !== "" ? dataPerson.nombre : null,
-                telefono: dataPerson.telefono !== "" ? dataPerson.telefono : null,
-                idMunicipio: dataPerson.idMunicipio !== "" ? dataPerson.idMunicipio : null,
-                direccion: dataPerson.direccion !== "" ? dataPerson.direccion : null,
-                correo: dataPerson.correo !== "" ? dataPerson.correo : null,
+                nombre: datos.nombre !== "" ? datos.nombre : null,
+                telefono: datos.telefono !== "" ? datos.telefono : null,
+                idMunicipio: datos.idMunicipio !== "" ? datos.idMunicipio : null,
+                direccion: datos.direccion !== "" ? datos.direccion : null,
+                correo: datos.correo !== "" ? datos.correo : null,
                 solicitadoPor: datos.solicitadoPor !== "" ? datos.solicitadoPor : null,
                 correoSolicitante: datos.correoSolicitante !== "" ? datos.correoSolicitante : null,
 
@@ -327,50 +297,68 @@ const UpdateSingleWindow = () => {
                 <ViewPDF dataPDF={archivoAdjunto} />
             </ControlModal>
 
-
             <SubCard title={<Typography variant='h4'>Indexación de documentos recibidos</Typography>}>
                 {dataSingle.length !== 0 ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <SubCard title={<Typography variant="h4">Información de la solicitud</Typography>}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <SelectOnChange
-                                            name="idTipo"
-                                            label="Tipo"
-                                            value={tipoPeticion}
-                                            options={lsTipo}
-                                            onChange={handleTipo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <InputOnChange
-                                            disabled
-                                            type="number"
-                                            fullWidth
-                                            name="tiempoRespuesta"
-                                            onChange={(e) => setTiempoRespuesta(e.target.value)}
-                                            value={tiempoRespuesta}
-                                            label="Días de respuesta (Días)"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <InputOnChange
-                                            disabled
-                                            fullWidth
-                                            name="numRadicado"
-                                            onChange={(e) => setNumRadicado(e.target.value)}
-                                            value={numRadicado}
-                                            label="N° radicado"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={dataSingle.idCondicion}
+                                                name="idCondicion"
+                                                label="Correspondecia"
+                                                options={lsCondiciones}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.idCondicion}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12} md={6} lg={3}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={dataSingle.idTipo}
+                                                name="idTipo"
+                                                label="Tipo"
+                                                options={lsTipo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.idTipo}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                disabled
+                                                defaultValue={dataSingle.tiempoRespuesta}
+                                                type="number"
+                                                fullWidth
+                                                name="tiempoRespuesta"
+                                                label="Días de respuesta (Días)"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.tiempoRespuesta}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                disabled
+                                                defaultValue={dataSingle.numRadicado}
+                                                fullWidth
+                                                name="numRadicado"
+                                                label="N° radicado"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.numRadicado}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 defaultValue={dataSingle.idMedioIngreso}
@@ -383,20 +371,7 @@ const UpdateSingleWindow = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={dataSingle.idCondicion}
-                                                name="idCondicion"
-                                                label="Condición"
-                                                options={lsCondiciones}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors.idCondicion}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={3}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 defaultValue={dataSingle.idImportancia}
@@ -409,7 +384,7 @@ const UpdateSingleWindow = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
                                                 defaultValue={dataSingle.folios}
@@ -428,33 +403,26 @@ const UpdateSingleWindow = () => {
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <InputDatePick
-                                            onChange={(e) => {
-                                                setFechaFin("");
-                                                setFechaInicio(e.target.value);
-
-                                                if (e.target.value !== "") {
-                                                    var nuevaFecha = new Date(e.target.value);
-                                                    nuevaFecha.setDate(nuevaFecha.getDate() + Number(tiempoRespuesta));
-                                                    setFechaFin(FormatDate(nuevaFecha));
-                                                } else
-                                                    setFechaFin("");
-                                            }}
-                                            value={fechaInicio}
-                                            label="Fecha recibido"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                defaultValue={dataSingle.fechaRecibido}
+                                                name="fechaRecibido"
+                                                label="Fecha recibido"
+                                                bug={errors.fechaRecibido}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <InputDatePick
-                                            disabled
-                                            onChange={(e) => setFechaFin(e.target.value)}
-                                            value={fechaFin}
-                                            label="Fecha límite de respuesta"
-                                            name="fechaLimiteRespuesta"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                disabled
+                                                defaultValue={dataSingle.fechaLimiteRespuesta}
+                                                label="Fecha límite de respuesta"
+                                                name="fechaLimiteRespuesta"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
@@ -514,7 +482,7 @@ const UpdateSingleWindow = () => {
                                                 name="solicitadoPor"
                                                 label="Solicitado por"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors.correoRecibe}
+                                                bug={errors.solicitadoPor}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -527,7 +495,7 @@ const UpdateSingleWindow = () => {
                                                 name="correoSolicitante"
                                                 label="Correo del solicitante"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors.correoRecibe}
+                                                bug={errors.correoSolicitante}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -590,50 +558,68 @@ const UpdateSingleWindow = () => {
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <InputOnChange
-                                            label="Nombre"
-                                            onChange={(e) => setDataPerson({ ...dataPerson, nombre: e.target.value })}
-                                            value={dataPerson.nombre}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={dataSingle.nombre}
+                                                fullWidth
+                                                name="nombre"
+                                                label="Nombre"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.nombre}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <InputOnChange
-                                            label="Teléfono"
-                                            onChange={(e) => setDataPerson({ ...dataPerson, telefono: e.target.value })}
-                                            value={dataPerson.telefono}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={dataSingle.telefono}
+                                                fullWidth
+                                                name="telefono"
+                                                label="Teléfono"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.telefono}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <SelectOnChange
-                                            name="idMunicipio"
-                                            label="Municipio"
-                                            value={dataPerson.idMunicipio}
-                                            onChange={(e) => setDataPerson({ ...dataPerson, idMunicipio: e.target.value })}
-                                            options={lsMunicipio}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                defaultValue={dataSingle.idMunicipio}
+                                                name="idMunicipio"
+                                                label="Municipio"
+                                                options={lsMunicipio}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.idMunicipio}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <InputOnChange
-                                            label="Dirección"
-                                            onChange={(e) => setDataPerson({ ...dataPerson, direccion: e.target.value })}
-                                            value={dataPerson.direccion}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={dataSingle.direccion}
+                                                fullWidth
+                                                name="direccion"
+                                                label="Dirección"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.direccion}
+                                            />
+                                        </FormProvider>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <InputOnChange
-                                            label="Correo electrónico del empleado"
-                                            onChange={(e) => setDataPerson({ ...dataPerson, correo: e.target.value })}
-                                            value={dataPerson.correo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                defaultValue={dataSingle.correo}
+                                                fullWidth
+                                                name="correo"
+                                                label="Correo electrónico del empleado"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.correo}
+                                            />
+                                        </FormProvider>
                                     </Grid>
                                 </Grid>
                             </SubCard>
@@ -643,7 +629,7 @@ const UpdateSingleWindow = () => {
                             <SubCard title={<Typography variant="h4">Cargar archivo</Typography>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
-                                        <Upload files={infoArchivoAdjunto} onDrop={handleDrop} />
+                                        <Upload files={archivoAdjunto} onDrop={handleDrop} />
                                     </Grid>
 
                                     <Grid item xs={6} md={4} lg={2}>
@@ -656,7 +642,7 @@ const UpdateSingleWindow = () => {
 
                                     <Grid item xs={6} md={4} lg={2}>
                                         <AnimateButton>
-                                            <Button variant="outlined" color="error" onClick={() => { setArchivoAdjunto(null); setInfoArchivoAdjunto(null); }} disabled={archivoAdjunto === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                            <Button variant="outlined" color="error" onClick={() => setArchivoAdjunto(null)} disabled={archivoAdjunto === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
                                                 Eliminar
                                             </Button>
                                         </AnimateButton>
@@ -668,7 +654,7 @@ const UpdateSingleWindow = () => {
                         <Grid item xs={12}>
                             <SubCard title={<Typography variant="h4">Distribución del tipo de solicitud</Typography>}>
                                 <Grid container spacing={2}>
-                                    <ListAddSingleWindow documento={documento} idResult={id} dataVentanilla={dataSingle} />
+                                    <ListAddSingleWindow documento={documento} idResult={id} />
                                 </Grid>
                             </SubCard>
                         </Grid>

@@ -37,7 +37,7 @@ const validationSchema = yup.object().shape({
     idUsuario: yup.string().required(ValidationMessage.Requerido)
 });
 
-const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
+const ListAddSingleWindow = ({ documento, idResult }) => {
     const theme = useTheme();
     const { user } = useAuth();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -111,12 +111,6 @@ const ListAddSingleWindow = ({ documento, idResult, dataVentanilla }) => {
                 idUsuario: datos.idUsuario !== "" ? datos.idUsuario : null,
                 observaciones: datos.observaciones !== "" ? datos.observaciones : null,
 
-                numRadicado: dataVentanilla.numRadicado,
-                solicitadoPor: dataVentanilla.solicitadoPor,
-                nombre: dataVentanilla.nombre,
-                idTipo: dataVentanilla.idTipo,
-                fechaLimite: dataVentanilla.fechaLimiteRespuesta,
-                fechaRecibido: dataVentanilla.fechaRecibido,
                 usuarioRegistro: user.nameuser,
             }
 

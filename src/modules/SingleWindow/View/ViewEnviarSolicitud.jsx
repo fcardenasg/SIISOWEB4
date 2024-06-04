@@ -13,6 +13,8 @@ import useAuth from "hooks/useAuth";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import AnimateButton from "ui-component/extended/AnimateButton";
 import ViewMail from "./ViewMail";
+import ControlModal from "components/controllers/ControlModal";
+import ListReplay from "./ListReplay";
 
 const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const { user } = useAuth();
@@ -23,6 +25,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsEmpresaMensajeria, setLsEmpresaMensajeria] = useState([]);
 
+    const [openModal, setOpenModal] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -89,6 +92,15 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
         <Fragment>
             <MessageSuccess message="Archivo subido y guardado con éxito" open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <ControlModal
+                maxWidth="lg"
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                title="Solicitudes respondidas"
+            >
+                <ListReplay idVentanilla={idVentanilla} options={1} monitoreo={true} />
+            </ControlModal>
 
             {lsData.length !== 0 ?
                 <Fragment>
@@ -240,6 +252,14 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                         <Grid item>
                             <AnimateButton>
                                 <ViewMail lsData={lsData} />
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item>
+                            <AnimateButton>
+                                <Button variant="contained" onClick={() => setOpenModal(true)}>
+                                    Ver respuestas
+                                </Button>
                             </AnimateButton>
                         </Grid>
                     </Grid>

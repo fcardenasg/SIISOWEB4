@@ -13,7 +13,7 @@ import ViewReplayPQRS from "./ViewReplayPQRS";
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { DownloadFile } from "components/helpers/ConvertToBytes";
 
-const ListReplay = ({ idVentanilla, getAllList, options = 0 }) => {
+const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }) => {
     const { user } = useAuth();
 
     const [openModalReplay, setOpenModalReplay] = useState(false);
@@ -89,26 +89,41 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0 }) => {
 
                                 <TableCell sx={{ pr: 5 }}>
                                     <Grid container spacing={2.5}>
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Tooltip title="Responder" onClick={() => { setIdVentanillaDetalle(row.id); setOpenModalReplay(true); }}>
-                                                    <IconButton size="small">
-                                                        <ReplyIcon color="info" sx={{ fontSize: '1.6rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
+                                        {monitoreo ?
+                                            <Grid item xs={6}>
+                                                <AnimateButton>
+                                                    <Tooltip disabled={row?.estado ? false : true} title="Descargar archivo"
+                                                        onClick={() => downloadFileReplay(row?.id, row?.nameTipoDocumento)}>
+                                                        <IconButton size="small">
+                                                            <DownloadForOfflineIcon color={row?.estado ? "error" : "inherit"} sx={{ fontSize: '1.6rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </AnimateButton>
+                                            </Grid> :
+                                            <>
+                                                <Grid item xs={6}>
+                                                    <AnimateButton>
+                                                        <Tooltip title="Responder" onClick={() => { setIdVentanillaDetalle(row.id); setOpenModalReplay(true); }}>
+                                                            <IconButton size="small">
+                                                                <ReplyIcon color="info" sx={{ fontSize: '1.6rem' }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </AnimateButton>
+                                                </Grid>
 
-                                        <Grid item xs={6}>
-                                            <AnimateButton>
-                                                <Tooltip disabled={row?.estado ? false : true} title="Descargar archivo"
-                                                    onClick={() => downloadFileReplay(row?.id, row?.nameTipoDocumento)}>
-                                                    <IconButton size="small">
-                                                        <DownloadForOfflineIcon color={row?.estado ? "error" : "inherit"} sx={{ fontSize: '1.6rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </AnimateButton>
-                                        </Grid>
+                                                <Grid item xs={6}>
+                                                    <AnimateButton>
+                                                        <Tooltip disabled={row?.estado ? false : true} title="Descargar archivo"
+                                                            onClick={() => downloadFileReplay(row?.id, row?.nameTipoDocumento)}>
+                                                            <IconButton size="small">
+                                                                <DownloadForOfflineIcon color={row?.estado ? "error" : "inherit"} sx={{ fontSize: '1.6rem' }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </AnimateButton>
+                                                </Grid>
+                                            </>
+                                        }
+
                                     </Grid>
                                 </TableCell>
                             </TableRow>))}

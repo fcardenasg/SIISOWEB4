@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
 import { useMediaQuery, useScrollTrigger } from '@mui/material';
 
-// ==============================|| elevation scroll ||============================== //
 function ElevationScroll({ children, window, threshold = 450 }) {
     const theme = useTheme();
     const leftDrawerOpened = useSelector((state) => state.customization.opened);
