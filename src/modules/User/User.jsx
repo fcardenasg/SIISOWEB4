@@ -23,6 +23,7 @@ import { PostUser } from 'formatdata/UserForm';
 import { InsertUser } from 'api/clients/UserClient';
 import { GetComboRol } from 'api/clients/RolClient';
 import InputCheck from 'components/input/InputCheck';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
@@ -43,9 +44,6 @@ const User = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [checkUsuario, setCheckUsuario] = useState(true);
-    const [checkRespondeRein, setCheckRespondeRein] = useState(false);
-    const [checkEstadoUsuario, setCheckEstadoUsuario] = useState(true);
-
     const [fileImg, setFileImg] = useState(null);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -60,7 +58,8 @@ const User = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, reset, formState: { errors } } = methods;
+    const { handleSubmit, reset, watch, formState: { errors } } = methods;
+    const values = watch();
 
     async function getAll() {
         try {
@@ -124,15 +123,13 @@ const User = () => {
 
             const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono,
                 datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
-                datos.tarjetaProfesional, firmaMedico, checkEstadoUsuario, datos.idSede);
+                datos.tarjetaProfesional, firmaMedico, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertUser(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    reset();
-                    setFileImg(null);
-                }
+            const result = await InsertUser(DataToInsert);
+            if (result.status === 200) {
+                setOpenSuccess(true);
+                reset();
+                setFileImg(null);
             }
         } catch (error) {
             setOpenError(true);
@@ -298,32 +295,43 @@ const User = () => {
                     </FormProvider>
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputCheck
-                        label={`Estado Usuario: ${checkEstadoUsuario ? "Activo" : "Inactivo"}`}
-                        onChange={(e) => setCheckEstadoUsuario(e.target.checked)}
-                        checked={checkEstadoUsuario}
-                        size={30}
-                    />
-                </Grid>
+                <FormProvider {...methods}>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputCheckBox
+                            name="estado"
+                            defaultValue={true}
+                            label={`Estado Usuario: ${values.estado ? "Activo" : "Inactivo"}`}
+                            size={30}
+                        />
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputCheck
-                        label="¿Desea que la contraseña sea el mismo Usuario?"
-                        onChange={(e) => setCheckUsuario(e.target.checked)}
-                        checked={checkUsuario}
-                        size={30}
-                    />
-                </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputCheck
+                            label="¿Desea que la contraseña sea el mismo Usuario?"
+                            onChange={(e) => setCheckUsuario(e.target.checked)}
+                            checked={checkUsuario}
+                            size={30}
+                        />
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputCheck
-                        label="¿Este usuario responde ordenes de reintegro?"
-                        onChange={(e) => setCheckRespondeRein(e.target.checked)}
-                        checked={checkRespondeRein}
-                        size={30}
-                    />
-                </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputCheckBox
+                            name="respondeReintegro"
+                            defaultValue={false}
+                            label="¿Este usuario responde ordenes de reintegro?"
+                            size={30}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputCheckBox
+                            name="respondeVentanillaUnica"
+                            defaultValue={false}
+                            label="¿Este usuario responde ventanilla única?"
+                            size={30}
+                        />
+                    </Grid>
+                </FormProvider>
 
                 <Grid item xs={12} md={6} lg={4}>
                     <Grid container>

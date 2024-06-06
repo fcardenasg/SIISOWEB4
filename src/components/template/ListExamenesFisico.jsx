@@ -23,8 +23,6 @@ import {
 
 import { visuallyHidden } from '@mui/utils';
 import ControlModal from 'components/controllers/ControlModal';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import SearchIcon from '@mui/icons-material/Search';
 import { ViewFormat } from 'components/helpers/Format';
 import { GetAllByDocumento } from 'api/clients/OccupationalExaminationClient';
 import { ColorDrummondltd } from 'themes/colors';

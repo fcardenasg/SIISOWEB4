@@ -11,7 +11,7 @@ import { TitleButton } from "components/helpers/Enums";
 import ControlModal from "components/controllers/ControlModal";
 import ViewPDF from "components/components/ViewPDF";
 
-import { GetByIdVentanillaUnicaDetalle, GetVentanillaUnicaDetalleArchivo, UpdateVentanillaUnicaDetalle } from "api/clients/VentanillaUnicaClient";
+import { GetByIdVentanillaUnicaDetalle, UpdateVentanillaUnicaDetalle } from "api/clients/VentanillaUnicaClient";
 import { FormProvider, useForm } from "react-hook-form";
 import { GetAllComboArea } from "api/clients/UserClient";
 import InputSelect from "components/input/InputSelect";

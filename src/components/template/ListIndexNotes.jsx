@@ -28,7 +28,7 @@ import { SNACKBAR_OPEN } from 'store/actions';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllPersonalNotes } from 'api/clients/PersonalNotesClient';
+import { GetAllIndexNote, GetAllPersonalNotes } from 'api/clients/PersonalNotesClient';
 import useAuth from 'hooks/useAuth';
 
 function descendingComparator(a, b, orderBy) {
@@ -119,7 +119,7 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-const ListPersonalNotesAll = () => {
+const ListIndexNotes = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const [lsPersonalNotes, setLsPersonalNotes] = useState([]);
@@ -134,15 +134,15 @@ const ListPersonalNotesAll = () => {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
-                const lsServer = await GetAllPersonalNotes(0, 0, user.nameuser);
-                setLsPersonalNotes(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                const lsServer = await GetAllIndexNote(user.nameuser);
+                setLsPersonalNotes(lsServer.data);
+                setRows(lsServer.data);
             } catch (error) { }
         }
 
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -153,7 +153,7 @@ const ListPersonalNotesAll = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'descripcion'];
+                const properties = ['id', 'titulo'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -262,7 +262,7 @@ const ListPersonalNotesAll = () => {
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
-                                                {row.descripcion}
+                                                {row.titulo}
                                             </Typography>
                                         </TableCell>
 
@@ -318,4 +318,4 @@ const ListPersonalNotesAll = () => {
     );
 };
 
-export default ListPersonalNotesAll;
+export default ListIndexNotes;

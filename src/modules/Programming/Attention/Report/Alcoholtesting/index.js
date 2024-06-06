@@ -155,7 +155,7 @@ function pageAlcoholtesting(doc, lsDataReport = [], lsDataUser = []) {
   doc.text("EMPRESA:", 120, 70);
 
   doc.text("RESULTADO PRUEBA DE ALCOHOL Y DROGA SIG - 400", 6, 79);
-  doc.text("DE:        DEPARTAMENTO DE SALUD OCUPACIONAL", 6, 88);
+  doc.text("DE:        ÁREA DE SALUD OCUPACIONAL", 6, 88);
   doc.text("PARA:", 6, 97);
   doc.text("ÁREA:", 120, 97);
   doc.text("RESULTADO", 6, 105);

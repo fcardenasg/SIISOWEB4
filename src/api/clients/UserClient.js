@@ -10,3 +10,5 @@ export const InsertUser = async (usuarios) => await postData(Url.Usuarios, usuar
 export const UpdateUsers = async (usuarios) => await putData(Url.Usuarios, usuarios);
 export const UpdateSedeUser = async (updateSedeDTO) => await putData(Url.UsuariosUpdateSede, updateSedeDTO);
 export const DeleteUser = async (idUsuarios) => await deleteData(Url.Usuarios, { idUsuarios });
+
+export const GetAllComboVentanilla = async () => await getData(Url.UsuariosVentanilla);

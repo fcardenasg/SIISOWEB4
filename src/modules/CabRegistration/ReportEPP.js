@@ -10,7 +10,7 @@ function getHeader(doc = new jsPDF()) {
     doc.setFontSize(10);
 
     doc.text("DIVISIÓN MÉDICA", 110, 10, { align: 'center' });
-    doc.text("DEPARTAMENTO DE SALUD OCUPACIONAL", 110, 14, { align: 'center' });
+    doc.text("ÁREA DE SALUD OCUPACIONAL", 110, 14, { align: 'center' });
 
     /* LINEA DE DIVISIÓN */
     doc.setLineWidth(1);

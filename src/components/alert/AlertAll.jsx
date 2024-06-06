@@ -111,7 +111,7 @@ export const MessageDelete = ({ open, onClose }) => {
             key={'alert'}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }}
             open={open}
-            autoHideDuration={2500}
+            autoHideDuration={3500}
             onClose={onClose}
         >
             <Alert severity="error" sx={{ width: '100%' }}>
@@ -128,7 +128,7 @@ export const MessageError = ({ open, onClose, error }) => {
             key={'alert'}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }}
             open={open}
-            autoHideDuration={2000}
+            autoHideDuration={3500}
             onClose={onClose}
         >
             <Alert severity="error" sx={{ width: '100%' }}>

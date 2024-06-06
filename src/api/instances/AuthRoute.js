@@ -12,6 +12,7 @@ export const Url = {
 
     Usuarios: 'api/Usuarios',
     UsuariosCombo: 'api/Usuarios/combo',
+    UsuariosVentanilla: 'api/Usuarios/combo-responventanilla',
     UsuariosComboArea: 'api/Usuarios/combo-area',
     UsuariosUpdateSede: 'api/Usuarios/UpdateSede',
     UsuariosId: 'api/Usuarios/id',
@@ -133,9 +134,11 @@ export const Url = {
     IndicadoresId: 'api/Indicadores/id',
 
     VentanillaUnica: 'api/VentanillaUnica',
+    VentanillaUnicaFile: 'api/VentanillaUnica/file',
     VentanillaUnicaComboUsuario: 'api/VentanillaUnica/combo-usuario',
     VentanillaUnicaNotificarUsuario: 'api/VentanillaUnica/notificar-usuario',
-    UpdateVentanillaUnicaEnvio: 'api/VentanillaUnica/notificar-respuesta',
+    UpdateVentanillaUnicaEnvio: 'api/VentanillaUnica/update-dataenvio',
+    UpdateVentanillaUnicaCorreo: 'api/VentanillaUnica/update-datacorreo',
     VentanillaUnicaDescargarDocumento: 'api/VentanillaUnica/comprimir-zid',
     VentaUnicaNotiSolicitante: 'api/VentanillaUnica/notificar-solicitante',
     VentaUnicaNotiUsuarios: 'api/VentanillaUnica/notificar',
@@ -180,6 +183,9 @@ export const Url = {
 
     ApuntesPersonales: 'api/ApuntesPersonales',
     ApuntesPersonalesId: 'api/ApuntesPersonales/id',
+
+    ApuntesIndexacion: 'api/ApuntesIndexacion',
+    ApuntesIndexacionId: 'api/ApuntesIndexacion/id',
 
     Accidentalidad: 'api/Accidentalidad',
     AccidentalidadExcel: 'api/Accidentalidad/excel',

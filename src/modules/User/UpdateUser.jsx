@@ -24,6 +24,7 @@ import { GetByIdUser, UpdateUsers } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 import { GetComboRol } from 'api/clients/RolClient';
 import InputCheck from 'components/input/InputCheck';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
@@ -45,9 +46,6 @@ const UpdateUser = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [checkResetearPass, setCheckResetearPass] = useState(false);
-    const [checkRespondeRein, setCheckRespondeRein] = useState(false);
-    const [checkEstadoUsuario, setCheckEstadoUsuario] = useState(true);
-
     const [lsUsuario, setLsUsuario] = useState([]);
     const [fileImg, setFileImg] = useState(null);
     const [timeWait, setTimeWait] = useState(false);
@@ -64,17 +62,17 @@ const UpdateUser = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, formState: { errors } } = methods;
+    const { handleSubmit, watch, setValue, formState: { errors } } = methods;
+    const values = watch();
 
     useEffect(() => {
         async function getAll() {
             try {
                 const lsServerUpdate = await GetByIdUser(id);
                 if (lsServerUpdate.status === 200) {
+                    setValue("estado", lsServerUpdate.data.estado)
                     setLsUsuario(lsServerUpdate.data);
                     setFileImg(lsServerUpdate.data.firma);
-                    setCheckEstadoUsuario(lsServerUpdate.data.estado);
-                    setCheckRespondeRein(lsServerUpdate.data.respondeReintegro);
                 }
 
                 const lsServerRol = await GetComboRol();
@@ -135,7 +133,7 @@ const UpdateUser = () => {
 
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.idArea,
                 datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                firmaMedico, checkEstadoUsuario, datos.idSede, checkRespondeRein);
+                firmaMedico, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateUsers(DataToUpdate);
@@ -313,32 +311,43 @@ const UpdateUser = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputCheck
-                                label={`Estado Usuario: ${checkEstadoUsuario ? "Activo" : "Inactivo"}`}
-                                onChange={(e) => setCheckEstadoUsuario(e.target.checked)}
-                                checked={checkEstadoUsuario}
-                                size={30}
-                            />
-                        </Grid>
+                        <FormProvider {...methods}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputCheckBox
+                                    name="estado"
+                                    defaultValue={lsUsuario.estado}
+                                    label={`Estado Usuario: ${values.estado ? "Activo" : "Inactivo"}`}
+                                    size={30}
+                                />
+                            </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputCheck
-                                label="Resetear Clave"
-                                onChange={(e) => setCheckResetearPass(e.target.checked)}
-                                checked={checkResetearPass}
-                                size={30}
-                            />
-                        </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputCheck
+                                    label="¿Desea que la contraseña sea el mismo Usuario?"
+                                    onChange={(e) => setCheckResetearPass(e.target.checked)}
+                                    checked={checkResetearPass}
+                                    size={30}
+                                />
+                            </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputCheck
-                                label="¿Este usuario responde ordenes de reintegro?"
-                                onChange={(e) => setCheckRespondeRein(e.target.checked)}
-                                checked={checkRespondeRein}
-                                size={30}
-                            />
-                        </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputCheckBox
+                                    name="respondeReintegro"
+                                    defaultValue={lsUsuario.respondeReintegro}
+                                    label="¿Este usuario responde ordenes de reintegro?"
+                                    size={30}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputCheckBox
+                                    name="respondeVentanillaUnica"
+                                    defaultValue={lsUsuario.respondeVentanillaUnica}
+                                    label="¿Este usuario responde ventanilla única?"
+                                    size={30}
+                                />
+                            </Grid>
+                        </FormProvider>
 
                         <Grid item xs={12} md={6} lg={4}>
                             <Grid container>

@@ -5,6 +5,7 @@ export const GetByIdVentanillaUnica = async (id) => await getData(Url.Ventanilla
 export const NotificarUsuarios = async (id) => await getData(Url.VentaUnicaNotiUsuarios, { id });
 export const NotificarSolicitante = async (correo) => await postData(Url.VentaUnicaNotiSolicitante, correo);
 export const DescargarDocumentoVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaDescargarDocumento, { id });
+export const GetFileVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaFile, { id });
 
 export const GetAllVentanillaUnica = async () => await getData(Url.VentanillaUnica);
 export const GetAllVentanillaUnicaComboUsuario = async (id) => await getData(Url.VentanillaUnicaComboUsuario, { id });
@@ -15,6 +16,7 @@ export const GetAllDocumentoVentanilla = async (documento) => await getData(Url.
 export const InsertVentanillaUnica = async (ventanillaUnica) => await postData(Url.VentanillaUnica, ventanillaUnica);
 export const UpdateVentanillaUnicas = async (ventanillaUnica) => await putData(Url.VentanillaUnica, ventanillaUnica);
 export const UpdateVentanillaUnicaEnvio = async (ventanillaUnica) => await putData(Url.UpdateVentanillaUnicaEnvio, ventanillaUnica);
+export const UpdateVentanillaUnicaCorreo = async (ventanillaUnica) => await putData(Url.UpdateVentanillaUnicaCorreo, ventanillaUnica);
 export const DeleteVentanillaUnica = async (idVentanillaUnica) => await deleteData(Url.VentanillaUnica, { idVentanillaUnica });
 
 export const GetAllVentanillaUnicaDetalleArea = async (idUsuario, options) => await getData(Url.VentanillaUnicaDetalleArea, { idUsuario, options });

@@ -22,7 +22,7 @@ function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
     );
     doc.setFontSize(8);
     doc.text("Firma funcionario(a) autorizado(a)", 5, doc.internal.pageSize.height - (44 - my));
-    doc.text("Dpto. de Salud Ocupacional", 5, doc.internal.pageSize.height - (40 - my));
+    doc.text("Área de Salud Ocupacional", 5, doc.internal.pageSize.height - (40 - my));
     doc.text(
         `${lsDataUser.licencia} - ${lsDataUser.registroMedico}`,
         5,
@@ -50,7 +50,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
     doc.text(`Celular:      ${lsDataReport.numeroCelular}`, 130, doc.internal.pageSize.height - (36 - my));
 }
 
-const concentimientoParrafoDLTD = "Como aparece al pie de mi firma y en mi calidad de empleado de la empresa DRUMMOND LTD COLOMBIA, declaro haber sido informado sobre las valoraciones médicas complementarias realizadas en desarrollo de los programas de vigilancia epidemiológica ocupacional implementados por la empresa. Autorizo al Dpto. de Salud Ocupacional de DLTD a realizar los exámenes médicos y pruebas complementarias sugeridas. Certifico que he sido informado (a) acerca de la naturaleza y propósito de estos exámenes. Entiendo que la realización de estos exámenes es voluntaria y que tengo la oportunidad de retirar mi consentimiento en cualquier momento. Se me informó además que estos son manejados con confidencialidad y reserva profesional, no pueden comunicarse o darse a conocer, salvo a las personas o entidades previstas por la Ley y en la Legislación vigente."
+const concentimientoParrafoDLTD = "Como aparece al pie de mi firma y en mi calidad de empleado de la empresa DRUMMOND LTD COLOMBIA, declaro haber sido informado sobre las valoraciones médicas complementarias realizadas en desarrollo de los programas de vigilancia epidemiológica ocupacional implementados por la empresa. Autorizo al Área de Salud Ocupacional de DLTD a realizar los exámenes médicos y pruebas complementarias sugeridas. Certifico que he sido informado (a) acerca de la naturaleza y propósito de estos exámenes. Entiendo que la realización de estos exámenes es voluntaria y que tengo la oportunidad de retirar mi consentimiento en cualquier momento. Se me informó además que estos son manejados con confidencialidad y reserva profesional, no pueden comunicarse o darse a conocer, salvo a las personas o entidades previstas por la Ley y en la Legislación vigente."
 const concentimientoParrafoEnergy = "Como aparece al pie de mi firma y en mi calidad de empleado de la empresa DRUMMOND ENERGY INC., declaro haber sido informado sobre las valoraciones médicas complementarias realizadas en desarrollo de los programas de vigilancia epidemiológica ocupacional implementados por la empresa. Autorizo al SIPLAS S.A., a realizar los exámenes médicos y pruebas complementarias sugeridas. Certifico que he sido informado (a) acerca de la naturaleza y propósito de estos exámenes. Entiendo que la realización de estos exámenes es voluntaria y que tengo la oportunidad de retirar mi consentimiento en cualquier momento. Se me informó además que estos son manejados con confidencialidad y reserva profesional, no pueden comunicarse o darse a conocer, salvo a las personas o entidades previstas por la Ley y en la Legislación vigente."
 
 const concentimientoParrafoTwo = "Considerando lo anterior y atendiendo los requisitos legales respecto a la práctica de exámenes ocupacionales, acepto que me realicen las pruebas complementarias, que determine la empresa dentro del desarrollo de programas de control de riesgos y sistemas de vigilancia epidemiológica para establecer mi estado de salud, durante mi vinculación con la Compañía. En señal de aceptación firmo este consentimiento."
@@ -73,7 +73,7 @@ export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser 
 }
 
 export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], lsDataReportParaclinico = []) {
-    const citacionParrafoDLTD = `Con el propósito de dar cumplimiento al programa de vigilancia epidemiológica de evaluaciones médicas ocupacionales programadas y con ello a la resolución 2346 de 2007, tal como lo establece la legislación Colombiana vigente, me permito informarle que el Departamento Médico de la Compañía ha programado su examen médico en la Unidad de Salud de ${lsDataReport.nameSede}, en la siguiente fecha: `;
+    const citacionParrafoDLTD = `Con el propósito de dar cumplimiento al programa de vigilancia epidemiológica de evaluaciones médicas ocupacionales programadas y con ello a la resolución 2346 de 2007, tal como lo establece la legislación Colombiana vigente, me permito informarle que el Área Médica de la Compañía ha programado su examen médico en la Unidad de Salud de ${lsDataReport.nameSede}, en la siguiente fecha: `;
     const citacionParrafoEnergy = "Con el propósito de dar cumplimiento al programa de vigilancia epidemiológica de evaluaciones médicas ocupacionales programadas y con ello a la resolución 2346 de 2007, tal como lo establece la legislación colombiana vigente, me permito informarle que DRUMMOND ENERGY INC., ha programado su examen médico con la IPS SIPLAS S.A., en la siguiente fecha: ";
 
     var cantidadParaclinico = lsDataReport.lsParaclinicos.length * 6;

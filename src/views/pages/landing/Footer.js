@@ -24,7 +24,7 @@ const FooterPage = () => {
                 <Container>
                     <Typography variant="h6" component="div" sx={{ color: ColorDrummondltd.GrayDrummond, }}>
                         <b>&#169;</b>Copyright 2022 Drummond Ltd. Colombia - V 4.0.
-                        Departamento de salud ocupacional
+                        Área de salud ocupacional
                     </Typography>
                 </Container>
             </FooterWrapper>

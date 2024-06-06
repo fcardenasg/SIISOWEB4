@@ -217,7 +217,7 @@ const ViewRespuesta = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['nRadicado', 'solicitadoPor', 'documento', 'nombre', 'tipo'];
+                const properties = ['nRadicado', 'documento', 'nombre', 'tipo'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

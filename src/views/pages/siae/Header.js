@@ -235,7 +235,7 @@ const HeaderPage = () => {
                                     lineHeight: 1.4
                                 }}
                             >
-                                Dr. José Guerra Añez, Gerente del Departamento de Salud Ocupacional de Drummond Ltd., celular 316 343 6733; <a href="mailto:jguerra@drummondltd.com">jguerra@drummondltd.com</a>. <a target="_blank" href="https://www.drummondltd.com/">www.drummondltd.com</a>
+                                Dr. José Guerra Añez, Gerente del Área de Salud Ocupacional de Drummond Ltd., celular 316 343 6733; <a href="mailto:jguerra@drummondltd.com">jguerra@drummondltd.com</a>. <a target="_blank" href="https://www.drummondltd.com/">www.drummondltd.com</a>
                             </Typography>
                         </Grid>
 

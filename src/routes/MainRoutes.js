@@ -199,6 +199,10 @@ const ListHeadcount = Loadable(lazy(() => import('modules/Headcount/ListHeadcoun
 const Headcount = Loadable(lazy(() => import('modules/Headcount/Headcount')));
 const UpdateHeadcount = Loadable(lazy(() => import('modules/Headcount/UpdateHeadcount')));
 
+const ListIndexNote = Loadable(lazy(() => import('modules/IndexNote/ListIndexNote')));
+const IndexNote = Loadable(lazy(() => import('modules/IndexNote/IndexNote')));
+const UpdateIndexNote = Loadable(lazy(() => import('modules/IndexNote/UpdateIndexNote')));
+
 const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
 const IndicadorIncapacidades = Loadable(lazy(() => import('modules/Indicators/Indicators')));
 
@@ -913,6 +917,20 @@ const MainRoutes = {
         {
             path: '/headcount/update/:id',
             element: <UpdateHeadcount />
+        },
+
+        /* Apuntes de Indexación */
+        {
+            path: '/index-notes/add',
+            element: <IndexNote />
+        },
+        {
+            path: '/index-notes/list',
+            element: <ListIndexNote />
+        },
+        {
+            path: '/index-notes/update/:id',
+            element: <UpdateIndexNote />
         },
 
         /* Ventanilla Única */

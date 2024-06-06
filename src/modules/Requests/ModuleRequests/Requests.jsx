@@ -187,7 +187,7 @@ const Requests = () => {
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                    <SubCard darkTitle title={<Typography variant="h4">Área De Salud Ocupacional E Higiene</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Área De Salud Ocupacional</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormProvider {...methods}>

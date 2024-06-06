@@ -230,7 +230,7 @@ const ViewResponse = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['nRadicado', 'solicitadoPor', 'documento', 'nombre', 'tipo'];
+                const properties = ['nRadicado', 'documento', 'nombre', 'tipo'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -429,7 +429,7 @@ const ViewResponse = () => {
             <MessageError error={messageError} open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal
-                maxWidth="sm"
+                maxWidth="md"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
                 title="Enviar solicitudes"

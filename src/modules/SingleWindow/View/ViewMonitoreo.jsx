@@ -236,7 +236,7 @@ const ViewRespuesta = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['nRadicado', 'solicitadoPor', 'documento', 'nombre', 'tipo'];
+                const properties = ['nRadicado', 'documento', 'nombre', 'tipo'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -509,7 +509,7 @@ const ViewRespuesta = () => {
             </ControlModal>
 
             <ControlModal
-                maxWidth="lg"
+                maxWidth="xl"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
                 title={radioSearch == 1 ?

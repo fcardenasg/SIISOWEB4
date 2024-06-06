@@ -3,7 +3,7 @@ import { Button, Divider, Grid, Typography, useMediaQuery } from "@mui/material"
 import { useTheme } from '@mui/material/styles';
 import { MessageError, MessageSuccess } from "components/alert/AlertAll";
 
-import { CodCatalogo } from "components/helpers/Enums";
+import { CodCatalogo, Message } from "components/helpers/Enums";
 import { GetByIdVentanillaUnica, UpdateVentanillaUnicaEnvio } from "api/clients/VentanillaUnicaClient";
 import { FormProvider, useForm } from "react-hook-form";
 import InputSelect from "components/input/InputSelect";
@@ -15,6 +15,11 @@ import AnimateButton from "ui-component/extended/AnimateButton";
 import ViewMail from "./ViewMail";
 import ControlModal from "components/controllers/ControlModal";
 import ListReplay from "./ListReplay";
+import FullScreenDialog from "components/controllers/FullScreenDialog";
+import ListIndexNotes from "components/template/ListIndexNotes";
+import ViewPDF from "components/components/ViewPDF";
+import { generateReportGuiaEnvio } from "./Reportes";
+import { values } from "lodash";
 
 const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const { user } = useAuth();
@@ -25,6 +30,9 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsEmpresaMensajeria, setLsEmpresaMensajeria] = useState([]);
 
+    const [dataPDF, setDataPDF] = useState(null);
+    const [openModalApuntes, setOpenModalApuntes] = useState(false);
+    const [openReport, setOpenReport] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -73,7 +81,6 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                 if (result.data) {
                     setTimeout(() => {
                         setOpenSuccess(true);
-                        reset();
                     }, 500);
 
                     setOpenSuccess(true);
@@ -88,13 +95,33 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
         }
     };
 
+    const handleClickReport = async () => {
+        try {
+            setOpenReport(true);
+            const dataPDFTwo = generateReportGuiaEnvio(lsData);
+            setDataPDF(dataPDFTwo);
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(`${error}`);
+        }
+    };
+
     return (
         <Fragment>
-            <MessageSuccess message="Archivo subido y guardado con éxito" open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
-                maxWidth="lg"
+                title="Guía generada"
+                open={openReport}
+                onClose={() => setOpenReport(false)}
+                maxWidth="sm"
+            >
+                <ViewPDF dataPDF={dataPDF} height={490} width={550} />
+            </ControlModal>
+
+            <ControlModal
+                maxWidth="xl"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
                 title="Solicitudes respondidas"
@@ -102,10 +129,18 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                 <ListReplay idVentanilla={idVentanilla} options={1} monitoreo={true} />
             </ControlModal>
 
+            <FullScreenDialog
+                open={openModalApuntes}
+                title="Apuntes de indexación"
+                handleClose={() => setOpenModalApuntes(false)}
+            >
+                <ListIndexNotes />
+            </FullScreenDialog>
+
             {lsData.length !== 0 ?
                 <Fragment>
-                    <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
-                        <Grid item xs={12} md={6}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6} lg={3}>
                             <Grid container spacing={1}>
                                 <Grid item>
                                     <Typography variant="h4">N° Radicado:</Typography>
@@ -117,7 +152,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </Grid>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={6} lg={3}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idMedioEnvio"
@@ -130,7 +165,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={6} lg={3}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idEmpresaMensajeria"
@@ -143,7 +178,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={6} lg={3}>
                             <FormProvider {...methods}>
                                 <InputText
                                     fullWidth
@@ -160,7 +195,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             <Divider />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     fullWidth
@@ -173,7 +208,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     fullWidth
@@ -186,7 +221,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     fullWidth
@@ -199,7 +234,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     fullWidth
@@ -212,7 +247,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputText
                                     fullWidth
@@ -225,14 +260,15 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={11.8}>
+                        <Grid item xs={12}>
                             <FormProvider {...methods}>
                                 <InputText
                                     multiline
-                                    rows={3}
+                                    rows={8}
                                     fullWidth
+                                    defaultValue={lsData?.descripcionEnvio}
                                     name="descripcionEnvio"
-                                    label="Observación"
+                                    label="Observación (Describir aquí los datos del remitentes para la generación de la guía)"
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.descripcionEnvio}
                                 />
@@ -257,8 +293,24 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
 
                         <Grid item>
                             <AnimateButton>
+                                <Button variant="contained" onClick={handleClickReport}>
+                                    Generar Guía
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item>
+                            <AnimateButton>
                                 <Button variant="contained" onClick={() => setOpenModal(true)}>
                                     Ver respuestas
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item>
+                            <AnimateButton>
+                                <Button variant="contained" onClick={() => setOpenModalApuntes(true)}>
+                                    Apuntes de indexación
                                 </Button>
                             </AnimateButton>
                         </Grid>
