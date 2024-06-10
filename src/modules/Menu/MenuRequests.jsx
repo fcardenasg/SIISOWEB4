@@ -11,10 +11,9 @@ const MenuRequests = () => {
     const navigate = useNavigate();
     const systemMenu = window.localStorage.getItem('systemMenu');
     const navigation = JSON.parse(systemMenu);
+    const navigationMap = navigation[1]?.children.find(x => x.id === 11).children;
 
-    const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...navigation[1]?.children[6].children,
-    ]);
+    const [itemsMenuButton, setItemsMenuButton] = useState([...navigationMap]);
 
     const selectedItem = (itemSelected = []) => {
         const aux = itemsMenuButton.map((item) => {

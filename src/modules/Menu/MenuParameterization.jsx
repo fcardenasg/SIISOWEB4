@@ -11,10 +11,9 @@ const MenuParameterization = () => {
     const navigate = useNavigate();
     const systemMenu = window.localStorage.getItem('systemMenu');
     const navigation = JSON.parse(systemMenu);
+    const navigationMap = navigation[2]?.children.find(x => x.id === 15).children;
 
-    const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...navigation[2]?.children[0].children,
-    ]);
+    const [itemsMenuButton, setItemsMenuButton] = useState([...navigationMap]);
 
     const selectedItem = (itemSelected = []) => {
         const aux = itemsMenuButton.map((item) => {

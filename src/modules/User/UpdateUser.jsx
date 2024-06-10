@@ -135,10 +135,13 @@ const UpdateUser = () => {
                 datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
                 firmaMedico, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await UpdateUsers(DataToUpdate);
-                if (result.status === 200) {
+            const result = await UpdateUsers(DataToUpdate);
+            if (result.status === 200) {
+                if (result.data.message === "") {
                     setOpenUpdate(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data.message);
                 }
             }
         } catch (error) {

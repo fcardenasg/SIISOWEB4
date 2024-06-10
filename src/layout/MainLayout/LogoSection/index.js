@@ -1,18 +1,16 @@
 import { Link } from 'react-router-dom';
-
-// material-ui
 import { ButtonBase } from '@mui/material';
-
-// project imports
-import config from 'config';
 import Logo from 'ui-component/Logo';
 
-// ==============================|| MAIN LOGO ||============================== //
+const LogoSection = () => {
+    const menu = window.localStorage.getItem('systemMenu');
+    const itemsMenu = JSON.parse(menu);
 
-const LogoSection = () => (
-    <ButtonBase disableRipple component={Link} to={config.defaultPath}>
-        <Logo size={200} />
-    </ButtonBase>
-);
+    return (
+        <ButtonBase disableRipple component={Link} to={itemsMenu[0].children[0].url}>
+            <Logo size={200} />
+        </ButtonBase>
+    )
+};
 
 export default LogoSection;

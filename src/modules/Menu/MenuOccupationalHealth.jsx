@@ -11,10 +11,9 @@ const MenuOccupationalHealth = () => {
     const navigate = useNavigate();
     const systemMenu = window.localStorage.getItem('systemMenu');
     const navigation = JSON.parse(systemMenu);
+    const navigationMap = navigation[0]?.children.find(x => x.id === 3).children;
 
-    const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...navigation[0]?.children[2].children,
-    ]);
+    const [itemsMenuButton, setItemsMenuButton] = useState([...navigationMap]);
 
     const selectedItem = (itemSelected = []) => {
         const aux = itemsMenuButton.map((item) => {

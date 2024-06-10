@@ -127,9 +127,14 @@ const User = () => {
 
             const result = await InsertUser(DataToInsert);
             if (result.status === 200) {
-                setOpenSuccess(true);
-                reset();
-                setFileImg(null);
+                if (result.data.message === "") {
+                    setFileImg(null);
+                    reset();
+                    setOpenSuccess(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(result.data.message);
+                }
             }
         } catch (error) {
             setOpenError(true);
@@ -224,7 +229,7 @@ const User = () => {
                         <InputSelect
                             name="especialidad"
                             label="Especialidad"
-                            defaultValue=""
+                            defaultValue={null}
                             options={lsEspecialidad}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.especialidad}
@@ -274,7 +279,7 @@ const User = () => {
                         <InputSelect
                             name="idSede"
                             label="Sede de atención"
-                            defaultValue=""
+                            defaultValue={null}
                             options={lsSedeUser}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.idSede}
@@ -287,7 +292,7 @@ const User = () => {
                         <InputSelect
                             name="idArea"
                             label="Area"
-                            defaultValue=""
+                            defaultValue={null}
                             options={lsArea}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.idArea}

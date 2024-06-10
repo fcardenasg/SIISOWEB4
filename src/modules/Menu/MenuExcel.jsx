@@ -15,11 +15,9 @@ const MenuExcel = () => {
 
     const systemMenu = window.localStorage.getItem('systemMenu');
     const navigation = JSON.parse(systemMenu);
+    const navigationMap = navigation[3]?.children.find(x => x.id === 19).children;
 
-
-    const [itemsMenuButton, setItemsMenuButton] = useState([
-        ...navigation[3]?.children[1].children,
-    ]);
+    const [itemsMenuButton, setItemsMenuButton] = useState([...navigationMap]);
 
     const selectedItem = (itemSelected = []) => {
         const aux = itemsMenuButton.map((item) => {
