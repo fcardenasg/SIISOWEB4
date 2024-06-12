@@ -95,7 +95,7 @@ const Rol = () => {
 
             const lsIdItemMenu = [];
             var lsItemMenuFilter = lsItemMenu;
-            
+
             value.forEach(xValue => {
                 var idComponente = lsItemMenuFilter.filter(x => x.label === xValue)[0].value;
                 lsIdItemMenu.push(idComponente);

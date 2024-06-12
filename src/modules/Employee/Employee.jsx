@@ -28,8 +28,6 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import { TitleButton, CodCatalogo, ValidationMessage, DefaultValue, Message } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { FormatDate } from 'components/helpers/Format';
-import { PostEmployee } from 'formatdata/EmployeeForm';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
