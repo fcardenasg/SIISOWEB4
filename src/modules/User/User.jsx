@@ -22,7 +22,6 @@ import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostUser } from 'formatdata/UserForm';
 import { InsertUser } from 'api/clients/UserClient';
 import { GetComboRol } from 'api/clients/RolClient';
-import InputCheck from 'components/input/InputCheck';
 import InputCheckBox from 'components/input/InputCheckBox';
 
 const validationSchema = yup.object().shape({
@@ -43,7 +42,6 @@ const User = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [checkUsuario, setCheckUsuario] = useState(true);
     const [fileImg, setFileImg] = useState(null);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -118,12 +116,9 @@ const User = () => {
 
     const handleClick = async (datos) => {
         try {
-            const password = checkUsuario ? datos.nombreUsuario : "12345678";
-            const firmaMedico = fileImg === null ? '' : fileImg;
-
-            const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono,
+            const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, datos.nombreUsuario, datos.nombre, datos.telefono,
                 datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
-                datos.tarjetaProfesional, firmaMedico, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
+                datos.tarjetaProfesional, fileImg, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
 
             const result = await InsertUser(DataToInsert);
             if (result.status === 200) {
@@ -143,7 +138,7 @@ const User = () => {
     };
 
     return (
-        <MainCard title="Registrar Información del Usuario">
+        <MainCard title="Registrar información del usuario">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -311,15 +306,6 @@ const User = () => {
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={4}>
-                        <InputCheck
-                            label="¿Desea que la contraseña sea el mismo Usuario?"
-                            onChange={(e) => setCheckUsuario(e.target.checked)}
-                            checked={checkUsuario}
-                            size={30}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
                         <InputCheckBox
                             name="respondeReintegro"
                             defaultValue={false}
@@ -342,7 +328,7 @@ const User = () => {
                     <Grid container>
                         <Grid item xs={12} md={6}>
                             <Button size="large" variant="contained" component="label" startIcon={<EditIcon fontSize="large" />}>
-                                SUBIR FIRMA
+                                Subir firma
                                 <input hidden accept="image/*" type="file" onChange={handleFile} />
                             </Button>
                         </Grid>

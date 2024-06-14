@@ -11,7 +11,7 @@ const MenuVentanilla = () => {
     const navigate = useNavigate();
     const systemMenu = window.localStorage.getItem('systemMenu');
     const navigation = JSON.parse(systemMenu);
-    const navigationMap = navigation[0]?.children.find(x => x.id === 21).children;
+    const navigationMap = navigation.find(x => x.id === 1).children.find(x => x.id === 21).children;
 
     const [itemsMenuButton, setItemsMenuButton] = useState([...navigationMap]);
 

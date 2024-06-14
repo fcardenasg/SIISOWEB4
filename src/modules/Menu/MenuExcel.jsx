@@ -15,7 +15,7 @@ const MenuExcel = () => {
 
     const systemMenu = window.localStorage.getItem('systemMenu');
     const navigation = JSON.parse(systemMenu);
-    const navigationMap = navigation[3]?.children.find(x => x.id === 19).children;
+    const navigationMap = navigation.find(x => x.id === 4).children.find(x => x.id === 19).children;
 
     const [itemsMenuButton, setItemsMenuButton] = useState([...navigationMap]);
 

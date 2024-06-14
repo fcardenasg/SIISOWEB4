@@ -23,7 +23,6 @@ import { PutUser } from 'formatdata/UserForm';
 import { GetByIdUser, UpdateUsers } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 import { GetComboRol } from 'api/clients/RolClient';
-import InputCheck from 'components/input/InputCheck';
 import InputCheckBox from 'components/input/InputCheckBox';
 
 const validationSchema = yup.object().shape({
@@ -45,7 +44,6 @@ const UpdateUser = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [checkResetearPass, setCheckResetearPass] = useState(false);
     const [lsUsuario, setLsUsuario] = useState([]);
     const [fileImg, setFileImg] = useState(null);
     const [timeWait, setTimeWait] = useState(false);
@@ -128,12 +126,11 @@ const UpdateUser = () => {
 
     const handleClick = async (datos) => {
         try {
-            const password = checkResetearPass ? datos.nombreUsuario : lsUsuario.password;
-            const firmaMedico = fileImg === null ? '' : fileImg;
+            var resert = datos.checkResetearPass ? "yes" : "";
 
-            const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, password, datos.nombre, datos.telefono, datos.idArea,
+            const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, resert, datos.nombre, datos.telefono, datos.idArea,
                 datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                firmaMedico, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
+                fileImg, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
 
             const result = await UpdateUsers(DataToUpdate);
             if (result.status === 200) {
@@ -157,7 +154,7 @@ const UpdateUser = () => {
     }, 1000);
 
     return (
-        <MainCard title="Actualizar Información del Usuarios">
+        <MainCard title="Actualizar información del usuarios">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -325,10 +322,10 @@ const UpdateUser = () => {
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={4}>
-                                <InputCheck
-                                    label="¿Desea que la contraseña sea el mismo Usuario?"
-                                    onChange={(e) => setCheckResetearPass(e.target.checked)}
-                                    checked={checkResetearPass}
+                                <InputCheckBox
+                                    name="checkResetearPass"
+                                    defaultValue={false}
+                                    label="¿Restablecer contraseña?"
                                     size={30}
                                 />
                             </Grid>

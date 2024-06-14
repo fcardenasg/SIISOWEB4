@@ -76,6 +76,12 @@ const headCells = [
         align: 'left'
     },
     {
+        id: 'nombreUsuario',
+        numeric: false,
+        label: 'Usuario',
+        align: 'left'
+    },
+    {
         id: 'nombre',
         numeric: false,
         label: 'Nombre',
@@ -88,15 +94,15 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'sedeUsuario',
+        id: 'nombreSede',
         numeric: false,
         label: 'Sede',
         align: 'left'
     },
     {
-        id: 'rolUsuario',
+        id: 'nombreRol',
         numeric: false,
-        label: 'RolUsuario',
+        label: 'Rol',
         align: 'left'
     }
 ];
@@ -224,10 +230,12 @@ const ListUser = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllUser(0, 0);
+            const lsServer = await GetAllUser();
             if (lsServer.status === 200) {
-                setLsUser(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                
+
+                setLsUser(lsServer.data);
+                setRows(lsServer.data);
             }
         } catch (error) {
 
@@ -246,11 +254,11 @@ const ListUser = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['documento', 'nombre', 'correo', 'rolUsuario'];
+                const properties = ['documento', 'nombre', 'nombreUsuario', 'correo', 'nombreSede', 'nombreRol'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });
@@ -331,7 +339,7 @@ const ListUser = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsUser.length) : 0;
 
     return (
-        <MainCard title="Lista De Usuarios" content={false}>
+        <MainCard title="Lista de usuarios" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -366,14 +374,8 @@ const ListUser = () => {
                                         <ExcelColumn label="Documento" value="documento" />
                                         <ExcelColumn label="Usuario" value="nombreUsuario" />
                                         <ExcelColumn label="Nombre" value="nombre" />
-                                        <ExcelColumn label="Teléfono" value="telefono" />
                                         <ExcelColumn label="Correo" value="correo" />
-                                        <ExcelColumn label="Rol de Usuario" value="rolUsuario" />
-                                        <ExcelColumn label="Especialidad" value="especialidad" />
-                                        <ExcelColumn label="Registro Medico" value="registroMedico" />
-                                        <ExcelColumn label="Licencia" value="licencia" />
-                                        <ExcelColumn label="Tarjeta Profesional" value="tarjetaProfesional" />
-                                        <ExcelColumn label="Estado" value="estado" />
+                                        <ExcelColumn label="Rol de Usuario" value="nombreRol" />
                                     </ExcelSheet>
                                 </ExcelFile>
                             </Grid>
@@ -466,6 +468,21 @@ const ListUser = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
+                                                    {row.nombreUsuario}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
                                                     {row.nombre}
                                                 </Typography>
                                             </TableCell>
@@ -496,7 +513,7 @@ const ListUser = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.sedeUsuario}
+                                                    {row.nombreSede}
                                                 </Typography>
                                             </TableCell>
 
@@ -511,7 +528,7 @@ const ListUser = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.rolUsuario}
+                                                    {row.nombreRol}
                                                 </Typography>
                                             </TableCell>
 

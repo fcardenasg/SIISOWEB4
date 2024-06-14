@@ -11,7 +11,7 @@ const MenuMedicines = () => {
     const navigate = useNavigate();
     const systemMenu = window.localStorage.getItem('systemMenu');
     const navigation = JSON.parse(systemMenu);
-    const navigationMap = navigation[1]?.children.find(x => x.id === 14).children;
+    const navigationMap = navigation.find(x => x.id === 2).children.find(x => x.id === 14).children;
 
     const [itemsMenuButton, setItemsMenuButton] = useState([...navigationMap]);
 
