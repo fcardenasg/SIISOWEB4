@@ -13,6 +13,7 @@ export const Url = {
     Usuarios: 'api/Usuarios',
     UsuariosCombo: 'api/Usuarios/combo',
     UsuariosVentanilla: 'api/Usuarios/combo-responventanilla',
+    UsuariosRegTaxi: 'api/Usuarios/combo-registrataxi',
     UsuariosComboArea: 'api/Usuarios/combo-area',
     UsuariosUpdateSede: 'api/Usuarios/UpdateSede',
     UsuariosId: 'api/Usuarios/id',

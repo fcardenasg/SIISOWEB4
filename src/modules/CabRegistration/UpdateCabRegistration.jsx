@@ -29,7 +29,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetAllComboRegTaxi, GetByMail } from 'api/clients/UserClient';
 import { generateReporteReportCabRegistration } from './ReportCabRegistration';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
@@ -72,87 +72,86 @@ const UpdateCabRegistration = () => {
 
     const { handleSubmit, formState: { errors } } = methods;
 
-    async function getAll() {
-        try {
-            const lsServerUpdate = await GetByIdCabRegistration(id);
-            if (lsServerUpdate.status === 200) {
-                setDocumento(lsServerUpdate.data.documento);
-                handleLoadingDocument(lsServerUpdate.data.documento);
-                setLsDataAtencion(lsServerUpdate.data);
-            }
+    useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServerUpdate = await GetByIdCabRegistration(id);
+                if (lsServerUpdate.status === 200) {
+                    setDocumento(lsServerUpdate.data.documento);
+                    handleLoadingDocument(lsServerUpdate.data.documento);
+                    setLsDataAtencion(lsServerUpdate.data);
+                }
 
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsContingencia(resultContingencia);
-
-            const lsServerRuta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORIGEN_RUTA);
-            var resultRuta = lsServerRuta.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRuta(resultRuta);
-
-            const lsServerDestino = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DESTINO_RUTA);
-            var resultDestino = lsServerDestino.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsDestino(resultDestino);
-
-
-            const lsServernroTaxi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.NRO_TAXI);
-            var resultnroTaxi = lsServernroTaxi.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsnroTaxi(resultnroTaxi);
-
-            const lsServerCargadoa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CARGADO_A);
-            var resultCargadoa = lsServerCargadoa.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCargadoa(resultCargadoa);
-
-
-            const lsServerCupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CUPOS);
-            var resultCupo = lsServerCupo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCupo(resultCupo);
-
-            const lsServerMedicos = await GetAllUser(0, 0);
-            var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
-                .map((item) => ({
-                    value: item.id,
+                const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
+                var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
+                    value: item.idCatalogo,
                     label: item.nombre
                 }));
-            setLsMedico(resultMedico);
+                setLsContingencia(resultContingencia);
 
-            const lsServerAtencion = await GetByIdCabRegistration(id);
-            if (lsServerAtencion.status === 200) {
-                setTextDx1(lsServerAtencion.data.diagnostico);
-                setLsDataAtencion(lsServerAtencion.data);
-                setDocumento(lsServerAtencion.data.documento);
-
-                const event = {
-                    target: { value: lsServerAtencion.data.documento }
-                }
-                handleLoadingDocument(event);
-
-                var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnostico);
-                var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                    value: item.id,
-                    label: item.dx
+                const lsServerRuta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORIGEN_RUTA);
+                var resultRuta = lsServerRuta.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
                 }));
-                setLsDx1(resultCie11);
-            }
-        } catch (error) { }
-    }
+                setLsRuta(resultRuta);
+
+                const lsServerDestino = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DESTINO_RUTA);
+                var resultDestino = lsServerDestino.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsDestino(resultDestino);
+
+
+                const lsServernroTaxi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.NRO_TAXI);
+                var resultnroTaxi = lsServernroTaxi.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsnroTaxi(resultnroTaxi);
+
+                const lsServerCargadoa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CARGADO_A);
+                var resultCargadoa = lsServerCargadoa.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsCargadoa(resultCargadoa);
+
+
+                const lsServerCupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CUPOS);
+                var resultCupo = lsServerCupo.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsCupo(resultCupo);
+
+                const lsServerMedicos = await GetAllComboRegTaxi();
+                setLsMedico(lsServerMedicos.data);
+
+                const lsServerAtencion = await GetByIdCabRegistration(id);
+                if (lsServerAtencion.status === 200) {
+                    setTextDx1(lsServerAtencion.data.diagnostico);
+                    setLsDataAtencion(lsServerAtencion.data);
+                    setDocumento(lsServerAtencion.data.documento);
+
+                    const event = {
+                        target: { value: lsServerAtencion.data.documento }
+                    }
+                    handleLoadingDocument(event);
+
+                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnostico);
+                    var resultCie11 = lsServerCie11.data.entities.map((item) => ({
+                        value: item.id,
+                        label: item.dx
+                    }));
+                    setLsDx1(resultCie11);
+                }
+            } catch (error) { }
+        }
+
+        getAll();
+    }, [])
 
     const handleClickReport = async () => {
         try {
@@ -207,9 +206,7 @@ const UpdateCabRegistration = () => {
         }
     }
 
-    useEffect(() => {
-        getAll();
-    }, [])
+
 
     const handleClick = async (datos) => {
         const DataToUpdate = PutCabRegistration(id, documento, datos.fecha, datos.diagnostico,

@@ -19,7 +19,7 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdCabRegistration, InsertCabRegistration } from 'api/clients/CabRegistrationClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -27,7 +27,7 @@ import { PostCabRegistration } from 'formatdata/CabRegistrationForm';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetAllComboRegTaxi, GetByMail } from 'api/clients/UserClient';
 import { generateReporteReportCabRegistration } from './ReportCabRegistration';
 import ViewPDF from 'components/components/ViewPDF';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
@@ -176,13 +176,8 @@ const CabRegistration = () => {
             }));
             setLsCupo(resultCupo);
 
-            const lsServerMedicos = await GetAllUser(0, 0);
-            var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
-                .map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-            setLsMedico(resultMedico);
+            const lsServerMedicos = await GetAllComboRegTaxi();
+            setLsMedico(lsServerMedicos.data);
         } catch (error) { }
     }
 

@@ -118,7 +118,7 @@ const User = () => {
         try {
             const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, datos.nombreUsuario, datos.nombre, datos.telefono,
                 datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
-                datos.tarjetaProfesional, fileImg, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica);
+                datos.tarjetaProfesional, fileImg, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica, datos.registraTaxi);
 
             const result = await InsertUser(DataToInsert);
             if (result.status === 200) {
@@ -319,6 +319,15 @@ const User = () => {
                             name="respondeVentanillaUnica"
                             defaultValue={false}
                             label="¿Este usuario responde ventanilla única?"
+                            size={30}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputCheckBox
+                            name="registraTaxi"
+                            defaultValue={false}
+                            label="¿Registra solicitud de Taxi?"
                             size={30}
                         />
                     </Grid>

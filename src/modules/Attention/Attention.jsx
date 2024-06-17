@@ -134,7 +134,6 @@ const Attention = () => {
                         setOpenError(true);
                         setErrorMessage(lsServerEmployee?.data.message);
                     }
-
                 } else {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
 
