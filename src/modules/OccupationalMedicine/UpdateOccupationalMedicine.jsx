@@ -16,7 +16,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ClearIcon from '@mui/icons-material/Clear';
 import { NumeroDias } from 'components/helpers/Format';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
@@ -74,6 +74,7 @@ const OccupationalMedicine = () => {
     const [lsJuntaCalificadaJRC, setLsJuntaCalificadaJRC] = useState([]);
     const [lsInstanciaOrigen, setLsInstanciaOrigen] = useState([]);
 
+    const [lsInvestigadoPor, setLsInvestigadoPor] = useState([]);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
@@ -141,6 +142,9 @@ const OccupationalMedicine = () => {
                     label: item.nombre
                 }));
                 setLsSegmentoAfectado(resultSegAfectado);
+
+                const lsServerInvestigadoPor = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_INVESTIGADOPOR);
+                setLsInvestigadoPor(lsServerInvestigadoPor.data);
 
                 const lsServerSubsegmento = await GetAllBySubsegment(0, 0);
                 var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
@@ -425,7 +429,7 @@ const OccupationalMedicine = () => {
                 datos.fechaEntregaMin, filePdfMin, lsOccupationalMedicine.usuarioRegistro, lsOccupationalMedicine.fechaRegistro, user.nameuser, undefined,
 
                 datos.fechaEstimadaInicioCaso, datos.vistoBueno, datos.pclInstaFinal, datos.fechaEstructuracionJRC, datos.salaCalificadoraJNC, datos.medicoCalificadorJNC,
-                datos.salaCalificadoraPCLJNC, datos.medicoCalificadorPCLJNC);
+                datos.salaCalificadoraPCLJNC, datos.medicoCalificadorPCLJNC, datos.idInvestigadoPor);
 
             const result = await UpdateOccupationalMedicines(DataToUpdate);
             if (result.status === 200) {
@@ -1247,10 +1251,22 @@ const OccupationalMedicine = () => {
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
-                                                        defaultValue={lsOccupationalMedicine.aplica} aplica
+                                                        defaultValue={lsOccupationalMedicine.aplica}
                                                         name="aplica"
                                                         label="Aplica"
                                                         options={lsInvestigado}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputSelect
+                                                        name="idInvestigadoPor"
+                                                        label="Investigado Por"
+                                                        options={lsInvestigadoPor}
+                                                        defaultValue={lsOccupationalMedicine.idInvestigadoPor}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </FormProvider>

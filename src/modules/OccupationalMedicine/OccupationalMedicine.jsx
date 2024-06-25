@@ -85,6 +85,7 @@ const OccupationalMedicine = () => {
 
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
+    const [lsInvestigadoPor, setLsInvestigadoPor] = useState([]);
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
     const [documento, setDocumento] = useState('');
     const [textDiagnistico, setTextDiagnostico] = useState('');
@@ -219,6 +220,9 @@ const OccupationalMedicine = () => {
     useEffect(() => {
         async function getAll() {
             try {
+                const lsServerInvestigadoPor = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_INVESTIGADOPOR);
+                setLsInvestigadoPor(lsServerInvestigadoPor.data);
+
                 const lsServerRegion = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_REGION);
                 setLsRegion(lsServerRegion.data);
 
@@ -319,7 +323,7 @@ const OccupationalMedicine = () => {
                 datos.origenInvestigacion, diasDiferencia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
                 datos.fechaEntregaMin, filePdfMin, user.nameuser, undefined, undefined, undefined,
                 datos.fechaEstimadaInicioCaso, datos.vistoBueno, datos.pclInstaFinal, datos.fechaEstructuracionJRC, datos.salaCalificadoraJNC, datos.medicoCalificadorJNC,
-                datos.salaCalificadoraPCLJNC, datos.medicoCalificadorPCLJNC);
+                datos.salaCalificadoraPCLJNC, datos.medicoCalificadorPCLJNC, datos.idInvestigadoPor);
 
             const result = await InsertOccupationalMedicine(DataToInsert);
             if (result.status === 200) {
@@ -1092,6 +1096,17 @@ const OccupationalMedicine = () => {
                                                 name="aplica"
                                                 label="Aplica"
                                                 options={lsInvestigado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idInvestigadoPor"
+                                                label="Investigado Por"
+                                                options={lsInvestigadoPor}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
