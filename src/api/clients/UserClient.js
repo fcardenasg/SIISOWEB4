@@ -13,3 +13,4 @@ export const DeleteUser = async (idUsuarios) => await deleteData(Url.Usuarios, {
 
 export const GetAllComboVentanilla = async () => await getData(Url.UsuariosVentanilla);
 export const GetAllComboRegTaxi = async () => await getData(Url.UsuariosRegTaxi);
+export const GetAllComboByIdRol = async (idRol) => await getData(Url.UsuariosRol, { idRol });

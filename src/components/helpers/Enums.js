@@ -276,12 +276,8 @@ export const DefaultValue = {
     INCAPACIDAD_EPS: 8184,
 
     /* ID ROLES DE USUARIO */
-    ROL_ADMINISTRADOR: 1,
-    ROL_ENFERMERO: 3,
-    ROL_HIGIENE: 7320,
-    ROL_MEDICO: 1,
-    ROL_VISITANTE: 5158,
-    ROL_PSICOLOGIA: 4,
+    ROL_MEDICO: 4,
+    ROL_PSICOLOGIA: 8,
 
     /* RIESGOS */
     RiesgoEnOtrasEmpresas: 7284,

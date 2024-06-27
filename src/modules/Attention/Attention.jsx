@@ -29,7 +29,7 @@ import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import Chip from '@mui/material/Chip';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetAllComboByIdRol, GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './ReportAtten';
 import ViewPDF from 'components/components/ViewPDF';
 
@@ -82,24 +82,10 @@ const Attention = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
-                setLsSede(lsServerSede.data);
                 setSede(user.idsede);
 
-                const lsServerMedicos = await GetAllUser(0, 0);
-                var resultPsicologia = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_PSICOLOGIA)
-                    .map((item) => ({
-                        value: item.id,
-                        label: item.nombre
-                    }));
-                setLsPsicologia(resultPsicologia);
-
-                var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
-                    .map((item) => ({
-                        value: item.id,
-                        label: item.nombre
-                    }));
-                setLsMedicos(resultMedico);
+                const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
+                setLsSede(lsServerSede.data);
 
                 const lsServerEstadoCaso = await GetByTipoCatalogoCombo(CodCatalogo.EstadoCaso);
                 setLsEstadoCaso(lsServerEstadoCaso.data);
@@ -113,6 +99,12 @@ const Attention = () => {
 
                 const lsServerMotivoPAD = await GetByTipoCatalogoCombo(CodCatalogo.PAD_MOTIVO);
                 setLsMotivoPAD(lsServerMotivoPAD.data);
+
+                const lsServerPsico = await GetAllComboByIdRol(DefaultValue.ROL_PSICOLOGIA);
+                setLsPsicologia(lsServerPsico.data);
+
+                const lsServerMedicos = await GetAllComboByIdRol(DefaultValue.ROL_MEDICO);
+                setLsMedicos(lsServerMedicos.data);
             } catch (error) { }
         }
 
@@ -374,7 +366,7 @@ const Attention = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Atención"
+                        title="Registrar atención"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}

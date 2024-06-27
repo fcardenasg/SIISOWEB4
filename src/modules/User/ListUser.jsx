@@ -232,14 +232,10 @@ const ListUser = () => {
         try {
             const lsServer = await GetAllUser();
             if (lsServer.status === 200) {
-                
-
                 setLsUser(lsServer.data);
                 setRows(lsServer.data);
             }
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {

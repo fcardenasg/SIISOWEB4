@@ -14,6 +14,7 @@ export const Url = {
     UsuariosCombo: 'api/Usuarios/combo',
     UsuariosVentanilla: 'api/Usuarios/combo-responventanilla',
     UsuariosRegTaxi: 'api/Usuarios/combo-registrataxi',
+    UsuariosRol: 'api/Usuarios/combo-rol',
     UsuariosComboArea: 'api/Usuarios/combo-area',
     UsuariosUpdateSede: 'api/Usuarios/UpdateSede',
     UsuariosId: 'api/Usuarios/id',

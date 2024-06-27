@@ -38,7 +38,7 @@ import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PutRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, InsertListaChekeo, UpdateRefunds } from 'api/clients/RefundClient';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetByMail } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { generateReportRefund } from './ReportRefund';

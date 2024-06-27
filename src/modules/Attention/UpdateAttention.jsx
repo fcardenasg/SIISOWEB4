@@ -30,7 +30,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
 import Chip from '@mui/material/Chip';
 import Cargando from 'components/loading/Cargando';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetAllComboByIdRol, GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './ReportAtten';
 import ViewPDF from 'components/components/ViewPDF';
 
@@ -118,20 +118,11 @@ const UpdateAttention = () => {
 
     async function getAll() {
         try {
-            const lsServerMedicos = await GetAllUser(0, 0);
-            var resultPsicologia = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_PSICOLOGIA)
-                .map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-            setLsPsicologia(resultPsicologia);
+            const lsServerPsico = await GetAllComboByIdRol(DefaultValue.ROL_PSICOLOGIA);
+            setLsPsicologia(lsServerPsico.data);
 
-            var resultMedico = lsServerMedicos.data.entities.filter(user => user.idRol === DefaultValue.ROL_MEDICO)
-                .map((item) => ({
-                    value: item.id,
-                    label: item.nombre
-                }));
-            setLsMedicos(resultMedico);
+            const lsServerMedicos = await GetAllComboByIdRol(DefaultValue.ROL_MEDICO);
+            setLsMedicos(lsServerMedicos.data);
 
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
             var resultSede = lsServerSede.data.entities.map((item) => ({
@@ -503,7 +494,7 @@ const UpdateAttention = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Registro De Atención"
+                            title="Actualizar atención"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
