@@ -31,9 +31,9 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                             fullWidth
                             size={size}
                         >
-                            {options.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
+                            {options?.map((option) => (
+                                <MenuItem key={option?.value} value={option?.value}>
+                                    {option?.label}
                                 </MenuItem>
                             ))}
                         </Select>

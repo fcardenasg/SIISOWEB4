@@ -62,9 +62,9 @@ const UpdateEmployee = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [openError, setOpenError] = useState(false);
 
-    const [lsCatalogo, setLsCatalogo] = useState([]);
     const [lsGes, setLsGes] = useState([]);
-    const [employee, setEmployee] = useState([]);
+    const [dataEmployee, setDataEmployee] = useState({});
+
     const [company, setCompany] = useState([]);
     const [lsEscolaridad, setEscolaridad] = useState([]);
     const [lsMunicipioN, setMunicipioN] = useState([]);
@@ -107,32 +107,35 @@ const UpdateEmployee = () => {
 
             const lsServerEmployeeId = await GetByIdEmployee(id);
             if (lsServerEmployeeId?.data.status === 200) {
-                setEmployee(lsServerEmployeeId?.data.data);
+                console.log("lsServerEmployeeId => ", lsServerEmployeeId?.data.data);
+
+                setDataEmployee(lsServerEmployeeId?.data.data);
                 setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === "" ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 
-                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
                 setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
+                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
+
+                setLsMunicipioTrabaja(lsServerEmployeeId?.data.data.lsDptoResidenciaTrabaja);
+                setMunicipioN(lsServerEmployeeId?.data.data.lsDptoNacido);
+                setMunicipioR(lsServerEmployeeId?.data.data.lsDptoResidencia);
             } else {
                 setOpenError(true);
                 setErrorMessage(lsServerEmployeeId?.data.message);
 
-                setEmployee(lsServerEmployeeId?.data.data);
+                setDataEmployee(lsServerEmployeeId?.data.data);
                 setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === "" ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 
                 setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
-            }
 
-            const lsServerCatalogo = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalogo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCatalogo(resultCatalogo);
+                setLsMunicipioTrabaja(lsServerEmployeeId?.data.data.lsDptoResidenciaTrabaja);
+                setMunicipioN(lsServerEmployeeId?.data.data.lsDptoNacido);
+                setMunicipioR(lsServerEmployeeId?.data.data.lsDptoResidencia);
+            }
 
             const lsServerDepartEmpresa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DepartEmpresa);
             var resultDepartEmpresa = lsServerDepartEmpresa.data.entities.map((item) => ({
@@ -378,46 +381,46 @@ const UpdateEmployee = () => {
             const DataToUpdate = {
                 documento: datos.documento,
                 nombres: datos.nombres,
-                fechaNaci: datos.fechaNaci === "" ? null : datos.fechaNaci,
-                type: datos.type === "" ? null : datos.type,
-                departamento: datos.departamento === "" ? null : datos.departamento,
-                area: datos.area === "" ? null : datos.area,
-                subArea: datos.subArea === "" ? null : datos.subArea,
-                grupo: datos.grupo === "" ? null : datos.grupo,
-                municipioNacido: datos.municipioNacido === "" ? null : datos.municipioNacido,
-                dptoNacido: datos.dptoNacido === "" ? null : datos.dptoNacido,
-                fechaContrato: datos.fechaContrato === "" ? null : datos.fechaContrato,
-                rosterPosition: datos.rosterPosition === "" ? null : datos.rosterPosition,
+                fechaNaci: datos.fechaNaci || null,
+                type: datos.type || null,
+                departamento: datos.departamento || null,
+                area: datos.area || null,
+                subArea: datos.subArea || null,
+                grupo: datos.grupo || null,
+                municipioNacido: datos.municipioNacido || null,
+                dptoNacido: dptoNacido || null,
+                fechaContrato: datos.fechaContrato || null,
+                rosterPosition: datos.rosterPosition || null,
                 tipoContrato: idTipoContrato,
-                generalPosition: datos.generalPosition === "" ? null : datos.generalPosition,
-                genero: datos.genero === "" ? null : datos.genero,
-                sede: datos.sede === "" ? null : datos.sede,
-                direccionResidencia: datos.direccionResidencia === "" ? null : datos.direccionResidencia,
-                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja === "" ? null : datos.direccionResidenciaTrabaja,
-                dptoResidenciaTrabaja: dptoResidenciaTrabaja,
-                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja === "" ? null : datos.municipioResidenciaTrabaja,
-                municipioResidencia: datos.municipioResidencia === "" ? null : datos.municipioResidencia,
-                dptoResidencia: dptoNacido,
-                celular: datos.celular === "" ? null : datos.celular,
-                eps: datos.eps === "" ? null : datos.eps,
-                afp: datos.afp === "" ? null : datos.afp,
-                turno: datos.turno === "" ? null : datos.turno,
-                email: datos.email === "" ? null : datos.email,
-                telefonoContacto: datos.telefonoContacto === "" ? null : datos.telefonoContacto,
-                estadoCivil: datos.estadoCivil === "" ? null : datos.estadoCivil,
-                empresa: datos.empresa === "" ? null : datos.empresa,
-                arl: datos.arl === "" ? null : datos.arl,
-                contacto: datos.contacto === "" ? null : datos.contacto,
-                escolaridad: datos.escolaridad === "" ? null : datos.escolaridad,
-                cesantias: datos.cesantias === "" ? null : datos.cesantias,
-                rotation: datos.rotation === "" ? null : datos.rotation,
-                payStatus: datos.payStatus === "" ? null : datos.payStatus,
+                generalPosition: datos.generalPosition || null,
+                genero: datos.genero || null,
+                sede: datos.sede || null,
+                direccionResidencia: datos.direccionResidencia || null,
+                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja || null,
+                dptoResidenciaTrabaja: dptoResidenciaTrabaja || null,
+                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja || null,
+                municipioResidencia: datos.municipioResidencia || null,
+                dptoResidencia: dptoResidencia,
+                celular: datos.celular || null,
+                eps: datos.eps || null,
+                afp: datos.afp || null,
+                turno: datos.turno || null,
+                email: datos.email || null,
+                telefonoContacto: datos.telefonoContacto || null,
+                estadoCivil: datos.estadoCivil || null,
+                empresa: datos.empresa || null,
+                arl: datos.arl || null,
+                contacto: datos.contacto || null,
+                escolaridad: datos.escolaridad || null,
+                cesantias: datos.cesantias || null,
+                rotation: datos.rotation || null,
+                payStatus: datos.payStatus || null,
                 termDate: null,
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
-                ges: datos.ges === "" ? null : datos.ges,
+                ges: datos.ges || null,
                 usuarioRegistro: user.nameuser,
-                oficio: datos.oficio === "" ? null : datos.oficio
+                oficio: datos.oficio || null,
             };
 
             const result = await UpdateEmployees(DataToUpdate);
@@ -431,7 +434,7 @@ const UpdateEmployee = () => {
     };
 
     setTimeout(() => {
-        if (employee.length !== 0) {
+        if (dataEmployee !== null) {
             setTimeWait(true);
         }
     }, 2000);
@@ -471,7 +474,7 @@ const UpdateEmployee = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={employee.documento}
+                                                defaultValue={dataEmployee.documento}
                                                 fullWidth
                                                 type="number"
                                                 name="documento"
@@ -484,7 +487,7 @@ const UpdateEmployee = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={employee.nombres}
+                                                defaultValue={dataEmployee.nombres}
                                                 fullWidth
                                                 name="nombres"
                                                 label="Nombres"
@@ -496,7 +499,7 @@ const UpdateEmployee = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={employee.email}
+                                                defaultValue={dataEmployee.email}
                                                 fullWidth
                                                 name="email"
                                                 label="Email"
@@ -508,7 +511,7 @@ const UpdateEmployee = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={employee.celular}
+                                                defaultValue={dataEmployee.celular}
                                                 fullWidth
                                                 name="celular"
                                                 label="Celular"
@@ -522,7 +525,7 @@ const UpdateEmployee = () => {
                                             <InputSelect
                                                 name="escolaridad"
                                                 label="Escolaridad"
-                                                defaultValue={employee.escolaridad}
+                                                defaultValue={dataEmployee.escolaridad}
                                                 options={lsEscolaridad}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.escolaridad}
@@ -534,7 +537,7 @@ const UpdateEmployee = () => {
                                             <InputSelect
                                                 name="empresa"
                                                 label="Empresa"
-                                                defaultValue={employee.empresa}
+                                                defaultValue={dataEmployee.empresa}
                                                 options={company}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.empresa}
@@ -546,7 +549,7 @@ const UpdateEmployee = () => {
                                             <InputSelect
                                                 name="sede"
                                                 label="Sede"
-                                                defaultValue={employee.sede}
+                                                defaultValue={dataEmployee.sede}
                                                 options={lsSede}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.sede}
@@ -558,7 +561,7 @@ const UpdateEmployee = () => {
                                             <InputDatePicker
                                                 label="Fecha de Nacimiento"
                                                 name="fechaNaci"
-                                                defaultValue={employee.fechaNaci}
+                                                defaultValue={dataEmployee.fechaNaci}
                                             />
                                         </FormProvider>
                                     </Grid>
@@ -567,7 +570,7 @@ const UpdateEmployee = () => {
                                             <InputSelect
                                                 name="genero"
                                                 label="Genero"
-                                                defaultValue={employee.genero}
+                                                defaultValue={dataEmployee.genero}
                                                 options={lsGenero}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.genero}
@@ -579,7 +582,7 @@ const UpdateEmployee = () => {
                                             <InputSelect
                                                 name="estadoCivil"
                                                 label="Estado civil"
-                                                defaultValue={employee.estadoCivil}
+                                                defaultValue={dataEmployee.estadoCivil}
                                                 options={lsEstadoCivil}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.estadoCivil}
@@ -589,7 +592,7 @@ const UpdateEmployee = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={employee.contacto}
+                                                defaultValue={dataEmployee.contacto}
                                                 fullWidth
                                                 name="contacto"
                                                 label="Contacto"
@@ -601,7 +604,7 @@ const UpdateEmployee = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                defaultValue={employee.telefonoContacto}
+                                                defaultValue={dataEmployee.telefonoContacto}
                                                 fullWidth
                                                 name="telefonoContacto"
                                                 label="Telefono Contacto"
@@ -645,7 +648,7 @@ const UpdateEmployee = () => {
                                         disabled={idTipoContrato === 9717 ? true : false}
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
-                                        defaultValue={employee.fechaContrato}
+                                        defaultValue={dataEmployee.fechaContrato}
                                     />
                                 </FormProvider>
                             </Grid>
@@ -655,7 +658,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="type"
                                         label="Rol"
-                                        defaultValue={employee.type}
+                                        defaultValue={dataEmployee.type}
                                         options={lsRol}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.type}
@@ -667,7 +670,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="rosterPosition"
                                         label="Roster Position"
-                                        defaultValue={employee.rosterPosition}
+                                        defaultValue={dataEmployee.rosterPosition}
                                         options={lsRosterPosition}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.rosterPosition}
@@ -680,7 +683,7 @@ const UpdateEmployee = () => {
                                         name="generalPosition"
                                         label="General Position"
                                         disabled={idTipoContrato === 9717 ? true : false}
-                                        defaultValue={employee.generalPosition}
+                                        defaultValue={dataEmployee.generalPosition}
                                         options={lsGeneralPosition}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.generalPosition}
@@ -692,7 +695,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="departamento"
                                         label="Departamentos"
-                                        defaultValue={employee.departamento}
+                                        defaultValue={dataEmployee.departamento}
                                         options={lsDepartEmpresa}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.departamento}
@@ -704,7 +707,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="area"
                                         label="Area"
-                                        defaultValue={employee.area}
+                                        defaultValue={dataEmployee.area}
                                         options={lsArea}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.area}
@@ -716,7 +719,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="subArea"
                                         label="Subarea"
-                                        defaultValue={employee.subArea}
+                                        defaultValue={dataEmployee.subArea}
                                         options={lsSubArea}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.subArea}
@@ -729,7 +732,7 @@ const UpdateEmployee = () => {
                                         name="grupo"
                                         disabled={idTipoContrato === 9717 ? true : false}
                                         label="Grupo"
-                                        defaultValue={employee.grupo}
+                                        defaultValue={dataEmployee.grupo}
                                         options={lsGrupo}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.grupo}
@@ -742,7 +745,7 @@ const UpdateEmployee = () => {
                                         name="turno"
                                         disabled={idTipoContrato === 9717 ? true : false}
                                         label="Turno"
-                                        defaultValue={employee.turno}
+                                        defaultValue={dataEmployee.turno}
                                         options={lsTurno}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.turno}
@@ -752,7 +755,7 @@ const UpdateEmployee = () => {
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue={employee.rotation}
+                                        defaultValue={dataEmployee.rotation}
                                         disabled={idTipoContrato === 9717 ? true : false}
                                         fullWidth
                                         name="rotation"
@@ -768,7 +771,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="oficio"
                                         label="Profesión"
-                                        defaultValue={employee.oficio}
+                                        defaultValue={dataEmployee.oficio}
                                         options={lsOficio}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.oficio}
@@ -781,7 +784,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="ges"
                                         label="Ges"
-                                        defaultValue={employee.ges}
+                                        defaultValue={dataEmployee.ges}
                                         options={lsGes}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.ges}
@@ -794,7 +797,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="payStatus"
                                         label="Estado"
-                                        defaultValue={employee.payStatus}
+                                        defaultValue={dataEmployee.payStatus}
                                         options={lsEstado}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.payStatus}
@@ -817,29 +820,18 @@ const UpdateEmployee = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioN.length !== 0 ? (
-                                    <SelectOnChange
+                                <FormProvider {...methods}>
+                                    <InputSelect
                                         name="municipioNacido"
                                         label="Municipio de Nacimiento"
-                                        value={municipioNacido}
+                                        defaultValue={dataEmployee.municipioNacido}
                                         options={lsMunicipioN}
-                                        onChange={(e) => setMunicipioNacido(e.target.value)}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.municipioNacido}
                                     />
-                                ) : (
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="municipioNacido"
-                                            label="Municipio de Nacimiento"
-                                            defaultValue={employee.municipioNacido}
-                                            disabled
-                                            options={lsCatalogo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.municipioNacido}
-                                        />
-                                    </FormProvider>
-                                )}
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
@@ -852,33 +844,21 @@ const UpdateEmployee = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioR.length !== 0 ? (
-                                    <SelectOnChange
+                                <FormProvider {...methods}>
+                                    <InputSelect
                                         name="municipioResidencia"
                                         label="Municipio de Residencia"
-                                        value={municipioResidencia}
+                                        defaultValue={dataEmployee.municipioResidencia}
                                         options={lsMunicipioR}
-                                        onChange={(e) => setMunicipioResidencia(e.target.value)}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.municipioResidencia}
                                     />
-                                ) : (
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="municipioResidencia"
-                                            label="Municipio de Residencia"
-                                            defaultValue={employee.municipioResidencia}
-                                            disabled
-                                            options={lsCatalogo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.municipioResidencia}
-                                        />
-                                    </FormProvider>
-                                )}
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue={employee.direccionResidencia}
+                                        defaultValue={dataEmployee.direccionResidencia}
                                         fullWidth
                                         name="direccionResidencia"
                                         label="Dirección de Residencia"
@@ -897,32 +877,24 @@ const UpdateEmployee = () => {
                                     onChange={handleChangeDptoResidenciaTrabaja}
                                 />
                             </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioTrabaja.length !== 0 ?
-                                    <SelectOnChange
+                                <FormProvider {...methods}>
+                                    <InputSelect
                                         name="municipioResidenciaTrabaja"
                                         label="Municipio de Residencia Laboral"
-                                        value={municipioResidenciaTrabaja}
+                                        defaultValue={dataEmployee.municipioResidenciaTrabaja}
                                         options={lsMunicipioTrabaja}
-                                        onChange={(e) => setMunicipioResidenciaTrabaja(e.target.value)}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.municipioResidenciaTrabaja}
                                     />
-                                    : <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="municipioResidenciaTrabaja"
-                                            label="Municipio de Residencia Laboral"
-                                            defaultValue={employee.municipioResidenciaTrabaja}
-                                            disabled
-                                            options={lsCatalogo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.municipioResidenciaTrabaja}
-                                        />
-                                    </FormProvider>}
+                                </FormProvider>
                             </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
-                                        defaultValue={employee.direccionResidenciaTrabaja}
+                                        defaultValue={dataEmployee.direccionResidenciaTrabaja}
                                         fullWidth
                                         name="direccionResidenciaTrabaja"
                                         label="Dirección de Residencia Laboral"
@@ -942,7 +914,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="eps"
                                         label="EPS"
-                                        defaultValue={employee.eps}
+                                        defaultValue={dataEmployee.eps}
                                         options={lsEps}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.eps}
@@ -954,7 +926,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="afp"
                                         label="AFP"
-                                        defaultValue={employee.afp}
+                                        defaultValue={dataEmployee.afp}
                                         options={lsAfp}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.afp}
@@ -967,7 +939,7 @@ const UpdateEmployee = () => {
                                         name="arl"
                                         disabled={idTipoContrato === 9717 ? true : false}
                                         label="ARL"
-                                        defaultValue={employee.arl}
+                                        defaultValue={dataEmployee.arl}
                                         options={lsArl}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.arl}
@@ -979,7 +951,7 @@ const UpdateEmployee = () => {
                                     <InputSelect
                                         name="cesantias"
                                         label="Cesantias"
-                                        defaultValue={employee.cesantias}
+                                        defaultValue={dataEmployee.cesantias}
                                         options={lsCesantias}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.cesantias}

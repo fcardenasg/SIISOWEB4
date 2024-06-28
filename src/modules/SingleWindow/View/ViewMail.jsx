@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useTheme } from '@mui/material/styles';
-import { Button, Dialog, DialogContent, Grid, IconButton, Slide, Typography, useMediaQuery } from '@mui/material';
+import { Button, Dialog, DialogContent, Divider, Grid, IconButton, Slide, Typography, useMediaQuery } from '@mui/material';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import 'react-quill/dist/quill.snow.css';
 import SendIcon from '@mui/icons-material/Send';
@@ -183,6 +183,7 @@ const ViewMail = ({ lsData }) => {
                     }, 4500);
                 }
             } else {
+                setLoading(false);
                 setOpenError(true);
                 setErrorMessage(result.data);
             }
@@ -413,9 +414,21 @@ const ViewMail = ({ lsData }) => {
 
                             <Grid item xs={12} md={lsData?.archivoRecibido ? 5 : 3}>
                                 <Grid container spacing={2} sx={{ py: 2, px: 2 }}>
-                                    <Typography textAlign="center" sx={{ pb: 1 }} variant='h4'>Visualización del archivo de solicitud</Typography>
-                                    {lsData?.archivoRecibido ? <ViewPDF dataPDF={lsData?.archivoRecibido} height={440} width={570} /> :
-                                        <Typography sx={{ pt: 5 }} textAlign="center" variant="h4">No hay archivo de solicitud registrado en esta solicitud para visualizar</Typography>}
+                                    <Grid item xs={12}>
+                                        <Typography sx={{ pb: 1 }} variant='h4'>Visualización del archivo de solicitud</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Divider />
+                                    </Grid>
+
+                                    {lsData?.archivoRecibido ?
+                                        <ViewPDF dataPDF={lsData?.archivoRecibido} height={440} width={570} /> :
+
+                                        <Grid item xs={12}>
+                                            <Typography sx={{ pt: 20 }} variant="h4">No existe una solicitud registrada para visualizar</Typography>
+                                        </Grid>
+                                    }
                                 </Grid>
                             </Grid>
                         </Grid>

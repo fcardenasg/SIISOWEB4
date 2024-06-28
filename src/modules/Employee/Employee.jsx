@@ -32,6 +32,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
     nombres: yup.string().required(ValidationMessage.Requerido),
+    fechaNaci: yup.string().nullable().required(ValidationMessage.Requerido),
     celular: yup.string().required(ValidationMessage.Requerido),
     empresa: yup.string().required(ValidationMessage.Requerido),
     sede: yup.string().required(ValidationMessage.Requerido),
@@ -313,46 +314,46 @@ const Employee = () => {
             const DataToInsert = {
                 documento: datos.documento,
                 nombres: datos.nombres,
-                fechaNaci: datos.fechaNaci === "" ? null : datos.fechaNaci,
-                type: datos.type === "" ? null : datos.type,
-                departamento: datos.departamento === "" ? null : datos.departamento,
-                area: datos.area === "" ? null : datos.area,
-                subArea: datos.subArea === "" ? null : datos.subArea,
-                grupo: datos.grupo === "" ? null : datos.grupo,
-                municipioNacido: datos.municipioNacido === "" ? null : datos.municipioNacido,
-                dptoNacido: datos.dptoNacido === "" ? null : datos.dptoNacido,
-                fechaContrato: datos.fechaContrato === "" ? null : datos.fechaContrato,
-                rosterPosition: datos.rosterPosition === "" ? null : datos.rosterPosition,
+                fechaNaci: datos.fechaNaci || null,
+                type: datos.type || null,
+                departamento: datos.departamento || null,
+                area: datos.area || null,
+                subArea: datos.subArea || null,
+                grupo: datos.grupo || null,
+                municipioNacido: datos.municipioNacido || null,
+                dptoNacido: dptoNacido || null,
+                fechaContrato: datos.fechaContrato || null,
+                rosterPosition: datos.rosterPosition || null,
                 tipoContrato: idTipoContrato,
-                generalPosition: datos.generalPosition === "" ? null : datos.generalPosition,
-                genero: datos.genero === "" ? null : datos.genero,
-                sede: datos.sede === "" ? null : datos.sede,
-                direccionResidencia: datos.direccionResidencia === "" ? null : datos.direccionResidencia,
-                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja === "" ? null : datos.direccionResidenciaTrabaja,
-                dptoResidenciaTrabaja: dptoResidenciaTrabaja,
-                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja === "" ? null : datos.municipioResidenciaTrabaja,
-                municipioResidencia: datos.municipioResidencia === "" ? null : datos.municipioResidencia,
-                dptoResidencia: dptoNacido,
-                celular: datos.celular === "" ? null : datos.celular,
-                eps: datos.eps === "" ? null : datos.eps,
-                afp: datos.afp === "" ? null : datos.afp,
-                turno: datos.turno === "" ? null : datos.turno,
-                email: datos.email === "" ? null : datos.email,
-                telefonoContacto: datos.telefonoContacto === "" ? null : datos.telefonoContacto,
-                estadoCivil: datos.estadoCivil === "" ? null : datos.estadoCivil,
-                empresa: datos.empresa === "" ? null : datos.empresa,
-                arl: datos.arl === "" ? null : datos.arl,
-                contacto: datos.contacto === "" ? null : datos.contacto,
-                escolaridad: datos.escolaridad === "" ? null : datos.escolaridad,
-                cesantias: datos.cesantias === "" ? null : datos.cesantias,
-                rotation: datos.rotation === "" ? null : datos.rotation,
-                payStatus: datos.payStatus === "" ? null : datos.payStatus,
+                generalPosition: datos.generalPosition || null,
+                genero: datos.genero || null,
+                sede: datos.sede || null,
+                direccionResidencia: datos.direccionResidencia || null,
+                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja || null,
+                dptoResidenciaTrabaja: dptoResidenciaTrabaja || null,
+                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja || null,
+                municipioResidencia: datos.municipioResidencia || null,
+                dptoResidencia: dptoResidencia,
+                celular: datos.celular || null,
+                eps: datos.eps || null,
+                afp: datos.afp || null,
+                turno: datos.turno || null,
+                email: datos.email || null,
+                telefonoContacto: datos.telefonoContacto || null,
+                estadoCivil: datos.estadoCivil || null,
+                empresa: datos.empresa || null,
+                arl: datos.arl || null,
+                contacto: datos.contacto || null,
+                escolaridad: datos.escolaridad || null,
+                cesantias: datos.cesantias || null,
+                rotation: datos.rotation || null,
+                payStatus: datos.payStatus || null,
                 termDate: null,
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
-                ges: datos.ges === "" ? null : datos.ges,
+                ges: datos.ges || null,
                 usuarioRegistro: user.nameuser,
-                oficio: datos.oficio === "" ? null : datos.oficio
+                oficio: datos.oficio || null,
             };
 
             const result = await InsertEmployee(DataToInsert);
@@ -489,7 +490,7 @@ const Employee = () => {
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
-                                            defaultValue=""
+                                            defaultValue={null}
                                             label="Fecha de Nacimiento"
                                             name="fechaNaci"
                                             bug={errors.fechaNaci}
@@ -564,7 +565,7 @@ const Employee = () => {
                                     setIdTipoContrato(e.target.value);
 
                                     if (e.target.value === 9717) {
-                                        setValue("fechaContrato", "");
+                                        setValue("fechaContrato", null);
                                         setValue("turno", "");
                                         setValue("grupo", "");
                                         setValue("rotation", "");
@@ -579,7 +580,7 @@ const Employee = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputDatePicker
-                                    defaultValue=""
+                                    defaultValue={null}
                                     disabled={idTipoContrato === 9717 ? true : false}
                                     label="Fecha de Contrato"
                                     name="fechaContrato"
@@ -755,6 +756,7 @@ const Employee = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
+
                         <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect

@@ -325,7 +325,7 @@ const OtherAdvice = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Otras Asesorías"
+                        title="Registrar otras asesorías"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}

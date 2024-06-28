@@ -186,8 +186,3 @@ const PersonalData = ({ lsEmployee = [], getDataAttention, atencion }) => {
 };
 
 export default PersonalData;
-
-PersonalData.propTypes = {
-    lsEmployee: PropTypes.any,
-    getDataAttention: PropTypes.func,
-};

@@ -528,7 +528,7 @@ const ViewRespuesta = () => {
                             </Grid>
                         </Grid>
                     </Fragment>
-                    : "Solicitudes respondidas"}
+                    : "Solicitudes atendidas"}
             >
                 <ListReplay getAllList={getAll} idVentanilla={idVentanilla} options={1} monitoreo={radioSearch == 1 ? false : true} />
             </ControlModal>

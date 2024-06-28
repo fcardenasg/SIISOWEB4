@@ -3,7 +3,7 @@ import { Button, Divider, Grid, Typography, useMediaQuery } from "@mui/material"
 import { useTheme } from '@mui/material/styles';
 import { MessageError, MessageSuccess } from "components/alert/AlertAll";
 
-import { CodCatalogo, Message } from "components/helpers/Enums";
+import { CodCatalogo } from "components/helpers/Enums";
 import { GetByIdVentanillaUnica, UpdateVentanillaUnicaEnvio } from "api/clients/VentanillaUnicaClient";
 import { FormProvider, useForm } from "react-hook-form";
 import InputSelect from "components/input/InputSelect";
@@ -19,14 +19,13 @@ import FullScreenDialog from "components/controllers/FullScreenDialog";
 import ListIndexNotes from "components/template/ListIndexNotes";
 import ViewPDF from "components/components/ViewPDF";
 import { generateReportGuiaEnvio } from "./Reportes";
-import { values } from "lodash";
 
 const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [lsData, setLsData] = useState([]);
+    const [lsData, setLsData] = useState(null);
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsEmpresaMensajeria, setLsEmpresaMensajeria] = useState([]);
 
@@ -39,7 +38,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
     const [errorMessage, setErrorMessage] = useState("");
 
     const methods = useForm();
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     useEffect(() => {
         async function getAll() {
@@ -47,6 +46,8 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                 const lsServer = await GetByIdVentanillaUnica(idVentanilla);
                 if (lsServer.status === 200) {
                     setLsData(lsServer.data);
+
+                    console.log("lsServer => ", lsServer.data);
                 }
 
                 const lsServerMedioIngreso = await GetByTipoCatalogoCombo(CodCatalogo.VentanillaMedioIngreso);
@@ -62,28 +63,18 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = {
-                id: idVentanilla,
-                idMedioEnvio: datos.idMedioEnvio,
-                idEmpresaMensajeria: datos.idEmpresaMensajeria,
-                numGuia: datos.numGuia,
-                solicitadoPor: datos.solicitadoPor,
-                telefonoNotificion: datos.telefonoNotificion,
-                direccionSolicitante: datos.direccionSolicitante,
-                ciudadEnvio: datos.ciudadEnvio,
-                correoSolicitante: datos.correoSolicitante,
-                descripcionEnvio: datos.descripcionEnvio,
-                usuarioModifico: user?.nameuser
-            };
+            datos.id = idVentanilla;
+            datos.usuarioModifico = user?.nameuser;
 
-            const result = await UpdateVentanillaUnicaEnvio(DataToInsert);
+            console.log("datos => ", datos);
+
+            const result = await UpdateVentanillaUnicaEnvio(datos);
             if (result.status === 200) {
                 if (result.data) {
                     setTimeout(() => {
                         setOpenSuccess(true);
+                        lsData.descripcionEnvio = datos.descripcionEnvio;
                     }, 500);
-
-                    setOpenSuccess(true);
                 } else {
                     setOpenError(true);
                     setErrorMessage("No se pudo enviar el correo");
@@ -124,7 +115,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                 maxWidth="xl"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Solicitudes respondidas"
+                title="Solicitudes atendidas"
             >
                 <ListReplay idVentanilla={idVentanilla} options={1} monitoreo={true} />
             </ControlModal>
@@ -137,7 +128,7 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                 <ListIndexNotes />
             </FullScreenDialog>
 
-            {lsData.length !== 0 ?
+            {lsData !== null ?
                 <Fragment>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6} lg={3}>
@@ -287,12 +278,6 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
 
                         <Grid item>
                             <AnimateButton>
-                                <ViewMail lsData={lsData} />
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item>
-                            <AnimateButton>
                                 <Button variant="contained" onClick={handleClickReport}>
                                     Generar Guía
                                 </Button>
@@ -301,8 +286,14 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
 
                         <Grid item>
                             <AnimateButton>
+                                <ViewMail lsData={lsData} />
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item>
+                            <AnimateButton>
                                 <Button variant="contained" onClick={() => setOpenModal(true)}>
-                                    Ver respuestas
+                                    Ver solicitud atendida
                                 </Button>
                             </AnimateButton>
                         </Grid>

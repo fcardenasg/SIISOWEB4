@@ -327,7 +327,7 @@ const ListMedicalAdvice = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAdvice.length) : 0;
 
     return (
-        <MainCard title="Lista De Asesorías Médicas Especializadas" content={false}>
+        <MainCard title="Lista de asesorías médicas especializadas" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>

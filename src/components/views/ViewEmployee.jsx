@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Fragment, useEffect, useState } from "react";
 import { Grid, CardMedia, FormGroup, FormControlLabel } from '@mui/material';
 import user from 'assets/img/user.png';
@@ -115,12 +114,6 @@ const ViewData = ({ icons, nameData, label }) => {
     );
 }
 
-ViewData.propTypes = {
-    icons: PropTypes.any,
-    nameData: PropTypes.string,
-    label: PropTypes.string,
-};
-
 const ViewDataDetails = ({ title, nameData }) => {
     return (
         <Fragment>
@@ -138,11 +131,6 @@ const ViewDataDetails = ({ title, nameData }) => {
         </Fragment>
     );
 }
-
-ViewDataDetails.propTypes = {
-    title: PropTypes.string,
-    nameData: PropTypes.string,
-};
 
 const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, handleDocumento }) => {
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -304,14 +292,6 @@ const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, 
     );
 };
 
-EmployeeInfo.propTypes = {
-    lsEmployee: PropTypes.object,
-    documento: PropTypes.string,
-    disabled: PropTypes.bool,
-    handleDocumento: PropTypes.object,
-    onChange: PropTypes.object,
-};
-
 const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onChange, handleDocumento, children = null }) => {
     const theme = useTheme();
 
@@ -419,11 +399,3 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 }
 
 export default ViewEmployee;
-
-ViewEmployee.propTypes = {
-    lsEmployee: PropTypes.object,
-    title: PropTypes.string,
-    documento: PropTypes.string,
-    disabled: PropTypes.bool,
-    handleDocumento: PropTypes.object,
-};

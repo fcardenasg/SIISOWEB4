@@ -329,7 +329,7 @@ const AccidentRate = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Accidente De Trabajo"
+                        title="Registrar accidente de trabajo"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}

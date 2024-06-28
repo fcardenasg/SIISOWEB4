@@ -328,7 +328,7 @@ const ListPsychologicalCounseling = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicalAdvice.length) : 0;
 
     return (
-        <MainCard title={<Typography variant="h4">Lista De Asesorías Psicológicas</Typography>} content={false}>
+        <MainCard title={<Typography variant="h4">Lista de asesorías psicológicas</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>

@@ -38,7 +38,7 @@ import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PutRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, InsertListaChekeo, UpdateRefunds } from 'api/clients/RefundClient';
-import { GetByMail } from 'api/clients/UserClient';
+import { GetAllUser, GetByMail } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { generateReportRefund } from './ReportRefund';
@@ -382,7 +382,7 @@ const Refund = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Reintegro"
+                            title="Actualizar reintegro"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

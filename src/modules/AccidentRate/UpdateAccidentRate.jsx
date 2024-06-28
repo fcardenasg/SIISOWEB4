@@ -383,7 +383,7 @@ const UpdateAccidentRate = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Accidente de Trabajo"
+                            title="Actualizar accidente de trabajo"
                             disabled={true}
                             key={lsEmployee?.documento}
                             documento={documento}

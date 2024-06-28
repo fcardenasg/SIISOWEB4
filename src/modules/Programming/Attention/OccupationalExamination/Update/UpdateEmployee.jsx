@@ -49,7 +49,6 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
     const [errorMessage, setErrorMessage] = useState("");
     const [openError, setOpenError] = useState(false);
 
-    const [lsCatalogo, setLsCatalogo] = useState([]);
     const [lsGes, setLsGes] = useState([]);
     const [employee, setEmployee] = useState([]);
     const [company, setCompany] = useState([]);
@@ -78,11 +77,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
     const [lsMunicipioTrabaja, setLsMunicipioTrabaja] = useState([]);
     const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState("");
     const [dptoNacido, setDptoNacido] = useState("");
-    const [municipioResidenciaTrabaja, setMunicipioResidenciaTrabaja] = useState("");
     const [idTipoContrato, setIdTipoContrato] = useState(null);
     const [dptoResidencia, setDptoResidencia] = useState("");
-    const [municipioNacido, setMunicipioNacido] = useState("");
-    const [municipioResidencia, setMunicipioResidencia] = useState("");
     const [imgSrc, setImgSrc] = useState(null);
     const [open, setOpen] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -98,6 +94,10 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
+
+                setLsMunicipioTrabaja(lsServerEmployeeId?.data.data.lsDptoResidenciaTrabaja);
+                setMunicipioN(lsServerEmployeeId?.data.data.lsDptoNacido);
+                setMunicipioR(lsServerEmployeeId?.data.data.lsDptoResidencia);
             } else {
                 setEmployee(lsServerEmployeeId?.data.data);
 
@@ -106,6 +106,10 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
                 setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
                 setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
+
+                setLsMunicipioTrabaja(lsServerEmployeeId?.data.data.lsDptoResidenciaTrabaja);
+                setMunicipioN(lsServerEmployeeId?.data.data.lsDptoNacido);
+                setMunicipioR(lsServerEmployeeId?.data.data.lsDptoResidencia);
             }
 
             const lsServerOficio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Oficio);
@@ -114,13 +118,6 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 label: item.nombre
             }));
             setOficio(resultOficio);
-
-            const lsServerCatalogo = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalogo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCatalogo(resultCatalogo);
 
             const lsServerDepartEmpresa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DepartEmpresa);
             var resultDepartEmpresa = lsServerDepartEmpresa.data.entities.map((item) => ({
@@ -335,50 +332,53 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
             const DataToUpdate = {
                 documento: datos.documento,
                 nombres: datos.nombres,
-                fechaNaci: datos.fechaNaci === "" ? null : datos.fechaNaci,
-                type: datos.type === "" ? null : datos.type,
-                departamento: datos.departamento === "" ? null : datos.departamento,
-                area: datos.area === "" ? null : datos.area,
-                subArea: datos.subArea === "" ? null : datos.subArea,
-                grupo: datos.grupo === "" ? null : datos.grupo,
-                municipioNacido: datos.municipioNacido === "" ? null : datos.municipioNacido,
-                dptoNacido: datos.dptoNacido === "" ? null : datos.dptoNacido,
-                fechaContrato: datos.fechaContrato === "" ? null : datos.fechaContrato,
-                rosterPosition: datos.rosterPosition === "" ? null : datos.rosterPosition,
+                fechaNaci: datos.fechaNaci || null,
+                type: datos.type || null,
+                departamento: datos.departamento || null,
+                area: datos.area || null,
+                subArea: datos.subArea || null,
+                grupo: datos.grupo || null,
+                municipioNacido: datos.municipioNacido || null,
+                dptoNacido: dptoNacido || null,
+                fechaContrato: datos.fechaContrato || null,
+                rosterPosition: datos.rosterPosition || null,
                 tipoContrato: idTipoContrato,
-                generalPosition: datos.generalPosition === "" ? null : datos.generalPosition,
-                genero: datos.genero === "" ? null : datos.genero,
-                sede: datos.sede === "" ? null : datos.sede,
-                direccionResidencia: datos.direccionResidencia === "" ? null : datos.direccionResidencia,
-                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja === "" ? null : datos.direccionResidenciaTrabaja,
-                dptoResidenciaTrabaja: dptoResidenciaTrabaja,
-                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja === "" ? null : datos.municipioResidenciaTrabaja,
-                municipioResidencia: datos.municipioResidencia === "" ? null : datos.municipioResidencia,
-                dptoResidencia: dptoNacido,
-                celular: datos.celular === "" ? null : datos.celular,
-                eps: datos.eps === "" ? null : datos.eps,
-                afp: datos.afp === "" ? null : datos.afp,
-                turno: datos.turno === "" ? null : datos.turno,
-                email: datos.email === "" ? null : datos.email,
-                telefonoContacto: datos.telefonoContacto === "" ? null : datos.telefonoContacto,
-                estadoCivil: datos.estadoCivil === "" ? null : datos.estadoCivil,
-                empresa: datos.empresa === "" ? null : datos.empresa,
-                arl: datos.arl === "" ? null : datos.arl,
-                contacto: datos.contacto === "" ? null : datos.contacto,
-                escolaridad: datos.escolaridad === "" ? null : datos.escolaridad,
-                cesantias: datos.cesantias === "" ? null : datos.cesantias,
-                rotation: datos.rotation === "" ? null : datos.rotation,
-                payStatus: datos.payStatus === "" ? null : datos.payStatus,
+                generalPosition: datos.generalPosition || null,
+                genero: datos.genero || null,
+                sede: datos.sede || null,
+                direccionResidencia: datos.direccionResidencia || null,
+                direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja || null,
+                dptoResidenciaTrabaja: dptoResidenciaTrabaja || null,
+                municipioResidenciaTrabaja: datos.municipioResidenciaTrabaja || null,
+                municipioResidencia: datos.municipioResidencia || null,
+                dptoResidencia: dptoResidencia,
+                celular: datos.celular || null,
+                eps: datos.eps || null,
+                afp: datos.afp || null,
+                turno: datos.turno || null,
+                email: datos.email || null,
+                telefonoContacto: datos.telefonoContacto || null,
+                estadoCivil: datos.estadoCivil || null,
+                empresa: datos.empresa || null,
+                arl: datos.arl || null,
+                contacto: datos.contacto || null,
+                escolaridad: datos.escolaridad || null,
+                cesantias: datos.cesantias || null,
+                rotation: datos.rotation || null,
+                payStatus: datos.payStatus || null,
                 termDate: null,
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
-                ges: datos.ges === "" ? null : datos.ges,
+                ges: datos.ges || null,
                 usuarioRegistro: user.nameuser,
-                oficio: datos.oficio === "" ? null : datos.oficio
+                oficio: datos.oficio || null,
             };
 
             const result = await UpdateEmployees(DataToUpdate);
             if (result.status === 200) {
+                const event = { target: { value: datos.documento } }
+                getDataAttention(event);
+
                 setOpenUpdate(true);
             }
         } catch (error) {
@@ -775,28 +775,16 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioN.length !== 0 ? (
-                                    <SelectOnChange
+                                <FormProvider {...methods}>
+                                    <InputSelect
                                         name="municipioNacido"
                                         label="Municipio de Nacimiento"
-                                        value={municipioNacido}
+                                        defaultValue={employee.municipioNacido}
                                         options={lsMunicipioN}
-                                        onChange={(e) => setMunicipioNacido(e.target.value)}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.municipioNacido}
                                     />
-                                ) : (
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="municipioNacido"
-                                            label="Municipio de Nacimiento"
-                                            defaultValue={employee.municipioNacido}
-                                            disabled
-                                            options={lsCatalogo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.municipioNacido}
-                                        />
-                                    </FormProvider>
-                                )}
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
@@ -809,28 +797,16 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioR.length !== 0 ? (
-                                    <SelectOnChange
+                                <FormProvider {...methods}>
+                                    <InputSelect
                                         name="municipioResidencia"
                                         label="Municipio de Residencia"
-                                        value={municipioResidencia}
+                                        defaultValue={employee.municipioResidencia}
                                         options={lsMunicipioR}
-                                        onChange={(e) => setMunicipioResidencia(e.target.value)}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.municipioResidencia}
                                     />
-                                ) : (
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="municipioResidencia"
-                                            label="Municipio de Residencia"
-                                            defaultValue={employee.municipioResidencia}
-                                            disabled
-                                            options={lsCatalogo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.municipioResidencia}
-                                        />
-                                    </FormProvider>
-                                )}
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
@@ -855,26 +831,16 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                 />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
-                                {lsMunicipioTrabaja.length !== 0 ?
-                                    <SelectOnChange
+                                <FormProvider {...methods}>
+                                    <InputSelect
                                         name="municipioResidenciaTrabaja"
                                         label="Municipio de Residencia Laboral"
-                                        value={municipioResidenciaTrabaja}
+                                        defaultValue={employee.municipioResidenciaTrabaja}
                                         options={lsMunicipioTrabaja}
-                                        onChange={(e) => setMunicipioResidenciaTrabaja(e.target.value)}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.municipioResidenciaTrabaja}
                                     />
-                                    : <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="municipioResidenciaTrabaja"
-                                            label="Municipio de Residencia Laboral"
-                                            defaultValue={employee.municipioResidenciaTrabaja}
-                                            disabled
-                                            options={lsCatalogo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.municipioResidenciaTrabaja}
-                                        />
-                                    </FormProvider>}
+                                </FormProvider>
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>

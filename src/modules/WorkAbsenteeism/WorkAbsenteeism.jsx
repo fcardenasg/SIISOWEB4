@@ -368,7 +368,7 @@ const WorkAbsenteeism = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Ausentismo Labora"
+                        title="Registrar ausentismo labora"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}

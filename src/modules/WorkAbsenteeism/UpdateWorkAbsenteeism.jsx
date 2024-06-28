@@ -421,7 +421,7 @@ const UpdateWorkAbsenteeism = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Ausentimo Laboral"
+                            title="Actualizar ausentimo laboral"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

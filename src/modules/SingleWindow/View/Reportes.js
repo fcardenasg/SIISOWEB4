@@ -12,7 +12,7 @@ function getFirma(doc, lsDataUser, my = 0) {
     doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
 
-function getHeader(doc = new jsPDF(), lsDataReport) {
+function getHeader(doc = new jsPDF()) {
     var marXR = doc.internal.pageSize.width - 5;
     /* ENCABEZADO REPORTE */
     doc.addImage(config.logotipo, "PNG", 5, 5, config.typeDashboard === 'DLTD' ? 60 : 50, 15);
@@ -59,10 +59,10 @@ export function generateReportGuiaEnvio(lsDataReport = []) {
 
     doc.setFontSize(15);
     doc.text(`-  ${lsDataReport?.solicitadoPor?.toUpperCase()}`, 20, 130);
-    doc.text(`-  ${lsDataReport?.direccionSolicitante.toUpperCase()}`, 20, 140);
+    doc.text(`-  ${lsDataReport?.direccionSolicitante?.toUpperCase()}`, 20, 140);
     doc.text(`-  ${lsDataReport?.ciudadEnvio?.toUpperCase()}`, 20, 150);
-    doc.text(`-  ${lsDataReport?.telefonoNotificion}`, 20, 160);
-    doc.text(`-  ${lsDataReport?.correoSolicitante}`, 20, 170);
+    doc.text(`-  ${lsDataReport?.telefonoNotificion?.toUpperCase()}`, 20, 160);
+    doc.text(`-  ${lsDataReport?.correoSolicitante?.toUpperCase()}`, 20, 170);
 
     var dataPDF = doc.output("bloburl");
     return dataPDF;

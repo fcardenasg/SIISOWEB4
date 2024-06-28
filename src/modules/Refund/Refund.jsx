@@ -324,7 +324,7 @@ const Refund = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Reintegro"
+                        title="Registrar reintegro"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -722,7 +722,7 @@ const Refund = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Lista De Chequeo</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Lista de chequeo</Typography>}>
 
                         <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
                             <CheckListRefund idReintegro={resultData} />

@@ -1,4 +1,4 @@
-import { Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Divider, Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import React, { Fragment, useEffect, useState } from "react";
 import AnimateButton from "ui-component/extended/AnimateButton";
 
@@ -142,9 +142,21 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }
 
                 <Grid item xs={12} md={4.5}>
                     <Grid container spacing={2} sx={{ py: 2, px: 2 }}>
-                        <Typography textAlign="center" sx={{ pb: 1 }} variant='h4'>Visialización del archivo de solicitud</Typography>
-                        {archivoVent ? <ViewPDF dataPDF={archivoVent} height={440} width={510} /> :
-                            <Typography sx={{ pt: 5 }} textAlign="center" variant="h4">No hay archivo de solicitud registrado en esta solicitud para visualizar</Typography>}
+                        <Grid item xs={12}>
+                            <Typography sx={{ pb: 1 }} variant='h4'>Visualización del archivo de solicitud</Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        {archivoVent ?
+                            <ViewPDF dataPDF={archivoVent} height={440} width={510} /> :
+
+                            <Grid item xs={12}>
+                                <Typography sx={{ pt: 20 }} variant="h4">No existe una solicitud registrada para visualizar</Typography>
+                            </Grid>
+                        }
                     </Grid>
                 </Grid>
             </Grid>
