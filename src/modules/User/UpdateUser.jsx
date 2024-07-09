@@ -351,7 +351,7 @@ const UpdateUser = () => {
                             <Grid item xs={12} md={6} lg={4}>
                                 <InputCheckBox
                                     name="registraTaxi"
-                                    defaultValue={false}
+                                    defaultValue={lsUsuario.registraTaxi}
                                     label="¿Registra solicitud de Taxi?"
                                     size={30}
                                 />
@@ -362,7 +362,7 @@ const UpdateUser = () => {
                             <Grid container>
                                 <Grid item xs={12} md={6}>
                                     <Button size="large" variant="contained" component="label" startIcon={<EditIcon fontSize="large" />}>
-                                        SUBIR FIRMA
+                                        Subir firma
                                         <input hidden accept="image/*" type="file" onChange={handleFile} />
                                     </Button>
                                 </Grid>
