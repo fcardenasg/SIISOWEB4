@@ -371,7 +371,7 @@ const ViewMail = ({ lsData }) => {
                                                         bgcolor={theme.palette.grey[500]}
                                                         onClick={handleClickDescargar}
                                                         iconPrimary={DownloadForOfflineIcon}
-                                                        secondary={`${lsData?.numDocumento} Archivos cargados con éxito`}
+                                                        secondary={`${lsData?.numDocumento} archivos cargados con éxito`}
                                                         color={theme.palette.info.main}
                                                     />
                                                 </AnimateButton>

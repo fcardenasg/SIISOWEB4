@@ -154,6 +154,9 @@ export const Url = {
     VentanillaUnicaDetalleArea: 'api/VentanillaUnicaDetalle/list-area',
     VentanillaUnicaDetalleArchivo: 'api/VentanillaUnicaDetalle/archivo',
 
+    VentanillaUnicaDetalleArchivoAll: 'api/VentanillaUnicaDetalle/archivo/all',
+    VentanillaUnicaDetalleArchivoById: 'api/VentanillaUnicaDetalle/archivo/by-id',
+
     Asesorias: 'api/Asesorias',
     AsesoriasExcel: 'api/Asesorias/excel',
     AsesoriasAll: 'api/Asesorias/all',

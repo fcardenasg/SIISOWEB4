@@ -1,3 +1,5 @@
+import Lottie from 'lottie-react';
+import { Fragment } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -7,8 +9,6 @@ import Typography from '@mui/material/Typography';
 import animation from 'assets/img/animation.json';
 import animation2 from 'assets/img/animation2.json';
 import fileuploaded from 'assets/img/fileuploaded.json';
-import Lottie from 'lottie-react';
-import { Fragment } from 'react';
 
 export default function Upload({
     disabled,
@@ -39,7 +39,7 @@ export default function Upload({
     let usersResult = <></>;
 
     if (!isDragActive) {
-        if (files === null) {
+        if (files?.length === 0 || files === null) {
             usersResult = (<Box sx={{ alignContent: 'center', width: '180px', height: '130px', marginX: 'auto' }}>
                 <Lottie animationData={animation} />
             </Box>);
@@ -59,7 +59,7 @@ export default function Upload({
             {usersResult}
 
             <Stack spacing={1} sx={{ textAlign: 'center' }}>
-                {files === null ? <Fragment>
+                {files?.length === 0 || files === null ? <Fragment>
                     <Typography variant="h4">Soltar o seleccionar archivo</Typography>
                     <Typography variant="body1" sx={{ color: 'text.secondary' }}>
                         Suelte los archivos aquí o haga clic
@@ -74,9 +74,15 @@ export default function Upload({
                             aquí
                         </Box>
                     </Typography>
-                </Fragment> : <Typography variant="h4">Archivo cargado exitosamente</Typography>}
+                </Fragment> :
+                    <>
+                        {files?.length === 1 ? <Typography variant="h4">Archivo cargado exitosamente</Typography> :
+                            <Typography variant="h4">Archivos cargados exitosamente</Typography>
+                        }
+                    </>
+                }
             </Stack>
-        </Stack>
+        </Stack >
     );
 
     return (

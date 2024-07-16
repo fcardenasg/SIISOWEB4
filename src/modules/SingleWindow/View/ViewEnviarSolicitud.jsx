@@ -46,8 +46,6 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
                 const lsServer = await GetByIdVentanillaUnica(idVentanilla);
                 if (lsServer.status === 200) {
                     setLsData(lsServer.data);
-
-                    console.log("lsServer => ", lsServer.data);
                 }
 
                 const lsServerMedioIngreso = await GetByTipoCatalogoCombo(CodCatalogo.VentanillaMedioIngreso);
@@ -65,8 +63,6 @@ const ViewEnviarSolicitud = ({ idVentanilla }) => {
         try {
             datos.id = idVentanilla;
             datos.usuarioModifico = user?.nameuser;
-
-            console.log("datos => ", datos);
 
             const result = await UpdateVentanillaUnicaEnvio(datos);
             if (result.status === 200) {

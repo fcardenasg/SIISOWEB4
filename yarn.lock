@@ -1611,6 +1611,18 @@
   "resolved" "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   "version" "1.2.1"
 
+"@iconify/react@^5.0.1":
+  "integrity" "sha512-octpAJRtHZLLS1o6fmz2Ek2Rfwx75kVg48MZyGTqL3QqoxRddEsuLqOt6ADDhRosmlrYnIrVL+7obo1bz2ikNw=="
+  "resolved" "https://registry.npmjs.org/@iconify/react/-/react-5.0.1.tgz"
+  "version" "5.0.1"
+  dependencies:
+    "@iconify/types" "^2.0.0"
+
+"@iconify/types@^2.0.0":
+  "integrity" "sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg=="
+  "resolved" "https://registry.npmjs.org/@iconify/types/-/types-2.0.0.tgz"
+  "version" "2.0.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   "integrity" "sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ=="
   "resolved" "https://registry.npmjs.org/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz"
@@ -8599,6 +8611,11 @@
   dependencies:
     "lodash._reinterpolate" "^3.0.0"
 
+"lodash.throttle@^4.1.1":
+  "integrity" "sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ=="
+  "resolved" "https://registry.npmjs.org/lodash.throttle/-/lodash.throttle-4.1.1.tgz"
+  "version" "4.1.1"
+
 "lodash.truncate@^4.4.2":
   "integrity" "sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM= sha512-jttmRe7bRse52OsWIMDLaXxWqRAmtIUccAQ3garviCqJjafXOfNMO0yMfNpdD6zbGaTU0P5Nz7e7gAT6cKmJRw=="
   "resolved" "https://registry.npmjs.org/lodash.truncate/-/lodash.truncate-4.4.2.tgz"
@@ -11146,6 +11163,14 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
 
+"react-lazy-load-image-component@^1.6.2":
+  "integrity" "sha512-dAdH5PsRgvDMlHC7QpZRA9oRzEZl1kPFwowmR9Mt0IUUhxk2wwq43PB6Ffwv84HFYuPmsxDUCka0E9KVXi8roQ=="
+  "resolved" "https://registry.npmjs.org/react-lazy-load-image-component/-/react-lazy-load-image-component-1.6.2.tgz"
+  "version" "1.6.2"
+  dependencies:
+    "lodash.debounce" "^4.0.8"
+    "lodash.throttle" "^4.1.1"
+
 "react-markdown@^6.0.0":
   "integrity" "sha512-kQbpWiMoBHnj9myLlmZG9T1JdoT/OEyHK7hqM6CqFT14MAkgWiWBUYijLyBmxbntaN6dCDicPcUhWhci1QYodg=="
   "resolved" "https://registry.npmjs.org/react-markdown/-/react-markdown-6.0.3.tgz"
@@ -11344,7 +11369,7 @@
   "resolved" "https://registry.npmjs.org/react-webcam/-/react-webcam-6.0.1.tgz"
   "version" "6.0.1"
 
-"react@^0.14.0 || ^15.0.0 || ^16.0.0-0", "react@^0.14.9 || ^15.3.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0|| ^18.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0", "react@^16.3.0 || 17", "react@^16.7.0 || ^17", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.3 || ^17", "react@^16.8.5 || ^17.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^16.x || 17.x || 18.x", "react@^17.0.0", "react@^17.0.0 || ^18.0.0", "react@^17.0.2", "react@^17.0.2 || ^18.0.0", "react@>= 0.14.0", "react@>= 0.14.0 < 18.0.0", "react@>= 16", "react@>= 16.8 || 18.0.0", "react@>= 16.8.0", "react@>=0.13", "react@>=15.3.0", "react@>=16", "react@>=16.3.3", "react@>=16.6.0", "react@>=16.8", "react@>=16.8 || ^17.0.0", "react@>=16.8.0", "react@17.0.2":
+"react@^0.14.0 || ^15.0.0 || ^16.0.0-0", "react@^0.14.9 || ^15.3.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0|| ^18.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0", "react@^15.x.x || ^16.x.x || ^17.x.x || ^18.x.x", "react@^16.3.0 || 17", "react@^16.7.0 || ^17", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.3 || ^17", "react@^16.8.5 || ^17.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^16.x || 17.x || 18.x", "react@^17.0.0", "react@^17.0.0 || ^18.0.0", "react@^17.0.2", "react@^17.0.2 || ^18.0.0", "react@>= 0.14.0", "react@>= 0.14.0 < 18.0.0", "react@>= 16", "react@>= 16.8 || 18.0.0", "react@>= 16.8.0", "react@>=0.13", "react@>=15.3.0", "react@>=16", "react@>=16.3.3", "react@>=16.6.0", "react@>=16.8", "react@>=16.8 || ^17.0.0", "react@>=16.8.0", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"

@@ -42,13 +42,11 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }
         getAll();
     }, [idVentanilla]);
 
-    async function downloadFileReplay(idVent, nombre) {
+    async function downloadFileReplay(idVent) {
         try {
-            var nombreFormat = nombre.toLowerCase().replace(/\s/g, "_");
             const archivoPdf = await GetVentanillaUnicaDetalleArchivo(idVent);
-
             if (archivoPdf.status === 200) {
-                DownloadFile(`${nombreFormat}_${new Date().getTime()}.pdf`, archivoPdf.data);
+                DownloadFile(`${idVent}archivosventanillaunica.zip`, archivoPdf.data);
             }
         } catch (error) { }
     }
@@ -100,8 +98,8 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }
                                                 {monitoreo ?
                                                     <Grid item xs={6}>
                                                         <AnimateButton>
-                                                            <Tooltip disabled={row?.estado ? false : true} title="Descargar archivo"
-                                                                onClick={() => downloadFileReplay(row?.id, row?.nameTipoDocumento)}>
+                                                            <Tooltip disabled={row?.estado ? false : true} title="Descargar archivos"
+                                                                onClick={() => downloadFileReplay(row?.id)}>
                                                                 <IconButton size="small">
                                                                     <DownloadForOfflineIcon color={row?.estado ? "error" : "inherit"} sx={{ fontSize: '1.6rem' }} />
                                                                 </IconButton>

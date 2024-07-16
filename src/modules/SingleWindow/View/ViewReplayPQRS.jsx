@@ -2,16 +2,19 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button, Divider, Grid, Typography, useMediaQuery } from "@mui/material";
 import SelectOnChange from "components/input/SelectOnChange";
 import { useTheme } from '@mui/material/styles';
-import { MessageError, MessageSuccess } from "components/alert/AlertAll";
+import { MessageError, MessageSuccess, ParamDelete } from "components/alert/AlertAll";
 import UploadIcon from '@mui/icons-material/Upload';
 import PersonIcon from '@mui/icons-material/Person';
 
+import swal from "sweetalert";
 import AnimateButton from "ui-component/extended/AnimateButton";
 import { TitleButton } from "components/helpers/Enums";
 import ControlModal from "components/controllers/ControlModal";
-import ViewPDF from "components/components/ViewPDF";
 
-import { GetByIdVentanillaUnicaDetalle, UpdateVentanillaUnicaDetalle } from "api/clients/VentanillaUnicaClient";
+import {
+    DeleteArchivoVentanillaUD, GetAllByIdArchivoVentanillaUD, GetByIdArchivoVentanillaUD,
+    GetByIdVentanillaUnicaDetalle, InsertArchivoVentanillaUD, UpdateVentanillaUnicaDetalle
+} from "api/clients/VentanillaUnicaClient";
 import { FormProvider, useForm } from "react-hook-form";
 import { GetAllComboArea } from "api/clients/UserClient";
 import InputSelect from "components/input/InputSelect";
@@ -21,6 +24,7 @@ import Upload from "components/UploadDocument/Upload";
 import Accordion from "components/accordion/Accordion";
 import useAuth from "hooks/useAuth";
 import { DownloadFile } from "components/helpers/ConvertToBytes";
+import MultiFilePreview from "components/UploadDocument/MultiFilePreview";
 
 const lsRespuesta = [
     { value: 0, label: "ATENDIDO" },
@@ -35,30 +39,46 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay, getAllList }) => {
     const [lsData, setLsData] = useState([]);
     const [lsUsuario, setLsUsuario] = useState([]);
     const [idRespuesta, setIdRespuesta] = useState(0);
-    const [infoArchivoAdjunto, setInfoArchivoAdjunto] = useState(null);
 
-    const [archivoAdjunto, setArchivoAdjunto] = useState("");
+    const [files, setFiles] = useState([]);
+    const [filesData, setFilesData] = useState([]);
+    const [disabledControl, setDisabledControl] = useState(false);
+
     const [openError, setOpenError] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
     const methods = useForm();
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
+
+    async function getAllFile() {
+        try {
+            await GetAllByIdArchivoVentanillaUD(idVentanillaDetalle).then(response => {
+                if (response.data.length !== 0) {
+                    setFilesData(response.data);
+                } else {
+                    setFilesData([]);
+                }
+            });
+        } catch (error) { }
+    }
+
+    useEffect(() => {
+        getAllFile();
+    }, [idVentanillaDetalle]);
 
     useEffect(() => {
         async function getAll() {
             try {
                 const lsServer = await GetByIdVentanillaUnicaDetalle(idVentanillaDetalle);
                 if (lsServer.status === 200) {
-                    setLsData(lsServer.data);
-
                     const lsServerUsuario = await GetAllComboArea(lsServer.data.idArea);
                     setLsUsuario(lsServerUsuario.data);
+                    setLsData(lsServer.data);
 
-                    if (lsServer.data.archivo !== null) {
-                        setArchivoAdjunto(lsServer.data.archivo);
-                    }
+                    if (lsServer.data.idOpcion === 0)
+                        setDisabledControl(true);
                 }
             } catch (error) { }
         }
@@ -67,81 +87,95 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay, getAllList }) => {
     }, [idVentanillaDetalle]);
 
     const allowedFiles = ['application/pdf'];
-    const handleDrop = useCallback(
-        (event) => {
-            setInfoArchivoAdjunto(null);
-            let selectedFile = event[0];
-            setInfoArchivoAdjunto(selectedFile);
+    const handleDrop = useCallback((acceptedFiles) => {
+        try {
+            var archivoExtraido = acceptedFiles[0];
 
-            if (selectedFile) {
-                if (selectedFile && allowedFiles.includes(selectedFile.type)) {
-                    let reader = new FileReader();
-                    reader.readAsDataURL(selectedFile);
-                    reader.onloadend = async (e) => {
-                        setArchivoAdjunto(e.target.result);
+            if (archivoExtraido && allowedFiles.includes(archivoExtraido.type)) {
+                setFiles(acceptedFiles);
+
+                let reader = new FileReader();
+                reader.readAsDataURL(archivoExtraido);
+                reader.onloadend = async (e) => {
+                    const modelData = {
+                        idVentanillaUnicaDetalle: idVentanillaDetalle,
+                        archivo: e.target.result,
+                        nombre: archivoExtraido.name,
+                        size: archivoExtraido.size.toString(),
+                        usuarioRegistro: user?.nameuser
                     }
-                }
-                else {
-                    setOpenError(true);
-                    setErrorMessage('Este forma no es un PDF');
-                    setInfoArchivoAdjunto(null);
-                    setArchivoAdjunto("");
+
+                    InsertArchivoVentanillaUD(modelData).then(response => {
+                        if (!isNaN(response.data)) {
+                            setOpenSuccess(true);
+                            setErrorMessage("Archivo cargado con éxito");
+                            getAllFile();
+                            setFiles([]);
+                        }
+                    });
                 }
             }
-        },
-        [infoArchivoAdjunto]
-    );
+            else {
+                setOpenError(true);
+                setErrorMessage('El archivo que intenta cargar no es formato PDF');
+            }
+        } catch (error) {
+            setFiles([]);
+            setOpenError(true);
+            setErrorMessage('No se pudo guardar el archivo');
+        }
+    }, [files]);
 
-    async function downloadFileReplay() {
+    const handleRemoveFile = (idArchivo) => {
         try {
-            var nombreFormat = lsData?.nameTipoDocumento.toLowerCase().replace(/\s/g, "_");
-            var archivoFormat = archivoAdjunto;
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteArchivoVentanillaUD(idArchivo);
+                    if (result.status === 200) {
+                        setOpenError(true);
+                        setErrorMessage('Archivo eliminado con éxito');
+                    }
+                    getAllFile();
+                }
+            });
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('No se pudo eliminar el archivo');
+        }
+    };
 
-            DownloadFile(`${nombreFormat}_${new Date().getTime()}.pdf`, archivoFormat.replace("data:application/pdf;base64,", ""));
-
-        } catch (error) { }
+    async function onClickDownload(idArchivo) {
+        try {
+            var archivoFormat = await GetByIdArchivoVentanillaUD(idArchivo);
+            if (archivoFormat.status === 200) {
+                DownloadFile(archivoFormat.data.nombre, archivoFormat.data.archivo);
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage('No se pudo cargar el archivo');
+        }
     }
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = {
                 id: Number(idVentanillaDetalle),
-                archivoRespuesta: archivoAdjunto,
                 idOpcion: idRespuesta,
                 idUsuario: datos.idUsuario,
                 observacionTraslado: datos.observaciones,
                 usuarioModifico: user?.nameuser
             };
 
-            if (idRespuesta === 0) {
-                if (archivoAdjunto !== "") {
-                    const result = await UpdateVentanillaUnicaDetalle(DataToInsert);
-                    if (result.status === 200) {
-                        setTimeout(() => {
-                            setOpenSuccess(true);
-                            getAllReplay();
-                            getAllList();
-                            reset();
-                        }, 500);
-
-                        setOpenSuccess(true);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage("Debe seleccionar el archivo para subirlo");
-                }
-            } else {
-                const result = await UpdateVentanillaUnicaDetalle(DataToInsert);
-                if (result.status === 200) {
-                    setTimeout(() => {
-                        setOpenSuccess(true);
-                        getAllReplay();
-                        getAllList();
-                        reset();
-                    }, 500);
-
+            const result = await UpdateVentanillaUnicaDetalle(DataToInsert);
+            if (result.status === 200) {
+                setTimeout(() => {
                     setOpenSuccess(true);
-                }
+                    getAllReplay();
+                    getAllList();
+                }, 500);
+
+                setOpenSuccess(true);
+                setErrorMessage("Archivos subidos y guardado con éxito");
             }
         } catch (error) {
             setOpenError(true);
@@ -155,12 +189,12 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay, getAllList }) => {
                 maxWidth="sm"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Vista del Archivo"
+                title="Vista del archivo"
             >
-                <ViewPDF dataPDF={archivoAdjunto} height={490} width={550} />
+                {/* <ViewPDF dataPDF={archivoAdjunto} height={490} width={550} /> */}
             </ControlModal>
 
-            <MessageSuccess message="Archivo subido y guardado con éxito" open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             {lsData.length !== 0 ?
@@ -273,36 +307,9 @@ const ViewReplayPQRS = ({ idVentanillaDetalle, getAllReplay, getAllList }) => {
                     {idRespuesta === 0 ?
                         <Grid item xs={12}>
                             <Accordion title={<><UploadIcon /><Typography sx={{ pl: 2 }} align='right' variant="h4" color="inherit">Subir archivo de respuesta</Typography></>}>
-                                <Upload files={infoArchivoAdjunto} onDrop={handleDrop} />
+                                <Upload disabled={disabledControl} files={files} onDrop={handleDrop} />
 
-                                <Grid sx={{ mt: 1 }} spacing={1} container direction="row" justifyContent="flex-end" alignItems="center">
-                                    <Grid item>
-                                        <AnimateButton>
-                                            <Button disabled={archivoAdjunto === "" ? true : false}
-                                                variant="outlined" size="medium" onClick={downloadFileReplay}>
-                                                Descargar
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item>
-                                        <AnimateButton>
-                                            <Button disabled={archivoAdjunto === "" ? true : false}
-                                                variant="outlined" size="medium" onClick={() => setOpenModal(true)}>
-                                                {TitleButton.VerArchivo}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item>
-                                        <AnimateButton>
-                                            <Button variant="outlined" color="error" size="medium"
-                                                onClick={() => { setArchivoAdjunto(""); setInfoArchivoAdjunto(null); }}>
-                                                Remover archivo
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-                                </Grid>
+                                {filesData?.length !== 0 ? <MultiFilePreview disabledControl={disabledControl} files={filesData} onRemove={handleRemoveFile} onClickDownload={onClickDownload} /> : null}
                             </Accordion>
                         </Grid>
                         :
