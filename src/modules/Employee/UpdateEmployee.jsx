@@ -107,8 +107,6 @@ const UpdateEmployee = () => {
 
             const lsServerEmployeeId = await GetByIdEmployee(id);
             if (lsServerEmployeeId?.data.status === 200) {
-                console.log("lsServerEmployeeId => ", lsServerEmployeeId?.data.data);
-
                 setDataEmployee(lsServerEmployeeId?.data.data);
                 setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === "" ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
 

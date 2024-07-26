@@ -223,7 +223,7 @@ const ViewRespuesta = () => {
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });
@@ -238,7 +238,6 @@ const ViewRespuesta = () => {
             setLsRespuesta(rows);
         }
     };
-
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);

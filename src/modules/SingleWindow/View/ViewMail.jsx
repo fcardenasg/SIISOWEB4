@@ -100,7 +100,6 @@ const ViewMail = ({ lsData }) => {
 
             var dataUser = lsUsuario.find(x => x.value === values.idMedicoFirmante);
             const lsDataUser = await GetByMail(dataUser.codigo);
-            console.log(dataUser, lsDataUser);
             const dataPDFTwo = generateReportActaCorreo(values.redaccionActa, lsDataUser.data);
             setArchivoRecibido(dataPDFTwo.dataPDF);
 

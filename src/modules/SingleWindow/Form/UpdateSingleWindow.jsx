@@ -106,6 +106,25 @@ const UpdateSingleWindow = () => {
     }, []);
 
     useEffect(() => {
+        async function getById() {
+            try {
+                const lsServer = await GetByIdVentanillaUnica(id);
+                if (lsServer.status === 200) {
+                    setDocumento(lsServer.data.documento);
+                    setArchivoAdjunto(lsServer.data.archivoRecibido);
+
+                    setTimeout(() => {
+                        setDataSingle(lsServer.data);
+                    }, 500);
+                }
+            } catch (error) { }
+        }
+
+        getById();
+    }, [id]);
+
+
+    useEffect(() => {
         if (values.idTipo) {
             var lsTipoMemory = lsTipo;
             var codigoTiempo = lsTipoMemory.filter(code => code.value === values.idTipo)[0].codigo;
@@ -133,24 +152,6 @@ const UpdateSingleWindow = () => {
             setValue("fechaLimiteRespuesta", FormatDate(nuevaFecha));
         }
     }, [values.fechaRecibido]);
-
-    useEffect(() => {
-        async function getById() {
-            try {
-                const lsServer = await GetByIdVentanillaUnica(id);
-                if (lsServer.status === 200) {
-                    setDocumento(lsServer.data.documento);
-                    setArchivoAdjunto(lsServer.data.archivoRecibido);
-
-                    setTimeout(() => {
-                        setDataSingle(lsServer.data);
-                    }, 500);
-                }
-            } catch (error) { }
-        }
-
-        getById();
-    }, [id]);
 
     const handleDocumento = async (event) => {
         try {

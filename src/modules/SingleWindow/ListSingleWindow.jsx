@@ -214,14 +214,14 @@ const ViewRespuesta = () => {
         setSearch(newString || '');
 
         if (newString) {
-            const newRows = rows.filter((row) => {
+            const newRows = rows?.filter((row) => {
                 let matches = true;
 
                 const properties = ['nRadicado', 'documento', 'nombre', 'tipo'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });
