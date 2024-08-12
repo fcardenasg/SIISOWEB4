@@ -3,8 +3,7 @@ import config from 'config';
 
 const Logo = ({ size = 300 }) => {
     return (
-        <img src={config.logotipo}
-            alt={config.typeDashboard} width={size} />
+        <img src={config.logotipo} alt={config.typeDashboard} width={size} />
     );
 };
 

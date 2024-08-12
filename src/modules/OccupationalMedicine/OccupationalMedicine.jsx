@@ -305,27 +305,43 @@ const OccupationalMedicine = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostOccupationalMedicine(documento, datos.resumenCaso, datos.situacionEmpleado, datos.fechaRetiro, datos.segmentoAgrupado, datos.segmentoAfectado,
-                datos.subsegmento, datos.codDx, datos.nroFurel, datos.regionInfoLaboral, datos.lateralidad, datos.entidadQueMotivaEnvio, datos.entidadDondeEnvia, datos.fechaEntrega,
-                datos.fechaEnvio, datos.investigado, datos.observaciones, datos.fechaCalificacionEps, datos.origenEps, datos.noSolicitudARL1, datos.noSolicitudARL2,
-                datos.fechaCalifiOrigenARL, datos.origenARL, datos.fechaCalificacionPclARL, datos.pclARL, datos.fechaEstructuraARL,
-                datos.fechaRecalificacionPclARL, datos.pclRecalificadaARL, datos.fechaEstructuraRecalificadaARL, datos.fechaCalificaOrigenJRC,
-                datos.juntaCalifica, datos.noDictamenJRC, datos.origenJRC, datos.controversia, datos.conclusion, datos.fechaCalificacionPclJRC, datos.noDictamenPclJRC,
-                datos.pclJRC, datos.fechaEstructuraPclJRC, datos.noActaRecursoJRC, datos.fechaRecalificacionPclJRC, datos.noDictamenRecalificacionJRC,
-                datos.juntaReCalificacionJRC, datos.pclRecalificadaJRC, datos.fechaRecalificacionEstJRC, datos.fechaCalificaOrigenJNC,
-                datos.noDictamenJNC, datos.origenJNC, datos.fechaCalificacionPclJNC, datos.noDictamenPclJNC, datos.pclJNC, datos.fechaEstructuraJNC,
-                datos.fechaRecalificacionPclJNC, datos.noDictamenRecalificacionJNC, datos.pclRecalificacionJNC, datos.origenInstaFinal,
-                datos.fechaEstructuracionOrigenInstaFinal, datos.instanciaOrigenInstaFinal, datos.pclFinalInstaFinal, datos.instanciaFinal,
-                datos.fechaCalificacionPclInstFinal, datos.fechaEstructuracionPclInstFinal, datos.indemnizado, datos.fechaPagoInstaFinal,
-                datos.entregadoMin, datos.indemnizadoRecalificado, datos.fechaPagoRecalificadoInstaFinal, datos.estadoRHT, datos.reintegro, datos.reubicado,
-                datos.restringido, datos.jornadaLaboral, datos.indemnizacion, lsEmployee.sede, filePdf,
-                datos.aplica, datos.motivoIE, datos.estadoEnfermedadLaboral, datos.resultadoOrigen, fechaCaliUltimaInstancia, fechaInvestigacion,
-                datos.origenInvestigacion, diasDiferencia, datos.resumenWR, datos.accTrabajador, datos.resumenSG, datos.accSistema, datos.peligroAsociadoEnfermedad,
-                datos.fechaEntregaMin, filePdfMin, user.nameuser, undefined, undefined, undefined,
-                datos.fechaEstimadaInicioCaso, datos.vistoBueno, datos.pclInstaFinal, datos.fechaEstructuracionJRC, datos.salaCalificadoraJNC, datos.medicoCalificadorJNC,
-                datos.salaCalificadoraPCLJNC, datos.medicoCalificadorPCLJNC, datos.idInvestigadoPor);
+            datos.cedula = documento;
+            datos.usuarioRegistro = user.nameuser;
+            datos.sede = lsEmployee.sede;
+            datos.urlDocumento = filePdf || null;
+            datos.fechaCalificacionUltimaInstancia = fechaCaliUltimaInstancia || null;
+            datos.fechaInvestigacion = fechaInvestigacion || null;
+            datos.diferenciaDia = diasDiferencia || null;
+            datos.pdfMinisterio = filePdfMin || null;
 
-            const result = await InsertOccupationalMedicine(DataToInsert);
+            datos.fechaRetiro = datos.fechaRetiro || null;
+            datos.fechaEstimadaInicioCaso = datos.fechaEstimadaInicioCaso || null;
+            datos.fechaEntrega = datos.fechaEntrega || null;
+            datos.fechaEnvio = datos.fechaEnvio || null;
+            datos.fechaCalificacionEps = datos.fechaCalificacionEps || null;
+            datos.fechaCalifiOrigenARL = datos.fechaCalifiOrigenARL || null;
+            datos.fechaCalificacionPclARL = datos.fechaCalificacionPclARL || null;
+            datos.fechaEstructuraARL = datos.fechaEstructuraARL || null;
+            datos.fechaRecalificacionPclARL = datos.fechaRecalificacionPclARL || null;
+            datos.fechaEstructuraRecalificadaARL = datos.fechaEstructuraRecalificadaARL || null;
+            datos.fechaCalificaOrigenJRC = datos.fechaCalificaOrigenJRC || null;
+            datos.fechaCalificacionPclJRC = datos.fechaCalificacionPclJRC || null;
+            datos.fechaEstructuraPclJRC = datos.fechaEstructuraPclJRC || null;
+            datos.fechaRecalificacionPclJRC = datos.fechaRecalificacionPclJRC || null;
+            datos.fechaRecalificacionEstJRC = datos.fechaRecalificacionEstJRC || null;
+            datos.fechaEstructuracionJRC = datos.fechaEstructuracionJRC || null;
+            datos.fechaCalificaOrigenJNC = datos.fechaCalificaOrigenJNC || null;
+            datos.fechaCalificacionPclJNC = datos.fechaCalificacionPclJNC || null;
+            datos.fechaEstructuraJNC = datos.fechaEstructuraJNC || null;
+            datos.fechaRecalificacionPclJNC = datos.fechaRecalificacionPclJNC || null;
+            datos.fechaEstructuracionOrigenInstaFinal = datos.fechaEstructuracionOrigenInstaFinal || null;
+            datos.fechaCalificacionPclInstFinal = datos.fechaCalificacionPclInstFinal || null;
+            datos.fechaEstructuracionPclInstFinal = datos.fechaEstructuracionPclInstFinal || null;
+            datos.fechaPagoInstaFinal = datos.fechaPagoInstaFinal || null;
+            datos.fechaEntregaMin = datos.fechaEntregaMin || null;
+            datos.fechaPagoRecalificadoInstaFinal = datos.fechaPagoRecalificadoInstaFinal || null;
+
+            const result = await InsertOccupationalMedicine(datos);
             if (result.status === 200) {
                 if (result.data === Message.ErrorDocumento) {
                     setOpenError(true);
@@ -385,7 +401,7 @@ const OccupationalMedicine = () => {
                         disabledUpdate={false}
                         disabledSave={disabledButttons}
                         showButton={false}
-                        threshold={lsEmployee.length !== 0 ? 550 : 480}
+                        threshold={lsEmployee?.length !== 0 ? 550 : 480}
                     >
                         <Grid item xs={12}>
                             <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>

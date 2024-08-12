@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import { ButtonBase } from '@mui/material';
-import Logo from 'ui-component/Logo';
+import LogoWhite from 'assets/img/LogoWhite.png'
 
 const LogoSection = () => {
     const menu = window.localStorage.getItem('systemMenu');
     const itemsMenu = JSON.parse(menu);
 
     return (
-        <ButtonBase disableRipple component={Link} to={itemsMenu[0].children[0].url}>
-            <Logo size={200} />
+        <ButtonBase disableRipple component={Link} to={itemsMenu[0]?.children[0]?.url}>
+            <img src={LogoWhite} alt="Logo drummondltd blanco" width={175} />
         </ButtonBase>
     )
 };

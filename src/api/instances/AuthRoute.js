@@ -163,6 +163,11 @@ export const Url = {
     AsesoriasId: 'api/Asesorias/id',
     AsesoriasReportePdf: 'api/Asesorias/reporte-pdf',
 
+    Soporte: 'api/Soporte',
+    SoporteId: 'api/Soporte/id',
+    SoporteUpdateState: 'api/Soporte/update-state',
+    
+
     OrdenesEPP: 'api/OrdenesEPP',
     OrdenesEPPExcel: 'api/OrdenesEPP/excel',
     OrdenesEPPId: 'api/OrdenesEPP/id',

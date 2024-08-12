@@ -372,6 +372,9 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 ges: datos.ges || null,
                 usuarioRegistro: user.nameuser,
                 oficio: datos.oficio || null,
+                fechaIngreso: datos.fechaIngreso || null,
+                fechaUltimoControl: datos.fechaUltimoControl || null,
+                fechaEgreso: datos.fechaEgreso || null
             };
 
             const result = await UpdateEmployees(DataToUpdate);
@@ -396,37 +399,37 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
     return (
         <Grid container spacing={3}>
             {timeWait ? (
-                <Grid item xs={12}>
-                    <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                        <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                    <SubCard darkTitle title={<Typography variant="h4">Datos Personales</Typography>}>
-                        <ModalChildren
-                            open={open}
-                            onClose={() => setOpen(false)}
-                            title="Tomar Fotografía"
-                        >
-                            <WebCamCapture
-                                CaptureImg={CapturePhoto}
-                                RemoverImg={() => setImgSrc(null)}
-                                ImgSrc={imgSrc}
-                                WebCamRef={WebCamRef}
-                            />
-                        </ModalChildren>
-
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <PhotoModel
-                                    OpenModal={() => setOpen(true)}
-                                    EstadoImg={imgSrc}
+                        <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Datos personales</Typography>}>
+                            <ModalChildren
+                                open={open}
+                                onClose={() => setOpen(false)}
+                                title="Tomar Fotografía"
+                            >
+                                <WebCamCapture
+                                    CaptureImg={CapturePhoto}
                                     RemoverImg={() => setImgSrc(null)}
+                                    ImgSrc={imgSrc}
+                                    WebCamRef={WebCamRef}
                                 />
-                            </Grid>
+                            </ModalChildren>
 
-                            <Grid item xs={12} md={6} lg={8}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <PhotoModel
+                                        OpenModal={() => setOpen(true)}
+                                        EstadoImg={imgSrc}
+                                        RemoverImg={() => setImgSrc(null)}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={8}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 defaultValue={employee.documento}
                                                 fullWidth
@@ -436,10 +439,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.documento}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 defaultValue={employee.nombres}
                                                 fullWidth
@@ -448,10 +449,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.nombres}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 defaultValue={employee.email}
                                                 fullWidth
@@ -460,10 +459,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.email}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 defaultValue={employee.celular}
                                                 fullWidth
@@ -472,10 +469,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.celular}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="escolaridad"
                                                 label="Escolaridad"
@@ -484,10 +479,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.escolaridad}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="empresa"
                                                 label="Empresa"
@@ -496,10 +489,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.empresa}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="sede"
                                                 label="Sede"
@@ -508,19 +499,15 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.sede}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha de Nacimiento"
                                                 name="fechaNaci"
                                                 defaultValue={employee.fechaNaci}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="genero"
                                                 label="Genero"
@@ -529,10 +516,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.genero}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="estadoCivil"
                                                 label="Estado civil"
@@ -541,10 +526,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.estadoCivil}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 defaultValue={employee.contacto}
                                                 fullWidth
@@ -553,10 +536,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.contacto}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 defaultValue={employee.telefonoContacto}
                                                 fullWidth
@@ -565,50 +546,45 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.telefonoContacto}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                    <Grid sx={{ pb: 2 }} />
+                        </SubCard>
 
-                    <SubCard darkTitle title={<Typography variant="h4">Información Contractual</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <SelectOnChange
-                                    name="tipoContrato"
-                                    label="Tipo de Contrato"
-                                    value={idTipoContrato}
-                                    options={lsTipoContrato}
-                                    onChange={(e) => {
-                                        setIdTipoContrato(e.target.value);
+                        <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Información contractual</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <SelectOnChange
+                                        name="tipoContrato"
+                                        label="Tipo de Contrato"
+                                        value={idTipoContrato}
+                                        options={lsTipoContrato}
+                                        onChange={(e) => {
+                                            setIdTipoContrato(e.target.value);
 
-                                        if (e.target.value === 9717) {
-                                            setValue("fechaContrato", "");
-                                            setValue("turno", "");
-                                            setValue("grupo", "");
-                                            setValue("rotation", "");
-                                            setValue("generalPosition", "");
-                                            setValue("arl", "");
-                                        }
-                                    }}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                            if (e.target.value === 9717) {
+                                                setValue("fechaContrato", "");
+                                                setValue("turno", "");
+                                                setValue("grupo", "");
+                                                setValue("rotation", "");
+                                                setValue("generalPosition", "");
+                                                setValue("arl", "");
+                                            }
+                                        }}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputDatePicker
                                         disabled={idTipoContrato === 9717 ? true : false}
                                         label="Fecha de Contrato"
                                         name="fechaContrato"
                                         defaultValue={employee.fechaContrato}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="type"
                                         label="Rol"
@@ -617,10 +593,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.type}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="rosterPosition"
                                         label="Roster Position"
@@ -629,10 +603,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.rosterPosition}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="generalPosition"
                                         label="General Position"
@@ -642,10 +614,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.generalPosition}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="departamento"
                                         label="Departamentos"
@@ -654,10 +624,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.departamento}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="area"
                                         label="Area"
@@ -666,10 +634,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.area}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="subArea"
                                         label="Subarea"
@@ -678,10 +644,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.subArea}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="grupo"
                                         disabled={idTipoContrato === 9717 ? true : false}
@@ -691,10 +655,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.grupo}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="turno"
                                         disabled={idTipoContrato === 9717 ? true : false}
@@ -704,10 +666,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.turno}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputText
                                         defaultValue={employee.rotation}
                                         disabled={idTipoContrato === 9717 ? true : false}
@@ -717,11 +677,9 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.rotation}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="oficio"
                                         label="Profesión"
@@ -730,11 +688,9 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.oficio}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="ges"
                                         label="Ges"
@@ -743,11 +699,9 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.ges}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="payStatus"
                                         label="Estado"
@@ -756,26 +710,23 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.payStatus}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                    <Grid sx={{ pb: 2 }} />
+                        </SubCard>
 
-                    <SubCard darkTitle title={<Typography variant="h4">Información Demográfica</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <SelectOnChange
-                                    name="dptoNacido"
-                                    label="Departamento de Nacimiento"
-                                    value={dptoNacido}
-                                    options={lsDepartamento}
-                                    onChange={handleChangeDptoNacido}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                        <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Información demográfica</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <SelectOnChange
+                                        name="dptoNacido"
+                                        label="Departamento de Nacimiento"
+                                        value={dptoNacido}
+                                        options={lsDepartamento}
+                                        onChange={handleChangeDptoNacido}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="municipioNacido"
                                         label="Municipio de Nacimiento"
@@ -784,20 +735,18 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.municipioNacido}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <SelectOnChange
-                                    name="dptoResidencia"
-                                    label="Departamento de Residencia"
-                                    options={lsDepartamento}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={dptoResidencia}
-                                    onChange={handleChangeDptoResidencia}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <SelectOnChange
+                                        name="dptoResidencia"
+                                        label="Departamento de Residencia"
+                                        options={lsDepartamento}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        value={dptoResidencia}
+                                        onChange={handleChangeDptoResidencia}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="municipioResidencia"
                                         label="Municipio de Residencia"
@@ -806,10 +755,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.municipioResidencia}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputText
                                         defaultValue={employee.direccionResidencia}
                                         fullWidth
@@ -818,20 +765,18 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.direccionResidencia}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <SelectOnChange
-                                    name="dptoResidenciaTrabaja"
-                                    label="Departamento de Residencia Laboral"
-                                    options={lsDepartamento}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={dptoResidenciaTrabaja}
-                                    onChange={handleChangeDptoResidenciaTrabaja}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <SelectOnChange
+                                        name="dptoResidenciaTrabaja"
+                                        label="Departamento de Residencia Laboral"
+                                        options={lsDepartamento}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        value={dptoResidenciaTrabaja}
+                                        onChange={handleChangeDptoResidenciaTrabaja}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="municipioResidenciaTrabaja"
                                         label="Municipio de Residencia Laboral"
@@ -840,10 +785,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.municipioResidenciaTrabaja}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputText
                                         defaultValue={employee.direccionResidenciaTrabaja}
                                         fullWidth
@@ -852,16 +795,13 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.direccionResidenciaTrabaja}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                    <Grid sx={{ pb: 2 }} />
+                        </SubCard>
 
-                    <SubCard darkTitle title={<Typography variant="h4">Seguridad Social</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                        <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Seguridad social</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="eps"
                                         label="EPS"
@@ -870,10 +810,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.eps}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="afp"
                                         label="AFP"
@@ -882,10 +820,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.afp}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="arl"
                                         disabled={idTipoContrato === 9717 ? true : false}
@@ -895,10 +831,8 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.arl}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="cesantias"
                                         label="Cesantias"
@@ -907,31 +841,61 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.cesantias}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                    <Grid sx={{ pb: 2 }} />
+                        </SubCard>
 
-                    <Grid item xs={12} sx={{ pb: 2 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6} md={4} lg={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                        {TitleButton.Actualizar}
-                                    </Button>
-                                </AnimateButton>
+                        <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Otros datos del empleado</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputDatePicker
+                                        defaultValue={employee?.fechaIngreso}
+                                        label="Fecha de ingreso"
+                                        name="fechaIngreso"
+                                        bug={errors.fechaIngreso}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputDatePicker
+                                        defaultValue={employee?.fechaUltimoControl}
+                                        label="Fecha de último control"
+                                        name="fechaUltimoControl"
+                                        bug={errors.fechaUltimoControl}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputDatePicker
+                                        defaultValue={employee?.fechaEgreso}
+                                        label="Fecha de egreso"
+                                        name="fechaEgreso"
+                                        bug={errors.fechaEgreso}
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={6} md={4} lg={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" onClick={() => setOpenUpdateTwo(false)} fullWidth>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                        </SubCard>
+
+                        <Grid item xs={12} sx={{ mb: 2 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" onClick={() => setOpenUpdateTwo(false)} fullWidth>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </FormProvider>
             ) :
                 <Grid container spacing={3} sx={{ m: 5 }}>
                     <Grid item xs={12}>

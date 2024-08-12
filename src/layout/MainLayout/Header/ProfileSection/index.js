@@ -10,6 +10,7 @@ import {
     Box,
     Chip,
     ClickAwayListener,
+    Divider,
     List,
     ListItemButton,
     ListItemIcon,
@@ -24,7 +25,6 @@ import {
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
 import useAuth from 'hooks/useAuth';
-import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import { IconLogout, IconSettings, IconHome } from '@tabler/icons';
@@ -101,14 +101,14 @@ const ProfileSection = () => {
                     alignItems: 'center',
                     borderRadius: '27px',
                     transition: 'all .2s ease-in-out',
-                    borderColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.error.light,
-                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.error.light,
+                    borderColor: theme.palette.error.light,
+                    backgroundColor: theme.palette.error.light,
                     '&[aria-controls="menu-list-grow"], &:hover': {
-                        borderColor: ColorDrummondltd.RedDrummond,
-                        background: `${ColorDrummondltd.RedDrummond}!important`,
-                        color: ColorDrummondltd.RedDrummond,
+                        borderColor: theme.palette.grey[100],
+                        background: `${theme.palette.grey[100]}!important`,
+                        color: theme.palette.grey[100],
                         '& svg': {
-                            stroke: theme.palette.primary.light
+                            stroke: theme.palette.error.main
                         }
                     },
                     '& .MuiChip-label': {
@@ -121,24 +121,20 @@ const ProfileSection = () => {
                             ...theme.typography.mediumAvatar,
                             margin: '8px 0 8px 8px !important',
                             cursor: 'pointer',
-                            bgcolor: ColorDrummondltd.RedDrummond
+                            bgcolor: theme.palette.grey[100]
                         }}
                         ref={anchorRef}
-                        aria-controls={open ? 'menu-list-grow' : undefined}
                         aria-haspopup="true"
-                        color="inherit"
                     >
-                        <Typography sx={{ color: 'white' }} >{user?.nameuser.charAt(0)}</Typography>
+                        <Typography variant="h4" sx={{ color: ColorDrummondltd.RedDrummond }} >{user?.nameuser.charAt(0)}</Typography>
                     </Avatar>
                 }
-                label={<IconSettings stroke={1.5} size="1.5rem" color={ColorDrummondltd.RedDrummond} />}
                 variant="outlined"
+                label={<IconSettings stroke={1.5} size="1.5rem" color={ColorDrummondltd.RedDrummond} />}
                 ref={anchorRef}
-                aria-controls={open ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
                 onClick={handleToggle}
-                color="primary"
             />
+
             <Popper
                 placement="bottom-end"
                 open={open}
@@ -163,17 +159,13 @@ const ProfileSection = () => {
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                                     <Box sx={{ p: 2 }}>
-                                        <Stack>
-                                            <Stack direction="row" spacing={0.5} alignItems="center">
-                                                <Typography variant="h4">Bienvenido</Typography>
-                                                <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                                                    {user?.nameuser}
-                                                </Typography>
-                                            </Stack>
-                                            <Typography variant="subtitle2">Rol: {user?.namerol} - Sede: {user?.namesede}</Typography>
-                                            <Typography variant="subtitle2">Area: {user?.namearea}</Typography>
-                                        </Stack>
+                                        <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>Bienvenido {user?.nameuser}</Typography>
+                                        <Typography sx={{ mt: 2 }} variant="subtitle2">Rol: {user?.namerol}</Typography>
+                                        <Typography variant="subtitle2">Sede: {user?.namesede}</Typography>
+                                        <Typography variant="subtitle2">Area: {user?.namearea}</Typography>
                                     </Box>
+
+                                    <Divider />
 
                                     <List
                                         component="nav"

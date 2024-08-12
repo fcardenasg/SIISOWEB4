@@ -40,7 +40,7 @@ const ViewIndicadores = () => {
 
     return (
         <Fragment>
-            <MainCard title="Vista De Indicadores">
+            <MainCard title="Vista de indicadores">
                 <Grid item xs={12} sx={{ mb: 2 }}>
                     <SelectOnChange
                         name="idIndicadores"

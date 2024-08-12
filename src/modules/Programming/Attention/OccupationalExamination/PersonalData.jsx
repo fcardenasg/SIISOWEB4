@@ -71,7 +71,8 @@ const DetailsViewOne = [
 const DetailsViewTwo = [
     { name: 'Sede de Trabajo', }, { name: 'Dirección de residencia mientras trabaja', }, { name: 'Municipio de residencia mientras trabaja', },
     { name: 'Departamento', }, { name: 'Área', }, { name: 'Posición/Cargo', }, { name: 'Grupo', },
-    { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', },
+    { name: 'Turno', }, { name: 'Tipo Contrato', }, { name: 'Fecha Contrato', }, { name: 'Antiguedad', }, { name: 'GES', }, { name: 'Fecha de ingreso', },
+    { name: 'Fecha de último control' }, { name: 'Fecha de egreso' },
 ]
 
 const PersonalData = ({ lsEmployee = [], getDataAttention, atencion }) => {
@@ -178,6 +179,10 @@ const PersonalData = ({ lsEmployee = [], getDataAttention, atencion }) => {
                         <ListDetails name={DetailsViewTwo[8].name} campoRender={lsEmployee.nameTipoContrato} />
                         {DefaultValue.EMO_ATENCION_INGRESO === atencion ? null : <ListDetails name={DetailsViewTwo[9].name} campoRender={ViewFormat(lsEmployee.fechaContrato)} />}
                         <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.nameGes} />
+
+                        {lsEmployee?.fechaIngreso && <ListDetails name={DetailsViewTwo[12].name} campoRender={lsEmployee?.fechaIngreso} />}
+                        {lsEmployee?.fechaEgreso && <ListDetails name={DetailsViewTwo[13].name} campoRender={lsEmployee?.fechaEgreso} />}
+                        {lsEmployee?.fechaUltimoControl && <ListDetails name={DetailsViewTwo[14].name} campoRender={lsEmployee?.fechaUltimoControl} />}
                     </Grid>
                 </SubCard>
             </Grid>

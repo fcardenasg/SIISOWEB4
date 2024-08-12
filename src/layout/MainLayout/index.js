@@ -15,6 +15,7 @@ import { SET_MENU } from 'store/actions';
 
 // assets
 import { IconChevronRight } from '@tabler/icons';
+import { ColorDrummondltd } from 'themes/colors';
 
 // styles
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
@@ -22,6 +23,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
     ...(!open && {
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
+        background: theme.palette.grey[100],
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen
@@ -48,6 +50,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
             duration: theme.transitions.duration.enteringScreen
         }),
         marginLeft: 0,
+        background: theme.palette.grey[100],
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
         width: `calc(100% - ${drawerWidth}px)`,
@@ -59,8 +62,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
         }
     })
 }));
-
-// ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
     const systemMenu = window.localStorage.getItem('systemMenu');
@@ -84,14 +85,13 @@ const MainLayout = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            {/* header */}
             <AppBar
                 enableColorOnDark
                 position="fixed"
                 color="inherit"
                 elevation={0}
                 sx={{
-                    bgcolor: theme.palette.background.default,
+                    bgcolor: ColorDrummondltd.RedDrummond,
                     transition: leftDrawerOpened ? theme.transitions.create('width') : 'none'
                 }}
             >
@@ -105,7 +105,6 @@ const MainLayout = () => {
 
             {/* main content */}
             <Main theme={theme} open={leftDrawerOpened}>
-                {/* breadcrumb */}
                 <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
                 <Outlet />
             </Main>

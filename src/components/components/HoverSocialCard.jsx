@@ -1,12 +1,9 @@
 import PropTypes from 'prop-types';
 
 import { Card, CardContent, Grid, Typography } from '@mui/material';
-
+import Iconify from 'components/iconify/iconify';
 
 const HoverSocialCard = ({ primary, onClick, secondary, iconPrimary, color }) => {
-    const IconPrimary = iconPrimary;
-    const primaryIcon = iconPrimary ? <IconPrimary fontSize="large" /> : null;
-
     return (
         <Card
             onClick={onClick}
@@ -37,7 +34,7 @@ const HoverSocialCard = ({ primary, onClick, secondary, iconPrimary, color }) =>
                         }
                     }}
                 >
-                    {primaryIcon}
+                    <Iconify width={25} icon={iconPrimary} />
                 </Typography>
                 <Grid container spacing={1.5}>
                     <Grid item xs={12}>
@@ -59,7 +56,7 @@ const HoverSocialCard = ({ primary, onClick, secondary, iconPrimary, color }) =>
 HoverSocialCard.propTypes = {
     primary: PropTypes.string,
     secondary: PropTypes.string,
-    iconPrimary: PropTypes.object,
+    iconPrimary: PropTypes.string,
     onClick: PropTypes.object,
     color: PropTypes.string,
     variant: PropTypes.string,

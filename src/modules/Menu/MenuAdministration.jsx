@@ -4,7 +4,6 @@ import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { IconUsers } from '@tabler/icons';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 
 const MenuAdministration = () => {
@@ -40,7 +39,7 @@ const MenuAdministration = () => {
                             secondary={item.title}
                             onClick={() => navigate(`${item.url}`)}
                             primary={item.subtitle}
-                            iconPrimary={IconUsers}
+                            iconPrimary={item.icono}
                             color={item.color}
                         />
                     </Grid>

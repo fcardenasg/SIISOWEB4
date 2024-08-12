@@ -41,7 +41,6 @@ const Breadcrumbs = ({ card, divider, icon, icons, maxItems, navigation, rightAl
     const [main, setMain] = useState();
     const [item, setItem] = useState();
 
-    // set active item state
     const getCollapse = (menu) => {
         if (menu.children) {
             menu.children.filter((collapse) => {
@@ -67,7 +66,6 @@ const Breadcrumbs = ({ card, divider, icon, icons, maxItems, navigation, rightAl
         });
     });
 
-    // item separator
     const SeparatorIcon = separator;
     const separatorIcon = separator ? <SeparatorIcon stroke={1.5} size="1rem" /> : <IconTallymark1 stroke={1.5} size="1rem" />;
 
@@ -78,7 +76,6 @@ const Breadcrumbs = ({ card, divider, icon, icons, maxItems, navigation, rightAl
     let CollapseIcon;
     let ItemIcon;
 
-    // collapse item
     if (main && main.type === 'collapse') {
         CollapseIcon = main.icon ? main.icon : AccountTreeTwoToneIcon;
         mainContent = (

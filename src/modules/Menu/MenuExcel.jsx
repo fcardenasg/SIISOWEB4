@@ -2,7 +2,6 @@ import { Fragment, useState } from 'react';
 import { Grid } from '@mui/material';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
-import { IconFileExport } from '@tabler/icons';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 import ViewExport from 'modules/Export/ViewExport';
 
@@ -43,7 +42,7 @@ const MenuExcel = () => {
                             secondary={item.title}
                             onClick={() => { setOpenModal(true); setTipoExcel({ codigo: item.url, titulo: item.title }) }}
                             primary={item.subtitle}
-                            iconPrimary={IconFileExport}
+                            iconPrimary={item.icono}
                             color={item.color}
                         />
                     </Grid>

@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 import MenuItems from 'components/components/MenuItems/MenuItems';
 import HoverSocialCard from 'components/components/HoverSocialCard';
-import { IconHome } from '@tabler/icons';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -40,7 +39,7 @@ const Dashboard = () => {
                             secondary={item.title}
                             onClick={() => navigate(`${item.url}`)}
                             primary={item.subtitle}
-                            iconPrimary={IconHome}
+                            iconPrimary={item.icono}
                             color={item.color}
                         />
                     </Grid>

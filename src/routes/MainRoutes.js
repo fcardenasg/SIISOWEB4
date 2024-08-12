@@ -225,6 +225,12 @@ const ChatGPT = Loadable(lazy(() => import('modules/Chat')));
 const MenuExcelOccupationalHealth = Loadable(lazy(() => import('modules/Menu/MenuExcelOccupationalHealth')));
 const ListProgrammingUpdate = Loadable(lazy(() => import('modules/Programming/Update/ListProgrammingUpdate')));
 
+const Support = Loadable(lazy(() => import('modules/Help/Support/Support')));
+const ListSupport = Loadable(lazy(() => import('modules/Help/Support/ListSupport')));
+const HelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/HelpManagement')));
+const ViewHelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/ViewHelpManagement')));
+const Indicators = Loadable(lazy(() => import('modules/Help/Indicators/Indicators')));
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -965,6 +971,28 @@ const MainRoutes = {
         {
             path: '/chat-gpt/view',
             element: <ChatGPT />
+        },
+
+        /* Soporte */
+        {
+            path: '/help/support/add',
+            element: <Support />
+        },
+        {
+            path: '/help/support/list',
+            element: <ListSupport />
+        },
+        {
+            path: '/help/support-management',
+            element: <HelpManagement />
+        },
+        {
+            path: '/help/support-management/view/:id',
+            element: <ViewHelpManagement />
+        },
+        {
+            path: '/help/support-management/indicators',
+            element: <Indicators />
         },
     ]
 };
