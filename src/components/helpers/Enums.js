@@ -37,10 +37,10 @@ export const CodCatalogo = {
     TipoconceptoApAl: 192,
     EP_EMO_SintomasRespiratorios: 201,
 
-    SoporteTipoCaso: 2001,
-    SoporteTipoIncidente: 2002,
-    SoportePrioridad: 2003,
-    SoporteEstado: 2004,
+    SoporteTipoCaso: 241,
+    SoporteTipoIncidente: 240,
+    SoportePrioridad: 239,
+    SoporteEstado: 238,
 
     AtencionEMO: 138,
     Atencion_PARACLINICO: 206,

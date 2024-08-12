@@ -7,7 +7,7 @@ const rutaEnergy = 'https://siiso.drummondenergy.com:44447/';
 
 const config = {
     typeDashboard: 'DLTD', //ENERGY - DLTD
-    rutaApi: rutaLocal,
+    rutaApi: rutaLtd,
     logotipo: LogoReportLtd,
 
     basename: '',

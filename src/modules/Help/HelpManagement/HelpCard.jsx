@@ -23,7 +23,7 @@ export default function HelpCard({ lsData }) {
           <Chip
             size="small"
             label={lsData.nameEstado}
-            chipcolor={lsData.idEstado == 11133 ? "error" : lsData.idEstado == 11134 ? "warning" : "success"}
+            chipcolor={lsData.idEstado == 9839 ? "error" : lsData.idEstado == 9840 ? "warning" : "success"}
             sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
           />
         </Box>

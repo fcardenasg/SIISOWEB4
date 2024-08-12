@@ -204,10 +204,6 @@ const Support = () => {
                     <Grid item xs={12}>
                         <SubCard title="Agregar archivos del caso (PDF, Imagenes, Excel, Word, PowerPoint)">
                             <Grid container spacing={2}>
-                                {/* <Grid item xs={12}>
-                                    <Typography variant="caption">Puede subir </Typography>
-                                </Grid> */}
-
                                 <Grid item xs={5}>
                                     <Upload files={files} onDrop={handleDrop} />
                                 </Grid>

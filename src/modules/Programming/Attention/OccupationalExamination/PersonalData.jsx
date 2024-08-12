@@ -180,9 +180,9 @@ const PersonalData = ({ lsEmployee = [], getDataAttention, atencion }) => {
                         {DefaultValue.EMO_ATENCION_INGRESO === atencion ? null : <ListDetails name={DetailsViewTwo[9].name} campoRender={ViewFormat(lsEmployee.fechaContrato)} />}
                         <ListDetails name={DetailsViewTwo[11].name} campoRender={lsEmployee.nameGes} />
 
-                        {lsEmployee?.fechaIngreso && <ListDetails name={DetailsViewTwo[12].name} campoRender={lsEmployee?.fechaIngreso} />}
-                        {lsEmployee?.fechaEgreso && <ListDetails name={DetailsViewTwo[13].name} campoRender={lsEmployee?.fechaEgreso} />}
-                        {lsEmployee?.fechaUltimoControl && <ListDetails name={DetailsViewTwo[14].name} campoRender={lsEmployee?.fechaUltimoControl} />}
+                        {lsEmployee?.fechaIngreso && <ListDetails name={DetailsViewTwo[12].name} campoRender={ViewFormat(lsEmployee?.fechaIngreso)} />}
+                        {lsEmployee?.fechaEgreso && <ListDetails name={DetailsViewTwo[13].name} campoRender={ViewFormat(lsEmployee?.fechaEgreso)} />}
+                        {lsEmployee?.fechaUltimoControl && <ListDetails name={DetailsViewTwo[14].name} campoRender={ViewFormat(lsEmployee?.fechaUltimoControl)} />}
                     </Grid>
                 </SubCard>
             </Grid>

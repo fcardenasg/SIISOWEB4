@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Box, Drawer, useMediaQuery } from '@mui/material';
+import { Box, ButtonBase, Drawer, useMediaQuery } from '@mui/material';
 
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -10,8 +10,9 @@ import { BrowserView, MobileView } from 'react-device-detect';
 
 // project imports
 import MenuList from './MenuList';
-import LogoSection from '../LogoSection';
 import { drawerWidth } from 'store/constant';
+import { Link } from 'react-router-dom';
+import config from 'config';
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
@@ -19,11 +20,18 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
     const theme = useTheme();
     const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
 
+    const menu = localStorage.getItem('systemMenu');
+    const itemsMenu = JSON.parse(menu);
+
     const drawer = (
         <>
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
                 <Box sx={{ display: 'flex', p: 2, mx: 'auto' }}>
-                    <LogoSection />
+                    {/* <LogoSection /> */}
+
+                    <ButtonBase disableRipple component={Link} to={itemsMenu[0]?.children[0]?.url}>
+                        <img src={config.logotipo} alt="Logo drummondltd" width={175} />
+                    </ButtonBase>
                 </Box>
             </Box>
 

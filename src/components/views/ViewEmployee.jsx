@@ -368,8 +368,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                     <ViewDataDetails title="Departamento" nameData={lsEmployee?.nameDepartamento} />
                                     <ViewDataDetails title="Área" nameData={lsEmployee?.nameArea} />
                                     <ViewDataDetails title="Subárea" nameData={lsEmployee?.nameSubArea} />
-                                    <ViewDataDetails title="Fecha de ingreso" nameData={lsEmployee?.fechaIngreso} />
-
+                                    <ViewDataDetails title="Fecha de ingreso" nameData={ViewFormat(lsEmployee?.fechaIngreso)} />
                                 </Grid>
 
                                 <Grid item xs={4}>
@@ -378,7 +377,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                     <ViewDataDetails title="EPS" nameData={lsEmployee?.nameEps} />
                                     <ViewDataDetails title="AFP" nameData={lsEmployee?.nameAfp} />
                                     <ViewDataDetails title="Turno" nameData={lsEmployee?.nameTurno} />
-                                    <ViewDataDetails title="Fecha de último control" nameData={lsEmployee?.fechaUltimoControl} />
+                                    <ViewDataDetails title="Fecha de último control" nameData={ViewFormat(lsEmployee?.fechaUltimoControl)} />
                                 </Grid>
 
                                 <Grid item xs={4}>
@@ -387,7 +386,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                     <ViewDataDetails title="Departamento de Residencia" nameData={lsEmployee?.nameDptoResidencia} />
                                     <ViewDataDetails title="Municipio de Residencia" nameData={lsEmployee?.nameMunicipioResidencia} />
                                     <ViewDataDetails title="Dir. Residencia" nameData={lsEmployee?.direccionResidencia} />
-                                    <ViewDataDetails title="fechaEgreso" nameData={lsEmployee?.fechaEgreso} />
+                                    <ViewDataDetails title="Fecha de egreso" nameData={ViewFormat(lsEmployee?.fechaEgreso)} />
                                 </Grid>
                             </Grid>
                         </Accordion>
