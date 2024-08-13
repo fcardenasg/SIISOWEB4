@@ -1,13 +1,10 @@
-import PropTypes from 'prop-types';
-
-// material-ui
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 
 // ===========================|| HOVER SOCIAL CARD ||=========================== //
 
-const HoverSocialCard = ({ primary, secondary, iconPrimary, color }) => {
+const HoverSocialCard = ({ primary, secondary, iconPrimary, color, diferent = false }) => {
     const IconPrimary = iconPrimary;
-    const primaryIcon = iconPrimary ? <IconPrimary fontSize="large" /> : null;
+    const primaryIcon = diferent ? iconPrimary : <IconPrimary fontSize="large" />;
 
     return (
         <Card
@@ -54,13 +51,6 @@ const HoverSocialCard = ({ primary, secondary, iconPrimary, color }) => {
             </CardContent>
         </Card>
     );
-};
-
-HoverSocialCard.propTypes = {
-    primary: PropTypes.string,
-    secondary: PropTypes.string,
-    iconPrimary: PropTypes.object,
-    color: PropTypes.string
 };
 
 export default HoverSocialCard;

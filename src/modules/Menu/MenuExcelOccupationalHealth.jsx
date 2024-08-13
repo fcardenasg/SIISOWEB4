@@ -41,6 +41,7 @@ const MenuExcelOccupationalHealth = () => {
                 {arrayMenu.map((item) => (
                     <Grid item xs={12} md={6} lg={3}>
                         <HoverSocialCard
+                        diferent={true}
                             secondary={item.title}
                             onClick={() => { setOpenModal(true); setTipoExcel({ codigo: item.url, titulo: item.title }) }}
                             primary={item.subtitle}

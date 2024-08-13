@@ -4,6 +4,9 @@ import { Card, CardContent, Grid, Typography } from '@mui/material';
 import Iconify from 'components/iconify/iconify';
 
 const HoverSocialCard = ({ primary, onClick, secondary, iconPrimary, color }) => {
+    const IconPrimary = iconPrimary;
+    const primaryIcon = typeof iconPrimary === 'string' ? <Iconify width={25} icon={iconPrimary} /> : <IconPrimary fontSize="large" />;
+
     return (
         <Card
             onClick={onClick}
@@ -34,7 +37,7 @@ const HoverSocialCard = ({ primary, onClick, secondary, iconPrimary, color }) =>
                         }
                     }}
                 >
-                    <Iconify width={25} icon={iconPrimary} />
+                    {primaryIcon}
                 </Typography>
                 <Grid container spacing={1.5}>
                     <Grid item xs={12}>

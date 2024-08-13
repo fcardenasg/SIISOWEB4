@@ -6,7 +6,7 @@ import { Grid, Button } from '@mui/material';
 import MenuItems from 'components/components/MenuItems/MenuItems';
 import { itemsMenu } from './items';
 import HoverSocialCard from 'components/components/HoverSocialCard';
-import { IconPlus, IconHistory } from '@tabler/icons';
+import { IconPlus } from '@tabler/icons';
 
 export const MenuItem = ({ onClickNuevo, onClickButton, numId }) => {
 
@@ -32,14 +32,14 @@ export const MenuItem = ({ onClickNuevo, onClickButton, numId }) => {
             </Grid>
 
             <Grid container spacing={2}>
-                {itemsMenuButton.filter((item) => item.selected).map((item) => (
+                {itemsMenuButton.map((item) => (
                     <Grid item xs={3}>
                         <AnimateButton>
                             <HoverSocialCard
-                                secondary={item.title}
-                                onClick={() => onClickButton(`${item.func}`)}
-                                iconPrimary={item.icon}
-                                color={item.color}
+                                secondary={item?.title}
+                                onClick={() => onClickButton(`${item?.func}`)}
+                                iconPrimary={item?.icon}
+                                color={item?.color}
                             />
                         </AnimateButton>
 

@@ -204,11 +204,11 @@ const Support = () => {
                     <Grid item xs={12}>
                         <SubCard title="Agregar archivos del caso (PDF, Imagenes, Excel, Word, PowerPoint)">
                             <Grid container spacing={2}>
-                                <Grid item xs={5}>
+                                <Grid item xs={12} md={5}>
                                     <Upload files={files} onDrop={handleDrop} />
                                 </Grid>
 
-                                <Grid item xs={7}>
+                                <Grid item xs={12} md={7}>
                                     {filesData.map((item, index) => (
                                         <MultiFilePreviewTwo
                                             file={item}
