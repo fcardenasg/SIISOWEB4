@@ -732,333 +732,335 @@ const OccupationalExamination = () => {
 
     return (
         <MainCard>
-            {timeWait ?
-                <Fragment>
-                    <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+            <FormProvider {...methods}>
+                {timeWait ?
+                    <Fragment>
+                        <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                        <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                    <ControlModal
-                        title={"Ordenes Medicas - " + titleModal}
-                        open={openForm}
-                        onClose={onCloseModal}
-                        maxWidth="md"
-                    >
-                        {newMedicalFormula ?
-                            <MedicalFormula
-                                contingencia={DefaultValue.SINREGISTRO_GLOBAL}
-                                setUpdateMedicalFormula={setUpdateMedicalFormula}
-                                setListMedicalFormula={setListMedicalFormula}
-                                setNewMedicalFormula={setNewMedicalFormula}
-                                tipoOrden={titleModal}
-                                lsEmployee={lsEmployee}
-                                setDocumento={setDocumento}
-                                documento={documento}
-                                lsAtencion={lsAtencion}
-                            />
-                            : listMedicalFormula ?
-                                <ListMedicalFormula
-                                    documento={documento}
-                                    tipoOrden={titleModal}
+                        <ControlModal
+                            title={"Ordenes Medicas - " + titleModal}
+                            open={openForm}
+                            onClose={onCloseModal}
+                            maxWidth="md"
+                        >
+                            {newMedicalFormula ?
+                                <MedicalFormula
+                                    contingencia={DefaultValue.SINREGISTRO_GLOBAL}
+                                    setUpdateMedicalFormula={setUpdateMedicalFormula}
                                     setListMedicalFormula={setListMedicalFormula}
                                     setNewMedicalFormula={setNewMedicalFormula}
-                                    setUpdateMedicalFormula={setUpdateMedicalFormula}
-                                    setNumberId={setNumberId}
+                                    tipoOrden={titleModal}
+                                    lsEmployee={lsEmployee}
+                                    setDocumento={setDocumento}
+                                    documento={documento}
+                                    lsAtencion={lsAtencion}
                                 />
-                                : updateMedicalFormula ?
-                                    <UpdateMedicalFormula
-                                        contingencia={DefaultValue.SINREGISTRO_GLOBAL}
+                                : listMedicalFormula ?
+                                    <ListMedicalFormula
+                                        documento={documento}
+                                        tipoOrden={titleModal}
                                         setListMedicalFormula={setListMedicalFormula}
                                         setNewMedicalFormula={setNewMedicalFormula}
                                         setUpdateMedicalFormula={setUpdateMedicalFormula}
-                                        numberId={numberId}
-                                        lsEmployee={lsEmployee}
-                                        lsAtencion={lsAtencion}
-                                        tipoOrden={titleModal}
-                                    /> : ''
-                        }
-                    </ControlModal>
+                                        setNumberId={setNumberId}
+                                    />
+                                    : updateMedicalFormula ?
+                                        <UpdateMedicalFormula
+                                            contingencia={DefaultValue.SINREGISTRO_GLOBAL}
+                                            setListMedicalFormula={setListMedicalFormula}
+                                            setNewMedicalFormula={setNewMedicalFormula}
+                                            setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                            numberId={numberId}
+                                            lsEmployee={lsEmployee}
+                                            lsAtencion={lsAtencion}
+                                            tipoOrden={titleModal}
+                                        /> : ''
+                            }
+                        </ControlModal>
 
-                    <ControlModal
-                        title="REPORTES A IMPRIMIR"
-                        open={openModalReport}
-                        onClose={() => setOpenModalReport(false)}
-                        maxWidth="xs"
-                    >
-                        <SingleReportView documento={documento} resultData={resultData} atencion={atencion} />
-                    </ControlModal>
+                        <ControlModal
+                            title="REPORTES A IMPRIMIR"
+                            open={openModalReport}
+                            onClose={() => setOpenModalReport(false)}
+                            maxWidth="xs"
+                        >
+                            <SingleReportView documento={documento} resultData={resultData} atencion={atencion} />
+                        </ControlModal>
 
-                    <DialogFormula
-                        title="Ordenes Medicas"
-                        open={openFormula}
-                        handleCloseDialog={() => setOpenFormula(false)}
-                    >
-                        {dataMedicalOrders.map(data =>
-                            <Grid item xs={12}>
-                                <HoverSocialCard
-                                    onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
-                                    secondary={data.subtitle}
-                                    iconPrimary={data.iconPrimary}
-                                    color={data.color}
-                                />
-                            </Grid>
-                        )}
-                    </DialogFormula>
+                        <DialogFormula
+                            title="Ordenes Medicas"
+                            open={openFormula}
+                            handleCloseDialog={() => setOpenFormula(false)}
+                        >
+                            {dataMedicalOrders.map(data =>
+                                <Grid item xs={12}>
+                                    <HoverSocialCard
+                                        onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                                        secondary={data.subtitle}
+                                        iconPrimary={data.iconPrimary}
+                                        color={data.color}
+                                    />
+                                </Grid>
+                            )}
+                        </DialogFormula>
 
-                    <Transitions type="collapse" in={viewChart} position="top-left" direction="up">
-                        {lsAnthropometry.length !== 0 ? <ChartAnthropometry datos={lsAnthropometry} lastRecord={lsLastRecord} /> : null}
-                        <Grid sx={{ pb: 2 }} />
-                    </Transitions>
+                        <Transitions type="collapse" in={viewChart} position="top-left" direction="up">
+                            {lsAnthropometry.length !== 0 ? <ChartAnthropometry datos={lsAnthropometry} lastRecord={lsLastRecord} /> : null}
+                            <Grid sx={{ pb: 2 }} />
+                        </Transitions>
 
-                    <SubCard darkTitle title={<Typography variant="h4">DATOS DEL {lsEmployee.nameTipoContrato}</Typography>}
-                        secondary={
-                            <Fragment>
-                                <Tooltip title="Gráfico Historico De IMC">
-                                    <Button disabled={lsAnthropometry.length === 0 ? true : false}
-                                        onClick={() => setViewChart(viewChart ? false : true)}
-                                    >
-                                        {viewChart ? <IconStairsUp stroke={1.5} size="1.3rem" /> : <IconStairsDown stroke={1.5} size="1.3rem" />}
-                                    </Button>
-                                </Tooltip>
-                            </Fragment>
-                        }
-                    >
-                        <Grid container justifyContent="left" alignItems="center" spacing={2}>
-                            <Grid item xs={5}>
-                                <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                                    <Grid item xs={4}>
-                                        <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
-                                    </Grid>
+                        <SubCard darkTitle title={<Typography variant="h4">DATOS DEL {lsEmployee.nameTipoContrato}</Typography>}
+                            secondary={
+                                <Fragment>
+                                    <Tooltip title="Gráfico Historico De IMC">
+                                        <Button disabled={lsAnthropometry.length === 0 ? true : false}
+                                            onClick={() => setViewChart(viewChart ? false : true)}
+                                        >
+                                            {viewChart ? <IconStairsUp stroke={1.5} size="1.3rem" /> : <IconStairsDown stroke={1.5} size="1.3rem" />}
+                                        </Button>
+                                    </Tooltip>
+                                </Fragment>
+                            }
+                        >
+                            <Grid container justifyContent="left" alignItems="center" spacing={2}>
+                                <Grid item xs={5}>
+                                    <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                                        <Grid item xs={4}>
+                                            <Avatar sx={{ width: 100, height: 100 }} src={lsEmployee.imagenUrl !== null ? lsEmployee.imagenUrl : User} />
+                                        </Grid>
 
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            value={documento}
-                                            onChange={(e) => setDocumento(e.target.value)}
-                                            onKeyDown={handleLoadingDocument}
-                                            fullWidth
-                                            disabled={true}
-                                            id="standard-basic"
-                                            label="Documento"
-                                            variant="standard"
-                                        />
+                                        <Grid item xs={4}>
+                                            <TextField
+                                                value={documento}
+                                                onChange={(e) => setDocumento(e.target.value)}
+                                                onKeyDown={handleLoadingDocument}
+                                                fullWidth
+                                                disabled={true}
+                                                id="standard-basic"
+                                                label="Documento"
+                                                variant="standard"
+                                            />
+                                        </Grid>
                                     </Grid>
                                 </Grid>
+
+                                {lsEmployee.length !== 0 ?
+                                    <Grid item xs={7}>
+                                        <Typography variant="h2" component="div">
+                                            {lsEmployee.nombres}
+
+                                            {lsEmployee.namePayStatus != null ?
+                                                <Chip
+                                                    size="small"
+                                                    label={lsEmployee.namePayStatus}
+                                                    chipcolor={lsEmployee.namePayStatus === 'ACTIVO (A)'
+                                                        ? 'success' : 'error'}
+                                                    sx={{ borderRadius: '4px', textTransform: 'capitalize', ml: 2 }}
+                                                /> : null}
+                                        </Typography>
+
+                                        <Typography variant="h4" component="div">
+                                            {lsEmployee.nameRosterPosition} / {lsEmployee.nameOficio}
+                                        </Typography>
+
+                                        <Grid container spacing={1}>
+                                            <Grid item>
+                                                <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="h5">{GetEdad(lsEmployee.fechaNaci)} AÑOS</Typography>
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid container spacing={2}>
+                                            <Grid item>
+                                                <Typography variant="h4">
+                                                    {lsLastRecord.nameAtencion !== undefined ? `INFORMACIÓN TOMADA DEL ${lsLastRecord.nameAtencion} - ${lsLastRecord.formatFecha}` : ""}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid> : null
+                                }
                             </Grid>
 
-                            {lsEmployee.length !== 0 ?
-                                <Grid item xs={7}>
-                                    <Typography variant="h2" component="div">
-                                        {lsEmployee.nombres}
+                            <Grid container sx={{ pt: 6 }} spacing={2}>
+                                <Grid item xs={6}>
+                                    <FormProvider {...methods}>
+                                        <InputDatePicker
+                                            label="Fecha"
+                                            name="fecha"
+                                            defaultValue={lsAtencion.fecha}
+                                        />
+                                    </FormProvider>
+                                </Grid>
 
-                                        {lsEmployee.namePayStatus != null ?
-                                            <Chip
-                                                size="small"
-                                                label={lsEmployee.namePayStatus}
-                                                chipcolor={lsEmployee.namePayStatus === 'ACTIVO (A)'
-                                                    ? 'success' : 'error'}
-                                                sx={{ borderRadius: '4px', textTransform: 'capitalize', ml: 2 }}
-                                            /> : null}
-                                    </Typography>
-
-                                    <Typography variant="h4" component="div">
-                                        {lsEmployee.nameRosterPosition} / {lsEmployee.nameOficio}
-                                    </Typography>
-
-                                    <Grid container spacing={1}>
-                                        <Grid item>
-                                            <Typography variant="h5">{lsEmployee.nameGenero}</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography variant="h5">{GetEdad(lsEmployee.fechaNaci)} AÑOS</Typography>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid container spacing={2}>
-                                        <Grid item>
-                                            <Typography variant="h4">
-                                                {lsLastRecord.nameAtencion !== undefined ? `INFORMACIÓN TOMADA DEL ${lsLastRecord.nameAtencion} - ${lsLastRecord.formatFecha}` : ""}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid> : null
-                            }
-                        </Grid>
-
-                        <Grid container sx={{ pt: 6 }} spacing={2}>
-                            <Grid item xs={6}>
-                                <FormProvider {...methods}>
-                                    <InputDatePicker
-                                        label="Fecha"
-                                        name="fecha"
-                                        defaultValue={lsAtencion.fecha}
+                                <Grid item xs={6}>
+                                    <SelectOnChange
+                                        name="idAtencion"
+                                        label="Atención"
+                                        value={atencion}
+                                        onChange={(e) => setAtencion(e.target.value)}
+                                        options={lsAtencionEMO}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
+                        </SubCard>
+                        <Grid sx={{ pb: 2 }} />
 
-                            <Grid item xs={6}>
-                                <SelectOnChange
-                                    name="idAtencion"
-                                    label="Atención"
-                                    value={atencion}
-                                    onChange={(e) => setAtencion(e.target.value)}
-                                    options={lsAtencionEMO}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                    <Grid sx={{ pb: 2 }} />
-
-                    <Tabs
-                        value={value}
-                        onChange={(event, newValue) => setValue(newValue)}
-                        aria-label="simple tabs example"
-                        variant="scrollable"
-                        sx={{
-                            mb: 3,
-                            '& a': {
-                                minHeight: 'auto',
-                                minWidth: 10,
-                                py: 1.5,
-                                px: 1,
-                                mr: 2.25,
-                                color: theme.palette.grey[600],
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            },
-                            '& a.Mui-selected': {
-                                color: theme.palette.error.main
-                            },
-                            '& .MuiTabs-indicator': {
-                                bottom: 2
-                            },
-                            '& a > svg': {
-                                marginBottom: '0px !important',
-                                mr: 1.25
-                            }
-                        }}
-                    >
-                        {tabsOption.map((tab, index) => (
-                            <Tab sx={{ color: "red" }} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
-                        ))}
-                    </Tabs>
-
-                    <TabPanel value={value} index={0}>
-                        <PersonalData
-                            atencion={atencion}
-                            lsEmployee={lsEmployee}
-                            getDataAttention={handleLoadingDocument}
-                        />
-                    </TabPanel>
-
-                    <TabPanel value={value} index={1}>
-                        <WorkHistory
-                            lsEmpleado={lsEmployee}
-                            documento={documento}
-                            atencion={atencion}
-                        />
-                    </TabPanel>
-
-                    <TabPanel value={value} index={2}>
-                        <StickyActionBar
-                            onClickSave={handleSubmit(handleClick)}
-                            onClickUpdate={handleSubmit(handleClickUpdate)}
-                            disabledUpdate={!resultIdRegistroAtencion}
-                            disabledSave={resultIdRegistroAtencion}
-                            showButton={false}
+                        <Tabs
+                            value={value}
+                            onChange={(event, newValue) => setValue(newValue)}
+                            aria-label="simple tabs example"
+                            variant="scrollable"
+                            sx={{
+                                mb: 3,
+                                '& a': {
+                                    minHeight: 'auto',
+                                    minWidth: 10,
+                                    py: 1.5,
+                                    px: 1,
+                                    mr: 2.25,
+                                    color: theme.palette.grey[600],
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                },
+                                '& a.Mui-selected': {
+                                    color: theme.palette.error.main
+                                },
+                                '& .MuiTabs-indicator': {
+                                    bottom: 2
+                                },
+                                '& a > svg': {
+                                    marginBottom: '0px !important',
+                                    mr: 1.25
+                                }
+                            }}
                         >
-                            <Emo
+                            {tabsOption.map((tab, index) => (
+                                <Tab sx={{ color: "red" }} key={index} component={Link} to="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
+                            ))}
+                        </Tabs>
+
+                        <TabPanel value={value} index={0}>
+                            <PersonalData
                                 atencion={atencion}
-                                peso={peso}
-                                setPeso={setPeso}
-                                talla={talla}
-                                setTalla={setTalla}
-                                imc={imc}
-                                setIMC={setIMC}
-                                clasificacion={clasificacion}
-                                setClasificacion={setClasificacion}
-                                clasificacionColor={clasificacionColor}
-                                setClasificacionColor={setClasificacionColor}
-                                lsLastRecord={lsLastRecord}
-
-                                setIndiceWellsEFU={setIndiceWellsEFU}
-                                indiceWellsEFU={indiceWellsEFU}
-
-                                documento={documento}
-                                errors={errors}
-                                setTipoFobia={setTipoFobia}
-                                tipoFobia={tipoFobia}
-                                setEstadoVacuna={setEstadoVacuna}
-                                estadoVacuna={estadoVacuna}
                                 lsEmployee={lsEmployee}
-
-                                calculoFramingham={calculoFramingham}
-                                frFuma={frFuma}
-                                frColesterol={frColesterol}
-                                frTencion={frTencion}
-                                frEdad={frEdad}
-                                frGlicemia={frGlicemia}
-                                frPuntaje={frPuntaje}
-                                relacion={relacion}
-                                frLdl={frLdl}
-                                frHdl={frHdl}
-                                riesgo={riesgo}
-
-                                handleHdl={setHdl}
-                                hdl={hdl}
-                                handleColesterol={setColesterol}
-                                colesterol={colesterol}
-                                handleTrigliceridos={setTrigliceridos}
-                                trigliceridos={trigliceridos}
-                                handleFuma={setFuma}
-                                fuma={fuma}
-                                handleGlicemia={setGlicemia}
-                                glicemia={glicemia}
-                                handleTencion={setTencion}
-                                tencion={tencion}
-                                {...methods}
+                                getDataAttention={handleLoadingDocument}
                             />
+                        </TabPanel>
 
-                        </StickyActionBar>
-                    </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <WorkHistory
+                                lsEmpleado={lsEmployee}
+                                documento={documento}
+                                atencion={atencion}
+                            />
+                        </TabPanel>
 
-                    <Grid container spacing={2} sx={{ pt: 4 }}>
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => setOpenModalReport(true)}>
-                                    {TitleButton.Imprimir}
-                                </Button>
-                            </AnimateButton>
+                        <TabPanel value={value} index={2}>
+                            <StickyActionBar
+                                onClickSave={handleSubmit(handleClick)}
+                                onClickUpdate={handleSubmit(handleClickUpdate)}
+                                disabledUpdate={!resultIdRegistroAtencion}
+                                disabledSave={resultIdRegistroAtencion}
+                                showButton={false}
+                            >
+                                <Emo
+                                    atencion={atencion}
+                                    peso={peso}
+                                    setPeso={setPeso}
+                                    talla={talla}
+                                    setTalla={setTalla}
+                                    imc={imc}
+                                    setIMC={setIMC}
+                                    clasificacion={clasificacion}
+                                    setClasificacion={setClasificacion}
+                                    clasificacionColor={clasificacionColor}
+                                    setClasificacionColor={setClasificacionColor}
+                                    lsLastRecord={lsLastRecord}
+
+                                    setIndiceWellsEFU={setIndiceWellsEFU}
+                                    indiceWellsEFU={indiceWellsEFU}
+
+                                    documento={documento}
+                                    errors={errors}
+                                    setTipoFobia={setTipoFobia}
+                                    tipoFobia={tipoFobia}
+                                    setEstadoVacuna={setEstadoVacuna}
+                                    estadoVacuna={estadoVacuna}
+                                    lsEmployee={lsEmployee}
+
+                                    calculoFramingham={calculoFramingham}
+                                    frFuma={frFuma}
+                                    frColesterol={frColesterol}
+                                    frTencion={frTencion}
+                                    frEdad={frEdad}
+                                    frGlicemia={frGlicemia}
+                                    frPuntaje={frPuntaje}
+                                    relacion={relacion}
+                                    frLdl={frLdl}
+                                    frHdl={frHdl}
+                                    riesgo={riesgo}
+
+                                    handleHdl={setHdl}
+                                    hdl={hdl}
+                                    handleColesterol={setColesterol}
+                                    colesterol={colesterol}
+                                    handleTrigliceridos={setTrigliceridos}
+                                    trigliceridos={trigliceridos}
+                                    handleFuma={setFuma}
+                                    fuma={fuma}
+                                    handleGlicemia={setGlicemia}
+                                    glicemia={glicemia}
+                                    handleTencion={setTencion}
+                                    tencion={tencion}
+                                    {...methods}
+                                />
+
+                            </StickyActionBar>
+                        </TabPanel>
+
+                        <Grid container spacing={2} sx={{ pt: 4 }}>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => setOpenModalReport(true)}>
+                                        {TitleButton.Imprimir}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                        {TitleButton.OrdenesMedicas}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
+                                        {TitleButton.CerrarCaso}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
                         </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                    {TitleButton.OrdenesMedicas}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
-                                    {TitleButton.CerrarCaso}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    </Grid>
-                </Fragment> : <Cargando />
-            }
+                    </Fragment> : <Cargando />
+                }
+            </FormProvider>
         </MainCard >
     );
 };

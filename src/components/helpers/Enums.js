@@ -320,6 +320,7 @@ export const TitleButton = {
     SubirArchivo: 'Subir Archivo',
     Programacion: 'Programación',
     Imprimir: 'Imprimir',
+    Descargar: 'Descargar',
     Cancelar: 'Cerrar',
     Limpiar: 'Limpiar',
     VerArchivo: 'Ver archivo',

@@ -15,7 +15,6 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
 import InputOnChange from 'components/input/InputOnChange';
 import DetailedIcon from 'components/controllers/DetailedIcon';
-import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import InputText from 'components/input/InputText';
 import InputDatePicker from 'components/input/InputDatePicker';
@@ -61,9 +60,7 @@ const Framingham = ({
     glicemia,
     handleTencion,
     tencion,
-
-    documento,
-    ...methods
+    documento
 }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -125,14 +122,12 @@ const Framingham = ({
                         <SubCard darkTitle title={<Typography variant="h4">INFORMACIÓN CARDIOVASCULAR</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha"
-                                            name="fechaFRA"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            defaultValue={FormatDate(new Date())}
-                                        />
-                                    </FormProvider>
+                                    <InputDatePicker
+                                        label="Fecha"
+                                        name="fechaFRA"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        defaultValue={FormatDate(new Date())}
+                                    />
                                 </Grid>
 
                                 <Grid item xs={4}>
@@ -157,14 +152,12 @@ const Framingham = ({
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha Laboratorio"
-                                            name="fechaLaboratorioFRA"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            defaultValue={FormatDate(new Date())}
-                                        />
-                                    </FormProvider>
+                                    <InputDatePicker
+                                        label="Fecha Laboratorio"
+                                        name="fechaLaboratorioFRA"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        defaultValue={FormatDate(new Date())}
+                                    />
                                 </Grid>
 
                                 <Grid item xs={4}>
@@ -235,17 +228,15 @@ const Framingham = ({
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            multiline
-                                            rows={4}
-                                            defaultValue=""
-                                            fullWidth
-                                            name="observacionFRA"
-                                            label="Observación"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    <InputText
+                                        multiline
+                                        rows={4}
+                                        defaultValue=""
+                                        fullWidth
+                                        name="observacionFRA"
+                                        label="Observación"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
 
                                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>

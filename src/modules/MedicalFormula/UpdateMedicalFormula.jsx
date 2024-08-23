@@ -39,6 +39,7 @@ import Cargando from 'components/loading/Cargando';
 import ViewPDF from 'components/components/ViewPDF';
 import { generateReport } from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/Report';
 import { GetByMail } from 'api/clients/UserClient';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -98,6 +99,15 @@ const UpdateMedicalFormula = () => {
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+    const handleClickDescargar = async () => {
+        try {
+            const lsDataReport = await GetByIdMedicalFormula(id);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data, false);
+            DownloadFile(`recetario${new Date().getTime()}.pdf`, dataPDFTwo);
         } catch (err) { }
     };
 
@@ -244,7 +254,7 @@ const UpdateMedicalFormula = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">GENERAR ORDEN</Typography>}>
                             <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -254,7 +264,7 @@ const UpdateMedicalFormula = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idTipoRemision"
@@ -266,7 +276,7 @@ const UpdateMedicalFormula = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idContingencia"
@@ -284,7 +294,7 @@ const UpdateMedicalFormula = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={2}>
+                                <Grid item xs={12} md={2}>
                                     <InputOnChange
                                         label="Dx"
                                         onKeyDown={handleDx1}
@@ -293,7 +303,8 @@ const UpdateMedicalFormula = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
-                                <Grid item xs={10}>
+
+                                <Grid item xs={12} md={10}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="diagnostico"
@@ -336,7 +347,7 @@ const UpdateMedicalFormula = () => {
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={6} md={3} lg={2.5}>
                                         <AnimateButton>
                                             <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                                 {TitleButton.Actualizar}
@@ -344,7 +355,7 @@ const UpdateMedicalFormula = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={2}>
+                                    <Grid item xs={6} md={3} lg={2.5}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={handleClickReport}>
                                                 {TitleButton.Imprimir}
@@ -352,7 +363,15 @@ const UpdateMedicalFormula = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={2}>
+                                    <Grid item xs={6} md={3} lg={2.5}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={handleClickDescargar}>
+                                                {`${TitleButton.Descargar} recetario`}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={3} lg={2.5}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/medicalformula/list")}>
                                                 {TitleButton.Cancelar}

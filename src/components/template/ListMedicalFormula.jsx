@@ -132,9 +132,9 @@ const ListMedicalFormula = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllMedicines(0, 0);
-                setLsMedical(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                const lsServer = await GetAllMedicines();
+                setLsMedical(lsServer.data);
+                setRows(lsServer.data);
             } catch (error) {
             }
         }
@@ -216,7 +216,7 @@ const ListMedicalFormula = () => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={lsMedical.length}
+                        rowCount={lsMedical?.length}
                         theme={theme}
                         selected={selected}
                     />

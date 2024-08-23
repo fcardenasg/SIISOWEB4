@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -31,7 +30,6 @@ import DetailedIcon from 'components/controllers/DetailedIcon';
 import InputCheckBox from 'components/input/InputCheckBox';
 import InputCheck from 'components/input/InputCheck';
 import Accordion from 'components/accordion/Accordion';
-import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -75,8 +73,6 @@ const Emo = ({
 
     setIndiceWellsEFU,
     indiceWellsEFU,
-
-    errors,
     documento,
     setEstadoVacuna,
     estadoVacuna,
@@ -108,8 +104,7 @@ const Emo = ({
     handleGlicemia,
     glicemia,
     handleTencion,
-    tencion,
-    ...methods
+    tencion
 }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
@@ -159,7 +154,6 @@ const Emo = ({
 
     async function getAll() {
         try {
-
             const lsServerRiesClasifi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.HCO_RIESGO_CLASIFICACION);
             var resultRiesClasifi = lsServerRiesClasifi.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -435,6 +429,10 @@ const Emo = ({
         }
     }
 
+    useEffect(() => {
+
+    }, []);
+
     const handleChangeTalla = (event) => {
         try {
             setTalla(event.target.value);
@@ -572,337 +570,277 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={0.5}>
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="1. Congenitos"
-                                                name="congenitosAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.congenitosAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="1. Congenitos"
+                                            name="congenitosAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.congenitosAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="2. Inmunoprevenible"
-                                                name="inmunoPrevenibleAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.inmunoPrevenibleAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="2. Inmunoprevenible"
+                                            name="inmunoPrevenibleAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.inmunoPrevenibleAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="3. Infecciosos"
-                                                name="infecciososAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.infecciososAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="3. Infecciosos"
+                                            name="infecciososAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.infecciososAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="4. Ojos"
-                                                name="ojoAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.ojoAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="4. Ojos"
+                                            name="ojoAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.ojoAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="5. Agudeza Visual"
-                                                name="agudezaVisualAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.agudezaVisualAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="5. Agudeza Visual"
+                                            name="agudezaVisualAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.agudezaVisualAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="6. Oidos"
-                                                name="oidosAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.oidosAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="6. Oidos"
+                                            name="oidosAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.oidosAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4} >
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="7. Nasofaringe"
-                                                name="nasoFaringeAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.nasoFaringeAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="7. Nasofaringe"
+                                            name="nasoFaringeAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.nasoFaringeAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="8. Cardiovascular"
-                                                name="cardiovascularAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.cardiovascularAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="8. Cardiovascular"
+                                            name="cardiovascularAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.cardiovascularAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="9. Pulmonar"
-                                                name="pulmonarAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.pulmonarAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="9. Pulmonar"
+                                            name="pulmonarAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.pulmonarAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="10. Gastrointestinal"
-                                                name="gastrointestinalAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.gastrointestinalAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="10. Gastrointestinal"
+                                            name="gastrointestinalAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.gastrointestinalAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="11. Genitourinario"
-                                                name="gimitoUrinarioAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.gimitoUrinarioAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="11. Genitourinario"
+                                            name="gimitoUrinarioAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.gimitoUrinarioAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="12. Neurológico"
-                                                name="neurologicoAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.neurologicoAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="12. Neurológico"
+                                            name="neurologicoAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.neurologicoAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="13. Trastornos de piel"
-                                                name="transtornoPielAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.transtornoPielAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="13. Trastornos de piel"
+                                            name="transtornoPielAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.transtornoPielAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="14. Osteomusculares"
-                                                name="osteoMuscularAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.osteoMuscularAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="14. Osteomusculares"
+                                            name="osteoMuscularAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.osteoMuscularAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="15. Alérgicos"
-                                                name="alergicosAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.alergicosAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="15. Alérgicos"
+                                            name="alergicosAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.alergicosAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="16. Tóxicos"
-                                                name="toxicoAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.toxicoAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="16. Tóxicos"
+                                            name="toxicoAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.toxicoAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="17. Farmacólogicos"
-                                                name="faRmacologicosAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.faRmacologicosAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="17. Farmacólogicos"
+                                            name="faRmacologicosAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.faRmacologicosAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="18. Quirúrgicos"
-                                                name="quirurgicosAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.quirurgicosAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="18. Quirúrgicos"
+                                            name="quirurgicosAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.quirurgicosAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4} >
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="19. Traumático"
-                                                name="traumaticosAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.traumaticosAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="19. Traumático"
+                                            name="traumaticosAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.traumaticosAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="20. Transfusiones"
-                                                name="tranfuccionesAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.tranfuccionesAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="20. Transfusiones"
+                                            name="tranfuccionesAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.tranfuccionesAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="21. ETS"
-                                                name="etsAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.etsAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="21. ETS"
+                                            name="etsAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.etsAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="22. Deformidades"
-                                                name="deformidadesAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.deformidadesAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="22. Deformidades"
+                                            name="deformidadesAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.deformidadesAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="23. Psiquiatrico"
-                                                name="psiquiatricosAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.psiquiatricosAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="23. Psiquiatrico"
+                                            name="psiquiatricosAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.psiquiatricosAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="24. Farmacodependencia"
-                                                name="farmacoDependenciaAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.farmacoDependenciaAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="24. Farmacodependencia"
+                                            name="farmacoDependenciaAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.farmacoDependenciaAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="25. Enf. Metab."
-                                                name="emAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.emAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="25. Enf. Metab."
+                                            name="emAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.emAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="26. Renal"
-                                                name="renalAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.renalAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="26. Renal"
+                                            name="renalAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.renalAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="27. Asma"
-                                                name="asmaAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.asmaAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="27. Asma"
+                                            name="asmaAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.asmaAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="28. O.R.L."
-                                                name="orlAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.orlAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="28. O.R.L."
+                                            name="orlAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.orlAP}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2.4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="29. Cancer"
-                                                name="cancerAP"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.cancerAP}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="29. Cancer"
+                                            name="cancerAP"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.cancerAP}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Grid item xs={12} sx={{ pt: 4 }}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            multiline
-                                            rows={4}
-                                            defaultValue={lsLastRecord?.especifiqueAP}
-                                            fullWidth
-                                            name="especifiqueAP"
-                                            label="Especifique"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    <InputText
+                                        multiline
+                                        rows={4}
+                                        defaultValue={lsLastRecord?.especifiqueAP}
+                                        fullWidth
+                                        name="especifiqueAP"
+                                        label="Especifique"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
 
                                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -947,30 +885,26 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={2}>
                                     <Grid item xs={3} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                type="number"
-                                                defaultValue={lsLastRecord?.anioAT}
-                                                fullWidth
-                                                name="anioAT"
-                                                label="Año"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            type="number"
+                                            defaultValue={lsLastRecord?.anioAT}
+                                            fullWidth
+                                            name="anioAT"
+                                            label="Año"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.especifiqueAT}
-                                                fullWidth
-                                                name="especifiqueAT"
-                                                label="Especifique"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.especifiqueAT}
+                                            fullWidth
+                                            name="especifiqueAT"
+                                            label="Especifique"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
 
@@ -1010,30 +944,26 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={2} sx={{ pt: 2 }}>
                                     <Grid item xs={3} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                type="number"
-                                                defaultValue={lsLastRecord?.anio1AT}
-                                                fullWidth
-                                                name="anio1AT"
-                                                label="Año"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            type="number"
+                                            defaultValue={lsLastRecord?.anio1AT}
+                                            fullWidth
+                                            name="anio1AT"
+                                            label="Año"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.especifique1AT}
-                                                fullWidth
-                                                name="especifique1AT"
-                                                label="Especifique"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.especifique1AT}
+                                            fullWidth
+                                            name="especifique1AT"
+                                            label="Especifique"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
 
@@ -1127,128 +1057,108 @@ const Emo = ({
 
                                     {estadoVacuna.tetanoIM ?
                                         <Grid item xs={2}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    defaultValue={lsLastRecord?.anioVacuna1IM}
-                                                    fullWidth
-                                                    name="anioVacuna1IM"
-                                                    label="Año Tetano"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                type="number"
+                                                defaultValue={lsLastRecord?.anioVacuna1IM}
+                                                fullWidth
+                                                name="anioVacuna1IM"
+                                                label="Año Tetano"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid> : null}
                                     {estadoVacuna.influenzaIM ?
                                         <Grid item xs={2} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    defaultValue={lsLastRecord?.anioVacuna2IM}
-                                                    fullWidth
-                                                    name="anioVacuna2IM"
-                                                    label="Año Influenza"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                type="number"
+                                                defaultValue={lsLastRecord?.anioVacuna2IM}
+                                                fullWidth
+                                                name="anioVacuna2IM"
+                                                label="Año Influenza"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid> : null}
                                     {estadoVacuna.fiebreAmarillaIM ?
                                         <Grid item xs={2} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    defaultValue={lsLastRecord?.anioVacuna3IM}
-                                                    fullWidth
-                                                    name="anioVacuna3IM"
-                                                    label="Año Fiebre Amarilla"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                type="number"
+                                                defaultValue={lsLastRecord?.anioVacuna3IM}
+                                                fullWidth
+                                                name="anioVacuna3IM"
+                                                label="Año Fiebre Amarilla"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid> : null}
                                     {estadoVacuna.rubeolaSarampionIM ?
                                         <Grid item xs={2} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    defaultValue={lsLastRecord?.anioVacuna4IM}
-                                                    fullWidth
-                                                    name="anioVacuna4IM"
-                                                    label="Año Rubéola - Sarampion"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                type="number"
+                                                defaultValue={lsLastRecord?.anioVacuna4IM}
+                                                fullWidth
+                                                name="anioVacuna4IM"
+                                                label="Año Rubéola - Sarampion"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid> : null}
                                     {estadoVacuna.covid19IM ?
                                         <Fragment>
                                             <Grid item xs={2} >
-                                                <FormProvider {...methods}>
-                                                    <InputText
-                                                        type="number"
-                                                        defaultValue={lsLastRecord?.anioVacuna5IM}
-                                                        fullWidth
-                                                        name="anioVacuna5IM"
-                                                        label="Año Esquema Completo"
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </FormProvider>
+                                                <InputText
+                                                    type="number"
+                                                    defaultValue={lsLastRecord?.anioVacuna5IM}
+                                                    fullWidth
+                                                    name="anioVacuna5IM"
+                                                    label="Año Esquema Completo"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
                                             </Grid>
 
                                             <Grid item xs={2}>
-                                                <FormProvider {...methods}>
-                                                    <InputSelect
-                                                        name="idRefuerzoIM"
-                                                        label="Refuerzo"
-                                                        defaultValue={lsLastRecord?.idRefuerzoIM}
-                                                        options={lsRefuerzo}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </FormProvider>
+                                                <InputSelect
+                                                    name="idRefuerzoIM"
+                                                    label="Refuerzo"
+                                                    defaultValue={lsLastRecord?.idRefuerzoIM}
+                                                    options={lsRefuerzo}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
                                             </Grid>
                                         </Fragment> : null}
                                     {estadoVacuna.otrasIM ?
                                         <Fragment>
                                             <Grid item xs={2}>
-                                                <FormProvider {...methods}>
-                                                    <InputCheckBox
-                                                        label="BCG"
-                                                        name="vacunaBCGIM"
-                                                        size={30}
-                                                        defaultValue={lsLastRecord?.vacunaBCGIM}
-                                                    />
-                                                </FormProvider>
+                                                <InputCheckBox
+                                                    label="BCG"
+                                                    name="vacunaBCGIM"
+                                                    size={30}
+                                                    defaultValue={lsLastRecord?.vacunaBCGIM}
+                                                />
                                             </Grid>
 
                                             <Grid item xs={2}>
-                                                <FormProvider {...methods}>
-                                                    <InputCheckBox
-                                                        label="VHB"
-                                                        name="vacunaVHBIM"
-                                                        size={30}
-                                                        defaultValue={lsLastRecord?.vacunaVHBIM}
-                                                    />
-                                                </FormProvider>
+                                                <InputCheckBox
+                                                    label="VHB"
+                                                    name="vacunaVHBIM"
+                                                    size={30}
+                                                    defaultValue={lsLastRecord?.vacunaVHBIM}
+                                                />
                                             </Grid>
 
                                             <Grid item xs={2}>
-                                                <FormProvider {...methods}>
-                                                    <InputCheckBox
-                                                        label="VHC"
-                                                        name="vacunaVHCIM"
-                                                        size={30}
-                                                        defaultValue={lsLastRecord?.vacunaVHCIM}
-                                                    />
-                                                </FormProvider>
+                                                <InputCheckBox
+                                                    label="VHC"
+                                                    name="vacunaVHCIM"
+                                                    size={30}
+                                                    defaultValue={lsLastRecord?.vacunaVHCIM}
+                                                />
                                             </Grid>
 
                                             <Grid item xs={6}>
-                                                <FormProvider {...methods}>
-                                                    <InputText
-                                                        defaultValue={lsLastRecord?.anioVacuna6IM}
-                                                        fullWidth
-                                                        name="anioVacuna6IM"
-                                                        label="Observación"
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </FormProvider>
+                                                <InputText
+                                                    defaultValue={lsLastRecord?.anioVacuna6IM}
+                                                    fullWidth
+                                                    name="anioVacuna6IM"
+                                                    label="Observación"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
                                             </Grid>
                                         </Fragment>
                                         : null}
@@ -1263,99 +1173,83 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={2}>
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco1ANFA"
-                                                label="Parentesco"
-                                                defaultValue={lsLastRecord?.parentesco1ANFA}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="parentesco1ANFA"
+                                            label="Parentesco"
+                                            defaultValue={lsLastRecord?.parentesco1ANFA}
+                                            options={lsPariente}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.parentesco1ObserANFA}
-                                                fullWidth
-                                                name="parentesco1ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.parentesco1ObserANFA}
+                                            fullWidth
+                                            name="parentesco1ObserANFA"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco2ANFA"
-                                                label="Parentesco"
-                                                defaultValue={lsLastRecord?.parentesco2ANFA}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="parentesco2ANFA"
+                                            label="Parentesco"
+                                            defaultValue={lsLastRecord?.parentesco2ANFA}
+                                            options={lsPariente}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.parentesco2ObserANFA}
-                                                fullWidth
-                                                name="parentesco2ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.parentesco2ObserANFA}
+                                            fullWidth
+                                            name="parentesco2ObserANFA"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco3ANFA"
-                                                label="Parentesco"
-                                                defaultValue={lsLastRecord?.parentesco3ANFA}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="parentesco3ANFA"
+                                            label="Parentesco"
+                                            defaultValue={lsLastRecord?.parentesco3ANFA}
+                                            options={lsPariente}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.parentesco3ObserANFA}
-                                                fullWidth
-                                                name="parentesco3ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.parentesco3ObserANFA}
+                                            fullWidth
+                                            name="parentesco3ObserANFA"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="parentesco4ANFA"
-                                                label="Parentesco"
-                                                defaultValue={lsLastRecord?.parentesco4ANFA}
-                                                options={lsPariente}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="parentesco4ANFA"
+                                            label="Parentesco"
+                                            defaultValue={lsLastRecord?.parentesco4ANFA}
+                                            options={lsPariente}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={9}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.parentesco4ObserANFA}
-                                                fullWidth
-                                                name="parentesco4ObserANFA"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.parentesco4ObserANFA}
+                                            fullWidth
+                                            name="parentesco4ObserANFA"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
                             </SubCard>
@@ -1368,254 +1262,214 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="Fuma"
-                                                name="fumaHB"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.fumaHB}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="Fuma"
+                                            name="fumaHB"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.fumaHB}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.cigarrillosDiasFumaHB}
-                                                fullWidth
-                                                type="number"
-                                                name="cigarrillosDiasFumaHB"
-                                                label="Cigarrillos Al Día"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.cigarrillosDiasFumaHB}
+                                            fullWidth
+                                            type="number"
+                                            name="cigarrillosDiasFumaHB"
+                                            label="Cigarrillos Al Día"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.aniosCigaFumaHB}
-                                                fullWidth
-                                                type="number"
-                                                name="aniosCigaFumaHB"
-                                                label="Años"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.aniosCigaFumaHB}
+                                            fullWidth
+                                            type="number"
+                                            name="aniosCigaFumaHB"
+                                            label="Años"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
 
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.mesesCigaFumaHB}
-                                                fullWidth
-                                                type="number"
-                                                name="mesesCigaFumaHB"
-                                                label="Meses"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.mesesCigaFumaHB}
+                                            fullWidth
+                                            type="number"
+                                            name="mesesCigaFumaHB"
+                                            label="Meses"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.observacionFumaHB}
-                                                fullWidth
-                                                name="observacionFumaHB"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.observacionFumaHB}
+                                            fullWidth
+                                            name="observacionFumaHB"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="Fumaba"
-                                                name="fumabaHB"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.fumabaHB}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="Fumaba"
+                                            name="fumabaHB"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.fumabaHB}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.cigarrillosDiasFumabaHB}
-                                                fullWidth
-                                                type="number"
-                                                name="cigarrillosDiasFumabaHB"
-                                                label="Cigarrillos Al Día"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.cigarrillosDiasFumabaHB}
+                                            fullWidth
+                                            type="number"
+                                            name="cigarrillosDiasFumabaHB"
+                                            label="Cigarrillos Al Día"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.aniosCigaFumabaHB}
-                                                fullWidth
-                                                type="number"
-                                                name="aniosCigaFumabaHB"
-                                                label="Años"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.aniosCigaFumabaHB}
+                                            fullWidth
+                                            type="number"
+                                            name="aniosCigaFumabaHB"
+                                            label="Años"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.mesesCigaFumabaHB}
-                                                fullWidth
-                                                type="number"
-                                                name="mesesCigaFumabaHB"
-                                                label="Meses"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.mesesCigaFumabaHB}
+                                            fullWidth
+                                            type="number"
+                                            name="mesesCigaFumabaHB"
+                                            label="Meses"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.observacionFumabaHB}
-                                                fullWidth
-                                                name="observacionFumabaHB"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.observacionFumabaHB}
+                                            fullWidth
+                                            name="observacionFumabaHB"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="Practica Deporte"
-                                                name="practicaDeporteHB"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.practicaDeporteHB}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="Practica Deporte"
+                                            name="practicaDeporteHB"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.practicaDeporteHB}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idFrecuenciaDeporteHB"
-                                                label="Frecuencia Deporte"
-                                                defaultValue={lsLastRecord?.idFrecuenciaDeporteHB}
-                                                options={lsFrecuencia}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="idFrecuenciaDeporteHB"
+                                            label="Frecuencia Deporte"
+                                            defaultValue={lsLastRecord?.idFrecuenciaDeporteHB}
+                                            options={lsFrecuencia}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idCualDeporteHB"
-                                                label="Cual Deporte"
-                                                defaultValue={lsLastRecord?.idCualDeporteHB}
-                                                options={lsDeporte}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="idCualDeporteHB"
+                                            label="Cual Deporte"
+                                            defaultValue={lsLastRecord?.idCualDeporteHB}
+                                            options={lsDeporte}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.observacionPracticaDeporHB}
-                                                fullWidth
-                                                name="observacionPracticaDeporHB"
-                                                label="Observación"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.observacionPracticaDeporHB}
+                                            fullWidth
+                                            name="observacionPracticaDeporHB"
+                                            label="Observación"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="Hobby/Pasatiempos"
-                                                name="hobbiesPasatiempoHB"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.hobbiesPasatiempoHB}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="Hobby/Pasatiempos"
+                                            name="hobbiesPasatiempoHB"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.hobbiesPasatiempoHB}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={10} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.cualHobbiesHB}
-                                                fullWidth
-                                                name="cualHobbiesHB"
-                                                label="Cual"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.cualHobbiesHB}
+                                            fullWidth
+                                            name="cualHobbiesHB"
+                                            label="Cual"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="¿Consume Bebidas Alcohólicas?"
-                                                name="consumeBebidasAlcoholicasHB"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.consumeBebidasAlcoholicasHB}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="¿Consume Bebidas Alcohólicas?"
+                                            name="consumeBebidasAlcoholicasHB"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.consumeBebidasAlcoholicasHB}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="idFrecuenciaBebidaAlHB"
-                                                label="Frecuencia de Bebidas"
-                                                defaultValue={lsLastRecord?.idFrecuenciaBebidaAlHB}
-                                                options={lsFrecuencia}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="idFrecuenciaBebidaAlHB"
+                                            label="Frecuencia de Bebidas"
+                                            defaultValue={lsLastRecord?.idFrecuenciaBebidaAlHB}
+                                            options={lsFrecuencia}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={7}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.cualBebidasAlHB}
-                                                fullWidth
-                                                name="cualBebidasAlHB"
-                                                label="Cual"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.cualBebidasAlHB}
+                                            fullWidth
+                                            name="cualBebidasAlHB"
+                                            label="Cual"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="Fobias"
-                                                name="fobiasHB"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.fobiasHB}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="Fobias"
+                                            name="fobiasHB"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.fobiasHB}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={5} >
@@ -1629,15 +1483,13 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={5} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                defaultValue={lsLastRecord?.cualFobiaHB}
-                                                fullWidth
-                                                name="cualFobiaHB"
-                                                label="Cual"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            defaultValue={lsLastRecord?.cualFobiaHB}
+                                            fullWidth
+                                            name="cualFobiaHB"
+                                            label="Cual"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
                             </SubCard>
@@ -1651,311 +1503,261 @@ const Emo = ({
                                 <SubCard>
                                     <Grid container spacing={2} sx={{ pb: 2 }}>
                                         <Grid item xs={2.5}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.menarquiaGO}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="menarquiaGO"
-                                                    label="Menarquía (EDAD)"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.menarquiaGO}
+                                                fullWidth
+                                                type="number"
+                                                name="menarquiaGO"
+                                                label="Menarquía (EDAD)"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2.5} >
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idCiclosGO"
-                                                    label="Ciclos"
-                                                    defaultValue={lsLastRecord?.idCiclosGO}
-                                                    options={lsCiclos}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputSelect
+                                                name="idCiclosGO"
+                                                label="Ciclos"
+                                                defaultValue={lsLastRecord?.idCiclosGO}
+                                                options={lsCiclos}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2.5} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.duracionGO}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="duracionGO"
-                                                    label="Duración (DIAS)"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.duracionGO}
+                                                fullWidth
+                                                type="number"
+                                                name="duracionGO"
+                                                label="Duración (DIAS)"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.5}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Amenorrea"
-                                                    name="amenoreaGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.amenoreaGO}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="Amenorrea"
+                                                name="amenoreaGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.amenoreaGO}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.5}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Dismenorrea"
-                                                    name="disminureaGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.disminureaGO}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="Dismenorrea"
+                                                name="disminureaGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.disminureaGO}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.5} >
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Leucorrea"
-                                                    name="leucoreaGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.leucoreaGO}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="Leucorrea"
+                                                name="leucoreaGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.leucoreaGO}
+                                            />
                                         </Grid>
                                     </Grid>
 
                                     <Grid container spacing={2} sx={{ pb: 2 }}>
                                         <Grid item xs={2.5}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.vidaMaritalGO}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="vidaMaritalGO"
-                                                    label="Vida Marital (EDAD EN AÑOS)"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.vidaMaritalGO}
+                                                fullWidth
+                                                type="number"
+                                                name="vidaMaritalGO"
+                                                label="Vida Marital (EDAD EN AÑOS)"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2.5}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.vidaObstetricaGO}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="vidaObstetricaGO"
-                                                    label="Vida Obstétrica (EDAD EN AÑOS)"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.vidaObstetricaGO}
+                                                fullWidth
+                                                type="number"
+                                                name="vidaObstetricaGO"
+                                                label="Vida Obstétrica (EDAD EN AÑOS)"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.ggo}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="gGO"
-                                                    label="G"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.ggo}
+                                                fullWidth
+                                                type="number"
+                                                name="gGO"
+                                                label="G"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.4} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.pgo}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="pGO"
-                                                    label="P"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.pgo}
+                                                fullWidth
+                                                type="number"
+                                                name="pGO"
+                                                label="P"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.4} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.ago}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="aGO"
-                                                    label="A"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.ago}
+                                                fullWidth
+                                                type="number"
+                                                name="aGO"
+                                                label="A"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.4} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.csgo}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="cSGO"
-                                                    label="C"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.csgo}
+                                                fullWidth
+                                                type="number"
+                                                name="cSGO"
+                                                label="C"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.4} >
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.vgo}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="vGO"
-                                                    label="V"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.vgo}
+                                                fullWidth
+                                                type="number"
+                                                name="vGO"
+                                                label="V"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
                                     </Grid>
 
                                     <Grid container spacing={2} sx={{ pb: 2 }}  >
                                         <Grid item xs={2.5}>
-                                            <FormProvider {...methods}>
-                                                <InputDatePicker
-                                                    label="Fecha FUP"
-                                                    name="fUPGO"
-                                                    defaultValue={lsLastRecord?.fupgo}
-                                                />
-                                            </FormProvider>
+                                            <InputDatePicker
+                                                label="Fecha FUP"
+                                                name="fUPGO"
+                                                defaultValue={lsLastRecord?.fupgo}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2.5}>
-                                            <FormProvider {...methods}>
-                                                <InputDatePicker
-                                                    label="Fecha FUR"
-                                                    name="fURGO"
-                                                    defaultValue={lsLastRecord?.furgo}
-                                                />
-                                            </FormProvider>
+                                            <InputDatePicker
+                                                label="Fecha FUR"
+                                                name="fURGO"
+                                                defaultValue={lsLastRecord?.furgo}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="ETS"
-                                                    name="eTSGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.etsgo}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="ETS"
+                                                name="eTSGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.etsgo}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={6}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.cualgo}
-                                                    fullWidth
-                                                    name="cUALGO"
-                                                    label="Cúal?"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.cualgo}
+                                                fullWidth
+                                                name="cUALGO"
+                                                label="Cúal?"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
                                     </Grid>
 
                                     <Grid container spacing={2} sx={{ pb: 2 }}>
                                         <Grid item xs={2}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Quiste de Ovarios - Miomas"
-                                                    name="quisteOvariosBiomasGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.quisteOvariosBiomasGO}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="Quiste de Ovarios - Miomas"
+                                                name="quisteOvariosBiomasGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.quisteOvariosBiomasGO}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.5}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Endometriosis"
-                                                    name="endometriosisGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.endometriosisGO}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="Endometriosis"
+                                                name="endometriosisGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.endometriosisGO}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="EPI"
-                                                    name="ePIGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.epigo}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="EPI"
+                                                name="ePIGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.epigo}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={1.5} >
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Planifica"
-                                                    name="planificaGO"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.planificaGO}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="Planifica"
+                                                name="planificaGO"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.planificaGO}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idMetodoGO"
-                                                    label="Método"
-                                                    defaultValue={lsLastRecord?.idMetodoGO}
-                                                    options={lsGineMetodo}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputSelect
+                                                name="idMetodoGO"
+                                                label="Método"
+                                                defaultValue={lsLastRecord?.idMetodoGO}
+                                                options={lsGineMetodo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    defaultValue={lsLastRecord?.ultimoAnioCitologiaGO}
-                                                    fullWidth
-                                                    type="number"
-                                                    name="ultimoAnioCitologiaGO"
-                                                    label="Ultimo Año Citologia."
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                defaultValue={lsLastRecord?.ultimoAnioCitologiaGO}
+                                                fullWidth
+                                                type="number"
+                                                name="ultimoAnioCitologiaGO"
+                                                label="Ultimo Año Citologia."
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idResultadoGO"
-                                                    label="Resultado"
-                                                    defaultValue={lsLastRecord?.idResultadoGO}
-                                                    options={lsResultado}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputSelect
+                                                name="idResultadoGO"
+                                                label="Resultado"
+                                                defaultValue={lsLastRecord?.idResultadoGO}
+                                                options={lsResultado}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
                                     </Grid>
 
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    multiline
-                                                    rows={4}
-                                                    defaultValue={lsLastRecord?.observacionesGO}
-                                                    fullWidth
-                                                    name="observacionesGO"
-                                                    label="Observaciones"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                multiline
+                                                rows={4}
+                                                defaultValue={lsLastRecord?.observacionesGO}
+                                                fullWidth
+                                                name="observacionesGO"
+                                                label="Observaciones"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -1991,172 +1793,142 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={2} sx={{ pb: 2 }}>
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="1. Cabeza - Cefalea"
-                                                name="cabezaRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.cabezaRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="1. Cabeza - Cefalea"
+                                            name="cabezaRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.cabezaRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="2. Ojos(A. Visual, dolor, congestion, etc)"
-                                                name="ojosRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.ojosRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="2. Ojos(A. Visual, dolor, congestion, etc)"
+                                            name="ojosRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.ojosRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="3. Oidos(A. Auditiva, dolor, secreción)"
-                                                name="oidosRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.oidosRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="3. Oidos(A. Auditiva, dolor, secreción)"
+                                            name="oidosRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.oidosRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="4. Nariz (Congestión, epistaxis, rinorrea)"
-                                                name="narizRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.narizRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="4. Nariz (Congestión, epistaxis, rinorrea)"
+                                            name="narizRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.narizRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="5. Boca (eraciones, sangrado de encias)"
-                                                name="bocaRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.bocaRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="5. Boca (eraciones, sangrado de encias)"
+                                            name="bocaRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.bocaRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="6. Garganta (Dolor, ardor, disfagia, disfonía)"
-                                                name="gargantaRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.gargantaRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="6. Garganta (Dolor, ardor, disfagia, disfonía)"
+                                            name="gargantaRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.gargantaRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4} >
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="7. Cuello (Dolor, torticolis, opatías)"
-                                                name="cuellosRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.cuellosRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="7. Cuello (Dolor, torticolis, opatías)"
+                                            name="cuellosRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.cuellosRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="8. Cardio-Respiratorio"
-                                                name="cardioRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.cardioRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="8. Cardio-Respiratorio"
+                                            name="cardioRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.cardioRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="9. Gastrointestinal"
-                                                name="gastrointestinalRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.gastrointestinalRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="9. Gastrointestinal"
+                                            name="gastrointestinalRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.gastrointestinalRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="10. GenitoUrinario"
-                                                name="genitoUrinarioRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.genitoUrinarioRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="10. GenitoUrinario"
+                                            name="genitoUrinarioRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.genitoUrinarioRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="11. Osteo-Articular"
-                                                name="osteoRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.osteoRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="11. Osteo-Articular"
+                                            name="osteoRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.osteoRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="12.Neuro-Muscular"
-                                                name="neuroRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.neuroRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="12.Neuro-Muscular"
+                                            name="neuroRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.neuroRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4} >
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="13. Piel y Anexos"
-                                                name="pielRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.pielRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="13. Piel y Anexos"
+                                            name="pielRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.pielRS}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="14. Psiquiátrico"
-                                                name="psiquiatricoRS"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.psiquiatricoRS}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="14. Psiquiátrico"
+                                            name="psiquiatricoRS"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.psiquiatricoRS}
+                                        />
                                     </Grid>
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            multiline
-                                            rows={4}
-                                            defaultValue={lsLastRecord?.observacionRS}
-                                            fullWidth
-                                            name="observacionRS"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    <InputText
+                                        multiline
+                                        rows={4}
+                                        defaultValue={lsLastRecord?.observacionRS}
+                                        fullWidth
+                                        name="observacionRS"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
                                 </Grid>
 
                                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -2196,15 +1968,13 @@ const Emo = ({
 
                                 <SubCard title="Lateralidad">
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="lateralidadExamenesFisico"
-                                                label="Lateralidad"
-                                                defaultValue={lsLastRecord?.lateralidadExamenesFisico}
-                                                options={lsLateralidad}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="lateralidadExamenesFisico"
+                                            label="Lateralidad"
+                                            defaultValue={lsLastRecord?.lateralidadExamenesFisico}
+                                            options={lsLateralidad}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </SubCard>
                                 <Grid sx={{ pb: 2 }} />
@@ -2221,79 +1991,67 @@ const Emo = ({
                                 >
                                     <Grid container spacing={2} alignItems="center">
                                         <Grid item xs={4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsLastRecord?.taSentadoEF}
-                                                    name="tASentadoEF"
-                                                    label="TA Sentado"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsLastRecord?.taSentadoEF}
+                                                name="tASentadoEF"
+                                                label="TA Sentado"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsLastRecord?.taAcostadoEF}
-                                                    name="tAAcostadoEF"
-                                                    label="TA Acostado"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsLastRecord?.taAcostadoEF}
+                                                name="tAAcostadoEF"
+                                                label="TA Acostado"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsLastRecord?.pulsoEF}
-                                                    type="number"
-                                                    name="pulsoEF"
-                                                    label="Pulso"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsLastRecord?.pulsoEF}
+                                                type="number"
+                                                name="pulsoEF"
+                                                label="Pulso"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsLastRecord?.fcef}
-                                                    type="number"
-                                                    name="fCEF"
-                                                    label="FC"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsLastRecord?.fcef}
+                                                type="number"
+                                                name="fCEF"
+                                                label="FC"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsLastRecord?.fref}
-                                                    type="number"
-                                                    name="fREF"
-                                                    label="FR"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsLastRecord?.fref}
+                                                type="number"
+                                                name="fREF"
+                                                label="FR"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={4}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsLastRecord?.temperaturaEF}
-                                                    type="number"
-                                                    name="temperaturaEF"
-                                                    label="Temperatura"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                fullWidth
+                                                defaultValue={lsLastRecord?.temperaturaEF}
+                                                type="number"
+                                                name="temperaturaEF"
+                                                label="Temperatura"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
                                     </Grid>
                                 </SubCard>
@@ -2347,15 +2105,13 @@ const Emo = ({
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idBiotipoEF"
-                                                    label="Biotipo"
-                                                    defaultValue={lsLastRecord?.idBiotipoEF}
-                                                    options={lsBiotipo}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputSelect
+                                                name="idBiotipoEF"
+                                                label="Biotipo"
+                                                defaultValue={lsLastRecord?.idBiotipoEF}
+                                                options={lsBiotipo}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
                                     </Grid>
                                 </SubCard>
@@ -2364,480 +2120,394 @@ const Emo = ({
                                 <SubCard title="Exploración Morfológica - Aspecto (Seleccione el ítem que encuentre Anormal o No Explorado y descríbalo en la casilla observación)">
                                     <Grid container spacing={1} sx={{ pb: 2 }}>
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="1. Estado Nutricional"
-                                                    name="estadoNitricionalEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.estadoNitricionalEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="1. Estado Nutricional"
+                                                name="estadoNitricionalEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.estadoNitricionalEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="2. Piel-Faneras"
-                                                    name="pielFaneraEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.pielFaneraEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="2. Piel-Faneras"
+                                                name="pielFaneraEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.pielFaneraEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="3. Craneo"
-                                                    name="craneoEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.craneoEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="3. Craneo"
+                                                name="craneoEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.craneoEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="4. Parpados"
-                                                    name="parpadoEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.parpadoEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="4. Parpados"
+                                                name="parpadoEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.parpadoEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="5. Conjuntivas"
-                                                    name="conjuntivasEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.conjuntivasEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="5. Conjuntivas"
+                                                name="conjuntivasEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.conjuntivasEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="6. Corneas"
-                                                    name="corniasEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.corniasEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="6. Corneas"
+                                                name="corniasEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.corniasEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3} >
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="7. Pupilas"
-                                                    name="pupilasEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.pupilasEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="7. Pupilas"
+                                                name="pupilasEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.pupilasEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="8. Reflejo Fotomotors"
-                                                    name="reflejoFotomotorEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.reflejoFotomotorEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="8. Reflejo Fotomotors"
+                                                name="reflejoFotomotorEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.reflejoFotomotorEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="9. Reflejo Corneal"
-                                                    name="reflejoCornialEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.reflejoCornialEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="9. Reflejo Corneal"
+                                                name="reflejoCornialEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.reflejoCornialEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="10. Fondo Ojos"
-                                                    name="fondoOjosEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.fondoOjosEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="10. Fondo Ojos"
+                                                name="fondoOjosEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.fondoOjosEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="11. Inspección Externa Oidos"
-                                                    name="inspeccionEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.inspeccionEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="11. Inspección Externa Oidos"
+                                                name="inspeccionEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.inspeccionEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="12. Otoscopia"
-                                                    name="otoscopiaEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.otoscopiaEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="12. Otoscopia"
+                                                name="otoscopiaEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.otoscopiaEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="13. Inpección Externa de Nariz"
-                                                    name="inspeccionNarizEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.inspeccionNarizEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="13. Inpección Externa de Nariz"
+                                                name="inspeccionNarizEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.inspeccionNarizEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="14. Rinoscopia"
-                                                    name="rinoscopioEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.rinoscopioEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="14. Rinoscopia"
+                                                name="rinoscopioEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.rinoscopioEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="15. Labios"
-                                                    name="labiosEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.labiosEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="15. Labios"
+                                                name="labiosEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.labiosEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="16. Mucosa Oral"
-                                                    name="mucosaEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.mucosaEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="16. Mucosa Oral"
+                                                name="mucosaEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.mucosaEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="17. Encías"
-                                                    name="enciasEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.enciasEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="17. Encías"
+                                                name="enciasEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.enciasEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="18. Paladar"
-                                                    name="paladarEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.paladarEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="18. Paladar"
+                                                name="paladarEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.paladarEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="19. Dientes"
-                                                    name="dientesEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.dientesEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="19. Dientes"
+                                                name="dientesEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.dientesEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="20. Lengua"
-                                                    name="lenguaEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.lenguaEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="20. Lengua"
+                                                name="lenguaEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.lenguaEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="21. Faringe"
-                                                    name="faringeEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.faringeEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="21. Faringe"
+                                                name="faringeEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.faringeEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="22. Amigdalas"
-                                                    name="amigdalasEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.amigdalasEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="22. Amigdalas"
+                                                name="amigdalasEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.amigdalasEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="23. Cuello Tiroides"
-                                                    name="cuellosEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.cuellosEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="23. Cuello Tiroides"
+                                                name="cuellosEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.cuellosEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="24. Inspección de Torax-Mamas"
-                                                    name="inspeccionToraxEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.inspeccionToraxEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="24. Inspección de Torax-Mamas"
+                                                name="inspeccionToraxEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.inspeccionToraxEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="25. Auscultación Cardiaca"
-                                                    name="auscultacionCardiacaEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.auscultacionCardiacaEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="25. Auscultación Cardiaca"
+                                                name="auscultacionCardiacaEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.auscultacionCardiacaEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="26. Auscultación Respiratoria"
-                                                    name="auscultacionRespiratoriaEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.auscultacionRespiratoriaEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="26. Auscultación Respiratoria"
+                                                name="auscultacionRespiratoriaEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.auscultacionRespiratoriaEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="27. Inspección Abdomen"
-                                                    name="inspeccionAbdomenEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.inspeccionAbdomenEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="27. Inspección Abdomen"
+                                                name="inspeccionAbdomenEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.inspeccionAbdomenEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="28. Palpación Abdomen"
-                                                    name="palpacionAbdomenEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.palpacionAbdomenEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="28. Palpación Abdomen"
+                                                name="palpacionAbdomenEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.palpacionAbdomenEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="29. Exploración Higado"
-                                                    name="exploracionHigadoEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.exploracionHigadoEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="29. Exploración Higado"
+                                                name="exploracionHigadoEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.exploracionHigadoEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="30. Exploración de Bazo"
-                                                    name="exploracionVasoEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.exploracionVasoEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="30. Exploración de Bazo"
+                                                name="exploracionVasoEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.exploracionVasoEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="31. Exploración Riñones"
-                                                    name="exploracionRinionesEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.exploracionRinionesEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="31. Exploración Riñones"
+                                                name="exploracionRinionesEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.exploracionRinionesEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="32. Anillos Inguinale"
-                                                    name="anillosInguinalesEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.anillosInguinalesEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="32. Anillos Inguinale"
+                                                name="anillosInguinalesEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.anillosInguinalesEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="33. Anillo Umbilical"
-                                                    name="anilloUmbilicalEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.anilloUmbilicalEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="33. Anillo Umbilical"
+                                                name="anilloUmbilicalEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.anilloUmbilicalEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="34. Genitales Externos"
-                                                    name="genitalesExternosEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.genitalesExternosEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="34. Genitales Externos"
+                                                name="genitalesExternosEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.genitalesExternosEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="35. Región Anal"
-                                                    name="regionAnalEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.regionAnalEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="35. Región Anal"
+                                                name="regionAnalEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.regionAnalEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="36. Tacto Rectal"
-                                                    name="tactoRectalEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.tactoRectalEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="36. Tacto Rectal"
+                                                name="tactoRectalEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.tactoRectalEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="37. Tacto Vaginal"
-                                                    name="tactoVaginalEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.tactoVaginalEF}
-                                                    disabled={lsEmployee.genero === DefaultValue.GeneroWomen ? false : true}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="37. Tacto Vaginal"
+                                                name="tactoVaginalEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.tactoVaginalEF}
+                                                disabled={lsEmployee.genero === DefaultValue.GeneroWomen ? false : true}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="38. Extremidades Superiores"
-                                                    name="extremidadesSuperioresEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.extremidadesSuperioresEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="38. Extremidades Superiores"
+                                                name="extremidadesSuperioresEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.extremidadesSuperioresEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="39. Extremidades Inferiores"
-                                                    name="extremidadesInferioresEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.extremidadesInferioresEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="39. Extremidades Inferiores"
+                                                name="extremidadesInferioresEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.extremidadesInferioresEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="40. Pulsos"
-                                                    name="pulsosEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.pulsosEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="40. Pulsos"
+                                                name="pulsosEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.pulsosEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="41. Columna Vertebral"
-                                                    name="columnaVertebralEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.columnaVertebralEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="41. Columna Vertebral"
+                                                name="columnaVertebralEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.columnaVertebralEF}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="42. Articulaciones"
-                                                    name="articulacionesEF"
-                                                    size={30}
-                                                    defaultValue={lsLastRecord?.articulacionesEF}
-                                                />
-                                            </FormProvider>
+                                            <InputCheckBox
+                                                label="42. Articulaciones"
+                                                name="articulacionesEF"
+                                                size={30}
+                                                defaultValue={lsLastRecord?.articulacionesEF}
+                                            />
                                         </Grid>
                                     </Grid>
 
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            multiline
-                                            rows={4}
-                                            defaultValue={lsLastRecord?.especifiqueEMEFU}
-                                            fullWidth
-                                            name="especifiqueEMEFU"
-                                            label="Observación"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    <InputText
+                                        multiline
+                                        rows={4}
+                                        defaultValue={lsLastRecord?.especifiqueEMEFU}
+                                        fullWidth
+                                        name="especifiqueEMEFU"
+                                        label="Observación"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                                         <DetailedIcon
@@ -2878,274 +2548,226 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={1} sx={{ pb: 2 }}>
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="1. Movilidad Ocular"
-                                                name="movilidadEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="1. Movilidad Ocular"
+                                            name="movilidadEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="2. Equilibrio"
-                                                name="equilibrioEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.equilibrioEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="2. Equilibrio"
+                                            name="equilibrioEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.equilibrioEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="3. Marcha Coordinación"
-                                                name="marchaEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.marchaEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="3. Marcha Coordinación"
+                                            name="marchaEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.marchaEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="4. Movilidad Hombro"
-                                                name="movilidadHombroEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadHombroEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="4. Movilidad Hombro"
+                                            name="movilidadHombroEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadHombroEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="5. Movilidad Codo"
-                                                name="movilidadCodoEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadCodoEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="5. Movilidad Codo"
+                                            name="movilidadCodoEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadCodoEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="6. Movilidad Muñeca"
-                                                name="movilidadMuniecaEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadMuniecaEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="6. Movilidad Muñeca"
+                                            name="movilidadMuniecaEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadMuniecaEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="7. Signo de Tinel"
-                                                name="signoTinelEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.signoTinelEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="7. Signo de Tinel"
+                                            name="signoTinelEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.signoTinelEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="8. Signo de Phalen"
-                                                name="signoPhalenEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.signoPhalenEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="8. Signo de Phalen"
+                                            name="signoPhalenEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.signoPhalenEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="9. Movilidad Manos"
-                                                name="movilidadManosEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadManosEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="9. Movilidad Manos"
+                                            name="movilidadManosEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadManosEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="10. Movilidad Cadera"
-                                                name="movilidadCaderaEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadCaderaEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="10. Movilidad Cadera"
+                                            name="movilidadCaderaEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadCaderaEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="11. Movilidad Rodilla"
-                                                name="movilidadRodillaEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadRodillaEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="11. Movilidad Rodilla"
+                                            name="movilidadRodillaEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadRodillaEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="12. Movilidad Tobillo"
-                                                name="movilidadTobilloEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadTobilloEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="12. Movilidad Tobillo"
+                                            name="movilidadTobilloEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadTobilloEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="13. Movilidad Cuello (C1-C4)"
-                                                name="movilidadCuelloEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.movilidadCuelloEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="13. Movilidad Cuello (C1-C4)"
+                                            name="movilidadCuelloEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.movilidadCuelloEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="14. ROT Bicipital (C5)"
-                                                name="rOTVisipitalEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.rotVisipitalEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="14. ROT Bicipital (C5)"
+                                            name="rOTVisipitalEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.rotVisipitalEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="15. ROT Rotuliano (L4)"
-                                                name="rOTRotuleanoEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.rotRotuleanoEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="15. ROT Rotuliano (L4)"
+                                            name="rOTRotuleanoEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.rotRotuleanoEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="16. Extencion Primer Artejo (L5)"
-                                                name="extencionEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.extencionEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="16. Extencion Primer Artejo (L5)"
+                                            name="extencionEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.extencionEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="17. Sensibilidad cara anterior pie (L5)"
-                                                name="sensibilidadCaraAnteriorEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.sensibilidadCaraAnteriorEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="17. Sensibilidad cara anterior pie (L5)"
+                                            name="sensibilidadCaraAnteriorEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.sensibilidadCaraAnteriorEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="18. Eversión Pie(S1)"
-                                                name="eversionPiesEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.eversionPiesEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="18. Eversión Pie(S1)"
+                                            name="eversionPiesEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.eversionPiesEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="19. Sensibilidad cara lateral pie (L5)"
-                                                name="sensibilidadCaraLateralEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.sensibilidadCaraLateralEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="19. Sensibilidad cara lateral pie (L5)"
+                                            name="sensibilidadCaraLateralEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.sensibilidadCaraLateralEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="20. ROT Aquiliano"
-                                                name="rOTAquileanoEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.rotAquileanoEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="20. ROT Aquiliano"
+                                            name="rOTAquileanoEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.rotAquileanoEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="21. Signo de la Laségue"
-                                                name="signoLasegueEFU"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.signoLasegueEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="21. Signo de la Laségue"
+                                            name="signoLasegueEFU"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.signoLasegueEFU}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={3}>
-                                        <FormProvider {...methods}>
-                                            <InputCheck
-                                                label="22. Indice Wells"
-                                                size={30}
-                                                onChange={(e) => setIndiceWellsEFU(e.target.checked)}
-                                                checked={indiceWellsEFU}
-                                            />
-                                        </FormProvider>
+                                        <InputCheck
+                                            label="22. Indice Wells"
+                                            size={30}
+                                            onChange={(e) => setIndiceWellsEFU(e.target.checked)}
+                                            checked={indiceWellsEFU}
+                                        />
                                     </Grid>
 
                                     {indiceWellsEFU ?
                                         <Grid item xs={3}>
-                                            <FormProvider {...methods}>
-                                                <InputText
-                                                    type="number"
-                                                    fullWidth
-                                                    name="valorIndiceWellsEFU"
-                                                    label="Valor De IndiceWells"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    defaultValue={lsLastRecord?.valorIndiceWellsEFU}
-                                                />
-                                            </FormProvider>
+                                            <InputText
+                                                type="number"
+                                                fullWidth
+                                                name="valorIndiceWellsEFU"
+                                                label="Valor De IndiceWells"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                defaultValue={lsLastRecord?.valorIndiceWellsEFU}
+                                            />
                                         </Grid> : null
                                     }
                                 </Grid>
 
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        multiline
-                                        rows={4}
-                                        defaultValue={lsLastRecord?.observacionEFU}
-                                        fullWidth
-                                        name="observacionEFU"
-                                        label="Observaciones"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </FormProvider>
+                                <InputText
+                                    multiline
+                                    rows={4}
+                                    defaultValue={lsLastRecord?.observacionEFU}
+                                    fullWidth
+                                    name="observacionEFU"
+                                    label="Observaciones"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
 
                                 <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
                                     <DetailedIcon
@@ -3182,37 +2804,31 @@ const Emo = ({
                             <SubCard>
                                 <Grid container spacing={2}>
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Rx de Torax(Criterios OIT)"
-                                                name="fechaRxToraxEPA"
-                                                defaultValue={lsLastRecord?.fechaRxToraxEPA}
-                                            />
-                                        </FormProvider>
+                                        <InputDatePicker
+                                            label="Rx de Torax(Criterios OIT)"
+                                            name="fechaRxToraxEPA"
+                                            defaultValue={lsLastRecord?.fechaRxToraxEPA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoRxToraxEPA}
-                                                name="resultadoRxToraxEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoRxToraxEPA}
+                                            name="resultadoRxToraxEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesRxToraxEPA}
-                                                name="observacionesRxToraxEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesRxToraxEPA}
+                                            name="observacionesRxToraxEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3241,38 +2857,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Espirometria"
-                                                name="fechaEspirometriaEPA"
-                                                defaultValue={lsLastRecord?.fechaEspirometriaEPA}
+                                        <InputDatePicker
+                                            label="Espirometria"
+                                            name="fechaEspirometriaEPA"
+                                            defaultValue={lsLastRecord?.fechaEspirometriaEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoEspirometriaEPA}
-                                                name="resultadoEspirometriaEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoEspirometriaEPA}
+                                            name="resultadoEspirometriaEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesEspirometriaEPA}
-                                                name="observacionesEspirometriaEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesEspirometriaEPA}
+                                            name="observacionesEspirometriaEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3301,38 +2911,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Audiometria"
-                                                name="fechaAudiometriaEPA"
-                                                defaultValue={lsLastRecord?.fechaAudiometriaEPA}
+                                        <InputDatePicker
+                                            label="Audiometria"
+                                            name="fechaAudiometriaEPA"
+                                            defaultValue={lsLastRecord?.fechaAudiometriaEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoAudiometriaEPA}
-                                                name="resultadoAudiometriaEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoAudiometriaEPA}
+                                            name="resultadoAudiometriaEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesAudiometriaEPA}
-                                                name="observacionesAudiometriaEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesAudiometriaEPA}
+                                            name="observacionesAudiometriaEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3361,38 +2965,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Visiometria"
-                                                name="fechaVisiometriaEPA"
-                                                defaultValue={lsLastRecord?.fechaVisiometriaEPA}
+                                        <InputDatePicker
+                                            label="Visiometria"
+                                            name="fechaVisiometriaEPA"
+                                            defaultValue={lsLastRecord?.fechaVisiometriaEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoVisiometriaEPA}
-                                                name="resultadoVisiometriaEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoVisiometriaEPA}
+                                            name="resultadoVisiometriaEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6} >
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesVisiometriaEPA}
-                                                name="observacionesVisiometriaEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesVisiometriaEPA}
+                                            name="observacionesVisiometriaEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3421,38 +3019,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Laboratorio Clinico"
-                                                name="fechaLaboratorioClinicoEPA"
-                                                defaultValue={lsLastRecord?.fechaLaboratorioClinicoEPA}
+                                        <InputDatePicker
+                                            label="Laboratorio Clinico"
+                                            name="fechaLaboratorioClinicoEPA"
+                                            defaultValue={lsLastRecord?.fechaLaboratorioClinicoEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoLaboratorioClinicoEPA}
-                                                name="resultadoLaboratorioClinicoEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoLaboratorioClinicoEPA}
+                                            name="resultadoLaboratorioClinicoEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesLaboratorioClinicoEPA}
-                                                name="observacionesLaboratorioClinicoEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesLaboratorioClinicoEPA}
+                                            name="observacionesLaboratorioClinicoEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3481,38 +3073,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Cuestionario de Sintomas Respiratorios"
-                                                name="fechaCuestionarioSintomaEPA"
-                                                defaultValue={lsLastRecord?.fechaCuestionarioSintomaEPA}
+                                        <InputDatePicker
+                                            label="Cuestionario de Sintomas Respiratorios"
+                                            name="fechaCuestionarioSintomaEPA"
+                                            defaultValue={lsLastRecord?.fechaCuestionarioSintomaEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoCuestionarioSintomaEPA}
-                                                name="resultadoCuestionarioSintomaEPA"
-                                                label="Resultado"
-                                                options={lsEPSintomas}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoCuestionarioSintomaEPA}
+                                            name="resultadoCuestionarioSintomaEPA"
+                                            label="Resultado"
+                                            options={lsEPSintomas}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesCuestionarioSintomaEPA}
-                                                name="observacionesCuestionarioSintomaEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesCuestionarioSintomaEPA}
+                                            name="observacionesCuestionarioSintomaEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3541,38 +3127,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="EKG"
-                                                name="fechaEkgEPA"
-                                                defaultValue={lsLastRecord?.fechaEkgEPA}
+                                        <InputDatePicker
+                                            label="EKG"
+                                            name="fechaEkgEPA"
+                                            defaultValue={lsLastRecord?.fechaEkgEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoEkgEPA}
-                                                name="resultadoEkgEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoEkgEPA}
+                                            name="resultadoEkgEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesEkgEPA}
-                                                name="observacionesEkgEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesEkgEPA}
+                                            name="observacionesEkgEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3601,38 +3181,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="RNM-Columna Lumbosacra"
-                                                name="fechaRnmLumbosacraEPA"
-                                                defaultValue={lsLastRecord?.fechaRnmLumbosacraEPA}
+                                        <InputDatePicker
+                                            label="RNM-Columna Lumbosacra"
+                                            name="fechaRnmLumbosacraEPA"
+                                            defaultValue={lsLastRecord?.fechaRnmLumbosacraEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoRnmLumbosacraEPA}
-                                                name="resultadoRnmLumbosacraEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoRnmLumbosacraEPA}
+                                            name="resultadoRnmLumbosacraEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesRnmLumbosacraEPA}
-                                                name="observacionesRnmLumbosacraEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesRnmLumbosacraEPA}
+                                            name="observacionesRnmLumbosacraEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                     <Grid item xs={2}>
                                         <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ pt: 2 }}>
@@ -3660,38 +3234,32 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={2}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="RNM-Columna Cervical"
-                                                name="fechaRnmCervicalEPA"
-                                                defaultValue={lsLastRecord?.fechaRnmCervicalEPA}
+                                        <InputDatePicker
+                                            label="RNM-Columna Cervical"
+                                            name="fechaRnmCervicalEPA"
+                                            defaultValue={lsLastRecord?.fechaRnmCervicalEPA}
 
-                                            />
-                                        </FormProvider>
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.resultadoRnmCervicalEPA}
-                                                name="resultadoRnmCervicalEPA"
-                                                label="Resultado"
-                                                options={lsResultado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.resultadoRnmCervicalEPA}
+                                            name="resultadoRnmCervicalEPA"
+                                            label="Resultado"
+                                            options={lsResultado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                fullWidth
-                                                defaultValue={lsLastRecord?.observacionesRnmCervicalEPA}
-                                                name="observacionesRnmCervicalEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            fullWidth
+                                            defaultValue={lsLastRecord?.observacionesRnmCervicalEPA}
+                                            name="observacionesRnmCervicalEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={2}>
@@ -3720,17 +3288,15 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.observacionEPA}
-                                                fullWidth
-                                                name="observacionEPA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.observacionEPA}
+                                            fullWidth
+                                            name="observacionEPA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -3785,7 +3351,6 @@ const Emo = ({
                             tencion={tencion}
 
                             documento={documento}
-                            {...methods}
                         />
                     </Grid>
 
@@ -3805,15 +3370,13 @@ const Emo = ({
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="dx1"
-                                                    label="Dx1"
-                                                    defaultValue={lsLastRecord?.dx1}
-                                                    options={lsDx1}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputSelect
+                                                name="dx1"
+                                                label="Dx1"
+                                                defaultValue={lsLastRecord?.dx1}
+                                                options={lsDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2}>
@@ -3826,15 +3389,13 @@ const Emo = ({
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="dx2"
-                                                    label="Dx2"
-                                                    defaultValue={lsLastRecord?.dx2}
-                                                    options={lsDx2}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputSelect
+                                                name="dx2"
+                                                label="Dx2"
+                                                defaultValue={lsLastRecord?.dx2}
+                                                options={lsDx2}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
 
                                         <Grid item xs={2}>
@@ -3847,30 +3408,26 @@ const Emo = ({
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="dx3"
-                                                    label="Dx3"
-                                                    defaultValue={lsLastRecord?.dx3}
-                                                    options={lsDx3}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </FormProvider>
+                                            <InputSelect
+                                                name="dx3"
+                                                label="Dx3"
+                                                defaultValue={lsLastRecord?.dx3}
+                                                options={lsDx3}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
                                         </Grid>
                                     </Fragment>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.observacionID}
-                                                fullWidth
-                                                name="observacionID"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.observacionID}
+                                            fullWidth
+                                            name="observacionID"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -3900,17 +3457,15 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.recomendacionesID}
-                                                fullWidth
-                                                name="recomendacionesID"
-                                                label="Recomendaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.recomendacionesID}
+                                            fullWidth
+                                            name="recomendacionesID"
+                                            label="Recomendaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -3940,21 +3495,19 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.idConceptoActitudID}
-                                                disabled={atencion === DefaultValue.EMO_ATENCION_EGRESO ? true : false}
-                                                name="idConceptoActitudID"
-                                                label="Concepto de Aptitud PsicoFisica"
-                                                options={
-                                                    atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
-                                                        atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
-                                                            atencion === DefaultValue.EMO_ATENCION_PROMO ? lsControlPeriodico :
-                                                                atencion === DefaultValue.EMO_ATENCION_EGRESO ? [] : lsControlPeriodico
-                                                }
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.idConceptoActitudID}
+                                            disabled={atencion === DefaultValue.EMO_ATENCION_EGRESO ? true : false}
+                                            name="idConceptoActitudID"
+                                            label="Concepto de Aptitud PsicoFisica"
+                                            options={
+                                                atencion === DefaultValue.EMO_ATENCION_INGRESO ? lsIngreso :
+                                                    atencion === DefaultValue.EMO_ATENCION_CONTRO ? lsControlPeriodico :
+                                                        atencion === DefaultValue.EMO_ATENCION_PROMO ? lsControlPeriodico :
+                                                            atencion === DefaultValue.EMO_ATENCION_EGRESO ? [] : lsControlPeriodico
+                                            }
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
                             </SubCard>
@@ -3971,7 +3524,6 @@ const Emo = ({
                                 setOpen={setOpen}
                                 setOpenHistory={setOpenHistory}
                                 setOpenTemplate={setOpenTemplate}
-                                {...methods}
                             />
                         </Accordion>
                     </Grid>
@@ -3982,64 +3534,54 @@ const Emo = ({
                             <SubCard darkTitle title={<Typography variant="h4">NOTIFICACIÓN EMPRESA</Typography>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputDatePicker
-                                                label="Fecha Del Concepto"
-                                                name="fechaConceptoNETA"
-                                                defaultValue={new Date()}
-                                            />
-                                        </FormProvider>
+                                        <InputDatePicker
+                                            label="Fecha Del Concepto"
+                                            name="fechaConceptoNETA"
+                                            defaultValue={new Date()}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.conceptoActitudNETA}
-                                                name="conceptoActitudNETA"
-                                                label="Concepto De Trabajo En Altura"
-                                                options={lsNeConceptoActi}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.conceptoActitudNETA}
+                                            name="conceptoActitudNETA"
+                                            label="Concepto De Trabajo En Altura"
+                                            options={lsNeConceptoActi}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     {/* ESPACIO CONFINADO */}
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.idConceptoEspacioConfinado}
-                                                name="idConceptoEspacioConfinado"
-                                                label="Concepto De Trabajo En Espacio Confinado"
-                                                options={lsEspacioConfinado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.idConceptoEspacioConfinado}
+                                            name="idConceptoEspacioConfinado"
+                                            label="Concepto De Trabajo En Espacio Confinado"
+                                            options={lsEspacioConfinado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="conceptoAplazadoNETA"
-                                                label="El Concepto de aptitud debe ser aplazado"
-                                                defaultValue={lsLastRecord?.conceptoAplazadoNETA}
-                                                options={lsOpcion}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="conceptoAplazadoNETA"
+                                            label="El Concepto de aptitud debe ser aplazado"
+                                            defaultValue={lsLastRecord?.conceptoAplazadoNETA}
+                                            options={lsOpcion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.motivoAplazoNETA}
-                                                fullWidth
-                                                name="motivoAplazoNETA"
-                                                label="Motivo de Aplazo"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.motivoAplazoNETA}
+                                            fullWidth
+                                            name="motivoAplazoNETA"
+                                            label="Motivo de Aplazo"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -4069,17 +3611,15 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.descripcionResultadoNETA}
-                                                fullWidth
-                                                name="descripcionResultadoNETA"
-                                                label="Descripción de resultados(Resumen de limitaciones o restricciones)"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.descripcionResultadoNETA}
+                                            fullWidth
+                                            name="descripcionResultadoNETA"
+                                            label="Descripción de resultados(Resumen de limitaciones o restricciones)"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -4109,17 +3649,15 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.recomendacionesNETA}
-                                                fullWidth
-                                                name="recomendacionesNETA"
-                                                label="Recomendaciones (En términos sencillos de cuidados y controles requeridos)"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.recomendacionesNETA}
+                                            fullWidth
+                                            name="recomendacionesNETA"
+                                            label="Recomendaciones (En términos sencillos de cuidados y controles requeridos)"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -4143,27 +3681,23 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={6} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="remitidoNETA"
-                                                label="Remitido"
-                                                defaultValue={lsLastRecord?.remitidoNETA}
-                                                options={lsOpcion}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="remitidoNETA"
+                                            label="Remitido"
+                                            defaultValue={lsLastRecord?.remitidoNETA}
+                                            options={lsOpcion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6} >
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="remididoDondeNETA"
-                                                label="A Donde:"
-                                                defaultValue={lsLastRecord?.remididoDondeNETA}
-                                                options={lsNeADonde}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            name="remididoDondeNETA"
+                                            label="A Donde:"
+                                            defaultValue={lsLastRecord?.remididoDondeNETA}
+                                            options={lsNeADonde}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
                             </SubCard>
@@ -4216,306 +3750,252 @@ const Emo = ({
 
                                 <Grid container spacing={2}>
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.idRiesgoCardiovascularNEMTA}
-                                                name="idRiesgoCardiovascularNEMTA"
-                                                label="Riesgo Cardiovascular"
-                                                options={lsRiesClasifi}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.idRiesgoCardiovascularNEMTA}
+                                            name="idRiesgoCardiovascularNEMTA"
+                                            label="Riesgo Cardiovascular"
+                                            options={lsRiesClasifi}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                defaultValue={lsLastRecord?.idClasificacionNEMTA}
-                                                name="idClasificacionNEMTA"
-                                                label="Clasificación"
-                                                options={lsRiesClasifi}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            defaultValue={lsLastRecord?.idClasificacionNEMTA}
+                                            name="idClasificacionNEMTA"
+                                            label="Clasificación"
+                                            options={lsRiesClasifi}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="1. Menor de Edad."
-                                                name="idMenorEdadNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idMenorEdadNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="1. Menor de Edad."
+                                            name="idMenorEdadNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idMenorEdadNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="2. Mujer embarazada con cualquier edad de Gestacíón."
-                                                name="idMujerEmbarazadaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idMujerEmbarazadaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="2. Mujer embarazada con cualquier edad de Gestacíón."
+                                            name="idMujerEmbarazadaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idMujerEmbarazadaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="3. Arritmias Cardiacas."
-                                                name="idArimiaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idArimiaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="3. Arritmias Cardiacas."
+                                            name="idArimiaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idArimiaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="4. Enfermedades o malformaciones cardiacas asintomáticas."
-                                                name="idEnfermedadNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idEnfermedadNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="4. Enfermedades o malformaciones cardiacas asintomáticas."
+                                            name="idEnfermedadNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idEnfermedadNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="5. Historia de Hipotensión ortostática (no basta presentar episodios aislados)."
-                                                name="idHistoriaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idHistoriaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="5. Historia de Hipotensión ortostática (no basta presentar episodios aislados)."
+                                            name="idHistoriaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idHistoriaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="6. Hipertensión arterial no controlada o resistente al tratamiento."
-                                                name="idHipertensionNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idHipertensionNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="6. Hipertensión arterial no controlada o resistente al tratamiento."
+                                            name="idHipertensionNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idHipertensionNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="7. Hipertrigliceridemia aislada severa, con cifras mayores a 500 mg/dl."
-                                                name="idHipertrigliceridemiaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idHipertrigliceridemiaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="7. Hipertrigliceridemia aislada severa, con cifras mayores a 500 mg/dl."
+                                            name="idHipertrigliceridemiaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idHipertrigliceridemiaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="8. Cifras LDL mayores a 190 mg/dl."
-                                                name="idCifrasNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idCifrasNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="8. Cifras LDL mayores a 190 mg/dl."
+                                            name="idCifrasNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idCifrasNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="9. Diabetes controladas"
-                                                name="idDiabetesNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idDiabetesNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="9. Diabetes controladas"
+                                            name="idDiabetesNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idDiabetesNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="10. Dislipemia de moderada a severa asociada a diabetes, HTA, obesidad, hipotiroidismo."
-                                                name="idDislipidemiaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idDislipidemiaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="10. Dislipemia de moderada a severa asociada a diabetes, HTA, obesidad, hipotiroidismo."
+                                            name="idDislipidemiaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idDislipidemiaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="11. Diagnóstico o sospecha de dislipemia de origen familiar (genético)."
-                                                name="idDiagnosticoNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idDiagnosticoNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="11. Diagnóstico o sospecha de dislipemia de origen familiar (genético)."
+                                            name="idDiagnosticoNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idDiagnosticoNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="12. Riesgo Cardivascular a 10 años ≥ 20% según Método de Framingham."
-                                                name="idRiesgoCardiovascular1NEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idRiesgoCardiovascular1NEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="12. Riesgo Cardivascular a 10 años ≥ 20% según Método de Framingham."
+                                            name="idRiesgoCardiovascular1NEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idRiesgoCardiovascular1NEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="13. Riesgo Cardiovascular entre 10 y 20% si existen dos o mas factores mayores de riesgo."
-                                                name="idRiesgoCardiovascular2NEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idRiesgoCardiovascular2NEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="13. Riesgo Cardiovascular entre 10 y 20% si existen dos o mas factores mayores de riesgo."
+                                            name="idRiesgoCardiovascular2NEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idRiesgoCardiovascular2NEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="14. Hipertiroidismo no controlado o sintomático."
-                                                name="idHipertiroidismoNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idHipertiroidismoNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="14. Hipertiroidismo no controlado o sintomático."
+                                            name="idHipertiroidismoNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idHipertiroidismoNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="15. Alteración auditiva severa y bilateral que comprometa bandas conversacionales (500 a 2000 Hz)."
-                                                name="idAlteracionAuditivaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idAlteracionAuditivaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="15. Alteración auditiva severa y bilateral que comprometa bandas conversacionales (500 a 2000 Hz)."
+                                            name="idAlteracionAuditivaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idAlteracionAuditivaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="16. Vertigo y otras alteraciones del equilibrio."
-                                                name="idVertigoAlteracionesNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idVertigoAlteracionesNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="16. Vertigo y otras alteraciones del equilibrio."
+                                            name="idVertigoAlteracionesNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idVertigoAlteracionesNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="17. Epilepsia u otra enfermedad neurológica, que pueda generar alteraciones de la conciencia o el equilibrio."
-                                                name="idEpilegsiaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idEpilegsiaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="17. Epilepsia u otra enfermedad neurológica, que pueda generar alteraciones de la conciencia o el equilibrio."
+                                            name="idEpilegsiaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idEpilegsiaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="18. Ceguera Temporal o permanente o alteraciones visuales significativas y severas."
-                                                name="idCegueraTemporalNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idCegueraTemporalNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="18. Ceguera Temporal o permanente o alteraciones visuales significativas y severas."
+                                            name="idCegueraTemporalNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idCegueraTemporalNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="19. Historia de fobias o episodios de pánico relacionados con altura."
-                                                name="idHistoriaFobiasNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idHistoriaFobiasNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="19. Historia de fobias o episodios de pánico relacionados con altura."
+                                            name="idHistoriaFobiasNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idHistoriaFobiasNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="20. Transtornos psiquiátricos, incluyendo adicciones a sustancias psicoactivas."
-                                                name="idTranstornoPsiquiatricoNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idTranstornoPsiquiatricoNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="20. Transtornos psiquiátricos, incluyendo adicciones a sustancias psicoactivas."
+                                            name="idTranstornoPsiquiatricoNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idTranstornoPsiquiatricoNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="21. Limitacionesn permanentes para deambular por sus propios medios o lesiones con compromiso funcional del cuello, espalda o extremidades, que afecten el agarre requerido en estas labores."
-                                                name="idLimitacionesNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idLimitacionesNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="21. Limitacionesn permanentes para deambular por sus propios medios o lesiones con compromiso funcional del cuello, espalda o extremidades, que afecten el agarre requerido en estas labores."
+                                            name="idLimitacionesNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idLimitacionesNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="22. Obesidad Morbida (IMC mayor a 35) o peso mayor de 120 kg, por limitaciones de sistemas de arneses."
-                                                name="idObesidadMorbidaNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idObesidadMorbidaNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="22. Obesidad Morbida (IMC mayor a 35) o peso mayor de 120 kg, por limitaciones de sistemas de arneses."
+                                            name="idObesidadMorbidaNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idObesidadMorbidaNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="23. De forma temporal, el uso de medicamentos que produzcan sueño o deprivación de sueño mas de un turno."
-                                                name="idDeformaTemporalNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idDeformaTemporalNEMTA}
-                                            />
-                                        </FormProvider>
+                                        <InputCheckBox
+                                            label="23. De forma temporal, el uso de medicamentos que produzcan sueño o deprivación de sueño mas de un turno."
+                                            name="idDeformaTemporalNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idDeformaTemporalNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputCheckBox
-                                                label="24. Otras alteraciones Cardiovasculares, pulmonares, musculares, hepáticas, sanguíneas o renales, que por su severidad
+                                        <InputCheckBox
+                                            label="24. Otras alteraciones Cardiovasculares, pulmonares, musculares, hepáticas, sanguíneas o renales, que por su severidad
                                 o progreso puedan general alteraciones del equilibrio o de la conciencia en concepto  del médico tratante."
-                                                name="idOtrasAlteracionesNEMTA"
-                                                size={30}
-                                                defaultValue={lsLastRecord?.idOtrasAlteracionesNEMTA}
-                                            />
-                                        </FormProvider>
+                                            name="idOtrasAlteracionesNEMTA"
+                                            size={30}
+                                            defaultValue={lsLastRecord?.idOtrasAlteracionesNEMTA}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputText
-                                                multiline
-                                                rows={4}
-                                                defaultValue={lsLastRecord?.observacionesNEMTA}
-                                                fullWidth
-                                                name="observacionesNEMTA"
-                                                label="Observaciones"
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputText
+                                            multiline
+                                            rows={4}
+                                            defaultValue={lsLastRecord?.observacionesNEMTA}
+                                            fullWidth
+                                            name="observacionesNEMTA"
+                                            label="Observaciones"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
@@ -4545,29 +4025,25 @@ const Emo = ({
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                disabled
-                                                defaultValue=""
-                                                name="conceptoActitudNETA"
-                                                label="Concepto De Trabajo En Altura"
-                                                options={lsNeConceptoActi}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            disabled
+                                            defaultValue=""
+                                            name="conceptoActitudNETA"
+                                            label="Concepto De Trabajo En Altura"
+                                            options={lsNeConceptoActi}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                disabled
-                                                defaultValue=""
-                                                name="idConceptoEspacioConfinado"
-                                                label="Concepto De Trabajo En Espacio Confinado"
-                                                options={lsEspacioConfinado}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
+                                        <InputSelect
+                                            disabled
+                                            defaultValue=""
+                                            name="idConceptoEspacioConfinado"
+                                            label="Concepto De Trabajo En Espacio Confinado"
+                                            options={lsEspacioConfinado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
                                     </Grid>
                                 </Grid>
                             </SubCard >
@@ -4580,29 +4056,3 @@ const Emo = ({
 };
 
 export default Emo;
-
-Emo.propTypes = {
-    lsEmployee: PropTypes.any,
-    documento: PropTypes.any,
-    errors: PropTypes.any,
-    setTipoFobia: PropTypes.func,
-    tipoFobia: PropTypes.any,
-    setEstadoVacuna: PropTypes.func,
-    estadoVacuna: PropTypes.any,
-    lsLastRecord: PropTypes.any,
-
-    setIndiceWellsEFU: PropTypes.any,
-    indiceWellsEFU: PropTypes.any,
-
-    peso: PropTypes.string,
-    setPeso: PropTypes.func,
-    talla: PropTypes.string,
-    setTalla: PropTypes.func,
-    imc: PropTypes.string,
-    setIMC: PropTypes.func,
-    clasificacion: PropTypes.string,
-    setClasificacion: PropTypes.func,
-    clasificacionColor: PropTypes.string,
-    setClasificacionColor: PropTypes.func,
-    atencion: PropTypes.string,
-};

@@ -115,7 +115,7 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     getFirma(doc, lsDataUser, -20)
 }
 
-export function generateReport(lsDataReport = [], lsDataUser) {
+export function generateReport(lsDataReport = [], lsDataUser, option = true) {
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");
@@ -123,6 +123,12 @@ export function generateReport(lsDataReport = [], lsDataUser) {
     generateReportMedicalAdvice(doc, lsDataReport, lsDataUser);
     getPiePage(doc, lsDataUser, 1, 1);
 
-    var dataPDF = doc.output("bloburl");
-    return dataPDF;
+    if (option) {
+        var dataPDF = doc.output("bloburl");
+        return dataPDF;
+    } else {
+        var bytePDF = doc.output('datauristring');
+        var file64 = bytePDF.split('pdf;base64,')[1];
+        return file64;
+    }
 }

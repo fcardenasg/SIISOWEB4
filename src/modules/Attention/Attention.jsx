@@ -36,8 +36,8 @@ import ViewPDF from 'components/components/ViewPDF';
 const Attention = () => {
     const { user } = useAuth();
     const theme = useTheme();
-    const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const navigate = useNavigate();
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
