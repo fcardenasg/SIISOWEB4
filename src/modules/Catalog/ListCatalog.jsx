@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import Cargando from 'components/loading/Cargando';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -30,7 +29,6 @@ import { visuallyHidden } from '@mui/utils';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllCatalog, DeleteCatalog } from 'api/clients/CatalogClient';
 
@@ -183,7 +181,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+                
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -203,7 +201,6 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const ListCatalog = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [catalog, setCatalog] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);

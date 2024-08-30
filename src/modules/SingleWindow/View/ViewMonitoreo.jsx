@@ -430,7 +430,7 @@ const ViewRespuesta = () => {
                                 variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
-                                {row?.diasRestantes}
+                                {row?.numTotal === row?.numeroRespondido ? "Atendido" : row?.diasRestantes}
                             </Typography>
                         </TableCell>
 

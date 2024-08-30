@@ -98,6 +98,8 @@ export const JWTProvider = ({ children }) => {
                                 namesede: data.sedeUsuario,
                                 idsede: data.idSede,
                                 idarea: data.idArea,
+                                idrol: data.idRol,
+                                fechainiciosesion: data.fechaInicioSesion,
                                 namearea: data.nameArea
                             }
                         }
@@ -149,6 +151,8 @@ export const JWTProvider = ({ children }) => {
                         namesede: dataUser.nombreSede,
                         idsede: dataUser.idSede,
                         idarea: dataUser.idArea,
+                        idrol: dataUser.idRol,
+                        fechainiciosesion: dataUser.fechaInicioSesion,
                         namearea: dataUser.nameArea
                     }
                 }

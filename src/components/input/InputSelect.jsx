@@ -7,7 +7,9 @@ import {
     MenuItem,
     InputLabel,
     Select,
+    Stack,
 } from '@mui/material';
+import Label from 'components/label';
 
 const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others }) => {
 
@@ -33,7 +35,11 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                         >
                             {options?.map((option) => (
                                 <MenuItem key={option?.value} value={option?.value}>
-                                    {option?.label}
+                                    <Grid container direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
+                                        <Grid item>{option?.label}</Grid>
+
+                                        {option?.codigo === 'CIE10' || option?.codigo === 'CIE11' ? (<Grid item><Label sx={{ mr: 1.5 }} variant="soft" color="success">{option?.codigo}</Label></Grid>) : null}
+                                    </Grid>
                                 </MenuItem>
                             ))}
                         </Select>

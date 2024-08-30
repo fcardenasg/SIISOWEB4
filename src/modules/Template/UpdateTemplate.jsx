@@ -80,15 +80,8 @@ const UpdateTemplate = () => {
                 }
 
                 if (lsServerTemplate.data.idCIE11 !== '') {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerTemplate.data.idCIE11);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx1(resultCie11);
-                    }
+                    var lsServerCie11 = await GetAllByCodeOrName(lsServerTemplate.data.idCIE11);
+                    setLsDx1(lsServerCie11.data);
                 }
             }
         } catch (error) { }
@@ -105,15 +98,8 @@ const UpdateTemplate = () => {
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
 
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx1(resultCie11);
-                    }
+                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
+                    setLsDx1(lsServerCie11.data);
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');

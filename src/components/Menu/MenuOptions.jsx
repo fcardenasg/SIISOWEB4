@@ -1,17 +1,11 @@
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import PreviewIcon from '@mui/icons-material/Preview';
-
-import { Typography } from '@mui/material';
-
+import { useState } from 'react';
 
 const ITEM_HEIGHT = 48;
 
-const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickTurno }) => {
+const MenuOption = ({ setAnchorEl, anchorEl, children }) => {
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
@@ -34,7 +28,7 @@ const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickTurno }) => 
             >
                 <MoreVertIcon />
             </IconButton>
-            
+
             <Menu
                 id="long-menu"
                 MenuListProps={{
@@ -50,16 +44,10 @@ const MenuOptions = ({ setAnchorEl, anchorEl, onClickEnable, onClickTurno }) => 
                     },
                 }}
             >
-                <MenuItem onClick={onClickTurno} disableRipple>
-                    <PreviewIcon /> <Typography sx={{ pl: 2 }} variant='h5'>Turno</Typography>
-                </MenuItem>
-
-                <MenuItem onClick={onClickEnable} disableRipple>
-                    <LockOpenIcon /> <Typography sx={{ pl: 2 }} variant='h5'>Habilitar</Typography>
-                </MenuItem>
+                {children}
             </Menu>
         </div>
     );
 }
 
-export default MenuOptions;
+export default MenuOption;

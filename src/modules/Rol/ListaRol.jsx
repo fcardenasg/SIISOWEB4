@@ -321,7 +321,7 @@ const ListaRol = ({ getAll, setLsPermisos, lsPermisos, rows }) => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsPermisos.length) : 0;
 
     return (
-        <MainCard title="Lista De Permisos Agregados" content={false}>
+        <MainCard title="Lista de permisos agregados" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal

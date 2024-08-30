@@ -94,7 +94,7 @@ const ChangeSede = () => {
                     </Grid>
 
                     <Typography sx={{ pt: 1.5 }} align="center" variant="body2">
-                        Recuerde que al cambiar la sede y presionar el botón grabar, automáticamente le cerrara la sesión"
+                        Recuerde que al cambiar la sede y presionar el botón grabar, automáticamente le cerrara la sesión
                     </Typography>
 
                     <Grid item xs={12}>

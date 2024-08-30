@@ -83,7 +83,7 @@ const Catalog = () => {
     };
 
     return (
-        <MainCard title="Registrar Catálogo">
+        <MainCard title="Registrar catálogo">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

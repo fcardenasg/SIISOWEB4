@@ -24,17 +24,19 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }
 
     async function getAll() {
         try {
-            if (options === 0) {
-                const lsServer = await GetAllVentanillaUnicaDetalle(idVentanilla, user?.idarea, false);
-                setLsTipoDocumento(lsServer.data);
-            } else {
-                const lsServer = await GetAllVentanillaUnicaDetalle(idVentanilla, 0, true);
-                setLsTipoDocumento(lsServer.data);
-            }
+            if (idVentanilla) {
+                if (options === 0) {
+                    const lsServer = await GetAllVentanillaUnicaDetalle(idVentanilla, user?.idarea, false);
+                    setLsTipoDocumento(lsServer.data);
+                } else {
+                    const lsServer = await GetAllVentanillaUnicaDetalle(idVentanilla, 0, true);
+                    setLsTipoDocumento(lsServer.data);
+                }
 
-            const lsServerFile = await GetFileVentanillaUnica(idVentanilla);
-            if (lsServerFile.status === 200)
-                setArchivoVent(lsServerFile.data);
+                const lsServerFile = await GetFileVentanillaUnica(idVentanilla);
+                if (lsServerFile.status === 200)
+                    setArchivoVent(lsServerFile.data);
+            }
         } catch (error) { }
     }
 
@@ -71,7 +73,7 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }
                                     <TableCell>Area</TableCell>
                                     <TableCell>Tipo Documento</TableCell>
                                     <TableCell>Fecha Límite de Respuesta</TableCell>
-                                    <TableCell>Días Restantes</TableCell>
+                                    {/* <TableCell>Días Restantes</TableCell> */}
                                     <TableCell>Atendido Por</TableCell>
                                     <TableCell>Fecha de Atención</TableCell>
                                     <TableCell>Estado de Atención</TableCell>
@@ -85,7 +87,7 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }
                                         <TableCell component="th" scope="row">{row?.nameArea}</TableCell>
                                         <TableCell component="th" scope="row">{row?.nameTipoDocumento}</TableCell>
                                         <TableCell>{ViewFormat(row?.fechaLimite)}</TableCell>
-                                        <TableCell>{row?.diasRestantes}</TableCell>
+                                        {/* <TableCell>{row?.diasRestantes}</TableCell> */}
                                         <TableCell>{row?.usuarioModifico}</TableCell>
                                         <TableCell>{row?.fechaModifico !== null ? new Date(row?.fechaModifico).toLocaleString() : null}</TableCell>
                                         <TableCell>

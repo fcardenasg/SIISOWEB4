@@ -41,7 +41,6 @@ import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
-import { GetEdad, ViewFormat } from 'components/helpers/Format';
 
 import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
@@ -55,10 +54,6 @@ import { ColorDrummondltd } from 'themes/colors';
 
 import config from 'config';
 import GenerateExcel from './GenerateExcel';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function getModalStyle() {
     const top = 50;

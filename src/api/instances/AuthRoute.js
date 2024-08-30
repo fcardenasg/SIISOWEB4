@@ -137,6 +137,7 @@ export const Url = {
 
     VentanillaUnica: 'api/VentanillaUnica',
     VentanillaUnicaFile: 'api/VentanillaUnica/file',
+    VentanillaUnicaExcel: 'api/VentanillaUnica/excel',
     VentanillaUnicaComboUsuario: 'api/VentanillaUnica/combo-usuario',
     VentanillaUnicaNotificarUsuario: 'api/VentanillaUnica/notificar-usuario',
     UpdateVentanillaUnicaEnvio: 'api/VentanillaUnica/update-dataenvio',
@@ -166,7 +167,7 @@ export const Url = {
     Soporte: 'api/Soporte',
     SoporteId: 'api/Soporte/id',
     SoporteUpdateState: 'api/Soporte/update-state',
-    
+
 
     OrdenesEPP: 'api/OrdenesEPP',
     OrdenesEPPExcel: 'api/OrdenesEPP/excel',
@@ -208,6 +209,8 @@ export const Url = {
     HistoriaLaboralOtrasEmpresas: 'api/HistoriaLaboralOtrasEmpresas',
     HistoriaLaboralOtrasEmpresasGetAllByDocument: 'api/HistoriaLaboralOtrasEmpresas/GetAllByDocument',
     HistoriaLaboralOtrasEmpresasId: 'api/HistoriaLaboralOtrasEmpresas/id',
+
+    ConfiguracionUpdateCie: 'api/Configuracion/update-cie',
 
     CIE11: 'api/CIE11',
     CIE11Search: 'api/CIE11/GetAllByCodeOrName',

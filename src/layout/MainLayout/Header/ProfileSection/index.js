@@ -27,12 +27,11 @@ import Transitions from 'ui-component/extended/Transitions';
 import useAuth from 'hooks/useAuth';
 
 // assets
-import { IconLogout, IconSettings, IconHome } from '@tabler/icons';
+import { IconLogout, IconSettings, IconHome, IconFolders } from '@tabler/icons';
 import ControlModal from 'components/controllers/ControlModal';
 import ChangeSede from './ChangeSede';
 import { ColorDrummondltd } from 'themes/colors';
-
-// ==============================|| PROFILE MENU ||============================== //
+import ChangeCIE from './ChangeCIE';
 
 const ProfileSection = () => {
     const theme = useTheme();
@@ -43,6 +42,7 @@ const ProfileSection = () => {
     const { logout, user } = useAuth();
     const [open, setOpen] = useState(false);
     const [openModalSede, setOpenModalSede] = useState(false);
+    const [openModalCie, setOpenModalCie] = useState(false);
 
 
     const anchorRef = useRef(null);
@@ -71,6 +71,11 @@ const ProfileSection = () => {
         setOpen(false);
     };
 
+    const handleOpenModalCie = () => {
+        setOpenModalCie(true);
+        setOpen(false);
+    };
+
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
     };
@@ -87,12 +92,21 @@ const ProfileSection = () => {
     return (
         <Fragment>
             <ControlModal
-                title="Cambiar De Sede De Atención"
+                title="Cambiar de sede de atención"
                 open={openModalSede}
                 onClose={() => setOpenModalSede(false)}
                 maxWidth="xs"
             >
                 <ChangeSede />
+            </ControlModal>
+
+            <ControlModal
+                title="Cambiar el uso del CIE en el sistema SIISO"
+                open={openModalCie}
+                onClose={() => setOpenModalCie(false)}
+                maxWidth="xs"
+            >
+                <ChangeCIE setOpenModalCie={setOpenModalCie} />
             </ControlModal>
 
             <Chip
@@ -147,7 +161,7 @@ const ProfileSection = () => {
                         {
                             name: 'offset',
                             options: {
-                                offset: [0, 14]
+                                offset: [0, 10]
                             }
                         }
                     ]
@@ -170,10 +184,10 @@ const ProfileSection = () => {
                                     <List
                                         component="nav"
                                         sx={{
-                                            pl: 1,
+                                            px: 1,
                                             width: '100%',
                                             maxWidth: 350,
-                                            minWidth: 300,
+                                            minWidth: 250,
                                             backgroundColor: theme.palette.background.paper,
                                             borderRadius: '10px',
                                             [theme.breakpoints.down('md')]: {
@@ -192,8 +206,21 @@ const ProfileSection = () => {
                                             <ListItemIcon>
                                                 <IconSettings stroke={1.5} size="1.3rem" />
                                             </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="body2">Cambiar de Sede</Typography>} />
+                                            <ListItemText primary={<Typography variant="body2">Cambiar de sede</Typography>} />
                                         </ListItemButton>
+
+                                        {user?.idrol === 1 && (
+                                            <ListItemButton
+                                                sx={{ borderRadius: `${customization.borderRadius}px` }}
+                                                selected={selectedIndex === 0}
+                                                onClick={handleOpenModalCie}
+                                            >
+                                                <ListItemIcon>
+                                                    <IconFolders stroke={1.5} size="1.3rem" />
+                                                </ListItemIcon>
+                                                <ListItemText primary={<Typography variant="body2">Cambiar CIE11</Typography>} />
+                                            </ListItemButton>
+                                        )}
 
                                         <ListItemButton
                                             sx={{ borderRadius: `${customization.borderRadius}px` }}
@@ -203,7 +230,7 @@ const ProfileSection = () => {
                                             <ListItemIcon>
                                                 <IconLogout stroke={1.5} size="1.3rem" />
                                             </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="body2">Cerrar Sesión</Typography>} />
+                                            <ListItemText primary={<Typography variant="body2">Cerrar sesión</Typography>} />
                                         </ListItemButton>
 
                                         <ListItemButton
@@ -214,7 +241,7 @@ const ProfileSection = () => {
                                             <ListItemIcon>
                                                 <IconHome stroke={1.5} size="1.3rem" />
                                             </ListItemIcon>
-                                            <ListItemText primary={<Typography variant="body2">Inicio Portal</Typography>} />
+                                            <ListItemText primary={<Typography variant="body2">Inicio portal</Typography>} />
                                         </ListItemButton>
 
                                     </List>

@@ -90,7 +90,7 @@ const UpdateCatalog = () => {
     };
 
     return (
-        <MainCard title="Actualizar Catálogo">
+        <MainCard title="Actualizar catálogo">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

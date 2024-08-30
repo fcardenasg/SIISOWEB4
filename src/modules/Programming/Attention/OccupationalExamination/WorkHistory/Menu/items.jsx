@@ -4,7 +4,6 @@ import {
   IconRun,
   IconSocial,
   IconFall,
-  IconDatabase,
   IconPhysotherapist,
   IconDna,
 } from '@tabler/icons';

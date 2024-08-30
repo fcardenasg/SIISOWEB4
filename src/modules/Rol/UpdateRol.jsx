@@ -161,7 +161,7 @@ const UpdateRol = () => {
     };
 
     return (
-        <SubCard title={<Typography variant="h4">Actualizar Rol</Typography>}>
+        <SubCard title={<Typography variant="h4">Actualizar rol</Typography>}>
             {dataRol.length !== 0 ?
                 <Fragment>
                     <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
@@ -182,7 +182,7 @@ const UpdateRol = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubCard title={<Typography variant="h4">Gestión De Permisos</Typography>}>
+                            <SubCard title={<Typography variant="h4">Gestión de permisos</Typography>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={6}>
                                         <SelectOnChange

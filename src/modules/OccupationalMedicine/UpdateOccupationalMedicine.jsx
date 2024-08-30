@@ -31,7 +31,6 @@ import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
 import useAuth from 'hooks/useAuth';
 import Cargando from 'components/loading/Cargando';
-import { PutOccupationalMedicine } from 'formatdata/OccupationalMedicineForm';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewPDF from 'components/components/ViewPDF';
 import InputDatePick from 'components/input/InputDatePick';
@@ -308,14 +307,8 @@ const OccupationalMedicine = () => {
                     setFilePdf(lsServerAtencion.data.urlDocumento);
 
                     if (lsServerAtencion.data.codDx !== "") {
-                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.codDx);
-                        if (lsServerCie11.status === 200) {
-                            var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                                value: item.id,
-                                label: item.dx
-                            }));
-                            setLsDiagnistico(resultCie11);
-                        }
+                        var lsServerCie11 = await GetAllByCodeOrName(lsServerAtencion.data.codDx);
+                        setLsDiagnistico(lsServerCie11.data);
                     }
                 }
             } catch (error) { }
@@ -347,15 +340,8 @@ const OccupationalMedicine = () => {
 
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDiagnistico(resultCie11);
-                    }
+                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
+                    setLsDiagnistico(lsServerCie11.data);
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');

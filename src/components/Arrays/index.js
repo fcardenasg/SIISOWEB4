@@ -16,6 +16,13 @@ export const ArrayTodoContrato = [
     }
 ]
 
+export const ArrayTodoPeticion = [
+    {
+        value: 0,
+        label: 'TODAS LAS PETICIONES'
+    }
+]
+
 export const ArrayMeses = [
     { value: 1, label: "ENERO" },
     { value: 2, label: "FEBRERO" },

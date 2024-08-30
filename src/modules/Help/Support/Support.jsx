@@ -107,7 +107,6 @@ const Support = () => {
         getAll();
     }, []);
 
-
     const handleClick = async (datos) => {
         try {
             datos.idSede = user?.idsede;

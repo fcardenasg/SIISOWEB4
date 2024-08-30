@@ -314,10 +314,10 @@ export const DefaultValue = {
 
 export const TitleButton = {
     Guardar: 'Guardar',
-    CambiarContrasenia: 'Cambiar Contraseña',
+    CambiarContrasenia: 'Cambiar contraseña',
     CerrarCaso: 'Cerrar Caso',
-    OrdenesMedicas: 'Ordenes Medicas',
-    SubirArchivo: 'Subir Archivo',
+    OrdenesMedicas: 'Ordenes medicas',
+    SubirArchivo: 'Subir archivo',
     Programacion: 'Programación',
     Imprimir: 'Imprimir',
     Descargar: 'Descargar',
@@ -330,14 +330,14 @@ export const TitleButton = {
     Agregar: 'Nuevo',
     Seleccionadas: 'Seleccionadas',
     Regresar: 'Regresar',
-    RegresarACargos: 'Regresar A Cargos',
+    RegresarACargos: 'Regresar a cargos',
     EnviarCorreo: 'Enviar',
     AgregarOrden: 'Agregar',
     Editar: 'Editar',
     Historico: 'Historico',
-    GenerarExcel: 'Generar Excel',
-    DescargarExcel: 'Descargar Excel',
-    Excel: "Generar y Descargar Excel"
+    GenerarExcel: 'Generar excel',
+    DescargarExcel: 'Descargar excel',
+    Excel: "Generar y descargar excel"
 }
 
 export const ValidationMessage = {

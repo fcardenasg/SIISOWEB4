@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
+import swal from 'sweetalert';
 import {
     Box,
     CardContent,
     Grid,
-    IconButton,
     InputAdornment,
     Table,
     TableBody,
@@ -22,7 +22,9 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    Tooltip
+    MenuItem,
+    Tooltip,
+    IconButton
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useTheme } from '@mui/material/styles';
@@ -30,15 +32,18 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-
+import { IconEdit, IconTrash, IconEye } from '@tabler/icons';
+import { IconFileExport } from '@tabler/icons';
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
+import { DeleteVentanillaUnica, GenerateExcelVentanillaUnica, GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
 import useAuth from 'hooks/useAuth';
+import MenuOption from 'components/Menu/MenuOptions';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -89,6 +94,12 @@ const headCells = [
         align: 'left'
     },
     {
+        id: 'nameSede',
+        numeric: false,
+        label: 'Sede',
+        align: 'left'
+    },
+    {
         id: 'tipo',
         numeric: false,
         label: 'Tipo Solicitud',
@@ -107,15 +118,15 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'diasRestantes',
-        numeric: false,
-        label: 'Días Restantes',
-        align: 'left'
-    },
-    {
         id: 'estadoRespuesta',
         numeric: false,
         label: 'Documentos Atendidos / Documentos Solicitados',
+        align: 'left'
+    },
+    {
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Usuario',
         align: 'left'
     }
 ];
@@ -164,14 +175,17 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
 
 const ViewRespuesta = () => {
     const theme = useTheme();
-
     const { user } = useAuth();
     const navigate = useNavigate();
 
     const [lsRespuesta, setLsRespuesta] = useState([]);
     const [messageAtencion, setMessageAtencion] = useState('');
     const [radioSearch, setRadioSearch] = useState(1);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('id');
@@ -181,31 +195,49 @@ const ViewRespuesta = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    useEffect(() => {
-        async function getAll() {
-            try {
-                setTimeWait(false);
-                setMessageAtencion('');
-                setLsRespuesta([]);
+    async function getAll() {
+        try {
+            setTimeWait(false);
+            setMessageAtencion('');
+            setLsRespuesta([]);
 
-                if (user?.idarea === 0) {
-                    await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
-                        if (response.data.length === 0) {
-                            setMessageAtencion(Message.NoRegistro);
-                        } else if (response.data.length !== 0) {
-                            setTimeout(() => {
-                                setTimeWait(true);
-                                setLsRespuesta(response.data);
-                                setRows(response.data);
-                            }, 500);
-                        }
-                    });
-                } else {
-                    setMessageAtencion("Usted no esta autorizado para monitorear las peticiones");
-                }
-            } catch (error) { }
+            if (user?.idarea === 0) {
+                await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
+                    if (response.data.length === 0) {
+                        setMessageAtencion(Message.NoRegistro);
+                    } else if (response.data.length !== 0) {
+                        setTimeout(() => {
+                            setTimeWait(true);
+                            setLsRespuesta(response.data);
+                            setRows(response.data);
+                        }, 500);
+                    }
+                });
+            } else {
+                setMessageAtencion("Usted no esta autorizado para monitorear las peticiones");
+            }
+        } catch (error) { }
+    }
+
+    async function getDataForExport() {
+        try {
+            setLoading(true);
+
+            const lsServerExcel = await GenerateExcelVentanillaUnica();
+            if (lsServerExcel.status === 200) {
+                console.log(lsServerExcel.data);    
+                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
+
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
+            }
+        } catch (error) {
+            setLoading(false);
         }
+    }
 
+    useEffect(() => {
         getAll();
     }, [radioSearch]);
 
@@ -245,6 +277,27 @@ const ViewRespuesta = () => {
         if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
         setPage(0);
     };
+
+    const handleDelete = async (idCheck) => {
+        try {
+            setAnchorEl(null);
+
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteVentanillaUnica(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSearch('');
+                    setSelected([]);
+                    getAll();
+                } else
+                    setSelected([]);
+            });
+        } catch (error) {
+
+        }
+    }
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRespuesta.length) : 0;
 
@@ -329,6 +382,20 @@ const ViewRespuesta = () => {
                                 variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
+                                {row?.nameSede}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="caption"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
                                 {row?.tipo}
                             </Typography>
                         </TableCell>
@@ -371,7 +438,9 @@ const ViewRespuesta = () => {
                                 variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
-                                {row?.diasRestantes}
+                                {row?.numTotal === row?.numeroRespondido ?
+                                    <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
+                                    : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />}
                             </Typography>
                         </TableCell>
 
@@ -385,18 +454,26 @@ const ViewRespuesta = () => {
                                 variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
-                                {row?.numTotal === row?.numeroRespondido ?
-                                    <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
-                                    : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />}
+                                {row?.usuarioRegistro}
                             </Typography>
                         </TableCell>
 
                         <TableCell align="center">
-                            <Tooltip title="Actualizar" onClick={() => navigate(`/single-window/update/${row.id}`)}>
-                                <IconButton size="large">
-                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                </IconButton>
-                            </Tooltip>
+                            <MenuOption setAnchorEl={setAnchorEl} anchorEl={anchorEl} ITEM_HEIGHT={25}>
+                                <MenuItem onClick={() => navigate(`/single-window/update/${row.id}`)} disableRipple>
+                                    <IconEdit fontSize="small" /> <Typography sx={{ pl: 2 }} variant='h5'>Actualizar</Typography>
+                                </MenuItem>
+
+                                {/* <MenuItem disableRipple>
+                                    <IconEye fontSize="small" /> <Typography sx={{ pl: 2 }} variant='h5'>Ver mas...</Typography>
+                                </MenuItem> */}
+
+                                {user.idrol === 1 && (
+                                    <MenuItem onClick={() => handleDelete(row?.id)} disableRipple>
+                                        <IconTrash fontSize="small" /> <Typography sx={{ pl: 2 }} variant='h5'>Eliminar</Typography>
+                                    </MenuItem>
+                                )}
+                            </MenuOption>
                         </TableCell>
                     </TableRow>
                 );
@@ -409,10 +486,11 @@ const ViewRespuesta = () => {
 
     return (
         <MainCard title="Lista de ventanilla única" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="flex-end" spacing={2}>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={4}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -428,7 +506,7 @@ const ViewRespuesta = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} md={8} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2} direction="row" justifyContent="flex-end" alignItems="center">
                             <Grid item xs={12} md={6}>
                                 <FormControl>
@@ -439,20 +517,28 @@ const ViewRespuesta = () => {
                                         value={radioSearch}
                                         onChange={(e) => setRadioSearch(e.target.value)}
                                     >
-                                        <FormControlLabel value={1} control={<Radio />} label="Por Atender" />
+                                        <FormControlLabel value={1} control={<Radio />} label="Por atender" />
                                         <FormControlLabel value={2} control={<Radio />} label="Atendidos" />
                                     </RadioGroup>
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={6} md={3}>
+                            <Grid item xs={1}>
+                                <Tooltip title="Exportar" onClick={getDataForExport}>
+                                    <IconButton size="large">
+                                        <IconFileExport />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+
+                            <Grid item xs={6} md={2.5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                     onClick={() => navigate("/single-window/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={6} md={3}>
+                            <Grid item xs={6} md={2.5}>
                                 <AnimateButton>
                                     <Button variant="contained" size="large" startIcon={<ArrowBackIosIcon />}
                                         onClick={() => navigate("/single-window/view")}>

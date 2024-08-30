@@ -26,7 +26,6 @@ import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { MessageDelete } from 'components/alert/AlertAll';
 import Chip from 'ui-component/extended/Chip';
 import { GetAllSoporte } from 'api/clients/HelpClient';
 import { ViewFormat } from 'components/helpers/Format';
@@ -320,7 +319,7 @@ const ListSupport = () => {
                                                     <Chip
                                                         label={row.nameEstado}
                                                         size="small"
-                                                        chipcolor={row.idEstado == 11133 ? "error" : row.idEstado == 11134 ? "warning" : "success"}
+                                                        chipcolor={row.idEstado == 9839 ? "error" : row.idEstado == 9840 ? "warning" : "success"}
                                                     />
                                                 </Typography>
                                             </TableCell>

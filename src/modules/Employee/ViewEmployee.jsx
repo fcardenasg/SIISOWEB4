@@ -1,36 +1,12 @@
-import PropTypes from 'prop-types';
-import { forwardRef, useState } from 'react';
-
-// material-ui
-import { Button, CardContent, Grid, IconButton, Modal } from '@mui/material';
-
-// project imports
+import { forwardRef } from 'react';
+import { CardContent, IconButton } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import DetailsEmployee from 'components/views/DetailsEmployee';
-
-// assets
 import CloseIcon from '@mui/icons-material/Close';
-
-// generate random
-function rand() {
-    return Math.round(Math.random() * 20) - 10;
-}
-
-// modal position
-function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
-
-    return {
-        top: `${top}%`,
-        margin: 'auto'
-    };
-}
 
 const BodyEmployee = forwardRef(({ modalStyle, IdEmployee, handleClose }, ref) => (
 
     <div ref={ref} tabIndex={-1}>
-
         <MainCard
             style={modalStyle}
             sx={{
@@ -56,9 +32,3 @@ const BodyEmployee = forwardRef(({ modalStyle, IdEmployee, handleClose }, ref) =
 ));
 
 export default BodyEmployee;
-
-BodyEmployee.propTypes = {
-    modalStyle: PropTypes.object,
-    handleClose: PropTypes.func,
-    IdEmployee: PropTypes.string
-};

@@ -21,7 +21,7 @@ import { GetByIdCabRegistration, UpdateCabRegistrations } from 'api/clients/CabR
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutCabRegistration } from 'formatdata/CabRegistrationForm';
 import SubCard from 'ui-component/cards/SubCard';
@@ -135,17 +135,11 @@ const UpdateCabRegistration = () => {
                     setLsDataAtencion(lsServerAtencion.data);
                     setDocumento(lsServerAtencion.data.documento);
 
-                    const event = {
-                        target: { value: lsServerAtencion.data.documento }
-                    }
+                    const event = { target: { value: lsServerAtencion.data.documento } };
                     handleLoadingDocument(event);
 
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.diagnostico);
-                    var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                        value: item.id,
-                        label: item.dx
-                    }));
-                    setLsDx1(resultCie11);
+                    var lsServerCie11 = await GetAllByCodeOrName(lsServerAtencion.data.diagnostico);
+                    setLsDx1(lsServerCie11.data);
                 }
             } catch (error) { }
         }
@@ -169,15 +163,8 @@ const UpdateCabRegistration = () => {
 
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx1(resultCie11);
-                    }
+                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
+                    setLsDx1(lsServerCie11.data);
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');

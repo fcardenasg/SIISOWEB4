@@ -18,7 +18,6 @@ import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import { PostOccupationalMedicine } from 'formatdata/OccupationalMedicineForm';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -154,18 +153,8 @@ const OccupationalMedicine = () => {
             setTextDiagnostico(event.target.value);
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
-
-                    if (lsServerCie11.status === 200) {
-
-
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDiagnistico(resultCie11);
-
-                    }
+                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
+                    setLsDiagnistico(lsServerCie11.data);
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');

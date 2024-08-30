@@ -6,7 +6,7 @@ import ExportOccupationalHealth from 'modules/ExportOccupationalHealth/ExportOcc
 
 const arrayMenu = [
     {
-        title: 'Medicinal Laboral',
+        title: 'Medicina laboral',
         url: 'MEDIC',
         subtitle: '',
         color: '#E31937',
@@ -24,7 +24,7 @@ const arrayMenu = [
         color: '#E31937',
     },
     {
-        title: 'Ausentismo Laboral',
+        title: 'Ausentismo laboral',
         url: 'AUSENTI',
         subtitle: '',
         color: '#E31937',
@@ -41,7 +41,7 @@ const MenuExcelOccupationalHealth = () => {
                 {arrayMenu.map((item) => (
                     <Grid item xs={12} md={6} lg={3}>
                         <HoverSocialCard
-                        diferent={true}
+                            diferent={true}
                             secondary={item.title}
                             onClick={() => { setOpenModal(true); setTipoExcel({ codigo: item.url, titulo: item.title }) }}
                             primary={item.subtitle}

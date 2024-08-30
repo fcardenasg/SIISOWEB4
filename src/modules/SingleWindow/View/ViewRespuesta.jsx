@@ -374,7 +374,7 @@ const ViewRespuesta = () => {
                                 variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
-                                {row?.diasRestantes}
+                                {row?.numTotal === row?.numeroRespondido ? "Atendido" : row?.diasRestantes}
                             </Typography>
                         </TableCell>
 
@@ -388,9 +388,11 @@ const ViewRespuesta = () => {
                                 variant="caption"
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
-                                {row?.numTotal === row?.numeroRespondido ?
-                                    <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
-                                    : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />}
+                                {
+                                    row?.numTotal === row?.numeroRespondido ?
+                                        <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="success" />
+                                        : <Chip label={`${row?.numeroRespondido} / ${row?.numTotal}`} size="small" chipcolor="error" />
+                                }
                             </Typography>
                         </TableCell>
 

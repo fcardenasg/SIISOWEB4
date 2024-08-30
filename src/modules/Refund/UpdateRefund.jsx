@@ -122,15 +122,8 @@ const Refund = () => {
 
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx1(resultCie11);
-                    }
+                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
+                    setLsDx1(lsServerCie11.data);
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
@@ -148,15 +141,8 @@ const Refund = () => {
 
             if (event.key === 'Enter') {
                 if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(0, 0, event.target.value);
-
-                    if (lsServerCie11.status === 200) {
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx2(resultCie11);
-                    }
+                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
+                    setLsDx2(lsServerCie11.data);
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
@@ -260,22 +246,14 @@ const Refund = () => {
                     setViewListRefund(true);
 
                     if (lsServerAtencion.data.dx1 !== undefined || lsServerAtencion.data.dx1 !== '') {
-                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.dx1);
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx1(resultCie11);
+                        var lsServerCie11 = await GetAllByCodeOrName(lsServerAtencion.data.dx1);
+                        setLsDx1(lsServerCie11.data);
                         setTextDx1(lsServerAtencion.data.dx1);
                     }
 
                     if (lsServerAtencion.data.dx2 !== undefined || lsServerAtencion.data.dx2 !== '') {
-                        var lsServerCie11 = await GetAllByCodeOrName(0, 0, lsServerAtencion.data.dx2);
-                        var resultCie11 = lsServerCie11.data.entities.map((item) => ({
-                            value: item.id,
-                            label: item.dx
-                        }));
-                        setLsDx2(resultCie11);
+                        var lsServerCie11 = await GetAllByCodeOrName(lsServerAtencion.data.dx2);
+                        setLsDx2(lsServerCie11.data);
                         setTextDx2(lsServerAtencion.data.dx2);
                     }
                 }
