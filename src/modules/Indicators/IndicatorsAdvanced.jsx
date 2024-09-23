@@ -1,13 +1,17 @@
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { GetAllIndicadores, GetByIdIndicadores } from "api/clients/IndicadoresClient";
+import { TitleButton } from "components/helpers/Enums";
 import SelectOnChange from "components/input/SelectOnChange";
 import { Fragment, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MainCard from "ui-component/cards/MainCard";
 import SubCard from "ui-component/cards/SubCard";
+import AnimateButton from "ui-component/extended/AnimateButton";
 
-const ViewIndicadores = () => {
+const IndicatorsAdvanced = () => {
     const theme = useTheme();
+    const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [idIndicador, setIdIndicador] = useState('');
     const [dataResult, setDataResult] = useState([]);
@@ -16,7 +20,7 @@ const ViewIndicadores = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServer = await GetAllIndicadores();
+                const lsServer = await GetAllIndicadores(2);
                 if (lsServer.status === 200) {
                     setLsIndicador(lsServer.data);
                     setIdIndicador(lsServer.data[0].value);
@@ -40,7 +44,13 @@ const ViewIndicadores = () => {
 
     return (
         <Fragment>
-            <MainCard title="Vista de indicadores">
+            <MainCard title="Indicadores del área de salud ocupacional - modo avanzado" secondary={
+                <AnimateButton>
+                    <Button variant="outlined" fullWidth onClick={() => navigate("/indicators/menu")}>
+                        {TitleButton.Cancelar}
+                    </Button>
+                </AnimateButton>}
+            >
                 <Grid item xs={12} sx={{ mb: 2 }}>
                     <SelectOnChange
                         name="idIndicadores"
@@ -81,4 +91,4 @@ const ViewIndicadores = () => {
     )
 }
 
-export default ViewIndicadores;
+export default IndicatorsAdvanced;

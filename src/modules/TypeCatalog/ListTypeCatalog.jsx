@@ -38,7 +38,6 @@ import { GetAllTypeCatalog, DeleteTypeCatalog } from 'api/clients/TypeCatalogCli
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

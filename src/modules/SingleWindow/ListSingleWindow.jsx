@@ -22,28 +22,25 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    MenuItem,
     Tooltip,
-    IconButton
+    IconButton,
+    useMediaQuery
 } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { visuallyHidden } from '@mui/utils';
 import { useTheme } from '@mui/material/styles';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import { IconEdit, IconTrash, IconEye } from '@tabler/icons';
-import { IconFileExport } from '@tabler/icons';
 import SearchIcon from '@mui/icons-material/Search';
-import { DeleteVentanillaUnica, GenerateExcelVentanillaUnica, GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
+import { DeleteVentanillaUnica, GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
 import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
 import useAuth from 'hooks/useAuth';
-import MenuOption from 'components/Menu/MenuOptions';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -174,17 +171,16 @@ function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSor
 }
 
 const ViewRespuesta = () => {
-    const theme = useTheme();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsRespuesta, setLsRespuesta] = useState([]);
     const [messageAtencion, setMessageAtencion] = useState('');
     const [radioSearch, setRadioSearch] = useState(1);
     const [openDelete, setOpenDelete] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
     const [order, setOrder] = useState('desc');
@@ -217,24 +213,6 @@ const ViewRespuesta = () => {
                 setMessageAtencion("Usted no esta autorizado para monitorear las peticiones");
             }
         } catch (error) { }
-    }
-
-    async function getDataForExport() {
-        try {
-            setLoading(true);
-
-            const lsServerExcel = await GenerateExcelVentanillaUnica();
-            if (lsServerExcel.status === 200) {
-                console.log(lsServerExcel.data);    
-                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
-
-                setTimeout(() => {
-                    setLoading(false);
-                }, 1000);
-            }
-        } catch (error) {
-            setLoading(false);
-        }
     }
 
     useEffect(() => {
@@ -459,23 +437,21 @@ const ViewRespuesta = () => {
                         </TableCell>
 
                         <TableCell align="center">
-                            <MenuOption setAnchorEl={setAnchorEl} anchorEl={anchorEl} ITEM_HEIGHT={25}>
-                                <MenuItem onClick={() => navigate(`/single-window/update/${row.id}`)} disableRipple>
-                                    <IconEdit fontSize="small" /> <Typography sx={{ pl: 2 }} variant='h5'>Actualizar</Typography>
-                                </MenuItem>
+                            <Tooltip placement="left" title="Actualizar" onClick={() => navigate(`/single-window/update/${row.id}`)}>
+                                <IconButton size="large">
+                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                </IconButton>
+                            </Tooltip>
 
-                                {/* <MenuItem disableRipple>
-                                    <IconEye fontSize="small" /> <Typography sx={{ pl: 2 }} variant='h5'>Ver mas...</Typography>
-                                </MenuItem> */}
-
-                                {user.idrol === 1 && (
-                                    <MenuItem onClick={() => handleDelete(row?.id)} disableRipple>
-                                        <IconTrash fontSize="small" /> <Typography sx={{ pl: 2 }} variant='h5'>Eliminar</Typography>
-                                    </MenuItem>
-                                )}
-                            </MenuOption>
+                            {user.idrol === 1 && (
+                                <Tooltip placement="left" title="Eliminar" onClick={() => handleDelete(row?.id)}>
+                                    <IconButton size="large">
+                                        <DeleteOutlineIcon sx={{ fontSize: '1.3rem' }} />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                         </TableCell>
-                    </TableRow>
+                    </TableRow >
                 );
             });
     } else if (messageAtencion !== '') {
@@ -489,8 +465,8 @@ const ViewRespuesta = () => {
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
-                <Grid container justifyContent="space-between" alignItems="flex-end" spacing={2}>
-                    <Grid item xs={12} md={4}>
+                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                    <Grid item xs={12} md={6}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -506,47 +482,35 @@ const ViewRespuesta = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={8} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2} direction="row" justifyContent="flex-end" alignItems="center">
-                            <Grid item xs={12} md={6}>
-                                <FormControl>
-                                    <RadioGroup
-                                        row
-                                        aria-labelledby="demo-controlled-radio-buttons-group"
-                                        name="controlled-radio-buttons-group"
-                                        value={radioSearch}
-                                        onChange={(e) => setRadioSearch(e.target.value)}
-                                    >
-                                        <FormControlLabel value={1} control={<Radio />} label="Por atender" />
-                                        <FormControlLabel value={2} control={<Radio />} label="Atendidos" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>
+                    <Grid item xs={12} md={3}>
+                        <FormControl>
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-controlled-radio-buttons-group"
+                                name="controlled-radio-buttons-group"
+                                value={radioSearch}
+                                onChange={(e) => setRadioSearch(e.target.value)}
+                            >
+                                <FormControlLabel value={1} control={<Radio />} label="Por atender" />
+                                <FormControlLabel value={2} control={<Radio />} label="Atendidos" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
 
-                            <Grid item xs={1}>
-                                <Tooltip title="Exportar" onClick={getDataForExport}>
-                                    <IconButton size="large">
-                                        <IconFileExport />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
+                    <Grid item xs={6} md={1.5} textAlign="right">
+                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                            onClick={() => navigate("/single-window/add")}>
+                            {TitleButton.Agregar}
+                        </Button>
+                    </Grid>
 
-                            <Grid item xs={6} md={2.5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/single-window/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={6} md={2.5}>
-                                <AnimateButton>
-                                    <Button variant="contained" size="large" startIcon={<ArrowBackIosIcon />}
-                                        onClick={() => navigate("/single-window/view")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
+                    <Grid item xs={6} md={1.5}>
+                        <AnimateButton>
+                            <Button variant="contained" size="large" startIcon={<ArrowBackIosIcon />}
+                                onClick={() => navigate("/single-window/view")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </Grid>
             </CardContent>

@@ -16,6 +16,7 @@ import MedicionaLaboralExport from "modules/ExportOccupationalHealth/Export/Medi
 import ReintegroExport from "modules/ExportOccupationalHealth/Export/ReintegroExport";
 import AccidenteTrabajo from "modules/ExportOccupationalHealth/Export/AccidenteTrabajo";
 import AusentismoExport from "modules/ExportOccupationalHealth/Export/AusentismoExport";
+import ExcelVentanilla from "./ExcelVentanilla";
 
 const lsTipoExcelAusentismo = [
     { value: 0, label: 'DAILY' },
@@ -115,10 +116,16 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                     /> : null
                 }
 
-
-
                 {exportBy.codigo === 'REGIS_ATEN' ?
                     <ExcelRegistroAtencion
+                        setSede={setSede} sede={sede}
+                        setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
+                        setFechaFin={setFechaFin} fechaFin={fechaFin}
+                    /> : null
+                }
+
+                {exportBy.codigo === 'VENTANILLA' ?
+                    <ExcelVentanilla
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}

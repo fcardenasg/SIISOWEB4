@@ -6,7 +6,7 @@ export const NotificarUsuarios = async (id) => await getData(Url.VentaUnicaNotiU
 export const NotificarSolicitante = async (correo) => await postData(Url.VentaUnicaNotiSolicitante, correo);
 export const DescargarDocumentoVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaDescargarDocumento, { id });
 export const GetFileVentanillaUnica = async (id) => await getData(Url.VentanillaUnicaFile, { id });
-export const GenerateExcelVentanillaUnica = async () => await postData(Url.VentanillaUnicaExcel);
+export const GenerateExcelVentanillaUnica = async (parametroExcel) => await postData(Url.VentanillaUnicaExcel, parametroExcel);
 
 export const GetAllVentanillaUnica = async () => await getData(Url.VentanillaUnica);
 export const GetAllVentanillaUnicaComboUsuario = async (id) => await getData(Url.VentanillaUnicaComboUsuario, { id });

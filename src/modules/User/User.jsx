@@ -33,8 +33,9 @@ const validationSchema = yup.object().shape({
     idRol: yup.string().required(ValidationMessage.Requerido),
 });
 
-const lsData = [
-    { value: 0, label: "TODOS" }
+const lsVentanillaUnica = [
+    { value: 0, label: "TODOS" },
+    { value: 1, label: "NO RESPONDE" },
 ]
 
 const User = () => {
@@ -77,7 +78,7 @@ const User = () => {
                 label: item.nombre
             }));
             setLsArea(resultArea);
-            const arrayArea = lsData.concat(resultArea);
+            const arrayArea = lsVentanillaUnica.concat(resultArea);
             setLsArea(arrayArea);
 
             const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);

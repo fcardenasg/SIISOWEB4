@@ -98,6 +98,12 @@ const headCells = [
         align: 'left'
     },
     {
+        id: 'nameSede',
+        numeric: false,
+        label: 'Sede',
+        align: 'left'
+    },
+    {
         id: 'tipo',
         numeric: false,
         label: 'Tipo Solicitud',
@@ -330,6 +336,20 @@ const ViewResponse = () => {
                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                             >
                                 {row?.nombre}
+                            </Typography>
+                        </TableCell>
+
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            <Typography
+                                variant="caption"
+                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                            >
+                                {row?.nameSede}
                             </Typography>
                         </TableCell>
 

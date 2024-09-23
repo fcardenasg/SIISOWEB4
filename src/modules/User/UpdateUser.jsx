@@ -34,8 +34,9 @@ const validationSchema = yup.object().shape({
     idRol: yup.string().required(ValidationMessage.Requerido),
 });
 
-const lsData = [
-    { value: 0, label: "TODOS" }
+const lsVentanillaUnica = [
+    { value: 0, label: "TODOS" },
+    { value: 1, label: "NO RESPONDE" },
 ]
 
 const UpdateUser = () => {
@@ -81,7 +82,7 @@ const UpdateUser = () => {
                     value: item.idCatalogo,
                     label: item.nombre
                 }));
-                const arrayArea = lsData.concat(resultArea);
+                const arrayArea = lsVentanillaUnica.concat(resultArea);
                 setLsArea(arrayArea);
 
                 const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);

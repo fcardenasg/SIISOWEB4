@@ -38,7 +38,9 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                                     <Grid container direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
                                         <Grid item>{option?.label}</Grid>
 
-                                        {option?.codigo === 'CIE10' || option?.codigo === 'CIE11' ? (<Grid item><Label sx={{ mr: 1.5 }} variant="soft" color="success">{option?.codigo}</Label></Grid>) : null}
+                                        {option?.codigo === 'CIE10' || option?.codigo === 'CIE11' ?
+                                            (<Grid item><Label sx={{ mr: 1.5 }} variant="soft" color={option?.codigo === 'CIE10' ? "error" : "success"}>{option?.codigo}</Label></Grid>) : null
+                                        }
                                     </Grid>
                                 </MenuItem>
                             ))}

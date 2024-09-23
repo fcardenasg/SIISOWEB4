@@ -68,9 +68,7 @@ const Rol = () => {
 
     const handleChangeCompo = async (event) => {
         try {
-            const {
-                target: { value },
-            } = event;
+            const { target: { value } } = event;
 
             const lsIdComponente = [];
             var lsComponenteFilter = lsComponente;

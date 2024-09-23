@@ -8,10 +8,10 @@ const rutaLtd = 'https://siiso.drummondltd.com:44347/';
 const rutaEnergy = 'https://siiso.drummondenergy.com:44447/';
 
 const config = {
-    typeDashboard: 'ENERGY  ', //ENERGY - DLTD
-    rutaApi: rutaEnergy,
-    logotipo: LogoReportEnergy,
-    logotipoblanco: LogoWhiteEnergy,
+    typeDashboard: 'DLTD', //ENERGY - DLTD
+    rutaApi: rutaLtd,
+    logotipo: LogoReportLtd,
+    logotipoblanco: LogoWhiteLtd,
 
     basename: '',
     defaultPath: '/dashboard/drummond',

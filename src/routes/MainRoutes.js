@@ -189,7 +189,8 @@ const Audiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/Au
 const UpdateAudiometry = Loadable(lazy(() => import('modules/Paraclinics/Audiometry/UpdateAudiometry')));
 
 const ViewReprint = Loadable(lazy(() => import('modules/Reprint/ViewReprint')));
-const ViewIndicadores = Loadable(lazy(() => import('modules/Indicators/ViewIndicadores')));
+const ViewIndicadoresEstandar = Loadable(lazy(() => import('modules/Indicators/ViewIndicadoresEstandar')));
+const MenuEstadistica = Loadable(lazy(() => import('modules/Menu/MenuEstadistica')));
 
 const ListPersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/ListPersonalNotes')));
 const PersonalNotes = Loadable(lazy(() => import('modules/PersonalNotes/PersonalNotes')));
@@ -204,7 +205,7 @@ const IndexNote = Loadable(lazy(() => import('modules/IndexNote/IndexNote')));
 const UpdateIndexNote = Loadable(lazy(() => import('modules/IndexNote/UpdateIndexNote')));
 
 const ForgotPassword = Loadable(lazy(() => import('modules/ForgotPassword/ForgotPassword')));
-const IndicadorIncapacidades = Loadable(lazy(() => import('modules/Indicators/Indicators')));
+const IndicatorsAdvanced = Loadable(lazy(() => import('modules/Indicators/IndicatorsAdvanced')));
 
 const MenuOccupationalHealth = Loadable(lazy(() => import('modules/Menu/MenuOccupationalHealth')));
 const MenuAdministration = Loadable(lazy(() => import('modules/Menu/MenuAdministration')));
@@ -818,7 +819,16 @@ const MainRoutes = {
         /* INDICADORES */
         {
             path: '/indicators/menu',
-            element: <ViewIndicadores />
+            element: <MenuEstadistica />
+        },
+
+        {
+            path: '/statistics-basic/view',
+            element: <ViewIndicadoresEstandar />
+        },
+        {
+            path: '/statistics-advanced/view',
+            element: <IndicatorsAdvanced />
         },
 
         /* Render de Recuperar Contraseña */
@@ -892,10 +902,7 @@ const MainRoutes = {
         },
 
         /* Indicadores */
-        {
-            path: '/indicators/disabilities',
-            element: <IndicadorIncapacidades />
-        },
+
 
         /* Rol */
         {

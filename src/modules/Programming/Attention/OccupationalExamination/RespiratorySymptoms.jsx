@@ -8,7 +8,6 @@ import {
 import { IconLungs } from '@tabler/icons';
 import Accordion from 'components/accordion/Accordion';
 import InputCheckBox from 'components/input/InputCheckBox';
-import { FormProvider } from 'react-hook-form';
 import SubCard from 'ui-component/cards/SubCard';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -191,7 +190,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
 
                         <Grid item xs={2}>
 
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.esputoESintR, "string")}
                                 fullWidth
                                 name="esputoESintR"
@@ -678,7 +677,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
 
                         <Grid item xs={8}>
 
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.otrasEnfToraxB, "string")}
                                 fullWidth
                                 name="otrasEnfToraxB"
@@ -698,7 +697,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
 
                         <Grid item xs={8}>
 
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.ciruToraxBSintR, "string")}
                                 fullWidth
                                 name="ciruToraxBSintR"
@@ -718,7 +717,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
 
                         <Grid item xs={8}>
 
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.traumaToraxBSintR, "string")}
                                 fullWidth
                                 name="traumaToraxBSintR"
@@ -738,7 +737,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
 
                         <Grid item xs={8}>
 
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.problemCoraBSintR, "string")}
                                 fullWidth
                                 name="problemCoraBSintR"
@@ -800,8 +799,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupB1SintR, "string")}
                                 fullWidth
                                 name="historiaOcupB1SintR"
@@ -811,7 +809,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
                             <InputText
                                 type="number"
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupB2SintR, "string")}
@@ -823,8 +820,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
-                            <nputSelect
+                            <InputSelect
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupB3SintR, "number")}
                                 name="historiaOcupB3SintR"
                                 label="La exposición fue:"
@@ -843,8 +839,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupC1SintR, "string")}
                                 fullWidth
                                 name="historiaOcupC1SintR"
@@ -854,7 +849,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
                             <InputText
                                 type="number"
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupC2SintR, "string")}
@@ -866,8 +860,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
-                            <nputSelect
+                            <InputSelect
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupC3SintR, "number")}
                                 name="historiaOcupC3SintR"
                                 label="La exposición fue:"
@@ -881,8 +874,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={6}>
-
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupD1SintR, "string")}
                                 fullWidth
                                 name="historiaOcupD1SintR"
@@ -892,7 +884,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={6}>
-
                             <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupD2SintR, "string")}
                                 type="number"
@@ -904,8 +895,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={12}>
-
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.historiaOcupD3, "string")}
                                 fullWidth
                                 name="historiaOcupD3"
@@ -915,6 +905,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
                     </Grid>
                 </SubCard>
+
                 <Grid sx={{ pb: 2 }} />
 
                 <SubCard darkTitle title="Tabaquismo">
@@ -938,7 +929,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
                             <InputText
                                 type="number"
                                 fullWidth
@@ -950,7 +940,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
                             <InputText
                                 type="number"
                                 defaultValue={() => validateLastData(lsLastRecord.tabaquismoDSintR, "string")}
@@ -962,7 +951,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={4}>
-
                             <InputText
                                 type="number"
                                 defaultValue={() => validateLastData(lsLastRecord.tabaquismoESintR, "string")}
@@ -988,8 +976,7 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={3}>
-
-                            <nputText
+                            <InputText
                                 defaultValue={() => validateLastData(lsLastRecord.actDeporA1SintR, "string")}
                                 fullWidth
                                 name="actDeporA1SintR"
@@ -999,7 +986,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={3}>
-
                             <InputText
                                 type="number"
                                 defaultValue={() => validateLastData(lsLastRecord.actDeporA2SintR, "string")}
@@ -1011,7 +997,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={3}>
-
                             <InputText
                                 type="number"
                                 defaultValue={() => validateLastData(lsLastRecord.actDeporA3SintR, "string")}
@@ -1023,7 +1008,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                         </Grid>
 
                         <Grid item xs={3}>
-
                             <InputText
                                 type="number"
                                 defaultValue={() => validateLastData(lsLastRecord.actDeporA4SintR, "string")}
@@ -1042,7 +1026,6 @@ const RespiratorySymptoms = ({ setOpenApuntesPersonales, setOpenTemplate, setOpe
                 <Typography sx={{ pl: 1 }} align='right' variant="h5" color="inherit">RECOMENDACIONES</Typography></>}>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12}>
-
                         <InputText
                             multiline
                             rows={10}

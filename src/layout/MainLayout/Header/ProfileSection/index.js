@@ -218,7 +218,7 @@ const ProfileSection = () => {
                                                 <ListItemIcon>
                                                     <IconFolders stroke={1.5} size="1.3rem" />
                                                 </ListItemIcon>
-                                                <ListItemText primary={<Typography variant="body2">Cambiar CIE11</Typography>} />
+                                                <ListItemText primary={<Typography variant="body2">Cambiar CIE</Typography>} />
                                             </ListItemButton>
                                         )}
 
