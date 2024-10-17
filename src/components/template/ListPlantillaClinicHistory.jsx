@@ -152,9 +152,9 @@ const ListPlantillaClinicHistory = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllMedicalHistory(0, 0);
-                setLsTemplate(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                const lsServer = await GetAllMedicalHistory();
+                setLsTemplate(lsServer.data);
+                setRows(lsServer.data);
             } catch (error) { }
         }
 

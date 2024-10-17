@@ -66,7 +66,7 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'ID',
+        label: 'Id',
         align: 'left'
     },
     {
@@ -84,7 +84,7 @@ const headCells = [
     {
         id: 'nameAtencion',
         numeric: false,
-        label: 'Atencion',
+        label: 'Atención',
         align: 'left'
     },
     {
@@ -96,7 +96,7 @@ const headCells = [
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Usuario Registro',
+        label: 'Usuario registro',
         align: 'left'
     },
 ];
@@ -172,9 +172,9 @@ const TableMedicalAttention = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllMedicalHistory(0, 0);
-                setLsMedicalAttention(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                const lsServer = await GetAllMedicalHistory();
+                setLsMedicalAttention(lsServer.data);
+                setRows(lsServer.data);
             } catch (error) { }
         }
 
@@ -205,7 +205,7 @@ const TableMedicalAttention = () => {
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });

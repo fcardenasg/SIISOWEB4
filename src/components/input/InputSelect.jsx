@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Controller } from 'react-hook-form';
 import {
     FormHelperText,
@@ -6,13 +5,11 @@ import {
     FormControl,
     MenuItem,
     InputLabel,
-    Select,
-    Stack,
+    Select
 } from '@mui/material';
 import Label from 'components/label';
 
 const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others }) => {
-
     return (
         <>
             <Controller
@@ -29,9 +26,9 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label={label}
-                            {...others}
                             fullWidth
                             size={size}
+                            {...others}
                         >
                             {options?.map((option) => (
                                 <MenuItem key={option?.value} value={option?.value}>
@@ -59,12 +56,3 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
 };
 
 export default InputSelect;
-
-InputSelect.propTypes = {
-    bug: PropTypes.object,
-    size: PropTypes.string,
-    label: PropTypes.string,
-    defaultValue: PropTypes.any,
-    name: PropTypes.string,
-    options: PropTypes.any,
-};

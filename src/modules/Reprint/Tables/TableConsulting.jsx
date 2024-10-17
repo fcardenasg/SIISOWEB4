@@ -68,7 +68,7 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'ID',
+        label: 'Id',
         align: 'left'
     },
     {
@@ -86,7 +86,7 @@ const headCells = [
     {
         id: 'nameTipoAtencion',
         numeric: false,
-        label: 'Tipo Asesoria',
+        label: 'Tipo de asesoría',
         align: 'left'
     },
     {
@@ -98,7 +98,7 @@ const headCells = [
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Usuario Registro',
+        label: 'Usuario registro',
         align: 'left'
     },
 ];
@@ -224,7 +224,7 @@ const TableConsulting = () => {
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });

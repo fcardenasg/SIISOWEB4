@@ -95,7 +95,7 @@ const headCells = [
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Usuario Registro',
+        label: 'Usuario registro',
         align: 'left'
     },
 ];
@@ -168,9 +168,9 @@ const TableAlcoholAndDrugTesting = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServer = await GetAllAlcoholAndDrugTesting(0, 0);
-                setLsMedicalAttention(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                const lsServer = await GetAllAlcoholAndDrugTesting();
+                setLsMedicalAttention(lsServer.data);
+                setRows(lsServer.data);
 
             } catch (error) { }
         }
@@ -201,7 +201,7 @@ const TableAlcoholAndDrugTesting = () => {
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });

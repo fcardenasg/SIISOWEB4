@@ -224,10 +224,10 @@ const ListAlcoholAndDrugTesting = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllAlcoholAndDrugTesting(0, 0);
+            const lsServer = await GetAllAlcoholAndDrugTesting();
             if (lsServer.status === 200) {
-                setLsAlcoholAndDrugTesting(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                setLsAlcoholAndDrugTesting(lsServer.data);
+                setRows(lsServer.data);
             }
         } catch (error) { }
     }

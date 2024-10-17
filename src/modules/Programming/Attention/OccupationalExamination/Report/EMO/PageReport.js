@@ -1206,13 +1206,18 @@ export function generateHabitsGineco(doc = new jsPDF(), lsDataReport) {
   doc.text("FRECUENCIA:", 7, 70);
   doc.text("CUAL BEBIDA:", 7, 75);
   /* SEGUNDA COLUMNA DE HÁBITOS */
-  doc.text("CIGARRILLOS DÍA:", 100, 45);
-  doc.text("MESES:", 100, 50);
-  doc.text("CIGARRILLOS DÍA:", 100, 55);
-  doc.text("MESES:", 100, 60);
-  doc.text("CUAL DEPORTE:", 100, 65);
-  doc.text("CONSUME BEBIDAS ALCOHOLICAS:", 100, 70);
-  doc.text("FRECUENCIA:", 100, 75);
+  doc.text("CIGARRILLOS DÍA:", 60, 45);
+
+  doc.text("OBSERVACIÓN:", 140, 50);
+  doc.text("OBSERVACIÓN:", 140, 60);
+  doc.text("OBSERVACIÓN:", 140, 65);
+
+  doc.text("MESES:", 60, 50);
+  doc.text("CIGARRILLOS DÍA:", 60, 55);
+  doc.text("MESES:", 60, 60);
+  doc.text("CUAL DEPORTE:", 60, 65);
+  doc.text("CONSUME BEBIDAS ALCOHOLICAS:", 60, 70);
+  doc.text("FRECUENCIA:", 60, 75);
 
   doc.text("HOBBY/PASATIEMPO:", 7, 80);
 
@@ -1223,21 +1228,26 @@ export function generateHabitsGineco(doc = new jsPDF(), lsDataReport) {
 
   /* RENDERIZADO DE DATOS DE HÁBITOS */
   doc.setFont("helvetica", "normal");
-  doc.text(`${lsDataReport.fumaHB}`, 50, 45);
-  doc.text(`${lsDataReport.aniosCigaFumaHB}`, 50, 50);
-  doc.text(`${lsDataReport.fumabaHB}`, 50, 55);
-  doc.text(`${lsDataReport.aniosCigaFumabaHB}`, 50, 60);
-  doc.text(`${lsDataReport.practicaDeporteHB}`, 50, 65);
-  doc.text(`${lsDataReport.nameFrecuenciaDeporteHB}`, 50, 70);
-  doc.text(`${lsDataReport.cualBebidasAlHB}`, 50, 75);
+  doc.text(`${lsDataReport.fumaHB}`, 38, 45);
+  doc.text(`${lsDataReport.aniosCigaFumaHB}`, 38, 50);
+  doc.text(`${lsDataReport.fumabaHB}`, 38, 55);
+  doc.text(`${lsDataReport.aniosCigaFumabaHB}`, 38, 60);
+  doc.text(`${lsDataReport.practicaDeporteHB}`, 38, 65);
+  doc.text(`${lsDataReport.nameFrecuenciaDeporteHB}`, 38, 70);
+  doc.text(`${lsDataReport.cualBebidasAlHB}`, 38, 75);
   /* SEGUNDA COLUMNA DE HÁBITOS */
-  doc.text(`${lsDataReport.cigarrillosDiasFumaHB}`, 160, 45);
-  doc.text(`${lsDataReport.mesesCigaFumaHB}`, 160, 50);
-  doc.text(`${lsDataReport.cigarrillosDiasFumabaHB}`, 160, 55);
-  doc.text(`${lsDataReport.mesesCigaFumabaHB}`, 160, 60);
-  doc.text(`${lsDataReport.nameCualDeporteHB}`, 160, 65);
-  doc.text(`${lsDataReport.consumeBebidasAlcoholicasHB}`, 160, 70);
-  doc.text(`${lsDataReport.nameFrecuenciaBebidaAlHB}`, 160, 75);
+  doc.text(`${lsDataReport.cigarrillosDiasFumaHB}`, 115, 45);
+  doc.text(`${lsDataReport.mesesCigaFumaHB}`, 115, 50);
+  doc.text(`${lsDataReport.cigarrillosDiasFumabaHB}`, 115, 55);
+
+  doc.text(`${lsDataReport.observacionFumaHB}`, 165, 50);
+  doc.text(`${lsDataReport.observacionFumabaHB}`, 165, 60);
+  doc.text(`${lsDataReport.observacionPracticaDeporHB}`, 165, 65);
+
+  doc.text(`${lsDataReport.mesesCigaFumabaHB}`, 115, 60);
+  doc.text(`${lsDataReport.nameCualDeporteHB}`, 115, 65);
+  doc.text(`${lsDataReport.consumeBebidasAlcoholicasHB}`, 115, 70);
+  doc.text(`${lsDataReport.nameFrecuenciaBebidaAlHB}`, 115, 75);
   /* RENDERIZADO DE FOBIAS */
   doc.text(`${lsDataReport.cualHobbiesHB}`, 50, 80);
 

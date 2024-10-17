@@ -68,7 +68,7 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'ID',
+        label: 'Id',
         align: 'left'
     },
     {
@@ -98,7 +98,7 @@ const headCells = [
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Usuario Registro',
+        label: 'Usuario registro',
         align: 'left'
     },
 ];
@@ -170,17 +170,15 @@ const TableEmo = () => {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        async function GetAll() {
+        async function getAll() {
             try {
-                const lsServer = await GetAllOccupationalExamination(0, 0);
-                setLsOccupationalExamination(lsServer.data.entities);
-                setRows(lsServer.data.entities);
-            } catch (error) {
-
-            }
+                const lsServer = await GetAllOccupationalExamination();
+                setLsOccupationalExamination(lsServer.data);
+                setRows(lsServer.data);
+            } catch (error) { }
         }
 
-        GetAll();
+        getAll();
     }, []);
 
     const handleClickReport = async (id, documento) => {
@@ -219,7 +217,7 @@ const TableEmo = () => {
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });

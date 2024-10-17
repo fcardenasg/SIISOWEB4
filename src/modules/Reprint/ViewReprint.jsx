@@ -16,10 +16,10 @@ import TableMedicalAttentionControl from "./Tables/TableMedicalAttentionControl"
 import TableAlcoholAndDrugTesting from "./Tables/TableAlcoholAndDrugTesting";
 
 const Title = {
-    asesoria: 'ASESORÍAS',
-    atencion: 'ATENCIÓN MÉDICA',
+    asesoria: 'Asesorías',
+    atencion: 'Atención Médica',
     emo: 'EMO',
-    enfermeria: 'ENFERMERÍA',
+    enfermeria: 'Enfermería',
 }
 
 const ViewReprint = () => {
@@ -59,7 +59,7 @@ const ViewReprint = () => {
         <Fragment>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <SubCard title={<Typography variant="h4">REIMPRESIÓN</Typography>}>
+                    <SubCard title={<Typography variant="h4">Módulos de reimpresión</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6} lg={3}>
                                 <Button onClick={() => setStatusReprint(1)} size="large" variant="outlined" color="error" fullWidth startIcon={<PrintIcon />}>
@@ -91,10 +91,10 @@ const ViewReprint = () => {
                 <Grid item xs={12}>
                     <SubCard title={
                         <Typography variant="h4">
-                            REIMPRIMIR {statusReprint === 1 ? Title.asesoria :
-                                statusReprint === 2 ? Title.atencion :
+                            Reimprimir {statusReprint === 1 ? Title.asesoria.toLowerCase() :
+                                statusReprint === 2 ? Title.atencion.toLowerCase() :
                                     statusReprint === 3 ? Title.emo :
-                                        statusReprint === 4 ? Title.enfermeria : ''}
+                                        statusReprint === 4 ? Title.enfermeria.toLowerCase() : ''}
                         </Typography>}>
 
                         <Grid container spacing={2}>

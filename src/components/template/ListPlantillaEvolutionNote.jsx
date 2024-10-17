@@ -60,13 +60,13 @@ const headCells = [
     {
         id: 'id',
         numeric: false,
-        label: 'ID',
+        label: 'Id',
         align: 'center'
     },
     {
         id: 'nameEmpleado',
         numeric: false,
-        label: 'Nombres',
+        label: 'Nombre',
         align: 'left'
     },
     {
@@ -78,7 +78,7 @@ const headCells = [
     {
         id: 'nameConceptoActitud',
         numeric: false,
-        label: 'Concepto De Actitud',
+        label: 'Concepto de actitud',
         align: 'left'
     },
 ];
@@ -151,9 +151,9 @@ const ListPlantillaEvolutionNote = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllEvolutionNote(0, 0);
-                setLsTemplate(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                const lsServer = await GetAllEvolutionNote();
+                setLsTemplate(lsServer.data);
+                setRows(lsServer.data);
             } catch (error) { }
         }
 
