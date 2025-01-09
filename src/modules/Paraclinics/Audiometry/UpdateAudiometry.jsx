@@ -36,6 +36,7 @@ import { GetAllByCodeOrName, } from 'api/clients/CIE11Client';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReport } from './ReporteAudiometry';
 import ViewPDF from 'components/components/ViewPDF';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
 const UpdateAudiometry = () => {
     const { id } = useParams();
@@ -71,6 +72,8 @@ const UpdateAudiometry = () => {
 
     const methods = useForm();
     const { handleSubmit } = methods;
+
+    async function downloadFile() { DownloadFile('auditoriapruebapdf.pdf', filePdf.replace("data:application/pdf;base64,", "")); }
 
     const handleDx1 = async (event) => {
         try {
@@ -195,6 +198,8 @@ const UpdateAudiometry = () => {
 
             const serverData = await GetByIdParaclinics(id);
             if (serverData.status === 200) {
+                console.log(serverData.data);
+
                 setLsAudiometrics(serverData.data);
                 setTextDx1(serverData.data.dxAUDIO);
                 setDocumento(serverData.data.documento);
@@ -744,14 +749,7 @@ const UpdateAudiometry = () => {
                                 </Grid>
 
                                 <Grid item xs={12} sx={{ pt: 4 }}>
-                                    {filePdf && (
-                                        <object type="application/pdf"
-                                            data={filePdf}
-                                            width="1180"
-                                            height="500"
-                                            onLoad={<Cargando />}
-                                        />
-                                    )}
+                                    <ViewPDF dataPDF={filePdf} width="1000" height="500" />
                                 </Grid>
                             </MainCard>
                         </Grid>

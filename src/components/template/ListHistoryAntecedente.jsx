@@ -28,6 +28,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { ViewFormat } from 'components/helpers/Format';
 import { GetAllByDocumento } from 'api/clients/OccupationalExaminationClient';
 import { ColorDrummondltd } from 'themes/colors';
+import ViewPDF from 'components/components/ViewPDF';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -230,13 +231,7 @@ const ListHistoryAntecedente = ({ documento = '' }) => {
                 maxWidth="xl"
             >
                 <Typography align='center'>
-                    {dataPdf && (
-                        <object type="application/pdf"
-                            data={dataPdf}
-                            width="1400"
-                            height="510"
-                        />
-                    )}
+                    <ViewPDF dataPDF={dataPdf} width="1400" height="510" />
                 </Typography>
             </ControlModal>
 

@@ -26,6 +26,7 @@ import ControlModal from 'components/controllers/ControlModal';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
 import { GetAllByDocumentoParacli } from 'api/clients/ParaclinicsClient';
+import ViewPDF from 'components/components/ViewPDF';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -145,11 +146,11 @@ const TableExamenesParaclinicos = ({ idTipoParaclinico = '', documento = '' }) =
         async function GetAll() {
             try {
                 const lsServer = await GetAllByDocumentoParacli(0, 0, idTipoParaclinico, documento);
-                
+
                 setLsExamenesPara(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) {
-                
+
             }
         }
 
@@ -210,13 +211,7 @@ const TableExamenesParaclinicos = ({ idTipoParaclinico = '', documento = '' }) =
                 maxWidth="xl"
             >
                 <Typography align='center'>
-                    {dataPdf && (
-                        <object type="application/pdf"
-                            data={dataPdf}
-                            width="1400"
-                            height="510"
-                        />
-                    )}
+                    <ViewPDF dataPDF={dataPdf} width="1400" height="510" />
                 </Typography>
             </ControlModal>
 

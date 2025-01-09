@@ -69,9 +69,6 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.line(5, 108, marXR, 108); /* HORI SIX */
     doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
 
-
-
-
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
     doc.text('DOCUMENTO:', 42, 45);

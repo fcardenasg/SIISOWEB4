@@ -20,12 +20,14 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 import { visuallyHidden } from '@mui/utils';
 import ControlModal from 'components/controllers/ControlModal';
 import { ViewFormat } from 'components/helpers/Format';
 import { GetAllByDocumento } from 'api/clients/OccupationalExaminationClient';
 import { ColorDrummondltd } from 'themes/colors';
+import ViewPDF from 'components/components/ViewPDF';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -228,6 +230,8 @@ const ListExamenesFisico = ({ documento = '' }) => {
                 maxWidth="xl"
             >
                 <Typography align='center'>
+                    <ViewPDF dataPDF={dataPdf} width="1400" height="510" />
+
                     {dataPdf && (
                         <object type="application/pdf"
                             data={dataPdf}

@@ -1,46 +1,52 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     Typography,
     useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
 import {
-    FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, PuntajeFr, FrColesterol, FrTension, FrLdl_FrRelacion
+    FrColesterol,
+    FrFuma,
+    FrGlicemia,
+    FrLdl_FrRelacion,
+    FrTension,
+    GetEdad,
+    GetRiesgos,
+    PuntajeFr
 } from 'components/helpers/Format';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import InputOnChange from 'components/input/InputOnChange';
-import SelectOnChange from 'components/input/SelectOnChange';
-import ControlModal from 'components/controllers/ControlModal';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { GetByIdAttention } from 'api/clients/AttentionClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ViewEmployee from 'components/views/ViewEmployee';
-import { GetByMail } from 'api/clients/UserClient';
-import { generateReportFramingham } from './ReportFramingham';
-import ViewPDF from 'components/components/ViewPDF';
-import { PostFramingham } from 'formatdata/FraminghamForm';
-import ViewFramingham from 'modules/Programming/Attention/OccupationalExamination/Framingham/ViewFramingham';
-import DetailedIcon from 'components/controllers/DetailedIcon';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import InputText from 'components/input/InputText';
-import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import TableAntecedentes from 'modules/Programming/Attention/OccupationalExamination/TableEmo/TableAntecedentes';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdFramingham, InsertFramingham } from 'api/clients/FraminghamClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import ControlModal from 'components/controllers/ControlModal';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PostFramingham } from 'formatdata/FraminghamForm';
+import useAuth from 'hooks/useAuth';
+import ViewFramingham from 'modules/Programming/Attention/OccupationalExamination/Framingham/ViewFramingham';
+import TableAntecedentes from 'modules/Programming/Attention/OccupationalExamination/TableEmo/TableAntecedentes';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReportFramingham } from './ReportFramingham';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },

@@ -69,6 +69,7 @@ const OccupationalMedicine = () => {
     const [lsEntidadMotiEnvio, setLsEntidadMotiEnvio] = useState([]);
     const [lsEntidadDondeEnvia, setLsEntidadDondeEnvia] = useState([]);
     const [lsInvestigado, setLsInvestigado] = useState([]);
+    const [lsEntidadInformaInstanciaFinal, setLsEntidadInformaInstanciaFinal] = useState([]);
     const [lsSalaCalificadora, setLsSalaCalificadora] = useState([]);
     const [lsOrigenEPS, setLsOrigenEPS] = useState([]);
     const [lsOrigenARL, setLsOrigenARL] = useState([]);
@@ -212,6 +213,9 @@ const OccupationalMedicine = () => {
                 const lsServerInvestigadoPor = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_INVESTIGADOPOR);
                 setLsInvestigadoPor(lsServerInvestigadoPor.data);
 
+                const lsEntidadInforma = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_ENTIDADINFORMA);
+                setLsEntidadInformaInstanciaFinal(lsEntidadInforma.data);
+
                 const lsServerRegion = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_REGION);
                 setLsRegion(lsServerRegion.data);
 
@@ -329,6 +333,7 @@ const OccupationalMedicine = () => {
             datos.fechaPagoInstaFinal = datos.fechaPagoInstaFinal || null;
             datos.fechaEntregaMin = datos.fechaEntregaMin || null;
             datos.fechaPagoRecalificadoInstaFinal = datos.fechaPagoRecalificadoInstaFinal || null;
+            datos.fechaRecibidoInstanciaFinal = datos.fechaRecibidoInstanciaFinal || null;
 
             const result = await InsertOccupationalMedicine(datos);
             if (result.status === 200) {
@@ -392,7 +397,7 @@ const OccupationalMedicine = () => {
                         showButton={false}
                         threshold={lsEmployee?.length !== 0 ? 550 : 480}
                     >
-                        <Grid item xs={12}>
+                        <Grid sx={{ my: 3 }} item xs={12}>
                             <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={6} lg={3}>
@@ -592,7 +597,7 @@ const OccupationalMedicine = () => {
                             </Accordion>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid sx={{ my: 3 }} item xs={12}>
                             <Accordion title={<><IconReportMedical /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación EPS</Typography></>}>
                                 <Grid container spacing={2} sx={{ my: 1 }}>
                                     <Grid item xs={12} md={6}>
@@ -620,7 +625,7 @@ const OccupationalMedicine = () => {
                             </Accordion>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid sx={{ my: 3 }} item xs={12}>
                             <Accordion title={<><IconAlertTriangle /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación ARL</Typography></>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={6} lg={4}>
@@ -733,7 +738,7 @@ const OccupationalMedicine = () => {
                             </Accordion>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid sx={{ my: 3 }} item xs={12}>
                             <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JRC</Typography></>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={6} lg={3}>
@@ -922,7 +927,7 @@ const OccupationalMedicine = () => {
                             </Accordion>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid sx={{ my: 3 }} item xs={12}>
                             <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JNC</Typography></>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={6} lg={4}>
@@ -1092,7 +1097,7 @@ const OccupationalMedicine = () => {
                             </Accordion>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid sx={{ my: 3 }} item xs={12}>
                             <Accordion title={<><IconReportSearch /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Investigación Enfermedad Laboral</Typography></>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={6} lg={4}>
@@ -1265,7 +1270,7 @@ const OccupationalMedicine = () => {
                             </Accordion>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid sx={{ my: 3 }} item xs={12}>
                             <Accordion title={<><IconReport /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Instancia Final</Typography></>}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={6} lg={4}>
@@ -1377,9 +1382,30 @@ const OccupationalMedicine = () => {
                                     <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
+                                                label="Fecha informe origen en firme"
+                                                name="fechaRecibidoInstanciaFinal"
+                                                defaultValue={null}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
                                                 label="Fecha Entrega MIN"
                                                 name="fechaEntregaMin"
                                                 defaultValue={null}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="IdEntidadInformaInstanciaFinal"
+                                                label="Entidad que informe a DLTD"
+                                                options={lsEntidadInformaInstanciaFinal}
+                                                size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </FormProvider>
                                     </Grid>

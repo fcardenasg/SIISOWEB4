@@ -32,6 +32,7 @@ import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import ListLaboratory from './ListLaboratory';
+import ViewPDF from 'components/components/ViewPDF';
 
 const UpdateLaboratory = () => {
     const { user } = useAuth();
@@ -725,14 +726,7 @@ const UpdateLaboratory = () => {
                                 </Grid>
 
                                 <Grid item xs={12} sx={{ pt: 4 }}>
-                                    {filePdf && (
-                                        <object type="application/pdf"
-                                            data={filePdf}
-                                            width="1180"
-                                            height="500"
-                                            onLoad={<Cargando />}
-                                        />
-                                    )}
+                                    <ViewPDF dataPDF={filePdf} width="1180" height="500" />
                                 </Grid>
                             </MainCard>
                         </Grid>

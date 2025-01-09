@@ -1,9 +1,7 @@
-import jsPDF from "jspdf";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
+import jsPDF from "jspdf";
 
 import config from "config";
-import LogoReportLtd from 'assets/img/LogoReportLTD.png';
-import LogoReportEnergy from 'assets/img/LogoReportEnergy.png';
 
 /* FIRMAS */
 function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {

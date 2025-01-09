@@ -61,7 +61,7 @@ const IndicatorsAdvanced = () => {
                         size={matchesXS ? 'small' : 'medium'}
                     />
                 </Grid>
-
+                
                 <Grid item xs={12}>
                     {dataResult.length === 0 ? null :
                         <SubCard title={`Indicadores De ${dataResult.nombre}`} secondary={

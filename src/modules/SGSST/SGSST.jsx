@@ -22,6 +22,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostSGSST } from 'formatdata/SGSST';
 import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
+import ViewPDF from 'components/components/ViewPDF';
 
 const SGSST = () => {
     const { user } = useAuth();
@@ -124,14 +125,7 @@ const SGSST = () => {
             </Grid>
 
             <Grid item xs={12} sx={{ pt: 4 }}>
-                {filePdf && (
-                    <object type="application/pdf"
-                        data={filePdf}
-                        width="1150"
-                        height="500"
-                        onLoad={<Cargando />}
-                    />
-                )}
+                <ViewPDF dataPDF={filePdf} width="1150" height="500" />
             </Grid>
 
             <Grid item xs={12} sx={{ pt: 4 }}>

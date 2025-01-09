@@ -102,17 +102,16 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
 
     doc.text(`ANTIGUEDAD:  ${GetEdad(lsDataReport.fechaContrato)}`, 80, 50);
     doc.text('TIPO CONTRATO:', 42, 55);
-
     doc.text('CARGO:', 42, 60);
     doc.text('SEDE:', 42, 65);
     doc.text('CELULAR:', 42, 70);
 
-    doc.text('NOMBRES:', 120, 45);
-    doc.text('DEPARTAMENTO:', 120, 50);
-    doc.text('GRUPO:', 120, 55);
-    doc.text('AREA:', 120, 60);
-    doc.text('ESTADO CIVIL:', 120, 65);
-    doc.text('EMAIL:', 120, 70);
+    doc.text('NOMBRES:', 128, 45);
+    doc.text('DEPARTAMENTO:', 128, 50);
+    doc.text('GRUPO:', 128, 55);
+    doc.text('AREA:', 128, 60);
+    doc.text('ESTADO CIVIL:', 128, 65);
+    doc.text('EMAIL:', 128, 70);
 
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
@@ -213,14 +212,14 @@ export function generateReportEvolutionNote(lsDataReport = [], lsDataUser, lsCon
     doc.setFont("helvetica", "bold");
     getHeader(doc);
     generateReportMedicalAdvice(doc, lsDataReport, lsDataUser, lsConfiguracion);
-    getPiePage(doc, lsDataUser, 1, 1);
+    getPiePage(doc, lsDataUser, 1, lsConfiguracion ? 2 : 1);
 
     if (lsConfiguracion) {
         doc.addPage();
 
         getHeader(doc);
         generateReportMedicalAdviceExtendido(doc, lsDataReport, lsDataUser, lsConfiguracion);
-        getPiePage(doc, lsDataUser, 1, 1);
+        getPiePage(doc, lsDataUser, 2, 2);
     }
 
     var dataPDF = doc.output("bloburl");

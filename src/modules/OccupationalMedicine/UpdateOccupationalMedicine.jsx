@@ -88,6 +88,7 @@ const OccupationalMedicine = () => {
     const [lsResultadoOrigen, setLsResultadoOrigen] = useState([]);
     const [lsAsesorEL, setLsAsesorEL] = useState([]);
     const [lsSituacionEmpleado, setLsSituacionEmpleado] = useState([]);
+    const [lsEntidadInformaInstanciaFinal, setLsEntidadInformaInstanciaFinal] = useState([]);
 
     const [fechaCaliUltimaInstancia, setFechaCaliUltimaInstancia] = useState(null);
     const [fechaInvestigacion, setFechaInvestigacion] = useState(null);
@@ -144,6 +145,13 @@ const OccupationalMedicine = () => {
 
                 const lsServerInvestigadoPor = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_INVESTIGADOPOR);
                 setLsInvestigadoPor(lsServerInvestigadoPor.data);
+
+                const lsServerEntidadInformeInstancia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_ENTIDADINFORMA);
+                var resultEntidadInformeInstancia = lsServerEntidadInformeInstancia.data.entities.map((item) => ({
+                    value: item.idCatalogo,
+                    label: item.nombre
+                }));
+                setLsEntidadInformaInstanciaFinal(resultEntidadInformeInstancia);
 
                 const lsServerSubsegmento = await GetAllBySubsegment(0, 0);
                 var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
@@ -430,6 +438,7 @@ const OccupationalMedicine = () => {
             datos.fechaPagoInstaFinal = datos.fechaPagoInstaFinal || null;
             datos.fechaEntregaMin = datos.fechaEntregaMin || null;
             datos.fechaPagoRecalificadoInstaFinal = datos.fechaPagoRecalificadoInstaFinal || null;
+            datos.fechaRecibidoInstanciaFinal = datos.fechaRecibidoInstanciaFinal || null;
 
             const result = await UpdateOccupationalMedicines(datos);
             if (result.status === 200) {
@@ -493,7 +502,7 @@ const OccupationalMedicine = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} sx={{ mt: 2 }}>
+                        <Grid item xs={12} sx={{ my: 2 }}>
                             <StickyActionBar
                                 mainTitle="Acciones"
                                 titleButtonOne={TitleButton.Actualizar}
@@ -505,7 +514,7 @@ const OccupationalMedicine = () => {
                                 showButton={false}
                                 threshold={550}
                             >
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={3}>
@@ -718,7 +727,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconReportMedical /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación EPS</Typography></>}>
                                         <Grid container spacing={2} sx={{ my: 2 }}>
                                             <Grid item xs={12} md={6}>
@@ -746,7 +755,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconAlertTriangle /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación ARL</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -864,7 +873,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JRC</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={3}>
@@ -1065,7 +1074,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JNC</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1245,7 +1254,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconReportSearch /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Investigación Enfermedad Laboral</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1431,7 +1440,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconReport /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Instancia Final</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1549,9 +1558,31 @@ const OccupationalMedicine = () => {
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
+                                                        label="Fecha informe origen en firme"
+                                                        name="fechaRecibidoInstanciaFinal"
+                                                        defaultValue={lsOccupationalMedicine?.fechaRecibidoInstanciaFinal}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputDatePicker
                                                         label="Fecha Entrega MIN"
                                                         name="fechaEntregaMin"
-                                                        defaultValue={lsOccupationalMedicine.fechaEntregaMin}
+                                                        defaultValue={lsOccupationalMedicine?.fechaEntregaMin}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputSelect
+                                                        name="idEntidadInformaInstanciaFinal"
+                                                        label="Entidad que informe a DLTD"
+                                                        options={lsEntidadInformaInstanciaFinal}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        defaultValue={lsOccupationalMedicine?.idEntidadInformaInstanciaFinal}
                                                     />
                                                 </FormProvider>
                                             </Grid>
@@ -1606,7 +1637,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconStatusChange /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Estado ARL</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12}>
@@ -1696,7 +1727,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid sx={{ my: 3 }} item xs={12}>
                                     <Accordion title={<><IconReportAnalytics /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Resultado Investigación Laboral</Typography></>}>
                                         <Grid container spacing={2} sx={{ pb: 5 }}>
                                             <Grid item xs={6} md={4} lg={2}>

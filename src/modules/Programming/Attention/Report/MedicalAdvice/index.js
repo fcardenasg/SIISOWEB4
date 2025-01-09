@@ -114,7 +114,6 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`${lsDataReport.nameTelefono}`, 70, 70);
     doc.text(`${lsDataReport.nameDptoResidencia}`, 91, 75);
 
-
     doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
     doc.text(`${lsDataReport.nameDepartamento}`, 150, 50);
 

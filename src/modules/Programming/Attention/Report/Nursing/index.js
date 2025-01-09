@@ -111,8 +111,6 @@ function getPiePage(doc, lsDataUser, page, pageSize) {
 
 /* Pag. 1 */
 function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
-  /* CUADRO DATOS */
-
   /* LISTA DE DATOS PACIENTE */
   doc.setFontSize(10);
   doc.setLineWidth(0.2);
@@ -126,7 +124,6 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 40, 210, 40);
   doc.line(5, 25, 5, 184);
   doc.line(40, 40, 40, 74); /* LINEA ONE */
-  doc.line(115, 40, 115, 74); /* LINEA TWO */
   doc.line(210, 25, 210, 184);
   doc.line(5, 74, 210, 74);
   doc.line(5, 82, 210, 82);
@@ -135,28 +132,26 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
   doc.line(5, 125, 210, 125);
   doc.line(5, 184, 210, 184);
 
-
   /* TITULOS DE CONTENIDO */
-  doc.text("CONSECUTIVO:", 45, 46);
+  doc.text("CONSECUTIVO:", 42, 46);
   doc.text("FECHA:", 120, 46);
-  doc.text("DOCUMENTO:", 45, 52);
+  doc.text("DOCUMENTO:", 42, 52);
   doc.text("NOMBRES:", 120, 52);
-  doc.text("GENERO:", 45, 58);
+  doc.text("GENERO:", 42, 58);
 
   doc.text("EDAD:", 120, 58);
   doc.text(`ANTIGUEDAD:  ${GetEdad(lsDataReport.fechaContrato)}`, 170, 58);
-  doc.text("TIPO CONTRATO:", 45, 64);
+  doc.text("TIPO CONTRATO:", 42, 64);
 
   doc.text("AÑOS", 153, 58);
   doc.text("CARGO:", 120, 64);
-  doc.text("AREA:", 45, 70);
+  doc.text("AREA:", 42, 70);
   doc.text("DEPARTAMENTO:", 120, 70);
 
   doc.text("RESUMEN DE LA ATENCIÓN", 6, 79);
   doc.text("CONTINGENCIA:", 6, 88);
   doc.text("PROCEDIMIENTOS:", 6, 98);
   doc.text("DESCRIPCIÓN", 6, 122);
-
 
   /* RENDERIZADO DE CONTENIDO */
   doc.setFont("helvetica", "normal");

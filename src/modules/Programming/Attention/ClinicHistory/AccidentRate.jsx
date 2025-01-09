@@ -573,14 +573,7 @@ const AccidentRate = ({ documentoAT }) => {
                                 </Grid>
 
                                 <Grid item xs={12} sx={{ pt: 4 }}>
-                                    {urlFile && (
-                                        <object type="application/pdf"
-                                            data={urlFile}
-                                            width="1180"
-                                            height="500"
-                                            onLoad={<Cargando />}
-                                        />
-                                    )}
+                                    <ViewPDF dataPDF={urlFile} width="1180" height="500" />
                                 </Grid>
                             </MainCard>
                         </Grid>

@@ -30,6 +30,7 @@ import { GetAllSupplier } from 'api/clients/SupplierClient';
 import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
+import ViewPDF from 'components/components/ViewPDF';
 
 const Cytologia = () => {
     const { user } = useAuth();
@@ -51,7 +52,7 @@ const Cytologia = () => {
     const [lsConducta, setLsConducta] = useState([]);
 
     const methods = useForm();
-    const { handleSubmit,  reset } = methods;
+    const { handleSubmit, reset } = methods;
 
     const allowedFiles = ['application/pdf'];
     const handleFile = (event) => {
@@ -284,14 +285,7 @@ const Cytologia = () => {
                                     </Grid>
 
                                     <Grid item xs={12} sx={{ pt: 4 }}>
-                                        {filePdf && (
-                                            <object type="application/pdf"
-                                                data={filePdf}
-                                                width="1180"
-                                                height="500"
-                                                onLoad={<Cargando />}
-                                            />
-                                        )}
+                                        <ViewPDF dataPDF={filePdf} width="1180" height="500" />
                                     </Grid>
                                 </MainCard>
                             </Grid>

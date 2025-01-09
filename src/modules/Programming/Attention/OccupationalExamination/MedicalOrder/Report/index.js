@@ -1,6 +1,5 @@
 import { ViewFormat } from "components/helpers/Format";
 import jsPDF from "jspdf";
-
 import config from "config";
 
 function getHeader(doc = new jsPDF(), lsDataReport) {
@@ -81,13 +80,13 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text('TURNO:', 42, 70);
     doc.text('CELULAR:', 42, 75);
 
-    doc.text('NOMBRES:', 120, 45);
-    doc.text('FECHA DE CONTRATO:', 120, 50);
-    doc.text('DEPARTAMENTO:', 120, 55);
-    doc.text('GRUPO:', 120, 60);
-    doc.text('EPS:', 120, 65);
-    doc.text('CIUDAD DE RESIDENCIA:', 120, 70);
-    doc.text('EMAIL:', 120, 75);
+    doc.text('NOMBRES:', 130, 45);
+    doc.text('FECHA DE CONTRATO:', 130, 50);
+    doc.text('DEPARTAMENTO:', 130, 55);
+    doc.text('GRUPO:', 130, 60);
+    doc.text('EPS:', 130, 65);
+    doc.text('CIUDAD DE RESIDENCIA:', 130, 70);
+    doc.text('EMAIL:', 130, 75);
 
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
@@ -100,13 +99,13 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`${lsDataReport.nameTurnoEmpleado}`, 72, 70);
     doc.text(`${lsDataReport.nameTelefono}`, 72, 75);
 
-    doc.text(`${lsDataReport.nameEmpleado}`, 155, 45);
-    doc.text(`${ViewFormat(lsDataReport.fechaContrato)}`, 155, 50);
-    doc.text(`${lsDataReport.nameDepartamento}`, 155, 55);
-    doc.text(`${lsDataReport.nameGrupo}`, 155, 60);
-    doc.text(`${lsDataReport.nameEps}`, 155, 65);
-    doc.text(`${lsDataReport.nameDptoNacido}`, 155, 70);
-    doc.text(`${lsDataReport.nameCorreo}`, 155, 75);
+    doc.text(`${lsDataReport.nameEmpleado}`, 165, 45);
+    doc.text(`${ViewFormat(lsDataReport.fechaContrato)}`, 165, 50);
+    doc.text(`${lsDataReport.nameDepartamento}`, 165, 55);
+    doc.text(`${lsDataReport.nameGrupo}`, 165, 60);
+    doc.text(`${lsDataReport.nameEps}`, 165, 65);
+    doc.text(`${lsDataReport.nameDptoNacido}`, 170, 70);
+    doc.text(`${lsDataReport.nameCorreo}`, 165, 75);
 
     /* DESCRIPCIONES DE TEXTO */
     doc.setFontSize(9);

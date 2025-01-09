@@ -1,26 +1,26 @@
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { Fragment, useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import UploadIcon from '@mui/icons-material/Upload';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import { GetByIdSGSST, InsertSGSST, UpdateSGSSTS } from 'api/clients/SGSST';
-import InputText from 'components/input/InputText';
+import { GetByIdSGSST, UpdateSGSSTS } from 'api/clients/SGSST';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
 import { Message, TitleButton } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputText from 'components/input/InputText';
+import Cargando from 'components/loading/Cargando';
+import { PutSGSST } from 'formatdata/SGSST';
+import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostSGSST, PutSGSST } from 'formatdata/SGSST';
-import { FormatDate } from 'components/helpers/Format';
-import Cargando from 'components/loading/Cargando';
 
 const UpdateSGSST = () => {
     const { user } = useAuth();
@@ -135,14 +135,7 @@ const UpdateSGSST = () => {
                     </Grid>
 
                     <Grid item textAlign="center" xs={8} sx={{ pt: 4 }}>
-                        {filePdf && (
-                            <object type="application/pdf"
-                                data={filePdf}
-                                width="1000"
-                                height="500"
-                                onLoad={<Cargando />}
-                            />
-                        )}
+                        <ViewPDF dataPDF={filePdf} width="1000" height="500" />
                     </Grid>
 
                     <Grid item xs={12} sx={{ pt: 4 }}>

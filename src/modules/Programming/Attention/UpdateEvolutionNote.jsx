@@ -223,7 +223,8 @@ const UpdateEvolutionNote = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdEvolutionNote(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(lsDataReport.data.usuarioModifico == '' ?
+                lsDataReport.data.usuarioRegistro : lsDataReport.data.usuarioModifico);
 
             const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
