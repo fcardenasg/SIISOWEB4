@@ -14,8 +14,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import ViewEmployee from 'components/views/ViewEmployee';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputDatePick from 'components/input/InputDatePick';
-import { NumeroDias } from 'components/helpers/Format';
-import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
+import { FormatDate, NumeroDias } from 'components/helpers/Format';
+import { GetAllWorkAbsenteeismNumeroDia, GetByIdWorkAbsenteeismHistory, UpdateWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
@@ -35,6 +35,7 @@ import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import Accordion from 'components/accordion/Accordion';
 import HistoryWorkAbsenteeism from '../HistoryWorkAbsenteeism';
 import Cargando from 'components/loading/Cargando';
+import useAuth from 'hooks/useAuth';
 
 const ColorCard = (numeroDias) => {
     const theme = useTheme();
@@ -54,12 +55,13 @@ const ColorCard = (numeroDias) => {
 const ViewHistoryWA = () => {
     const theme = useTheme();
     const { id } = useParams();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsWorkAbsenteeism, setLsWorkAbsenteeism] = useState([]);
+    const [lsWorkAbsenteeism, setLsWorkAbsenteeism] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -102,7 +104,7 @@ const ViewHistoryWA = () => {
     const [fechaFin, setFechaFin] = useState(null);
 
     const methods = useForm();
-    const { errors } = methods;
+    const { handleSubmit, errors } = methods;
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -333,14 +335,13 @@ const ViewHistoryWA = () => {
                     setNumeroDias(numeroDias1.data);
 
                     setDocumento(lsServerData.data.cedula);
-                    const event = {
-                        target: { value: lsServerData.data.cedula }
-                    }
+                    const event = { target: { value: lsServerData.data.cedula } }
                     handleLoadingDocument(event);
 
-                    setFechaInicio(lsServerData.data.fechaInicio);
-                    setFechaFin(lsServerData.data.fechaFin);
-                    setFechaExpedicion(lsServerData.data.fechaExpedicion);
+                    setFechaInicio(FormatDate(lsServerData.data.fechaInicio));
+                    setFechaFin(FormatDate(lsServerData.data.fechaFin));
+                    setFechaExpedicion(FormatDate(lsServerData.data.fechaExpedicion));
+
                     setDiasSinLaborar(lsServerData.data.diasSinLaborar);
                     setDepartaMedico(lsServerData.data.departamentoIPS);
                     setDeparta(lsServerData.data.departamento);
@@ -362,9 +363,64 @@ const ViewHistoryWA = () => {
     }, []);
 
     setTimeout(() => {
-        if (lsWorkAbsenteeism.length !== 0)
+        if (lsWorkAbsenteeism !== null)
             setTimeWait(true);
-    }, 1500);
+    }, 500);
+
+    const handleClick = async (datos) => {
+        try {
+            const ciudadExpedicion = municipioControl == '' ? datos.ciudadExpedicion : municipioControl;
+            const catalogoFormat = catalogoIncapacidad == '' ? datos.idCategoria : catalogoIncapacidad;
+            const ciudadIPS = municipioDatosMedico == '' ? datos.ciudadIPS : municipioDatosMedico;
+
+            const ausentismo = {
+                id_Inc: id,
+                cedula: documento,
+                incapacidad: datos.incapacidad,
+                nroIncapacidad: datos.nroIncapacidad,
+                fechaExpedicion: fechaExpedicion,
+                departamento: departa,
+                ciudadExpedicion: ciudadExpedicion,
+                tipoIncapacidad: datos.tipoIncapacidad,
+                contingencia: datos.contingencia,
+                fechaInicio: fechaInicio,
+                fechaFin: fechaFin,
+                diasSinLaborar: diasSinLaborar,
+                dx: datos.dxFinal,
+                dxFinal: datos.dxFinal,
+                estado_Empleado: datos.estado_Empleado,
+                segmentoAgrupado: datos.segmentoAgrupado,
+                subsegmento: datos.subsegmento,
+                idTipoSoporte: tipoSoporte,
+                idCategoria: catalogoFormat,
+                expideInCapacidad: datos.proveedor,
+                departamentoIPS: departamentoIPS,
+                ciudadIPS: ciudadIPS,
+                nombreProfesional: datos.nombreProfesional,
+                especialidad: datos.especialidad,
+                registroProfesional: datos.registroProfesional,
+                tipoAtencion: datos.tipoAtencion,
+                cumplimientoRequisito: datos.cumplimientoRequisito,
+                regimen: datos.regimen,
+                observacionCumplimiento: datos.observacionCumplimiento,
+                comentarios: datos.observacion,
+                usuarioModificacion: user?.nameuser
+            };
+
+            if (Object.keys(datos.length !== 0)) {
+                const result = await UpdateWorkAbsenteeismHistory(ausentismo);
+                if (result.status === 200) {
+                    setOpenSuccess(true);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(Message.RegistroNoGuardado);
+                }
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
 
     return (
         <Fragment>
@@ -386,7 +442,7 @@ const ViewHistoryWA = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Datos De La Empresa Que Expide</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">{"Datos De La Empresa Que Expide".toUpperCase()}</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
@@ -424,24 +480,14 @@ const ViewHistoryWA = () => {
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    {/* <SelectOnChange
+                                    <SelectOnChange
                                         name="departamento"
                                         label="Departamento"
                                         options={lsDeparta}
                                         size={matchesXS ? 'small' : 'medium'}
                                         value={departa}
                                         onChange={handleChangeDepartamentoIncapa}
-                                    /> */}
-
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="departamento"
-                                            label="Departamento"
-                                            defaultValue={lsWorkAbsenteeism.departamento}
-                                            options={lsDeparta}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </FormProvider>
+                                    />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={4}>
@@ -472,7 +518,7 @@ const ViewHistoryWA = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Datos De Incapacidad O Licencia</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">{"Datos De Incapacidad O Licencia".toUpperCase()}</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
@@ -555,9 +601,9 @@ const ViewHistoryWA = () => {
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="estadoCaso"
+                                            name="estado_Empleado"
                                             label="Estado de Caso"
-                                            defaultValue={lsWorkAbsenteeism.estadoCaso}
+                                            defaultValue={lsWorkAbsenteeism.estado_Empleado}
                                             options={lsEstadoCaso}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -565,7 +611,7 @@ const ViewHistoryWA = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                <Grid item xs={8}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="segmentoAgrupado"
@@ -581,7 +627,7 @@ const ViewHistoryWA = () => {
                                 <Grid item xs={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="segmento"
+                                            name="subsegmento"
                                             label="Segmento"
                                             defaultValue={lsWorkAbsenteeism.subsegmento}
                                             options={lsSubsegmento}
@@ -630,7 +676,7 @@ const ViewHistoryWA = () => {
                     </Grid >
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Datos Del Médico O IPS Prestadora Del Servicio</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">{"Datos Del Médico O IPS Prestadora Del Servicio".toUpperCase()}</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={4.8}>
                                     <FormProvider {...methods}>
@@ -748,9 +794,9 @@ const ViewHistoryWA = () => {
                                 <Grid item xs={2.4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
-                                            name="expideInCapacidad"
+                                            name="regimen"
                                             label="Red que expide"
-                                            defaultValue={lsWorkAbsenteeism.expideInCapacidad}
+                                            defaultValue={lsWorkAbsenteeism.regimen}
                                             options={lsRedExpide}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors}
@@ -777,7 +823,7 @@ const ViewHistoryWA = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Observación/Descripción De La Novedad</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">{"Observación/Descripción De La Novedad".toUpperCase()}</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <FormProvider {...methods}>
@@ -798,7 +844,7 @@ const ViewHistoryWA = () => {
                     </Grid >
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Monitor De Eventos</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">{"Monitor De Eventos".toUpperCase()}</Typography>}>
                             <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
                                 <Grid item xs={2}>
                                     <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.main }} />
@@ -834,7 +880,17 @@ const ViewHistoryWA = () => {
 
                             <Grid item xs={12} sx={{ pt: 4 }}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={2}>
+                                    {lsWorkAbsenteeism.idAusentismoLaboral === null &&
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                                    {TitleButton.Actualizar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    }
+
+                                    <Grid item xs={6} md={4} lg={2}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/work-absenteeism/history")}>
                                                 {TitleButton.Cancelar}

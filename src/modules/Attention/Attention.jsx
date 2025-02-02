@@ -1,37 +1,41 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
+    Alert,
+    AlertTitle,
     Button,
     Grid,
+    Typography,
     useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import InputOnChange from 'components/input/InputOnChange';
-import SelectOnChange from 'components/input/SelectOnChange';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import SelectOnChange from 'components/input/SelectOnChange';
+import useAuth from 'hooks/useAuth';
 
-import { GetByIdAttention, InsertAttention } from 'api/clients/AttentionClient';
+import Chip from '@mui/material/Chip';
+import { GetByIdAttention, GetByTriageAttention, InsertAttention } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostAttention } from 'formatdata/AttentionForm';
-import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetAllComboByIdRol, GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import InputSelect from 'components/input/InputSelect';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
-import Chip from '@mui/material/Chip';
-import { GetAllComboByIdRol, GetByMail } from 'api/clients/UserClient';
+import { PostAttention } from 'formatdata/AttentionForm';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReport } from './ReportAtten';
-import ViewPDF from 'components/components/ViewPDF';
 
 const Attention = () => {
     const { user } = useAuth();
@@ -41,6 +45,7 @@ const Attention = () => {
 
     const [openReport, setOpenReport] = useState(false);
     const [dataPDF, setDataPDF] = useState(null);
+    const [dataTriageCard, setDataTriageCard] = useState(null);
 
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -221,6 +226,31 @@ const Attention = () => {
         } catch (error) { }
     };
 
+    const handleChangeAtencion = useCallback(async (event) => {
+        const newValue = event.target.value;
+
+        if (newValue !== atencion) {
+            try {
+                setDataTriageCard(null);
+                setAtencion(newValue);
+                setMotivo(null);
+
+                if (newValue != 7410) {
+                    const lsServerUpdate = await GetByTriageAttention(newValue);
+                    if (lsServerUpdate?.status === 200) {
+                        setDataTriageCard(lsServerUpdate.data);
+                    } else {
+                        setDataTriageCard(null);
+                    }
+                } else {
+                    setDataTriageCard(null);
+                }
+            } catch (error) {
+                setDataTriageCard(null);
+            }
+        }
+    }, [atencion]);
+
     const handleChangeSede = async (event) => {
         try {
             setSede(event.target.value);
@@ -319,11 +349,11 @@ const Attention = () => {
                     setOpenSuccess(true);
                     setTipoAtencion('');
                     setAtencion('');
-                    setSede('');
                     reset();
                     setResult(result.data)
                     setDocumento('');
                     setLsEmployee([]);
+                    setDataTriageCard(null);
                 }
             }
         } catch (error) {
@@ -378,6 +408,31 @@ const Attention = () => {
                 <Grid item xs={12}>
                     <SubCard>
                         <Grid container spacing={2}>
+                            {dataTriageCard !== null &&
+                                <Grid item xs={12} sx={{ my: 4 }}>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -30 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 30 }}
+                                        transition={{
+                                            duration: 0.5,
+                                            ease: [0.25, 0.1, 0.25, 1]
+                                        }}
+                                    >
+                                        <Alert
+                                            variant="filled"
+                                            severity={dataTriageCard?.colorTriage?.codigo}
+                                            sx={{ backgroundColor: dataTriageCard?.colorTriage?.value, color: dataTriageCard?.colorTriage?.label }}
+                                        >
+                                            <AlertTitle>{`ATENCIÓN: ${dataTriageCard.nameAtencion}`}</AlertTitle>
+                                            <Typography variant="body1" color={dataTriageCard?.colorTriage?.label}>
+                                                {dataTriageCard.descripcionAtencion}
+                                            </Typography>
+                                        </Alert>
+                                    </motion.div>
+                                </Grid>
+                            }
+
                             <Grid item xs={3}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
@@ -417,10 +472,7 @@ const Attention = () => {
                                     label="Atención"
                                     value={atencion}
                                     options={lsAtencion}
-                                    onChange={(e) => {
-                                        setAtencion(e.target.value);
-                                        setMotivo(null);
-                                    }}
+                                    onChange={handleChangeAtencion}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>

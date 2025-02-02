@@ -4,7 +4,9 @@ import {
     Button,
     Grid,
     useMediaQuery,
-    Typography
+    Typography,
+    Alert,
+    AlertTitle
 } from '@mui/material';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
@@ -26,7 +28,7 @@ import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormul
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
 import { ColorDrummondltd } from 'themes/colors';
-
+import { motion } from 'framer-motion';
 import ViewEmployee from 'components/views/ViewEmployee';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
@@ -517,6 +519,31 @@ const UpdateNoteInfirmary = () => {
                                 <Grid item xs={12}>
                                     <SubCard darkTitle title={<Typography variant="h4">Registrar La Atención</Typography>}>
                                         <Grid container spacing={2}>
+                                            {lsAtencion.colorTriage != null &&
+                                                <Grid item xs={12} sx={{ my: 2 }}>
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -30 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: 30 }}
+                                                        transition={{
+                                                            duration: 0.5,
+                                                            ease: [0.25, 0.1, 0.25, 1]
+                                                        }}
+                                                    >
+                                                        <Alert
+                                                            variant="filled"
+                                                            severity={lsAtencion?.colorTriage?.codigo}
+                                                            sx={{ backgroundColor: lsAtencion?.colorTriage?.value, color: lsAtencion?.colorTriage?.label }}
+                                                        >
+                                                            <AlertTitle>{`ATENCIÓN: ${lsAtencion.nameAtencion}`}</AlertTitle>
+                                                            <Typography variant="body1" sx={{ color: lsAtencion?.colorTriage?.label }}>
+                                                                {lsAtencion.descripcionAtencion}
+                                                            </Typography>
+                                                        </Alert>
+                                                    </motion.div>
+                                                </Grid>
+                                            }
+
                                             <Grid item xs={4}>
                                                 <FormProvider {...methods}>
                                                     <InputDatePicker
@@ -530,6 +557,7 @@ const UpdateNoteInfirmary = () => {
                                             <Grid item xs={4}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
+                                                        disabled
                                                         name="idAtencion"
                                                         label="Atención"
                                                         defaultValue={lsAtencion?.atencion}

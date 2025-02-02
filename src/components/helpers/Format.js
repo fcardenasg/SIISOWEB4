@@ -165,30 +165,30 @@ function FrColesterol(colesterol = 0, genero = '') {
     }
 }
 
-function FrHdl(edad = 0, genero = '') {
+function FrHdl(hdl = 0, genero = '') {
     try {
         if (genero === "MASCULINO") {
-            if (edad < 35)
+            if (hdl < 35)
                 return 2;
-            else if (edad >= 35 && edad < 45)
+            else if (hdl >= 35 && hdl < 45)
                 return 1;
-            else if (edad >= 45 && edad < 50)
+            else if (hdl >= 45 && hdl < 50)
                 return 0;
-            else if (edad >= 50 && edad < 60)
+            else if (hdl >= 50 && hdl < 60)
                 return 0;
-            else if (edad >= 60)
+            else if (hdl >= 60)
                 return -2;
         }
         else {
-            if (edad < 35)
+            if (hdl < 35)
                 return 5;
-            else if (edad >= 35 && edad < 45)
+            else if (hdl >= 35 && hdl < 45)
                 return 2;
-            else if (edad >= 45 && edad < 50)
+            else if (hdl >= 45 && hdl < 50)
                 return 1;
-            else if (edad >= 50 && edad < 60)
+            else if (hdl >= 50 && hdl < 60)
                 return 0;
-            else if (edad >= 60)
+            else if (hdl >= 60)
                 return -3;
         }
     } catch (error) { }
@@ -1427,7 +1427,9 @@ function NumeroDias(fechaInicio, fechaFin) {
 
             return diasTranscurridos + 1;
         }
-    } else return 0
+    }
+
+    return 0;
 }
 
 export {

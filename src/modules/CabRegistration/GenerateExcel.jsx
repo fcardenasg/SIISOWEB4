@@ -2,21 +2,17 @@ import { useTheme } from "@emotion/react";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetExcelCabRegistration } from "api/clients/CabRegistrationClient";
 import { GetAllByTipoCatalogo } from "api/clients/CatalogClient";
+import { MessageError } from "components/alert/AlertAll";
 import { ArrayTodaSede } from "components/Arrays";
 import ControlModal from "components/controllers/ControlModal";
-import { CodCatalogo } from "components/helpers/Enums";
-import { ViewFormat } from "components/helpers/Format";
+import { DownloadFile } from "components/helpers/ConvertToBytes";
+import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
 import InputDatePick from "components/input/InputDatePick";
 import SelectOnChange from "components/input/SelectOnChange";
+import LoadingGenerate from "components/loading/LoadingGenerate";
 import { ParametrosExcel } from "formatdata/ParametrosForm";
-import { useEffect, useState } from "react";
-import { Fragment } from "react";
-import ReactExport from "react-export-excel";
+import { Fragment, useEffect, useState } from "react";
 import AnimateButton from "ui-component/extended/AnimateButton";
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 const GenerateExcel = ({ setOpenModal, openModal }) => {
     const theme = useTheme();
@@ -24,9 +20,10 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
 
     const [lsSede, setLsSede] = useState([]);
     const [sede, setSede] = useState(0);
-    const [lsCabRegistration, setLsCabRegistration] = useState([]);
 
-    const [statusData, setStatusData] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [openError, setOpenError] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
 
@@ -49,6 +46,29 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
 
     async function getDataForExport() {
         try {
+            setLoading(true);
+
+            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
+            const lsServerExcel = await GetExcelCabRegistration(parametros);
+
+            if (lsServerExcel.status === 200) {
+                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
+
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
+            }
+
+        } catch (error) {
+            setLoading(false);
+
+            setOpenError(true);
+            setErrorMessage(Message.ErrorExcel);
+        }
+    }
+
+    /* async function getDataForExport() {
+        try {
             const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
             const lsServerExcel = await GetExcelCabRegistration(parametros);
 
@@ -58,7 +78,7 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
             }
 
         } catch (error) { }
-    }
+    } */
 
     const handleClose = () => {
         setSede(0);
@@ -75,86 +95,54 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                 onClose={handleClose}
                 maxWidth="xs"
             >
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <SelectOnChange
-                            name="sede"
-                            label="Sede de Atención"
-                            value={sede}
-                            options={lsSede}
-                            onChange={(e) => setSede(e.target.value)}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid>
+                <Fragment>
+                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                    <Grid item xs={6}>
-                        <InputDatePick
-                            label="Fecha Inicio"
-                            onChange={(e) => setFechaInicio(e.target.value)}
-                            value={fechaInicio}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <SelectOnChange
+                                name="sede"
+                                label="Sede de Atención"
+                                value={sede}
+                                options={lsSede}
+                                onChange={(e) => setSede(e.target.value)}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
+                        </Grid>
 
-                    <Grid item xs={6}>
-                        <InputDatePick
-                            label="Fecha Fin"
-                            onChange={(e) => setFechaFin(e.target.value)}
-                            value={fechaFin}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid>
+                        <Grid item xs={6}>
+                            <InputDatePick
+                                label="Fecha Inicio"
+                                onChange={(e) => setFechaInicio(e.target.value)}
+                                value={fechaInicio}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
+                        </Grid>
 
-                    <Grid item xs={12} md={6}>
-                        <AnimateButton>
-                            <Button disabled={
-                                fechaInicio === null ? true : fechaFin === null ? true : false
-                            } onClick={getDataForExport} size="large" variant="contained" fullWidth>
-                                Generar Exportación
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
+                        <Grid item xs={6}>
+                            <InputDatePick
+                                label="Fecha Fin"
+                                onChange={(e) => setFechaFin(e.target.value)}
+                                value={fechaFin}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
+                        </Grid>
 
-                    <Grid item xs={12} md={6}>
-                        {statusData ?
-                            <ExcelFile element={
-                                <AnimateButton>
-                                    <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                        Descargar Excel
-                                    </Button>
-                                </AnimateButton>
-                            } filename="LISTA DE REGISTRO DE TAXIS">
-                                <ExcelSheet data={lsCabRegistration} name="Registro De Taxi">
-                                    <ExcelColumn label="Fecha" value={(fe) => ViewFormat(fe.fecha)} />
-                                    <ExcelColumn label="Documento" value="documento" />
-                                    <ExcelColumn label="Nombre" value="nameEmpleado" />
+                        <Grid item xs={12}>
+                            <AnimateButton>
+                                <Button disabled={loading} onClick={getDataForExport} size="large" variant="contained" fullWidth>
+                                    {TitleButton.Excel}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
 
-                                    <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                    <ExcelColumn label="Área" value="nameArea" />
-                                    <ExcelColumn label="Subárea" value="nameSubarea" />
-                                    <ExcelColumn label="Cupo" value="nameCupo" />
-                                    <ExcelColumn label="Contingencia" value="nameContingencia" />
-                                    <ExcelColumn label="Ruta" value="nameRuta" />
-                                    <ExcelColumn label="Destino" value="nameDestino" />
-                                    <ExcelColumn label="Nro. Taxi" value="nameNrotaxi" />
-                                    <ExcelColumn label="Diagnostico" value="nameDiagnostico" />
-                                    <ExcelColumn label="Cargado a" value="nameCargadoa" />
-                                    <ExcelColumn label="Sede" value="nameSede" />
-
-                                    {/* <ExcelColumn label="Cargo" value="nameCargo" />
-                                    <ExcelColumn label="Nro. Celular" value="numeroTelefono" />
-                                    <ExcelColumn label="EPS" value="nameEps" />
-                                    <ExcelColumn label="Asigna" value="nameMedico" />
-                                    <ExcelColumn label="Motivo" value="motivoTraslado" />
-                                    <ExcelColumn label="Usuario que registra" value="usuarioRegistro" />
-                                    <ExcelColumn label="Fecha de registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                    <ExcelColumn label="Usuario que modifica" value="usuarioModifico" />
-                                    <ExcelColumn label="Fecha que modifica" value={(fe) => ViewFormat(fe.fechaModifico)} /> */}
-                                </ExcelSheet>
-                            </ExcelFile> : null
+                        {loading ?
+                            <Grid item xs={12}>
+                                <LoadingGenerate title="Generando Excel..." />
+                            </Grid> : null
                         }
                     </Grid>
-                </Grid>
+                </Fragment>
             </ControlModal>
         </Fragment>
     );

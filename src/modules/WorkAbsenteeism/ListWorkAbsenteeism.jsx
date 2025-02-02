@@ -1,12 +1,9 @@
-import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Cargando from 'components/loading/Cargando';
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
+    Fade,
     Grid,
     IconButton,
     InputAdornment,
@@ -21,35 +18,30 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button,
-    Fade
+    Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
+import Cargando from 'components/loading/Cargando';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { DeleteWorkAbsenteeism, GetAllWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import swal from 'sweetalert';
-import { GetAllWorkAbsenteeism, DeleteWorkAbsenteeism, GetExcelWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import HistoryIcon from '@mui/icons-material/History';
 import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
-import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ViewFormat } from 'components/helpers/Format';
 import Chip from 'ui-component/extended/Chip';
-
-import { IconFileExport } from '@tabler/icons';
-import ReactExport from "react-export-excel";
-import { ParametrosExcel } from 'formatdata/ParametrosForm';
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {

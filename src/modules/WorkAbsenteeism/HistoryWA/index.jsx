@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
@@ -22,25 +21,19 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { visuallyHidden } from '@mui/utils';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { ViewFormat } from 'components/helpers/Format';
+import { visuallyHidden } from '@mui/utils';
 import { GetAllWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
-import Chip from 'ui-component/extended/Chip';
-import MainCard from 'ui-component/cards/MainCard';
-import { useNavigate } from 'react-router-dom';
 import { TitleButton } from 'components/helpers/Enums';
+import { ViewFormat } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
-
-import { IconFileExport } from '@tabler/icons';
-import ReactExport from "react-export-excel";
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import { useNavigate } from 'react-router-dom';
+import MainCard from 'ui-component/cards/MainCard';
+import Chip from 'ui-component/extended/Chip';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -414,9 +407,9 @@ const HistoryWorkAbsenteeism = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Ver mas..." onClick={() => navigate(`/work-absenteeism/history/${row.id_Inc}`)}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/history/${row.id_Inc}`)}>
                                                     <IconButton size="large">
-                                                        <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>

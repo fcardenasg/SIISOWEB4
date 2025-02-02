@@ -4,8 +4,6 @@ import { Typography, useMediaQuery, Grid } from "@mui/material";
 import Cargando from "components/loading/Cargando";
 
 const ViewPDF = ({ dataPDF, width = 850, height = 490 }) => {
-    console.log(dataPDF);
-
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [timeWait, setTimeWait] = useState(false);

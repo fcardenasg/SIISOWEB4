@@ -9,8 +9,6 @@ import { gridSpacing } from 'store/constant';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 
-// ===========================|| WIDGET STATISTICS - CUSTOMER SATISFACTION ||=========================== //
-
 const ViewFramingham = ({ ldl, relacion, frEdad, frColesterol, frHdl, frGlicemia, frTensionArterial,
     frTabaquismo, puntaje, riesgoAbsoluto, riesgoRelativo, interpretacion,
 }) => {

@@ -1,11 +1,14 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useCallback } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery,
     Typography,
+    Alert,
+    AlertTitle,
 } from '@mui/material';
+import { motion } from 'framer-motion';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -17,7 +20,7 @@ import SelectOnChange from 'components/input/SelectOnChange';
 import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { GetByIdAttention, UpdateAttentions } from 'api/clients/AttentionClient';
+import { GetByIdAttention, GetByTriageAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
 import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
@@ -98,7 +101,7 @@ const UpdateAttention = () => {
     const [lsAtencion, setLsAtencion] = useState([]);
     const [lsCodigoTipo, setLsCodigoTipo] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
-
+    const [dataTriageCard, setDataTriageCard] = useState(null);
     const [lsSede, setLsSede] = useState([]);
     const [lsTipoAtencion, setLsTipoAtencion] = useState([]);
     const [lsMotivoPAD, setLsMotivoPAD] = useState([]);
@@ -298,6 +301,31 @@ const UpdateAttention = () => {
         } catch (error) { }
     }
 
+    const handleChangeAtencion = useCallback(async (event) => {
+        const newValue = event.target.value;
+
+        if (newValue !== atencion) {
+            try {
+                setDataTriageCard(null);
+                setAtencion(newValue);
+                setMotivo(null);
+
+                if (newValue != 7410) {
+                    const lsServerUpdate = await GetByTriageAttention(newValue);
+                    if (lsServerUpdate.status === 200) {
+                        setDataTriageCard(lsServerUpdate.data);
+                    } else {
+                        setDataTriageCard(null);
+                    }
+                } else {
+                    setDataTriageCard(null);
+                }
+            } catch (error) {
+                setDataTriageCard(null);
+            }
+        }
+    }, [atencion]);
+
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
@@ -410,6 +438,13 @@ const UpdateAttention = () => {
                 }
 
                 getArrayAttention(lsServerUpdate.data.sede, lsServerUpdate.data.tipo, lsServerTipoAtencion.data.entities);
+
+                const lsServerDataTriage = await GetByTriageAttention(lsServerUpdate?.data?.atencion);
+                if (lsServerDataTriage?.status === 200) {
+                    setDataTriageCard(lsServerDataTriage.data);
+                } else {
+                    setDataTriageCard(null);
+                }
             }
         }
 
@@ -457,7 +492,7 @@ const UpdateAttention = () => {
         if (lsDataAtencion.length !== 0) {
             setTimeWait(true);
         }
-    }, 2000);
+    }, 1500);
 
     return (
         <Fragment>
@@ -507,6 +542,31 @@ const UpdateAttention = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">REGISTRAR LA  ATENCIÓN</Typography>}>
                             <Grid container spacing={2}>
+                                {dataTriageCard !== null &&
+                                    <Grid item xs={12} sx={{ my: 2 }}>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -30 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 30 }}
+                                            transition={{
+                                                duration: 0.5,
+                                                ease: [0.25, 0.1, 0.25, 1]
+                                            }}
+                                        >
+                                            <Alert
+                                                variant="filled"
+                                                severity={dataTriageCard?.colorTriage?.codigo}
+                                                sx={{ backgroundColor: dataTriageCard?.colorTriage?.value, color: dataTriageCard?.colorTriage?.label }}
+                                            >
+                                                <AlertTitle>{`ATENCIÓN: ${dataTriageCard.nameAtencion}`}</AlertTitle>
+                                                <Typography variant="body1" color={dataTriageCard?.colorTriage?.label}>
+                                                    {dataTriageCard.descripcionAtencion}
+                                                </Typography>
+                                            </Alert>
+                                        </motion.div>
+                                    </Grid>
+                                }
+
                                 <Grid item xs={3}>
                                     <FormProvider {...methods}>
                                         <InputDatePicker
@@ -545,10 +605,7 @@ const UpdateAttention = () => {
                                         label="Atención"
                                         value={atencion}
                                         options={lsAtencion}
-                                        onChange={(e) => {
-                                            setAtencion(e.target.value);
-                                            setMotivo(undefined);
-                                        }}
+                                        onChange={handleChangeAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>

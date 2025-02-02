@@ -188,7 +188,7 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
   getFirma(doc, lsDataUser);
   getFirmaEmployee(doc, lsDataReport);
 }
-
+  
 function pageNursingPuerto(doc, lsDataReport = [], lsDataUser = []) {
   /* CUADRO DATOS */
 

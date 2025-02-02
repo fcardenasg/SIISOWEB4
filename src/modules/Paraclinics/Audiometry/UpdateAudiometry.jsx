@@ -198,8 +198,6 @@ const UpdateAudiometry = () => {
 
             const serverData = await GetByIdParaclinics(id);
             if (serverData.status === 200) {
-                console.log(serverData.data);
-
                 setLsAudiometrics(serverData.data);
                 setTextDx1(serverData.data.dxAUDIO);
                 setDocumento(serverData.data.documento);

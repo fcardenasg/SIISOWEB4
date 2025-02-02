@@ -1,72 +1,75 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import {
+    Alert,
+    AlertTitle,
     Button,
     Grid,
+    Typography,
     useMediaQuery,
 } from '@mui/material';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SubCard from 'ui-component/cards/SubCard';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import swal from 'sweetalert';
+import { useTheme } from '@mui/material/styles';
 import { ParamCloseCase } from 'components/alert/AlertAll';
+import { Fragment, useEffect, useState } from 'react';
+import swal from 'sweetalert';
+import SubCard from 'ui-component/cards/SubCard';
 
-import HoverSocialCard from './OccupationalExamination/Framingham/HoverSocialCard';
-import ControlModal from 'components/controllers/ControlModal';
-import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import BiotechIcon from '@mui/icons-material/Biotech';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
 import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import ControlModal from 'components/controllers/ControlModal';
+import HoverSocialCard from './OccupationalExamination/Framingham/HoverSocialCard';
 
+import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from './OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from './OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from './OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
 import DialogFormula from './OccupationalExamination/Modal/DialogFormula';
-import { ColorDrummondltd } from 'themes/colors';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import useAuth from 'hooks/useAuth';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import ViewEmployee from 'components/views/ViewEmployee';
-import DetailedIcon from 'components/controllers/DetailedIcon';
-import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import Cargando from 'components/loading/Cargando';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostEvolutionNote, PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdEvolutionNote, GetIdRegistroAtencionEvolutionNote, InsertEvolutionNote, UpdateEvolutionNotes, ValidateIdRegistroAtencionEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
 import { FormatDate } from 'components/helpers/Format';
-import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import Cargando from 'components/loading/Cargando';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PostEvolutionNote, PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
+import useAuth from 'hooks/useAuth';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
-import { generateReportEvolutionNote } from './Report/EvolutionNote';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
 import InputOnChange from 'components/input/InputOnChange';
 import SelectOnChange from 'components/input/SelectOnChange';
-import ListExamenesPara from 'components/template/ListExamenesPara';
 import ListExamenesFisico from 'components/template/ListExamenesFisico';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import ListExamenesPara from 'components/template/ListExamenesPara';
+import { generateReportEvolutionNote } from './Report/EvolutionNote';
 
-import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import ListPlantillaClinicHistory from 'components/template/ListPlantillaClinicHistory'
-import ListPlantillaEvolutionNote from 'components/template/ListPlantillaEvolutionNote';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 import InputCheck from 'components/input/InputCheck';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import ListPlantillaClinicHistory from 'components/template/ListPlantillaClinicHistory';
+import ListPlantillaEvolutionNote from 'components/template/ListPlantillaEvolutionNote';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -74,7 +77,6 @@ const DetailIcons = [
     { title: 'Audio', icons: <SettingsVoiceIcon fontSize="small" /> },
     { title: 'Ver Examenes Físicos', icons: <DirectionsRunIcon fontSize="small" /> },
     { title: 'Ver Examenes Paraclínico', icons: <AddBoxIcon fontSize="small" /> },
-
     { title: 'Historial De Historia Clínica', icons: <MedicalInformationIcon fontSize="small" /> },
     { title: 'Historial De Nota De Evolución', icons: <MedicalServicesIcon fontSize="small" /> },
 ]
@@ -151,6 +153,7 @@ const UpdateEvolutionNote = () => {
 
     const [lsAtencionn, setLsAtencionn] = useState([]);
     const [lsAtencion, setLsAtencion] = useState([]);
+    const [dataTriage, setDataTriage] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
@@ -302,6 +305,7 @@ const UpdateEvolutionNote = () => {
                 handleLoadingDocument(event);
                 setDocumento(lsServerAtencion.data.documento);
                 setLsAtencion(lsServerAtencion.data);
+                setDataTriage(lsServerAtencion.data);
 
                 const lsServerValidate = await ValidateIdRegistroAtencionEvolutionNote(id);
                 if (lsServerValidate.status === 200) {
@@ -532,6 +536,29 @@ const UpdateEvolutionNote = () => {
                             threshold={510}
                         >
                             <Grid container spacing={2}>
+                                <Grid item xs={12} sx={{ my: 2 }}>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -30 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 30 }}
+                                        transition={{
+                                            duration: 0.5,
+                                            ease: [0.25, 0.1, 0.25, 1]
+                                        }}
+                                    >
+                                        <Alert
+                                            variant="filled"
+                                            severity={dataTriage?.colorTriage?.codigo}
+                                            sx={{ backgroundColor: dataTriage?.colorTriage?.value, color: dataTriage?.colorTriage?.label }}
+                                        >
+                                            <AlertTitle>{`ATENCIÓN: ${dataTriage.nameAtencion}`}</AlertTitle>
+                                            <Typography variant="body1" sx={{ color: dataTriage?.colorTriage?.label }}>
+                                                {dataTriage.descripcionAtencion}
+                                            </Typography>
+                                        </Alert>
+                                    </motion.div>
+                                </Grid>
+
                                 <Grid item xs={12}>
                                     <SubCard>
                                         <Grid container spacing={2}>
@@ -548,6 +575,7 @@ const UpdateEvolutionNote = () => {
                                             <Grid item xs={4}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
+                                                        disabled
                                                         name="atencion"
                                                         label="Atención"
                                                         defaultValue={lsAtencion?.atencion}

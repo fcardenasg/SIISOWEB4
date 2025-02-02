@@ -46,7 +46,7 @@ import ChartAnthropometry from './ChartData/ChartAnthropometry';
 import { InsertOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
 import { DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
 import {
-    FormatDate, GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, PuntajeFr, FrColesterol, FrTension, FrLdl_FrRelacion
+    GetEdad, EdadFramigan, GetRiesgos, FrHdl, FrGlicemia, FrFuma, PuntajeFr, FrColesterol, FrTension, FrLdl_FrRelacion
 } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import User from 'assets/img/user.png';
@@ -243,6 +243,9 @@ const OccupationalExamination = () => {
                 const frColes = FrColesterol(colesterol, lsEmployee.nameGenero);
                 setFrColesterol(frColes);
 
+                const frHdlfr = FrHdl(hdl, lsEmployee?.nameGenero);
+                setFrHdl(frHdlfr);
+
                 const frGlice = FrGlicemia(glicemia, lsEmployee.nameGenero);
                 setFrGlicemia(frGlice);
 
@@ -316,7 +319,6 @@ const OccupationalExamination = () => {
                 setTabsOption(tabsOptionArray);
 
                 setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
-                setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
             } else {
                 setLsEmployee(lsServerEmployee?.data.data);
                 setOpenError(true);
@@ -339,7 +341,6 @@ const OccupationalExamination = () => {
                 setTabsOption(tabsOptionArray);
 
                 setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
-                setFrHdl(FrHdl(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
             }
         } catch (error) {
             setLsEmployee([]);
@@ -897,6 +898,7 @@ const OccupationalExamination = () => {
 
                                 <Grid item xs={6}>
                                     <SelectOnChange
+                                        disabled
                                         name="idAtencion"
                                         label="Atención"
                                         value={atencion}

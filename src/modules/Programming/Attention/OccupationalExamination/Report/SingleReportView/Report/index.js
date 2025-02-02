@@ -19,7 +19,7 @@ function getHeader(doc = new jsPDF(), lsDataReport) {
     doc.text(`${lsDataReport.nameAtencion}`, 110, 18, { align: "center" });
 
     doc.setFontSize(12);
-    doc.text("SIG-0410", 170, 12);
+    doc.text("SIG-1239", 170, 12);
     doc.setFontSize(10);
     doc.text("Versión 06", 170, 16);
 

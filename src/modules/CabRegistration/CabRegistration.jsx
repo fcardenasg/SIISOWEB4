@@ -1,37 +1,40 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
-
-import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { ValidationMessage } from 'components/helpers/Enums';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import ControlModal from 'components/controllers/ControlModal';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
-import { GetByIdCabRegistration, InsertCabRegistration } from 'api/clients/CabRegistrationClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputText from 'components/input/InputText';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostCabRegistration } from 'formatdata/CabRegistrationForm';
-import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ViewEmployee from 'components/views/ViewEmployee';
-import { GetAllComboRegTaxi, GetByMail } from 'api/clients/UserClient';
-import { generateReporteReportCabRegistration } from './ReportCabRegistration';
+import { useTheme } from '@mui/material/styles';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import ControlModal from 'components/controllers/ControlModal';
+import {
+    CodCatalogo,
+    DefaultValue,
+    Message,
+    TitleButton,
+    ValidationMessage
+} from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
 import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PostCabRegistration } from 'formatdata/CabRegistrationForm';
+import useAuth from 'hooks/useAuth';
+import { Fragment, useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
+import { generateReporteReportCabRegistration } from './ReportCabRegistration';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetAllComboRegTaxi, GetByMail } from 'api/clients/UserClient';
+import { GetByIdCabRegistration, InsertCabRegistration } from 'api/clients/CabRegistrationClient';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 const validationSchema = yup.object().shape({
     idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -52,6 +55,7 @@ const CabRegistration = () => {
     const [lsCargadoa, setLsCargadoa] = useState([]);
     const [lsCupo, setLsCupo] = useState([]);
     const [lsMedico, setLsMedico] = useState([]);
+    const [lsTipoTransporte, setLsTipoTransporte] = useState([]);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -59,14 +63,19 @@ const CabRegistration = () => {
     const [lsDx1, setLsDx1] = useState([]);
     const [documento, setDocumento] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-
     const [result, setResult] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset, watch } = methods;
+    const idTipoTransporte = watch("idTipoTransporte");
+
+    const handleError = (message) => {
+        setOpenError(true);
+        setErrorMessage(message);
+    }
 
     const handleDocumento = async (event) => {
         try {
@@ -80,8 +89,7 @@ const CabRegistration = () => {
                         setLsEmployee(lsServerEmployee.data.data);
                     } else {
                         setLsEmployee(lsServerEmployee?.data.data);
-                        setOpenError(true);
-                        setErrorMessage(lsServerEmployee?.data.message);
+                        handleError(lsServerEmployee?.data.message);
                     }
 
                 } else {
@@ -101,103 +109,93 @@ const CabRegistration = () => {
             const lsDataReport = await GetByIdCabRegistration(result.idRegistroTaxi);
             const lsDataUser = await GetByMail(user.nameuser);
             const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
-
             setDataPDF(dataPDFTwo);
-        } catch (err) { }
+        } catch (err) {
+            handleError('Error al generar el reporte.');
+        }
     };
 
     const handleDx1 = async (event) => {
-        try {
-            setTextDx1(event.target.value);
+        const value = event.target.value;
+        setTextDx1(value);
 
-            if (event.key === 'Enter') {
-                if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
-                    setLsDx1(lsServerCie11.data);
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
-                }
+        if (event.key === 'Enter' && value) {
+            try {
+                const lsServerCie11 = await GetAllByCodeOrName(value);
+                setLsDx1(lsServerCie11.data);
+            } catch (error) {
+                handleError('Hubo un problema al buscar el Diagnóstico');
             }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        } else if (event.key === 'Enter') {
+            handleError('Por favor, ingrese un Código o Nombre de Diagnóstico');
         }
     }
 
-    async function GetAll() {
+    const fetchCatalogs = async () => {
         try {
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsContingencia(resultContingencia);
+            const catalogs = await Promise.all([
+                GetByTipoCatalogoCombo(CodCatalogo.Contingencia),
+                GetByTipoCatalogoCombo(CodCatalogo.ORIGEN_RUTA),
+                GetByTipoCatalogoCombo(CodCatalogo.DESTINO_RUTA),
+                GetByTipoCatalogoCombo(CodCatalogo.NRO_TAXI),
+                GetByTipoCatalogoCombo(CodCatalogo.CARGADO_A),
+                GetByTipoCatalogoCombo(CodCatalogo.CUPOS),
+                GetByTipoCatalogoCombo(CodCatalogo.TipoTransporte),
+                GetAllComboRegTaxi()
+            ]);
+            setLsContingencia(catalogs[0].data);
+            setLsRuta(catalogs[1].data);
+            setLsDestino(catalogs[2].data);
+            setLsnroTaxi(catalogs[3].data);
+            setLsCargadoa(catalogs[4].data);
+            setLsCupo(catalogs[5].data);
 
-            const lsServerRuta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORIGEN_RUTA);
-            var resultRuta = lsServerRuta.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRuta(resultRuta);
-
-            const lsServerDestino = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DESTINO_RUTA);
-            var resultDestino = lsServerDestino.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsDestino(resultDestino);
-
-            const lsServernroTaxi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.NRO_TAXI);
-            var resultnroTaxi = lsServernroTaxi.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsnroTaxi(resultnroTaxi);
-
-            const lsServerCargadoa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CARGADO_A);
-            var resultCargadoa = lsServerCargadoa.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCargadoa(resultCargadoa);
-
-            const lsServerCupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CUPOS);
-            var resultCupo = lsServerCupo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCupo(resultCupo);
-
-            const lsServerMedicos = await GetAllComboRegTaxi();
-            setLsMedico(lsServerMedicos.data);
-        } catch (error) { }
+            const sortedTransporte = catalogs[6].data.sort((a, b) => { return a.value - b.value; });
+            setLsTipoTransporte(sortedTransporte);
+            
+            setLsMedico(catalogs[7].data);
+        } catch (error) {
+            handleError('Error al cargar los catálogos.');
+        }
     }
 
     useEffect(() => {
-        GetAll();
+        fetchCatalogs();
     }, [])
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostCabRegistration(documento, datos.fecha, datos.diagnostico,
-                datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PostCabRegistration(
+                documento,
+                datos.fecha,
+                datos.diagnostico,
+                datos.motivoTraslado,
+                datos.idContingencia,
+                datos.idRuta,
+                datos.idDestino,
+                datos.nroTaxi,
+                datos.idCargadoa,
+                datos.idCupo,
+                datos.idMedico,
+                datos.idTipoTransporte,
+                datos.cualTransporte,
+                user.nameuser
+            );
 
-            if (Object.keys(datos.length !== 0)) {
+            if (Object.keys(datos).length !== 0) {
                 const result = await InsertCabRegistration(DataToInsert);
-
                 if (result.status === 200) {
                     setOpenSuccess(true);
+                    reset();
+                    setTextDx1(''); 
+                    setLsDx1([]); 
                     setDocumento('');
                     setLsEmployee([]);
-                    reset();
-                    setResult(result.data)
+                    setResult(result.data);
                 }
             }
         } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            handleError(Message.RegistroNoGuardado);
         }
     };
 
@@ -205,7 +203,6 @@ const CabRegistration = () => {
         <Fragment>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
             <ControlModal
                 title={Message.VistaReporte}
                 open={openReport}
@@ -218,7 +215,7 @@ const CabRegistration = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Taxis"
+                        title="Registrar atención"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -230,107 +227,49 @@ const CabRegistration = () => {
                 <Grid item xs={12}>
                     <SubCard>
                         <Grid container spacing={2}>
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
+                            <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
                                         defaultValue={new Date()}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idContingencia"
-                                        label="Contingencia"
-                                        defaultValue=""
-                                        options={lsContingencia}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idContingencia}
-                                    />
-                                </FormProvider>
-                            </Grid>
+                                {[
+                                    { name: "idContingencia", label: "Contingencia", options: lsContingencia },
+                                    { name: "idRuta", label: "Ruta", options: lsRuta },
+                                    { name: "idDestino", label: "Destino", options: lsDestino },
+                                    { name: "idCargadoa", label: "Cargado a", options: lsCargadoa },
+                                    { name: "idCupo", label: "Cupo", options: lsCupo },
+                                    { name: "nroTaxi", label: "Numero Taxi", options: lsnroTaxi },
+                                    { name: "idMedico", label: "Asigna", options: lsMedico },
+                                    { name: "idTipoTransporte", label: "Tipo de transporte", options: lsTipoTransporte },
+                                ].map(({ name, label, options }) => (
+                                    <Grid item xs={12} md={6} lg={4} key={name}>
+                                        <InputSelect
+                                            name={name}
+                                            label={label}
+                                            defaultValue=""
+                                            options={options}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors[name]}
+                                        />
+                                    </Grid>
+                                ))}
 
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idRuta"
-                                        label="Ruta"
-                                        defaultValue=""
-                                        options={lsRuta}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idRuta}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idDestino"
-                                        label="Destino"
-                                        defaultValue=""
-                                        options={lsDestino}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idDestino}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idCargadoa"
-                                        label="Cargado a"
-                                        defaultValue=""
-                                        options={lsCargadoa}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idCargadoa}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idCupo"
-                                        label="Cupo"
-                                        defaultValue=""
-                                        options={lsCupo}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idCupo}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="nroTaxi"
-                                        label="Numero Taxi"
-                                        defaultValue=""
-                                        options={lsnroTaxi}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.nroTaxi}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormProvider {...methods}>
-                                    <InputSelect
-                                        name="idMedico"
-                                        label="Asigna"
-                                        defaultValue=""
-                                        options={lsMedico}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idMedico}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
+                                {idTipoTransporte === DefaultValue.TIPO_TRANSPORTE_OTRO && (
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="cualTransporte"
+                                            label="¿Cuál es el transporte?"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                )}
+                            </FormProvider>
                         </Grid>
                     </SubCard>
                 </Grid>
@@ -338,16 +277,16 @@ const CabRegistration = () => {
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
+                            <Grid item xs={12} md={4} lg={3}>
                                 <InputOnChange
                                     label="Dx"
                                     onKeyDown={handleDx1}
-                                    onChange={(e) => setTextDx1(e?.target.value)}
+                                    onChange={(e) => setTextDx1(e.target.value)}
                                     value={textDx1}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
-                            <Grid item xs={10}>
+                            <Grid item xs={12} md={8} lg={9}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="diagnostico"
@@ -387,7 +326,7 @@ const CabRegistration = () => {
 
                                 <Grid item xs={2}>
                                     <AnimateButton>
-                                        <Button disabled={result.length !== 0 ? false : true} variant="contained" onClick={handleClickReport} fullWidth>
+                                        <Button disabled={result.length === 0} variant="contained" onClick={handleClickReport} fullWidth>
                                             {TitleButton.Imprimir}
                                         </Button>
                                     </AnimateButton>

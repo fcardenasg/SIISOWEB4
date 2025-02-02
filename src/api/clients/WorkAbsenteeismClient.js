@@ -13,6 +13,7 @@ export const GetAllWorkAbsenteeismNumeroDia = async (documento) => await getData
 
 /* SERVICIOS DE AUSENTISMO LABORAL HISTORICO */
 export const GetAllWorkAbsenteeismHistory = async () => await getData(Url.AusentismoLaboralHistorico);
+export const UpdateWorkAbsenteeismHistory = async (ausentismoLaboral) => await putData(Url.AusentismoLaboralHistorico, ausentismoLaboral);
 export const GetByIdWorkAbsenteeismHistory = async (id) => await getData(Url.AusentismoLaboralHistoricoId, { id });
 export const GetExcelWorkAbsenteeismHistory = async (parametroExcel) => await postData(Url.AusentismoLaboralHistoricoExcel, parametroExcel);
 export const GetExcelIndicadores = async (indicadores) => await postData(Url.AusentismoLaboralHistoricoIndicadores, indicadores);

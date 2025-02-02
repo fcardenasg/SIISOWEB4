@@ -49,7 +49,7 @@ function getFirmaEmployee(doc, lsDataReport, my = 0) {
 }
 
 /* Encabezado */
-function getHeader(doc) {
+function getHeader(doc, codigo, version) {
   /* ENCABEZADO REPORTE */
   doc.addImage(config.logotipo, "PNG", 5, 5, config.typeDashboard === 'DLTD' ? 60 : 50, 15);
   doc.setFontSize(12);
@@ -67,8 +67,8 @@ function getHeader(doc) {
   );
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("SIG-0410  ", 200, 10, null, null, "center");
-  doc.text("Versión 06", 200, 15, null, null, "center");
+  doc.text(`SIG-${codigo}`, 200, 10, null, null, "center");
+  doc.text(`Versión 0${version}`, 200, 15, null, null, "center");
 
   /* LINEA DE DIVISIÓN */
   doc.setLineWidth(1);
@@ -324,13 +324,13 @@ function pageAlcoholtestingR(doc, lsDataReport = [], lsDataUser = []) {
 export function generateReportAlcoholtesting(lsDataReport = [], lsDataUser = []) {
   var doc = new jsPDF("p", "mm", "letter");
   /* Pag. 1 */
-  getHeader(doc);
+  getHeader(doc, '401', '5');
   pageAlcoholtesting(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 1, 2);
 
   doc.addPage();
 
-  getHeader(doc);
+  getHeader(doc, '401', '5');
   pageAlcoholtestingR(doc, lsDataReport, lsDataUser);
   getPiePage(doc, lsDataUser, 2, 2);
 

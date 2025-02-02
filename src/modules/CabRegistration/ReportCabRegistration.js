@@ -65,10 +65,12 @@ function generateReportCabRegistration(
   doc.line(5, 25, 5, 140); /* IZQUIERDA */
   doc.line(5, 32, marXR, 32); /* HORI ONE */
   doc.line(5, 39, marXR, 39); /* HORI TWO  */
-  doc.line(5, 74, marXR, 74); /* HORI THREE */
-  doc.line(5, 82, marXR, 82); /* HORI FOUR */
+
+  doc.line(5, 80, marXR, 80);
+  doc.line(5, 90, marXR, 90);
+
   doc.line(5, 140, marXR, 140); /* HORI FIVE */
-  doc.line(40, 39, 40, 74); /* LINEA VERTI ONE */
+  doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
   doc.line(marXR, 25, marXR, 140); /* DERECHA */
 
   /* DESCRIPCIONES DE TEXTO */
@@ -76,24 +78,26 @@ function generateReportCabRegistration(
   doc.setFont("helvetica", "bold");
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 42, 45);
-  doc.text("NOMBRES:", 125, 45);
+  doc.text("NOMBRES:", 115, 45);
   doc.text("CARGO:", 42, 50);
   doc.text("CONTINGENCIA:", 42, 55);
   doc.text("RUTA:", 42, 60);
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "bold");
-  doc.text("DESTINO:", 125, 60);
+
+  doc.text("DESTINO:", 115, 60);
   doc.text("CARGADO A:", 42, 65);
-  doc.text("Nro. TAXI:", 125, 65);
+  doc.text("NRO. TAXI:", 115, 65);
   doc.text("CUPO:", 42, 70);
-  doc.text("ASIGNA:", 125, 70);
-  doc.text("MOTIVO:", 7, 79);
+  doc.text("ASIGNA:", 115, 70);
+  doc.text("TIPO DE TRANSPORTE:", 42, 75);
+  doc.text("¿CUÁL ES EL TRANSPORTE?:", 115, 75);
+
+  doc.text("MOTIVO:", 7, 87);
 
   /* DESCRIPCIONES DE TEXTO */
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
 
-  doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 41, 30, 30);
+  doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
   doc.text(`${lsDataReport.documento}`, 69, 45);
   doc.text(`${lsDataReport.nameEmpleado}`, 145, 45);
   doc.text(`${lsDataReport.nameCargo}`, 69, 50);
@@ -104,11 +108,12 @@ function generateReportCabRegistration(
   doc.text(`${lsDataReport.nameNrotaxi}`, 145, 65);
   doc.text(`${lsDataReport.nameCupo}`, 69, 70);
   doc.text(`${lsDataReport.nameMedico}`, 145, 70);
+
+  doc.text(`${lsDataReport.nameTipoTransporte ? lsDataReport.nameTipoTransporte : "SIN REGISTRO"}`, 80, 75);
+  doc.text(`${lsDataReport?.cualTransporte ? lsDataReport?.cualTransporte : "SIN REGISTRO"}`, 165, 75);
+
   doc.setFontSize(8);
-  doc.text(`${lsDataReport.motivoTraslado}`, 7, 87, {
-    maxWidth: 200,
-    lineHeightFactor: 1.5,
-  });
+  doc.text(`${lsDataReport.motivoTraslado}`, 7, 95, { maxWidth: 200, lineHeightFactor: 1.5, });
 
   getFirma(doc, lsDataUser);
 }

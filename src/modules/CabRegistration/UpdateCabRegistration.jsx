@@ -19,9 +19,9 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import { FormatDate } from 'components/helpers/Format';
 import { GetByIdCabRegistration, UpdateCabRegistrations } from 'api/clients/CabRegistrationClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, ValidationMessage, DefaultValue } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutCabRegistration } from 'formatdata/CabRegistrationForm';
 import SubCard from 'ui-component/cards/SubCard';
@@ -55,6 +55,7 @@ const UpdateCabRegistration = () => {
     const [lsCargadoa, setLsCargadoa] = useState([]);
     const [lsCupo, setLsCupo] = useState([]);
     const [lsMedico, setLsMedico] = useState([]);
+    const [lsTipoTransporte, setLsTipoTransporte] = useState([]);
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
 
@@ -70,82 +71,54 @@ const UpdateCabRegistration = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, formState: { errors } } = methods;
+    const { handleSubmit, formState: { errors }, watch, setValue } = methods;
+    const idTipoTransporte = watch("idTipoTransporte");
+
+    const fetchCatalogs = async () => {
+        try {
+            const lsServerAtencion = await GetByIdCabRegistration(id);
+            if (lsServerAtencion.status === 200) {
+                setTextDx1(lsServerAtencion?.data.diagnostico);
+                setLsDataAtencion(lsServerAtencion.data);
+                setDocumento(lsServerAtencion.data.documento);
+                setValue('idTipoTransporte', lsServerAtencion.data.idTipoTransporte);
+
+                const event = { target: { value: lsServerAtencion.data.documento } };
+                handleLoadingDocument(event);
+
+                var lsServerCie11 = await GetAllByCodeOrName(lsServerAtencion.data.diagnostico);
+                setLsDx1(lsServerCie11.data);
+            }
+
+            const catalogs = await Promise.all([
+                GetByTipoCatalogoCombo(CodCatalogo.Contingencia),
+                GetByTipoCatalogoCombo(CodCatalogo.ORIGEN_RUTA),
+                GetByTipoCatalogoCombo(CodCatalogo.DESTINO_RUTA),
+                GetByTipoCatalogoCombo(CodCatalogo.NRO_TAXI),
+                GetByTipoCatalogoCombo(CodCatalogo.CARGADO_A),
+                GetByTipoCatalogoCombo(CodCatalogo.CUPOS),
+                GetByTipoCatalogoCombo(CodCatalogo.TipoTransporte),
+                GetAllComboRegTaxi()
+            ]);
+            setLsContingencia(catalogs[0].data);
+            setLsRuta(catalogs[1].data);
+            setLsDestino(catalogs[2].data);
+            setLsnroTaxi(catalogs[3].data);
+            setLsCargadoa(catalogs[4].data);
+            setLsCupo(catalogs[5].data);
+
+            const sortedTransporte = catalogs[6].data.sort((a, b) => { return a.value - b.value; });
+            setLsTipoTransporte(sortedTransporte);
+
+            setLsMedico(catalogs[7].data);
+        } catch (error) {
+            handleError('Error al cargar los catálogos.');
+        }
+    }
 
     useEffect(() => {
-        async function getAll() {
-            try {
-                const lsServerUpdate = await GetByIdCabRegistration(id);
-                if (lsServerUpdate.status === 200) {
-                    setDocumento(lsServerUpdate.data.documento);
-                    handleLoadingDocument(lsServerUpdate.data.documento);
-                    setLsDataAtencion(lsServerUpdate.data);
-                }
-
-                const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-                var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsContingencia(resultContingencia);
-
-                const lsServerRuta = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ORIGEN_RUTA);
-                var resultRuta = lsServerRuta.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsRuta(resultRuta);
-
-                const lsServerDestino = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DESTINO_RUTA);
-                var resultDestino = lsServerDestino.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsDestino(resultDestino);
-
-
-                const lsServernroTaxi = await GetAllByTipoCatalogo(0, 0, CodCatalogo.NRO_TAXI);
-                var resultnroTaxi = lsServernroTaxi.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsnroTaxi(resultnroTaxi);
-
-                const lsServerCargadoa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CARGADO_A);
-                var resultCargadoa = lsServerCargadoa.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsCargadoa(resultCargadoa);
-
-
-                const lsServerCupo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CUPOS);
-                var resultCupo = lsServerCupo.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsCupo(resultCupo);
-
-                const lsServerMedicos = await GetAllComboRegTaxi();
-                setLsMedico(lsServerMedicos.data);
-
-                const lsServerAtencion = await GetByIdCabRegistration(id);
-                if (lsServerAtencion.status === 200) {
-                    setTextDx1(lsServerAtencion.data.diagnostico);
-                    setLsDataAtencion(lsServerAtencion.data);
-                    setDocumento(lsServerAtencion.data.documento);
-
-                    const event = { target: { value: lsServerAtencion.data.documento } };
-                    handleLoadingDocument(event);
-
-                    var lsServerCie11 = await GetAllByCodeOrName(lsServerAtencion.data.diagnostico);
-                    setLsDx1(lsServerCie11.data);
-                }
-            } catch (error) { }
-        }
-
-        getAll();
-    }, [])
+        fetchCatalogs();
+    }, []);
 
     const handleClickReport = async () => {
         try {
@@ -193,12 +166,34 @@ const UpdateCabRegistration = () => {
         }
     }
 
-
+    const handleError = (message) => {
+        setOpenError(true);
+        setErrorMessage(message);
+    }
 
     const handleClick = async (datos) => {
-        const DataToUpdate = PutCabRegistration(id, documento, datos.fecha, datos.diagnostico,
-            datos.motivoTraslado, datos.idContingencia, datos.idRuta, datos.idDestino, datos.nroTaxi, datos.idCargadoa, datos.idCupo, datos.idMedico,
-            user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
+        if (idTipoTransporte !== DefaultValue.TIPO_TRANSPORTE_OTRO) {
+            setValue('cualTransporte', null);
+            datos.cualTransporte = null;
+        }
+
+        const DataToUpdate = PutCabRegistration(
+            id,
+            documento,
+            datos.fecha,
+            datos.diagnostico,
+            datos.motivoTraslado,
+            datos.idContingencia,
+            datos.idRuta,
+            datos.idDestino,
+            datos.nroTaxi,
+            datos.idCargadoa,
+            datos.idCupo,
+            datos.idMedico,
+            datos.idTipoTransporte,
+            datos.cualTransporte,
+            user.nameuser
+        );
 
         try {
             if (Object.keys(datos.length !== 0)) {
@@ -248,109 +243,51 @@ const UpdateCabRegistration = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4"></Typography>}>
+                        <SubCard>
                             <Grid container spacing={2}>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
+                                <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
                                             defaultValue={lsDataAtencion.fecha}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idContingencia"
-                                            label="Contingencia"
-                                            defaultValue={lsDataAtencion.idContingencia}
-                                            options={lsContingencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idContingencia}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                    {[
+                                        { name: "idContingencia", label: "Contingencia", options: lsContingencia },
+                                        { name: "idRuta", label: "Ruta", options: lsRuta },
+                                        { name: "idDestino", label: "Destino", options: lsDestino },
+                                        { name: "idCargadoa", label: "Cargado a", options: lsCargadoa },
+                                        { name: "idCupo", label: "Cupo", options: lsCupo },
+                                        { name: "nroTaxi", label: "Numero Taxi", options: lsnroTaxi },
+                                        { name: "idMedico", label: "Asigna", options: lsMedico },
+                                        { name: "idTipoTransporte", label: "Tipo de transporte", options: lsTipoTransporte },
+                                    ].map(({ name, label, options }) => (
+                                        <Grid item xs={12} md={6} lg={4} key={name}>
+                                            <InputSelect
+                                                name={name}
+                                                label={label}
+                                                defaultValue={lsDataAtencion[name]}
+                                                options={options}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors[name]}
+                                            />
+                                        </Grid>
+                                    ))}
 
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idRuta"
-                                            label="Ruta"
-                                            defaultValue={lsDataAtencion.idRuta}
-                                            options={lsRuta}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idRuta}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idDestino"
-                                            label="Destino"
-                                            defaultValue={lsDataAtencion.idDestino}
-                                            options={lsDestino}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idDestino}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idCargadoa"
-                                            label="Cargado a"
-                                            defaultValue={lsDataAtencion.idCargadoa}
-                                            options={lsCargadoa}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idCargadoa}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idCupo"
-                                            label="Cupo"
-                                            defaultValue={lsDataAtencion.idCupo}
-                                            options={lsCupo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idCupo}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="nroTaxi"
-                                            label="Numero Taxi"
-                                            defaultValue={lsDataAtencion.nroTaxi}
-                                            options={lsnroTaxi}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.nroTaxi}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idMedico"
-                                            label="Asigna"
-                                            defaultValue={lsDataAtencion.idMedico}
-                                            options={lsMedico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.idMedico}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
+                                    {idTipoTransporte === DefaultValue.TIPO_TRANSPORTE_OTRO && (
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputText
+                                                defaultValue={lsDataAtencion.cualTransporte}
+                                                fullWidth
+                                                name="cualTransporte"
+                                                label="¿Cuál es el transporte?"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+                                    )}
+                                </FormProvider>
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -358,16 +295,17 @@ const UpdateCabRegistration = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={2}>
+                                <Grid item xs={12} md={4} lg={3}>
                                     <InputOnChange
                                         label="Dx"
                                         onKeyDown={handleDx1}
-                                        onChange={(e) => setTextDx1(e?.target.value)}
+                                        onChange={(e) => setTextDx1(e.target.value)}
                                         value={textDx1}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
-                                <Grid item xs={10}>
+
+                                <Grid item xs={12} md={8} lg={9}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="diagnostico"
@@ -393,10 +331,9 @@ const UpdateCabRegistration = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
-
                             </Grid>
 
-                            <Grid item xs={12} sx={{ pt: 4 }}>
+                            <Grid item xs={12} sx={{ pt: 6 }}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={2}>
                                         <AnimateButton>
@@ -405,8 +342,6 @@ const UpdateCabRegistration = () => {
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
-
-
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
@@ -427,7 +362,7 @@ const UpdateCabRegistration = () => {
                             </Grid>
                         </SubCard>
                     </Grid>
-                </Grid > : <Cargando />
+                </Grid> : <Cargando />
             }
         </Fragment >
     );

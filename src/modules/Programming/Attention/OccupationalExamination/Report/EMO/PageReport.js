@@ -113,7 +113,7 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
     doc.setFont("helvetica", "normal");
     doc.text(
       vacunas
-        .filter((vacu) => vacu.vacuna === true)
+        .filter((vacu) => vacu.vacuna == true)
         .map((vacu, index) => {
           return String(`${vacu.name}`);
         }),
@@ -124,7 +124,7 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
 
     doc.text(
       vacunas
-        .filter((vacu) => vacu.vacuna === true)
+        .filter((vacu) => vacu.vacuna == true)
         .map((vacu, index) => {
           return String(`${vacu.anio}`);
         }),
@@ -135,7 +135,7 @@ function generateImmunization(doc = new jsPDF(), lsDataReport) {
 
     doc.text(
       vacunas
-        .filter((vacu) => vacu.vacuna === true)
+        .filter((vacu) => vacu.vacuna == true)
         .map((vacu, index) => {
           return String(`${vacu.refuerzo}`);
         }),
@@ -211,7 +211,7 @@ function generateParentesco(doc = new jsPDF(), lsDataReport) {
 }
 
 function generateGineco(doc = new jsPDF(), lsDataReport) {
-  if (lsDataReport.idGenero === DefaultValue.GeneroWomen) {
+  if (lsDataReport.idGenero == DefaultValue.GeneroWomen) {
     var marXR = doc.internal.pageSize.width - 5;
     doc.setFont("helvetica", "bold");
     /* GINECO OBSTÉTRICOS */
@@ -442,7 +442,7 @@ function generateExploracionMorfologica(doc = new jsPDF(), lsDataReport) {
   });
   doc.text(`${lsDataReport.regionAnalEF}`, marXR - 2, 175, { align: "right" });
   doc.text(`${lsDataReport.tactoRectalEF}`, marXR - 2, 180, { align: "right" });
-  doc.text(`${lsDataReport.nameGenero === 'FEMENINO' ? lsDataReport.tactoVaginalEF : 'NO APLICA'}`, marXR - 2, 185, {
+  doc.text(`${lsDataReport.nameGenero == 'FEMENINO' ? lsDataReport.tactoVaginalEF : 'NO APLICA'}`, marXR - 2, 185, {
     align: "right",
   });
   doc.text(`${lsDataReport.extremidadesSuperioresEF}`, marXR - 2, 190, {
@@ -589,6 +589,9 @@ export function generateReportConceptAptitude(
   lsDataUser
 ) {
   var marXR = doc.internal.pageSize.width - 5;
+  var validateFechaContrato = lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_CONTRO
+    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_EGRESO
+    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_REINCORPORACION;
 
   doc.text("CONCEPTO EXAMEN OCUPACIONAL", 7, 30);
   doc.text(
@@ -616,19 +619,20 @@ export function generateReportConceptAptitude(
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 45, 45);
-  doc.text("NOMBRE:", 120, 45);
+  doc.text("FECHA DE CONTRATO:", 45, 50);
+  doc.text("NOMBRE:", 125, 45);
 
-  doc.text(`${lsDataReport.nameAtencion === "INGRESO" ? "CARGO AL QUE ASPIRA:" : "CARGO:"}`, 45, 50);
+  doc.text(`${lsDataReport.nameAtencion == "INGRESO" ? "CARGO AL QUE ASPIRA:" : "CARGO:"}`, 45, 55);
 
-  doc.text("PROFESIÓN:", 45, 55);
-  doc.text("AREA:", 45, 60);
-  doc.text("DEPARTAMENTO:", 45, 65);
+  doc.text("PROFESIÓN:", 45, 60);
+  doc.text("AREA:", 45, 65);
+  doc.text("DEPARTAMENTO:", 45, 70);
 
   if (lsDataReport.nameAtencion !== 'EGRESO') {
-    doc.text("CONCEPTO DE APTITUD:", 45, 70);
+    doc.text("CONCEPTO DE APTITUD:", 45, 75);
 
     if (lsDataReport.nameConceptoActitudNETA !== 'SIN REGISTRO' || lsDataReport.nameAtencion !== 'EGRESO') {
-      doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 70, {
+      doc.text(`${lsDataReport.nameConceptoActitudID}`, 95, 75, {
         maxWidth: 110,
         lineHeightFactor: 1.5,
       });
@@ -642,13 +646,16 @@ export function generateReportConceptAptitude(
   doc.text(`${lsDataReport.documento}`, 95, 45);
 
   doc.setFontSize(8);
-  doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
+  doc.text(`${lsDataReport.nameEmpleado}`, 143, 45);
 
   doc.setFontSize(10);
-  doc.text(`${lsDataReport.nameCargo}`, 95, 50);
-  doc.text(`${lsDataReport.nameOficio}`, 95, 55);
-  doc.text(`${lsDataReport.nameArea}`, 95, 60);
-  doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 95, 65);
+
+  doc.text(validateFechaContrato ? `${ViewFormat(lsDataReport.fechaContratoEmpleado)}` : "N/A", 95, 50);
+
+  doc.text(`${lsDataReport.nameCargo}`, 95, 55);
+  doc.text(`${lsDataReport.nameOficio}`, 95, 60);
+  doc.text(`${lsDataReport.nameArea}`, 95, 65);
+  doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 95, 70);
 
   doc.setFontSize(9);
   doc.text(`${lsDataReport.recomendacionesID}`, 7, 105, {
@@ -667,6 +674,9 @@ export function generateReportDiagnosis(
   lsDataUser = []
 ) {
   var marXR = doc.internal.pageSize.width - 5;
+  var validateFechaContrato = lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_CONTRO
+    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_EGRESO
+    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_REINCORPORACION;
 
   doc.text("CONCEPTO EXAMEN OCUPACIONAL", 7, 30);
   doc.text(
@@ -696,8 +706,9 @@ export function generateReportDiagnosis(
 
   /* TITULOS DE CONTENIDO */
   doc.text("DOCUMENTO:", 7, 45);
-  doc.text("NOMBRE:", 120, 45);
-  doc.text(`${lsDataReport.nameAtencion === "INGRESO" ? "CARGO AL QUE ASPIRA:" : "CARGO:"}`, 7, 50);
+  doc.text("NOMBRE:", 125, 45);
+  doc.text("FECHA DE CONTRATO:", 125, 50);
+  doc.text(`${lsDataReport.nameAtencion == "INGRESO" ? "CARGO AL QUE ASPIRA:" : "CARGO:"}`, 7, 50);
   doc.text("PROFESIÓN:", 7, 55);
   doc.text("AREA:", 7, 60);
   doc.text("DEPARTAMENTO:", 7, 65);
@@ -715,7 +726,8 @@ export function generateReportDiagnosis(
   doc.text(`${lsDataReport.documento}`, 55, 45);
 
   doc.setFontSize(8);
-  doc.text(`${lsDataReport.nameEmpleado}`, 142, 45);
+  doc.text(`${lsDataReport.nameEmpleado}`, 145, 45);
+  doc.text(validateFechaContrato ? `${ViewFormat(lsDataReport.fechaContratoEmpleado)}` : "N/A", 168, 50);
 
   doc.setFontSize(10);
   doc.text(`${lsDataReport.nameCargo}`, 55, 50);
@@ -770,6 +782,10 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   var marXR = doc.internal.pageSize.width - 5;
   var longitud = lsWorkHistoryOtherCompany.length;
 
+  var validateFechaContrato = lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_CONTRO
+    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_EGRESO
+    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_REINCORPORACION;
+
   doc.text(`TIPO DE EXAMEN:  ${lsDataReport.nameAtencion}`, 7, 30);
   doc.text(`FECHA:  ${ViewFormat(lsDataReport.fecha)}`, 110, 30, {
     align: "center",
@@ -812,7 +828,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text("DOCUMENTO:", 7, 43);
   doc.text("GENERO:", 7, 48);
   doc.text("FECHA DE NACIMIENTO:", 7, 53);
-  doc.text(DefaultValue.EMO_ATENCION_CONTRO === lsDataReport.idAtencion ? "" : "TURNO:", 7, 58);
+  doc.text("TURNO:", 7, 58);
   doc.text("CELULAR:", 7, 63);
   doc.text("EMAIL:", 7, 68);
   doc.text("DPTO. DE NACIMIENTO:", 7, 73);
@@ -823,8 +839,8 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text("EDAD:", 112, 48);
   doc.text("ESTADO CIVIL:", 112, 53);
   doc.text("DIRECCIÓN:", 112, 58);
-  doc.text(DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : "GRUPO:", 112, 63);
-  doc.text(DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : "ARL:", 112, 68);
+  doc.text("GRUPO:", 112, 63);
+  doc.text("ARL:", 112, 68);
   doc.text("CIUDAD DE NACIMIENTO:", 112, 73);
   doc.text("CONTACTO:", 112, 78);
 
@@ -833,7 +849,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${lsDataReport.documento}`, 32, 43);
   doc.text(`${lsDataReport.nameGenero}`, 26, 48);
   doc.text(`${ViewFormat(lsDataReport.fechaNacimiento)}`, 51, 53);
-  doc.text(`${DefaultValue.EMO_ATENCION_CONTRO === lsDataReport.idAtencion ? "" : lsDataReport.nameTurno}`, 22, 58);
+  doc.text(`${DefaultValue.EMO_ATENCION_CONTRO == lsDataReport.idAtencion ? "N/A" : lsDataReport.nameTurno}`, 22, 58);
   doc.text(`${lsDataReport.celularEmpleado}`, 30, 63);
   doc.text(`${lsDataReport.correoEmpleado}`, 21, 68);
   doc.text(`${lsDataReport.nameDptoNacimiento}`, 49, 73);
@@ -846,8 +862,8 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${GetEdad(lsDataReport.fechaNacimiento)}`, 125, 48);
   doc.text(`${lsDataReport.nameEstadoCivil}`, 139, 53);
   doc.text(`${lsDataReport.direccionEmpleado}`, 134, 58);
-  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : lsDataReport.nameGrupo}`, 128, 63);
-  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : lsDataReport.nameArl}`, 122, 68);
+  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO == lsDataReport.idAtencion ? "N/A" : lsDataReport.nameGrupo}`, 128, 63);
+  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO == lsDataReport.idAtencion ? "N/A" : lsDataReport.nameArl}`, 122, 68);
   doc.text(`${lsDataReport.nameCiudadNacimiento}`, 158, 73);
   doc.text(`${lsDataReport.nameContacto}`, 135, 78);
 
@@ -858,23 +874,25 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
 
   /* PRIMERA COLUMNA */
   doc.setFont("helvetica", "bold");
-  doc.text("SEDE:", 7, 96);
-  doc.text("ÁREA:", 7, 103);
-  doc.text("POSICIÓN:", 7, 110);
+  doc.text("SEDE:", 7, 94);
+  doc.text("ÁREA:", 7, 100);
+  doc.text("POSICIÓN:", 7, 106);
+  doc.text("FECHA DE CONTRATO:", 7, 112);
   /* SEGUNDA COLUMNA */
-  doc.text("DPTO. TRABAJO:", 112, 96);
-  doc.text(DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : "GRUPO:", 112, 103);
-  doc.text("ANTIGUEDAD:", 112, 110);
+  doc.text("DPTO. TRABAJO:", 112, 94);
+  doc.text("GRUPO:", 112, 100);
+  doc.text("ANTIGUEDAD:", 112, 106);
 
   /* 2. RENDERIZADO */
   doc.setFont("helvetica", "normal");
-  doc.text(`${lsDataReport.nameSede}`, 30, 96);
-  doc.text(`${lsDataReport.nameArea}`, 30, 103);
-  doc.text(`${lsDataReport.nameCargo}`, 30, 110);
+  doc.text(`${lsDataReport.nameSede}`, 30, 94);
+  doc.text(`${lsDataReport.nameArea}`, 30, 100);
+  doc.text(`${lsDataReport.nameCargo}`, 30, 106);
+  doc.text(validateFechaContrato ? `${ViewFormat(lsDataReport.fechaContratoEmpleado)}` : "N/A", 50, 112);
 
-  doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 145, 96);
-  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO === lsDataReport.idAtencion ? "" : lsDataReport.nameGrupo}`, 145, 103);
-  doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)} AÑOS`, 145, 110);
+  doc.text(`${lsDataReport.nameDepartamentoTrabajo}`, 145, 94);
+  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO == lsDataReport.idAtencion ? "N/A" : lsDataReport.nameGrupo}`, 145, 100);
+  doc.text(`${GetEdad(lsDataReport.fechaContratoEmpleado)} AÑOS`, 145, 106);
 
   /* 3. ANTECEDENTES LABORALES */
   doc.setFont("helvetica", "bold");
@@ -952,7 +970,7 @@ export function generateClinicHistoryDLTD(
 
   doc.text("3.3 EXPOSICIÓN ACUMULADA DE FACTORES DE RIESGO", 7, 83 + 150);
   doc.line(5, 242, marXR, 242); /* HORI ULTIMA */
-  doc.text(`${config.typeDashboard === 'DLTD' ? "EN DLTD" : "EN D. Energy"}`, 40, 91 + 150, { align: "center" });
+  doc.text(`${config.typeDashboard == 'DLTD' ? "EN DLTD" : "EN D. Energy"}`, 40, 91 + 150, { align: "center" });
   doc.text("EN OTRAS EMPRESAS", 103, 91 + 150, { align: "center" });
   doc.text("TOTAL EXPOSICIÓN", 175, 91 + 150, { align: "center" });
 

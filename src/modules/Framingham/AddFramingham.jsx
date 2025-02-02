@@ -8,9 +8,11 @@ import { useTheme } from '@mui/material/styles';
 import { Fragment, useEffect, useState } from 'react';
 
 import {
+    EdadFramigan,
     FrColesterol,
     FrFuma,
     FrGlicemia,
+    FrHdl,
     FrLdl_FrRelacion,
     FrTension,
     GetEdad,
@@ -131,6 +133,9 @@ const AddFramingham = () => {
                     const frColes = FrColesterol(colesterol, lsEmployee.nameGenero);
                     setFrColesterol(frColes);
 
+                    const frHdlfr = FrHdl(hdl, lsEmployee?.nameGenero);
+                    setFrHdl(frHdlfr);
+
                     const frGlice = FrGlicemia(glicemia, lsEmployee.nameGenero);
                     setFrGlicemia(frGlice);
 
@@ -168,6 +173,7 @@ const AddFramingham = () => {
             if (event?.target.value !== '') {
                 if (event.key === 'Enter') {
                     var lsServerEmployee = await GetByIdEmployee(event?.target.value);
+                    setFrEdad(EdadFramigan(GetEdad(lsServerEmployee?.data?.data.fechaNaci), lsServerEmployee?.data?.data.nameGenero));
 
                     if (lsServerEmployee?.data.status === 200) {
                         setLsEmployee(lsServerEmployee.data.data);
@@ -182,6 +188,7 @@ const AddFramingham = () => {
 
                     if (lsServerEmployee.data.status === 200) {
                         setLsEmployee(lsServerEmployee.data.data);
+                        setFrEdad(EdadFramigan(GetEdad(lsServerEmployee.data.data.fechaNaci), lsServerEmployee.data.data.nameGenero));
                     }
                 }
             } else setLsEmployee([]);

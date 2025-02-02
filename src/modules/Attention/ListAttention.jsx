@@ -317,7 +317,6 @@ const ListAttention = () => {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
                     const result = await DeleteAttention(idCheck);
-                    console.log(result);
                     if (result.status === 200) {
                         setOpenDelete(true);
                         setSelected([]);

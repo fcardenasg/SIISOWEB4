@@ -133,6 +133,7 @@ export const CodCatalogo = {
 
     AHC_ATENCION_NOTA_ENFERMERIA: 136,
     Contingencia: 74,
+    TipoTransporte: 244, /* 243 LOCAL 244 SERVIDOR */
     PROCEDIMIENTO_ENFERMERIA: 156,
     DiaTurno: 76,
     JornadaTurno: 139,
@@ -208,6 +209,7 @@ export const DefaultData = {
 
 export const DefaultValue = {
     SINREGISTRO_GLOBAL: 1,
+    TIPO_TRANSPORTE_OTRO: 10159, /* 9886 local  10159 servidor*/
     BANDERA_DRUMMOND: 7116,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 2,
@@ -253,6 +255,7 @@ export const DefaultValue = {
     EMO_ATENCION_CONTRO: 3921,
     EMO_ATENCION_PROMO: 3922,
     EMO_ATENCION_EGRESO: 3919,
+    EMO_ATENCION_REINCORPORACION: 3920,
 
     ORDENES_LABORATORIO: 3533,
     ORDENES_FECHA_EXAM_FISICO: 3541,

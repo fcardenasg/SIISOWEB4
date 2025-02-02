@@ -6,7 +6,7 @@ import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
-import { Button, Card, CardContent, CardMedia, Chip, Grid, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CardMedia, Chip, Divider, Grid, Tooltip, tooltipClasses, Typography } from '@mui/material';
 
 import { DeleteAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
 import { MessageSuccess } from 'components/alert/AlertAll';
@@ -16,7 +16,21 @@ import { gridSpacing } from 'store/constant';
 import { IconEye, IconCircleMinus } from '@tabler/icons';
 import { DefaultValue } from 'components/helpers/Enums';
 import MenuOptions from './MenuOptions';
+import { styled } from '@mui/material/styles';
+import ChipControl from 'ui-component/extended/Chip';
 import useAuth from 'hooks/useAuth';
+
+const HtmlTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 280,
+        fontSize: theme.typography.pxToRem(12),
+        backgroundColor: 'transparent',
+    },
+}));
+
 
 const ViewProgramming = ({ programming, getAll }) => {
     const { user } = useAuth();
@@ -24,10 +38,28 @@ const ViewProgramming = ({ programming, getAll }) => {
     const theme = useTheme();
 
     const [openSuccess, setOpenSuccess] = useState(false);
-    const [disabledButon, setDisabledButon] = useState(false);
+    const [disabledButton, setDisabledButton] = useState(false);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [openDelete, setOpenDelete] = useState(false);
+
+    useEffect(() => {
+        const handleDisabledButton = () => {
+            try {
+                if (programming?.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO && programming?.usuarioCierreAtencion === user.nameuser) {
+                    setDisabledButton(false);
+                } else if (programming?.estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
+                    setDisabledButton(false);
+                } else if (programming?.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO) {
+                    setDisabledButton(true);
+                } else if (programming?.estadoPac === DefaultValue.ATENCION_ATENDIDO) {
+                    setDisabledButton(true);
+                }
+            } catch (error) { }
+        };
+
+        handleDisabledButton();
+    }, [programming, user?.nameuser]);
 
     const handleUpdateAttention = async () => {
         try {
@@ -35,7 +67,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                 id: programming?.id,
                 estadoPac: DefaultValue.ATENCION_PENDIENTE_ATENDIDO,
                 usuario: ""
-            }
+            };
 
             const result = await UpdateEstadoRegistroAtencion(DataToUpdate);
             if (result.status === 200) {
@@ -44,7 +76,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                 getAll();
             }
         } catch (error) { }
-    }
+    };
 
     const handleUpdateAttentionOpen = async () => {
         try {
@@ -52,10 +84,10 @@ const ViewProgramming = ({ programming, getAll }) => {
                 id: programming?.id,
                 estadoPac: DefaultValue.ATENCION_ESTASIENDOATENDIDO,
                 usuario: user?.nameuser
-            }
+            };
             await UpdateEstadoRegistroAtencion(DataToUpdate);
         } catch (error) { }
-    }
+    };
 
     const onClickDelete = async (id) => {
         try {
@@ -91,8 +123,8 @@ const ViewProgramming = ({ programming, getAll }) => {
                 navigate(`/programming/psychological/${programming?.id}`);
 
             if (tipoAtencion === DefaultValue.TIPO_ATENCION_ASESORIAS &&
-                atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO &&
-                atencion != DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
+                atencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_PSICO &&
+                atencion !== DefaultValue.TIPO_ATENCION_ASESORIAS_MEDICA)
                 navigate(`/programming/other/${programming?.id}`);
 
             if (tipoAtencion === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
@@ -100,7 +132,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                 navigate(`/programming/attention-new/${programming?.id}`);
 
             if (tipoAtencion === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA &&
-                estadoCaso == DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_CONTROL)
+                estadoCaso === DefaultValue.TIPO_ATENCION_ATENCIONMEDICA_CONTROL)
                 navigate(`/programming/attention-control/${programming?.id}`);
 
             if (tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
@@ -115,7 +147,7 @@ const ViewProgramming = ({ programming, getAll }) => {
                 atencion === DefaultValue.ATENCION_PRUEBA_ALCOHOL)
                 navigate(`/programming/alcoholanddrugtesting/${programming?.id}`);
         } catch (error) { }
-    }
+    };
 
     const handleSound = (nombre, atencion) => {
         let mensaje = new SpeechSynthesisUtterance();
@@ -125,36 +157,22 @@ const ViewProgramming = ({ programming, getAll }) => {
             return voice.name;
         });
         speechSynthesis.speak(mensaje);
-    }
-
-    useEffect(() => {
-        const handleDisabledButon = () => {
-            try {
-                if (programming?.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO && programming?.usuarioCierreAtencion === user.nameuser) {
-                    setDisabledButon(false);
-                } else if (programming?.estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
-                    setDisabledButon(false);
-                } else if (programming?.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO) {
-                    setDisabledButon(true);
-                } else if (programming?.estadoPac === DefaultValue.ATENCION_ATENDIDO) {
-                    setDisabledButon(true);
-                }
-            } catch (error) { }
-        }
-
-        handleDisabledButon();
-    }, []);
+    };
 
     const ColorCard = programming?.nameAtencion === 'TRIAGE I' ? ColorDrummondltd.RedDrummond :
-        programming?.nameAtencion === 'TRIAGE II' ? ColorDrummondltd.RedDrummond :
+        programming?.nameAtencion === 'TRIAGE II' ? ColorDrummondltd.OrangeDrummond :
             programming?.nameTipoAtencion === 'ENFERMERIA' ? ColorDrummondltd.BlueDrummond :
                 programming?.nameTipoAtencion === 'ASESORIAS' ? ColorDrummondltd.GreenDrummond :
                     programming?.nameTipoAtencion === 'EMO' ? ColorDrummondltd.GrayDrummond :
-                        programming?.nameAtencion === 'TRIAGE III' ? ColorDrummondltd.YellowSeDrummond : ColorDrummondltd.GrayDrummond;
+                        programming?.nameAtencion === 'TRIAGE III' ? ColorDrummondltd.YellowDrummond :
+                            programming?.nameAtencion === 'TRIAGE IV' ? ColorDrummondltd.GreenDrummond :
+                                programming?.nameAtencion === 'TRIAGE V' ? ColorDrummondltd.BlueDrummond : ColorDrummondltd.GrayDrummond;
 
-    const ChipColor = programming?.estadoPac === 'PENDIENTE POR ATENCIÓN' ? ColorDrummondltd.BlueDrummond :
-        programming?.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? ColorDrummondltd.RedDrummond :
-            programming?.estadoPac === 'ATENDIDO' ? ColorDrummondltd.GreenDrummond : ColorDrummondltd.GrayDrummond;
+    const ChipColor = programming?.estadoPac === 'PENDIENTE POR ATENCIÓN' ? "info" :
+        programming?.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? "error" :
+            programming?.estadoPac === 'ATENDIDO' ? "success" : "gray";
+
+    console.log(programming);
 
     return (
         <Card
@@ -168,11 +186,44 @@ const ViewProgramming = ({ programming, getAll }) => {
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
 
-            <CardMedia component="div" title="Atención" sx={{ height: '90px', bgcolor: ColorCard }}>
-                <Typography variant="h6" sx={{
-                    pt: programming?.nameAtencion === 'PRUEBAS DE ALCOHOL Y DROGAS' ?
-                        1.5 : 3, color: 'white'
-                }}>{programming?.nameAtencion}</Typography>
+            <CardMedia component="div" sx={{ height: '90px', backgroundColor: ColorCard, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <Grid direction="row" container spacing={0.5} alignItems="center" justifyContent="center" sx={{ width: '100%' }}>
+                    <Grid item xs sx={{ ml: 8.5, textAlign: 'center' }}>
+                        {programming?.descripcionAtencion ?
+                            <HtmlTooltip
+                                title={
+                                    <Card sx={{ p: 2 }}>
+                                        <Typography color="inherit">{programming?.nameAtencion}</Typography>
+                                        <em>{programming?.descripcionAtencion}</em>
+                                    </Card>
+                                }
+                            >
+                                <Chip
+                                    label={
+                                        <Typography variant="h6" sx={{ color: 'black' }}>
+                                            {programming?.nameAtencion}
+                                        </Typography>
+                                    }
+                                    sx={{ cursor: 'pointer', backgroundColor: theme.palette.grey[100] }}
+                                />
+                            </HtmlTooltip> :
+
+                            <Typography variant="h6" sx={{ color: ColorCard === ColorDrummondltd.YellowDrummond ? 'black' : 'white' }}>
+                                {programming?.nameAtencion}
+                            </Typography>
+                        }
+                    </Grid>
+
+                    <Grid item xs={3} sx={{ textAlign: 'right' }}>
+                        <MenuOptions
+                            setAnchorEl={setAnchorEl}
+                            anchorEl={anchorEl}
+                            onClickEnable={handleUpdateAttention}
+                            onClickTurno={() => handleSound(programming?.nameEmpleado, programming?.nameAtencion)}
+                            sx={{ width: 'auto', height: 'auto', mr: 2, mt: 0, color: 'white' }}
+                        />
+                    </Grid>
+                </Grid>
             </CardMedia>
 
             <CardContent sx={{ p: 2, pb: '16px !important' }}>
@@ -189,22 +240,16 @@ const ViewProgramming = ({ programming, getAll }) => {
                     <Grid item xs={12} alignItems="center">
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={9}>
-                                        <Typography fontSize={12}><b>{programming?.nameEmpleado} - {programming?.documento}</b></Typography>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <MenuOptions
-                                            setAnchorEl={setAnchorEl}
-                                            anchorEl={anchorEl}
-                                            onClickEnable={handleUpdateAttention}
-                                            onClickTurno={() => handleSound(programming?.nameEmpleado,
-                                                programming?.nameAtencion)}
-                                        />
-                                    </Grid>
-                                </Grid>
+                                <Typography fontSize={12}><b>C.C. {programming?.documento}</b></Typography>
                             </Grid>
+
+                            <Grid item xs={12}>
+                                <Box height={30}>
+                                    <Typography fontSize={12}><b>{programming?.nameEmpleado}</b></Typography>
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12}><Divider /></Grid>
 
                             <Grid item xs={12} alignItems="center">
                                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
@@ -219,22 +264,23 @@ const ViewProgramming = ({ programming, getAll }) => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Chip
-                                    label={programming?.estadoPac}
+                                <ChipControl
                                     size="small"
-                                    sx={{
-                                        bgcolor: ChipColor,
-                                        color: 'white'
-                                    }}
+                                    label={programming?.estadoPac}
+                                    chipcolor={ChipColor}
+                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
                                 />
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography fontSize={10}>{programming?.usuarioCierreAtencion}</Typography>
+                                <Box height={20}>
+                                    <Typography fontSize={10}>{programming?.usuarioCierreAtencion}</Typography>
+                                </Box>
                             </Grid>
 
                         </Grid>
                     </Grid>
+
                     <Grid item xs={12}>
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
@@ -248,25 +294,25 @@ const ViewProgramming = ({ programming, getAll }) => {
                             </Grid>
 
                             <Grid item xs={6}>
-                                <Typography variant="h6"><b>Turno/Grupo:</b> </Typography>
+                                <Typography variant="h6"><b>TURNO / GRUPO:</b> </Typography>
                                 <Typography variant="h6" noWrap>{`${programming?.nameTurno} / ${programming?.nameGrupo}`}</Typography>
                             </Grid>
 
                             <Grid item xs={6}>
-                                <Typography variant="h6"><b>Fecha/Hora:</b> </Typography>
+                                <Typography variant="h6"><b>FECHA / HORA:</b> </Typography>
                                 <Typography variant="h6">{new Date(programming?.fechaRegistro).toLocaleString()}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Button disabled={disabledButon} variant="outlined" onClick={handleClick} fullWidth startIcon={<IconEye />}>
+                        <Button disabled={disabledButton} variant="outlined" onClick={handleClick} fullWidth startIcon={<IconEye />}>
                             Atender
                         </Button>
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Button disabled={disabledButon} variant="outlined" color="error" onClick={() => onClickDelete(programming?.id)} fullWidth startIcon={<IconCircleMinus />}>
+                        <Button disabled={disabledButton} variant="outlined" color="error" onClick={() => onClickDelete(programming?.id)} fullWidth startIcon={<IconCircleMinus />}>
                             Anular
                         </Button>
                     </Grid>

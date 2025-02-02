@@ -26,7 +26,7 @@ import {
   generateDefinitiveDiagnosis,
 } from "./PageReport";
 
-function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-0410") {
+function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-1239") {
   var marXR = doc.internal.pageSize.width - 5;
   /* ENCABEZADO REPORTE */
   doc.addImage(config.logotipo, "PNG", 5, 5, config.typeDashboard === 'DLTD' ? 60 : 50, 15);
@@ -104,7 +104,7 @@ export function getHeaderFR(doc) {
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("SIG-324", 200, 10, null, null, "center");
   doc.text("Versión 06", 200, 15, null, null, "center");
 
   /* LINEA DE DIVISIÓN */
@@ -133,7 +133,7 @@ export function getHeaderEc(doc) {
   );
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("SIG-4840", 200, 10, null, null, "center");
   doc.text("Versión 06", 200, 15, null, null, "center");
 
   /* LINEA DE DIVISIÓN */
@@ -162,7 +162,7 @@ export function getHeaderQS(doc) {
   );
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("SIG-319", 200, 10, null, null, "center");
   doc.text("Versión 06", 200, 15, null, null, "center");
 
   /* LINEA DE DIVISIÓN */

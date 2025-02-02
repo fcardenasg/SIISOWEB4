@@ -104,6 +104,7 @@ export const Url = {
     ProveedorId: 'api/Proveedor/id',
 
     RegistroAtencion: 'api/RegistroAtencion',
+    RegistroAtencionGetTriage: 'api/RegistroAtencion/gettriage/id',
     RegistroAtencionAtendidos: 'api/RegistroAtencion/atendidos',
     RegistroAtencionExcel: 'api/RegistroAtencion/excel',
     RegistroAtencionValidateAtencion: 'api/RegistroAtencion/validate-attention',

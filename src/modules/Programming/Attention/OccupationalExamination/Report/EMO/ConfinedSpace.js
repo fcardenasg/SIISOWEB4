@@ -69,7 +69,7 @@ export function getHeader(doc) {
   );
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("SIG-0409", 200, 10, null, null, "center");
+  doc.text("SIG-4840", 200, 10, null, null, "center");
   doc.text("Versión 06", 200, 15, null, null, "center");
 
   /* LINEA DE DIVISIÓN */

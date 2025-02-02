@@ -1,50 +1,39 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
-import {
-    Button,
-    Grid,
-    useMediaQuery,
-} from '@mui/material';
-import swal from 'sweetalert';
-import { ParamCloseCase } from 'components/alert/AlertAll';
-
-import HoverSocialCard from '../OccupationalExamination/Framingham/HoverSocialCard';
-import ControlModal from 'components/controllers/ControlModal';
-import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import BiotechIcon from '@mui/icons-material/Biotech';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
+import {
+    Alert,
+    AlertTitle,
+    Button,
+    Grid,
+    Typography,
+    useMediaQuery,
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { GetByIdAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
+import { ParamCloseCase } from 'components/alert/AlertAll';
+import ControlModal from 'components/controllers/ControlModal';
+import { motion } from 'framer-motion';
+import { Fragment, useEffect, useState } from 'react';
+import swal from 'sweetalert';
+import HoverSocialCard from '../OccupationalExamination/Framingham/HoverSocialCard';
 
+import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from '../OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from '../OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from '../OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
 import DialogFormula from '../OccupationalExamination/Modal/DialogFormula';
-import { ColorDrummondltd } from 'themes/colors';
 
-import ViewEmployee from 'components/views/ViewEmployee';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { useNavigate, useParams } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
-import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import DetailedIcon from 'components/controllers/DetailedIcon';
-import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import { FormatDate } from 'components/helpers/Format'
-import InputText from 'components/input/InputText';
+import HistoryIcon from '@mui/icons-material/History';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { PostAssistance, PutAssistance } from 'formatdata/AssistanceForm';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import {
     GetAntecedente,
     GetByIdMedicalHistory,
@@ -53,23 +42,36 @@ import {
     UpdateMedicalHistorys,
     ValidateIdRegistroAtencionMedicalHistory
 } from 'api/clients/MedicalHistoryClient';
-import Cargando from 'components/loading/Cargando';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
-import { GetByMail } from 'api/clients/UserClient';
-import { generateReportClinicHistory } from '../Report/ClinicHistory';
-import ViewPDF from 'components/components/ViewPDF';
-import InputOnChange from 'components/input/InputOnChange';
-import ListExamenesPara from 'components/template/ListExamenesPara';
-import ListExamenesFisico from 'components/template/ListExamenesFisico';
-import SelectOnChange from 'components/input/SelectOnChange';
-import NoteAltIcon from '@mui/icons-material/NoteAlt';
-
-import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
-import HistoryIcon from '@mui/icons-material/History';
-import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
-import AccidentRate from './AccidentRate';
 import { GetLastRecordOccupationalExamination } from 'api/clients/OccupationalExaminationClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
 import InputCheck from 'components/input/InputCheck';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
+import Cargando from 'components/loading/Cargando';
+import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+import ListExamenesFisico from 'components/template/ListExamenesFisico';
+import ListExamenesPara from 'components/template/ListExamenesPara';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PostAssistance, PutAssistance } from 'formatdata/AssistanceForm';
+import useAuth from 'hooks/useAuth';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReportClinicHistory } from '../Report/ClinicHistory';
+import AccidentRate from './AccidentRate';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -157,7 +159,8 @@ const UpdateClinicHistory = () => {
     const [lsAssistance, setLsAssistance] = useState([]);
 
     const [documento, setDocumento] = useState('');
-    const [lsAtencion, setLsAtencion] = useState([]);
+    const [dataTriage, setDataTriage] = useState(null);
+    const [lsAtencion, setLsAtencion] = useState(null);
     const [lsContingencia, setLsContingencia] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
@@ -300,6 +303,7 @@ const UpdateClinicHistory = () => {
             try {
                 const lsServerAtencion = await GetByIdAttention(id);
                 if (lsServerAtencion.status === 200) {
+                    setDataTriage(lsServerAtencion.data);
                     setDocumento(lsServerAtencion.data.documento);
 
                     const event = {
@@ -369,6 +373,8 @@ const UpdateClinicHistory = () => {
         } catch (err) { }
     };
 
+    console.log(lsAtencion?.colorTriage);
+
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostAssistance(documento, datos.fecha, id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
@@ -411,7 +417,7 @@ const UpdateClinicHistory = () => {
     };
 
     setTimeout(() => {
-        if (lsAtencion.length !== 0)
+        if (lsAtencion !== null)
             setTimeWait(true);
     }, 1500);
 
@@ -588,6 +594,29 @@ const UpdateClinicHistory = () => {
                             threshold={510}
                         >
                             <Grid container spacing={2}>
+                                <Grid item xs={12} sx={{ my: 2 }}>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -30 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 30 }}
+                                        transition={{
+                                            duration: 0.5,
+                                            ease: [0.25, 0.1, 0.25, 1]
+                                        }}
+                                    >
+                                        <Alert
+                                            variant="filled"
+                                            severity={dataTriage?.colorTriage?.codigo}
+                                            sx={{ backgroundColor: dataTriage?.colorTriage?.value, color: dataTriage?.colorTriage?.label }}
+                                        >
+                                            <AlertTitle>{`ATENCIÓN: ${dataTriage.nameAtencion}`}</AlertTitle>
+                                            <Typography variant="body1" sx={{ color: dataTriage?.colorTriage?.label }}>
+                                                {dataTriage.descripcionAtencion}
+                                            </Typography>
+                                        </Alert>
+                                    </motion.div>
+                                </Grid>
+
                                 <Grid item xs={12}>
                                     <SubCard>
                                         <Grid container spacing={2}>
@@ -604,6 +633,7 @@ const UpdateClinicHistory = () => {
                                             <Grid item xs={4}>
                                                 <FormProvider {...methods}>
                                                     <InputSelect
+                                                        disabled
                                                         name="atencion"
                                                         label="Atención"
                                                         defaultValue={lsAtencion?.atencion}
