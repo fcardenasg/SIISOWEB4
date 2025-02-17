@@ -7,7 +7,6 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 
 // Dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
-const DashboardAnalytics = Loadable(lazy(() => import('views/dashboard/Analytics')));
 
 //Nuestros import
 const ListTypeCatalog = Loadable(lazy(() => import('modules/TypeCatalog/ListTypeCatalog')));
@@ -840,16 +839,10 @@ const MainRoutes = {
             path: '/charges/list',
             element: <ListCharges />
         },
-
         {
             path: '/dashboard/drummond',
             element: <DashboardDefault />
         },
-        {
-            path: '/indicators/view',
-            element: <DashboardAnalytics />
-        },
-
         /* SUBMENUS */
         {
             path: '/occupational-health/menu',

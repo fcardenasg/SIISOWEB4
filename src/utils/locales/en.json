@@ -2,12 +2,10 @@
     "dashboard": "Dashboard",
     "default": "Default",
     "analytics": "Analytics",
-
     "widget": "Widget",
     "statistics": "Statistics",
     "data": "Data",
     "chart": "Chart",
-
     "application": "Application",
     "users": "Users",
     "social-profile": "Social Profile",
@@ -31,7 +29,6 @@
     "product-details": "Product Details",
     "product-list": "Product List",
     "checkout": "Checkout",
-
     "forms": "Forms",
     "components": "Components",
     "autocomplete": "Autocomplete",
@@ -64,7 +61,6 @@
     "multi-column-forms": "Multi Column Forms",
     "action-bar": "Action Bar",
     "sticky-action-bar": "Sticky Action Bar",
-
     "ui-element": "UI Element",
     "basic": "Basic",
     "basic-caption": "8+ Basic Components",
@@ -74,7 +70,6 @@
     "breadcrumb": "Breadcrumb",
     "chip": "Chip",
     "tabs": "Tabs",
-
     "advance": "Advance",
     "alert": "Alert",
     "dialog": "Dialog",
@@ -87,7 +82,6 @@
     "timeline": "Timeline",
     "toggle-button": "Toggle Button",
     "treeview": "Treeview",
-
     "pages": "Pages",
     "pages-caption": "Prebuild Pages",
     "authentication": "Authentication",
@@ -105,7 +99,6 @@
     "under-construction": "Under Construction",
     "landing": "Landing",
     "contact-us": "Contact US",
-
     "utilities": "Utilities",
     "typography": "Typography",
     "color": "Color",
@@ -115,7 +108,6 @@
     "material-icons": "Material Icons",
     "animation": "Animation",
     "grid": "Grid",
-
     "others": "Others",
     "menu-level": "Menu Levels",
     "level": "Level",
@@ -129,11 +121,9 @@
     "coded": "Coded",
     "c": "C",
     "outlined": "Outlined",
-
     "sample-page": "Sample Page",
     "documentation": "Documentation",
     "roadmap": "Roadmap",
-
     "title": "Multi Language",
     "home": "Home",
     "change": "Change Language",

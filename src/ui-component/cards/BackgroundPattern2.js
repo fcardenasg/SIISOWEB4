@@ -5,8 +5,8 @@ import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
 // assets
-import AuthPattern from 'assets/images/auth/img-a2-grid.svg';
-import AuthPatternDark from 'assets/images/auth/img-a2-grid-dark.svg';
+/* import AuthPattern from 'assets/images/auth/img-a2-grid.svg'; */
+/* import AuthPatternDark from 'assets/images/auth/img-a2-grid-dark.svg'; */
 
 // ===========================|| BACKGROUND GRID PATTERN 2 ||=========================== //
 
@@ -20,7 +20,7 @@ const BackgroundPattern2 = ({ children }) => {
                 minHeight: '100%',
                 height: '100vh',
                 bgcolor: theme.palette.mode === 'dark' ? theme.palette.dark.dark : '#fff',
-                backgroundImage: theme.palette.mode === 'dark' ? `url(${AuthPatternDark})` : `url(${AuthPattern})`,
+                /* backgroundImage: `url(${AuthPattern})`, */
                 position: 'absolute',
                 backgroundPosition: 'bottom left',
                 backgroundRepeat: 'no-repeat',
