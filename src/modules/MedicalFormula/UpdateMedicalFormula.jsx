@@ -1,45 +1,45 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography
+    Typography,
+    useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import ViewEmployee from 'components/views/ViewEmployee';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import InputText from 'components/input/InputText';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import InputText from 'components/input/InputText';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import useAuth from 'hooks/useAuth';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import InputSelect from 'components/input/InputSelect';
-import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton'
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
 import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetByIdMedicalFormula, UpdateMedicalFormulas } from 'api/clients/MedicalFormulaClient';
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { PutMedicalFormula } from 'formatdata/MedicalFormulaForm';
+import { GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
+import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import { FormatDate } from 'components/helpers/Format';
 import InputOnChange from 'components/input/InputOnChange';
 import Cargando from 'components/loading/Cargando';
-import ViewPDF from 'components/components/ViewPDF';
+import { PutMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { generateReport } from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/Report';
-import { GetByMail } from 'api/clients/UserClient';
-import { DownloadFile } from 'components/helpers/ConvertToBytes';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -230,7 +230,7 @@ const UpdateMedicalFormula = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Recetario"
+                            title="Actualizar recetario"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}
@@ -241,7 +241,7 @@ const UpdateMedicalFormula = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">GENERAR ORDEN</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Generar orden</Typography>}>
                             <Grid container justifyContent="center" alignItems="center" spacing={2}>
                                 <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
@@ -281,7 +281,7 @@ const UpdateMedicalFormula = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
+                        <SubCard darkTitle title={<Typography variant="h4">Indicación médica</Typography>}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={2}>
                                     <InputOnChange

@@ -92,9 +92,8 @@ const OrdersIndividual = () => {
 
     async function generateReport(action = '') {
         try {
-            if (action === 'correo') {
+            if (action === 'correo')
                 setLoading(true);
-            }
 
             const lsDataReport = await GetByIdOrders(resultData);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(resultData);
@@ -102,9 +101,12 @@ const OrdersIndividual = () => {
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
             if (action === 'correo') {
+                const ciudades = lsTipoExamen.map(orden => orden.idCiudad);
+
                 const Correo = {
                     Correo: lsEmployee.email,
-                    Adjunto: dataPDFTwo.file64
+                    Adjunto: dataPDFTwo.file64,
+                    IdOrden: resultData
                 }
 
                 const result = await SendParaclinicalExams(Correo);

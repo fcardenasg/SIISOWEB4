@@ -110,7 +110,6 @@ const JWTRegister = ({ ...others }) => {
                             }, 1500);
                         }
                     } catch (err) {
-                        console.error(err);
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrors({ submit: err.message });

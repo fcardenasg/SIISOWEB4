@@ -2,11 +2,14 @@ import { useTheme } from "@emotion/react";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import { GetExcelEmployee } from "api/clients/EmployeeClient";
+import { MessageError } from "components/alert/AlertAll";
 import { ArrayTodoContrato } from "components/Arrays";
 import ControlModal from "components/controllers/ControlModal";
-import { CodCatalogo, TitleButton } from "components/helpers/Enums";
+import { DownloadFile } from "components/helpers/ConvertToBytes";
+import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
 import { ViewFormat } from "components/helpers/Format";
 import SelectOnChange from "components/input/SelectOnChange";
+import LoadingGenerate from "components/loading/LoadingGenerate";
 import { useEffect, useState } from "react";
 import { Fragment } from "react";
 import ReactExport from "react-export-excel";
@@ -24,6 +27,10 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
     const [tipoContrato, setTipoContrato] = useState(0);
     const [lsEmployeeExcel, setLsEmployeeExcel] = useState([]);
     const [statusData, setStatusData] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const [openError, setOpenError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     async function getAll() {
         try {
@@ -39,14 +46,23 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
 
     async function getDataForExport() {
         try {
+            setLoading(true);
             const lsServerExcel = await GetExcelEmployee(tipoContrato);
 
             if (lsServerExcel.status === 200) {
-                setLsEmployeeExcel(lsServerExcel.data);
-                setStatusData(true);
+                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
+
+                setTimeout(() => {
+                    setLoading(false);
+                }, 500);
             }
 
-        } catch (error) { }
+        } catch (error) {
+            setLoading(false);
+
+            setOpenError(true);
+            setErrorMessage(Message.ErrorExcel);
+        }
     }
 
     const handleClose = () => {
@@ -56,6 +72,8 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
 
     return (
         <Fragment>
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <ControlModal
                 title="Generar Excel"
                 open={openModal}
@@ -74,75 +92,19 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
                         <AnimateButton>
-                            <Button onClick={getDataForExport} size="large" variant="contained" fullWidth>
-                                {TitleButton.GenerarExcel}
+                            <Button disabled={loading} onClick={getDataForExport} size="large" variant="contained" fullWidth>
+                                {TitleButton.Excel}
                             </Button>
                         </AnimateButton>
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
-                        {statusData ?
-                            <ExcelFile element={
-                                <AnimateButton>
-                                    <Button onClick={() => setStatusData(false)} size="large" variant="outlined" fullWidth>
-                                        {TitleButton.DescargarExcel}
-                                    </Button>
-                                </AnimateButton>
-                            } filename={`LISTA_DE_EMPLEADO_${new Date().toLocaleString()}`}>
-                                <ExcelSheet data={lsEmployeeExcel} name="Registro De Empleados">
-                                    <ExcelColumn label="Documento" value="documento" />
-                                    <ExcelColumn label="Nombres" value="nombres" />
-                                    <ExcelColumn label="Fecha Nacimiento" value={(fe) => ViewFormat(fe.fechaNaci)} />
-                                    <ExcelColumn label="Type" value="nameType" />
-                                    <ExcelColumn label="Departamento" value="nameDepartamento" />
-                                    <ExcelColumn label="Area" value="nameArea" />
-                                    <ExcelColumn label="SubArea" value="nameSubArea" />
-                                    <ExcelColumn label="Grupo" value="nameGrupo" />
-                                    <ExcelColumn label="MunicipioNacido" value="nameMunicipioNacido" />
-                                    <ExcelColumn label="DptoNacido" value="nameDptoNacido" />
-                                    <ExcelColumn label="Fecha De Contrato" value={(fe) => ViewFormat(fe.fechaContrato)} />
-                                    <ExcelColumn label="Roster Position" value="nameRosterPosition" />
-                                    <ExcelColumn label="Tipo De Contrato" value="nameTipoContrato" />
-                                    <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                    <ExcelColumn label="Genero" value="nameGenero" />
-                                    <ExcelColumn label="Sede" value="nameSede" />
-
-                                    <ExcelColumn label="Dirección De Residencia" value="direccionResidencia" />
-                                    <ExcelColumn label="Dirección De Residencia Trabaja" value="direccionResidenciaTrabaja" />
-                                    <ExcelColumn label="Departameto De Residencia Trabaja" value="nameDptoResidenciaTrabaja" />
-                                    <ExcelColumn label="Municipio De Residencia Trabaja" value="nameMunicipioResidenciaTrabaja" />
-                                    <ExcelColumn label="MunicipioDe Residencia" value="nameMunicipioResidencia" />
-                                    <ExcelColumn label="Departamento De Residencia" value="nameDptoResidencia" />
-
-                                    <ExcelColumn label="Celular" value="celular" />
-                                    <ExcelColumn label="Eps" value="nameEps" />
-                                    <ExcelColumn label="Afp" value="nameAfp" />
-                                    <ExcelColumn label="Turno" value="nameTurno" />
-                                    <ExcelColumn label="Email" value="email" />
-                                    <ExcelColumn label="Telefono De Contacto" value="telefonoContacto" />
-                                    <ExcelColumn label="Estado Civil" value="nameEstadoCivil" />
-                                    <ExcelColumn label="Empresa" value="empresa" />
-                                    <ExcelColumn label="Arl" value="nameArl" />
-                                    <ExcelColumn label="Contacto" value="contacto" />
-                                    <ExcelColumn label="Escolaridad" value="nameEscolaridad" />
-                                    <ExcelColumn label="Cesantias" value="nameCesantias" />
-                                    <ExcelColumn label="Rotation" value="rotation" />
-                                    <ExcelColumn label="Pay Status" value="namePayStatus" />
-                                    <ExcelColumn label="Fecha Terminación" value={(fe) => ViewFormat(fe.termDate)} />
-                                    <ExcelColumn label="Bandera" value="nameBandera" />
-                                    <ExcelColumn label="Ges" value="nameGes" />
-                                    <ExcelColumn label="Oficio" value="nameOficio" />
-
-                                    <ExcelColumn label="Usuario Registro" value="UsuarioRegistro" />
-                                    <ExcelColumn label="Fecha Registro" value={(fe) => ViewFormat(fe.fechaRegistro)} />
-                                    <ExcelColumn label="Usuario Modifico" value="UsuarioModifico" />
-                                    <ExcelColumn label="Fecha Modifico" value={(fe) => ViewFormat(fe.fechaModifico)} />
-                                </ExcelSheet>
-                            </ExcelFile> : null
-                        }
-                    </Grid>
+                    {loading ?
+                        <Grid item xs={12}>
+                            <LoadingGenerate title="Generando Excel..." />
+                        </Grid> : null
+                    }
                 </Grid>
             </ControlModal>
         </Fragment>

@@ -8,6 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Message } from 'components/helpers/Enums';
+import { UpperFirstChar } from 'components/helpers/Format';
 
 const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
     const theme = useTheme();
@@ -20,7 +21,9 @@ const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
             >
                 <Grid container>
                     <Grid item xs={10}>
-                        <DialogTitle>{title}</DialogTitle>
+                        <DialogTitle>
+                            {typeof title === 'string' ? UpperFirstChar(title) : title}
+                        </DialogTitle>
                     </Grid>
 
                     <Grid item xs={2}>

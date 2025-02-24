@@ -34,6 +34,9 @@ const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) =>
                         }}
                         error={bug ? true : false}
                         fullWidth
+                        InputProps={{
+                            inputFormat: 'dd/MM/yyyy', // Formato de visualización
+                        }}
                         {...others}
                     />
                 )}

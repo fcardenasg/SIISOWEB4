@@ -263,7 +263,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv', 'teleProv', 'emaiProv'];
+                const properties = ['codiProv', 'nombProv'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

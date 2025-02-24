@@ -41,11 +41,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ReactExport from "react-export-excel";
 import Cargando from 'components/loading/Cargando';
-
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+import { ViewFormat } from 'components/helpers/Format';
+import ViewTrafficLight from 'components/components/ViewTrafficLight';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -73,25 +70,26 @@ function stableSort(array, comparator) {
 const headCells = [
     {
         id: 'codigo',
-        numeric: false,
         label: 'Código',
         align: 'left'
     },
     {
         id: 'descripcion',
-        numeric: false,
         label: 'Descripción',
         align: 'left'
     },
     {
         id: 'cantidad',
-        numeric: false,
         label: 'Cantidad',
         align: 'left'
     },
     {
+        id: 'fechaVencimiento',
+        label: 'Fecha de vencimiento',
+        align: 'left'
+    },
+    {
         id: 'estado',
-        numeric: false,
         label: 'Estado',
         align: 'left'
     }
@@ -218,7 +216,7 @@ const ListMedicines = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServer = await GetAllMedicines();
             if (lsServer.status === 200) {
@@ -229,7 +227,7 @@ const ListMedicines = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -240,11 +238,11 @@ const ListMedicines = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codigo', 'descripcion', 'cantidad'];
+                const properties = ['codigo', 'descripcion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });
@@ -267,12 +265,12 @@ const ListMedicines = () => {
     };
 
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
             const newSelectedId = lsMedicamentos.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
+
         setSelected([]);
     };
 
@@ -311,10 +309,11 @@ const ListMedicines = () => {
                     const result = await DeleteMedicines(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
+
+                        setSearch('');
+                        setSelected([]);
+                        getAll();
                     }
-                    setSearch('');
-                    setSelected([]);
-                    GetAll();
                 } else
                     setSelected([]);
             });
@@ -327,7 +326,7 @@ const ListMedicines = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
     return (
-        <MainCard title="Lista de Medicamentos" content={false}>
+        <MainCard title="Lista de medicamentos" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -351,30 +350,11 @@ const ListMedicines = () => {
                     <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Medicamentos">
-                                    <ExcelSheet data={lsMedicamentos} name="Medicamentos">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Código" value="codigo" />
-                                        <ExcelColumn label="Descripcion" value="descripcion" />
-                                        <ExcelColumn label="Unidad" value="nameUnidad" />
-                                        <ExcelColumn label="Stop Minimo" value="stopMinimo" />
-                                        <ExcelColumn label="Cantidad Comprada" value="cantidadComprada" />
-                                        <ExcelColumn label="Cantidad Consumida" value="cantidadConsumida" />
-                                        <ExcelColumn label="Existencia" value="existencia" />
-                                        <ExcelColumn label="Estado" value="estado" />
-
-                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
-                                    </ExcelSheet>
-                                </ExcelFile>
+                                <Tooltip title="Exportar" /* onClick={() => setOpenModal(true)} */>
+                                    <IconButton size="large">
+                                        <IconFileExport />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
 
                             <Grid item xs={5}>
@@ -391,6 +371,15 @@ const ListMedicines = () => {
                                 </Button>
                             </Grid>
                         </Grid>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <ViewTrafficLight
+                            success
+                            title1="Mayor a 6 meses"
+                            title2="Mayor a 3 meses y menor o igual a 6 meses"
+                            title3="Igual o menor a 3 meses / Vencida"
+                        />
                     </Grid>
                 </Grid>
             </CardContent>
@@ -479,7 +468,7 @@ const ListMedicines = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.existencia === null ? "NO HAY EXISTENCIA" : `${row.existencia} EXISTENTES`}
+                                                    {row.cantidad ? `${row.cantidad} EXISTENTES` : "SIN EXISTENCIA"}
                                                 </Typography>
                                             </TableCell>
 
@@ -494,10 +483,30 @@ const ListMedicines = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.estado === true ?
-                                                        <Chip label="ACTIVO" size="small" chipcolor="success" /> :
-                                                        <Chip label="INACTIVO" size="small" chipcolor="error" />
-                                                    }
+                                                    <Chip
+                                                        label={`${ViewFormat(row.fechaVencimiento)} - ${row.tiempoTranscurrido?.label}`}
+                                                        size="small"
+                                                        chipcolor={row.tiempoTranscurrido?.codigo}
+                                                    />
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    <Chip
+                                                        label={row.estado ? "ACTIVO" : "INACTIVO"}
+                                                        size="small"
+                                                        chipcolor={row.estado ? "success" : "error"}
+                                                    />
                                                 </Typography>
                                             </TableCell>
 
@@ -526,6 +535,10 @@ const ListMedicines = () => {
             </TableContainer>
 
             <TablePagination
+                labelRowsPerPage="Filas por página:"
+                labelDisplayedRows={({ from, to, count }) => (
+                    `${from} - ${to} de ${count !== -1 ? count : `más de ${lsMedicamentos.length}`}`
+                )}
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={lsMedicamentos.length}

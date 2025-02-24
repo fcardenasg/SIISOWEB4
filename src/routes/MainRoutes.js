@@ -57,8 +57,8 @@ const ListAnsweredView = Loadable(lazy(() => import('modules/Requests/AnsweredVi
 const MenuRequests = Loadable(lazy(() => import('modules/Menu/MenuRequests')));
 const MenuMedicines = Loadable(lazy(() => import('modules/Menu/MenuMedicines')));
 
-const ListMedicinesEntry = Loadable(lazy(() => import('modules/MedicinesEntry/ListMedicinesEntry')));
-const MedicinesEntry = Loadable(lazy(() => import('modules/MedicinesEntry/MedicinesEntry')));
+const ListMedicinesEntry = Loadable(lazy(() => import('modules/Medicines/Entry/ListMedicinesEntry')));
+const MedicinesEntry = Loadable(lazy(() => import('modules/Medicines/Entry/MedicinesEntry')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -127,9 +127,9 @@ const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programmin
 const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
 const UpdateAlcoholAndDrugTestings = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAlcoholAndDrugTesting')));
 
-const ListMedicines = Loadable(lazy(() => import('modules/Medicines/ListMedicines')));
-const UpdateMedicines = Loadable(lazy(() => import('modules/Medicines/UpdateMedicines')));
-const Medicines = Loadable(lazy(() => import('modules/Medicines/Medicines')));
+const ListMedicines = Loadable(lazy(() => import('modules/Medicines/Product/ListMedicines')));
+const UpdateMedicines = Loadable(lazy(() => import('modules/Medicines/Product/UpdateMedicines')));
+const Medicines = Loadable(lazy(() => import('modules/Medicines/Product/Medicines')));
 
 const ListRefund = Loadable(lazy(() => import('modules/Refund/ListRefund')));
 const Refund = Loadable(lazy(() => import('modules/Refund/Refund')));

@@ -5,6 +5,7 @@ import Slide from '@mui/material/Slide';
 
 import { Grid, Typography, IconButton, Toolbar, AppBar, Dialog } from '@mui/material';
 import { ColorDrummondltd } from 'themes/colors';
+import { UpperFirstChar } from 'components/helpers/Format';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -21,7 +22,7 @@ const FullScreenDialog = ({ open, handleClose, title, children }) => {
             <AppBar sx={{ position: 'fixed' }}>
                 <Toolbar>
                     <Typography sx={{ ml: 2, flex: 1, color: 'white' }} variant="h5" component="div">
-                        {title}
+                        {UpperFirstChar(title)}
                     </Typography>
 
                     <IconButton

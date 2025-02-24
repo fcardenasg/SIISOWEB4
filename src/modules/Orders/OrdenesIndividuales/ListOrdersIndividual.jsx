@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
@@ -22,22 +22,20 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
-import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { ViewFormat } from 'components/helpers/Format';
+import SearchIcon from '@mui/icons-material/Search';
 import { DeleteOrders, GetAllOrders } from 'api/clients/OrdersClient';
 import Cargando from 'components/loading/Cargando';
 import { ColorDrummondltd } from 'themes/colors';
@@ -227,9 +225,9 @@ const ListOrdersIndividual = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllOrders(0, 0);
-            setLsOrders(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllOrders();
+            setLsOrders(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) {
 
         }
@@ -333,7 +331,7 @@ const ListOrdersIndividual = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsOrders.length) : 0;
 
     return (
-        <MainCard title="Lista de Ordenes Individuales" content={false}>
+        <MainCard title="Lista de ordenes individuales" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <CardContent>
 

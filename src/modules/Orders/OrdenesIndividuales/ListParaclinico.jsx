@@ -123,7 +123,6 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
         getAllListParaclinicos();
     }, [idOrdenes]);
 
-
     const handleParaclinicos = (event) => {
         try {
             setCiudad('');
@@ -204,7 +203,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <SubCard title={<Typography variant='h4'>Lista de Paraclinicos</Typography>}>
+            <SubCard title={<Typography variant='h4'>Lista de paraclinicos</Typography>}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TableContainer>

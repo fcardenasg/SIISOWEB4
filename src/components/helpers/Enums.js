@@ -383,7 +383,7 @@ export const Message = {
     CorreoNoEnviado: 'No se pudo enviar el correo',
     ExcelNoGenerado: 'No se pudo generar el excel',
     SinCorreo: 'Este empleado no tiene correo registrado',
-    VistaReporte: 'Vista De Reporte',
+    VistaReporte: 'Vista de reporte',
     VistaArchivo: 'Vista De Archivo',
     ErrorExcel: 'Error: No se pudo generar el Excel',
 }

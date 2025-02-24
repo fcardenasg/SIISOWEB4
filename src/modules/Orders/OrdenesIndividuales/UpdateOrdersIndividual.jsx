@@ -114,7 +114,7 @@ const UpdateOrdersIndividual = () => {
                     setTimeout(() => {
                         if (serverData.status === 200)
                             setTimeWait(true);
-                    }, 2000);
+                    }, 200);
                 }
             } catch (error) { }
         }
@@ -138,9 +138,11 @@ const UpdateOrdersIndividual = () => {
 
             if (action === 'correo') {
                 if (lsEmployee.email !== '' || lsEmployee.email !== undefined) {
+
                     const Correo = {
                         Correo: lsEmployee.email,
-                        Adjunto: dataPDFTwo.file64
+                        Adjunto: dataPDFTwo.file64,
+                        IdOrden: id
                     }
 
                     const result = await SendParaclinicalExams(Correo);
@@ -192,7 +194,7 @@ const UpdateOrdersIndividual = () => {
 
     return (
         <Fragment>
-            <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} message={openError} />
+            <MessageUpdate open={openSuccess} message={errorMessage} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <ControlModal
@@ -217,7 +219,7 @@ const UpdateOrdersIndividual = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Ordenes Individuales"
+                            title="Actualizar ordenes individuales"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

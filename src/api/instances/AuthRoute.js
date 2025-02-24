@@ -72,6 +72,7 @@ export const Url = {
     RecetarioId: 'api/Recetario/id',
 
     Medicamentos: 'api/Medicamentos',
+    MedicamentosSearch: 'api/Medicamentos/product-search',
     MedicamentosId: 'api/Medicamentos/id',
 
     PruebasAlcoholDroga: 'api/PruebasAlcoholDroga',

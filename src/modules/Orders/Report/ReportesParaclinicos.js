@@ -152,7 +152,6 @@ export function generateReportParaclinico(doc, lsDataReport = [], lsDataUser = [
     if (lsDataReportParaclinico.idParaclinico === 3533)
         doc.text(`${lsDataReportParaclinico.nameExamenLaboratorio} `, 5, 67, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
-
     doc.text(`${lsDataReportParaclinico.direccionProveedor} `, 40, 95 - restaPosicion);
     doc.text(`${lsDataReportParaclinico.celularProveedor} `, 40, 102 - restaPosicion);
     doc.text(`${lsDataReportParaclinico.ciudadProveedor} `, 40, 109 - restaPosicion);

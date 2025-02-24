@@ -327,12 +327,12 @@ const ListMedicinesEntry = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
     return (
-        <MainCard title="Lista de Medicamentos" content={false}>
+        <MainCard title="Lista de medicamentos de entrantes" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={4} md={6} lg={8.5}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -348,33 +348,14 @@ const ListMedicinesEntry = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={8} md={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <ExcelFile element={
-                                    <Tooltip title="Exportar">
-                                        <IconButton size="large">
-                                            <IconFileExport />
-                                        </IconButton>
-                                    </Tooltip>
-                                } filename="Medicamentos">
-                                    <ExcelSheet data={lsMedicamentos} name="Medicamentos">
-                                        <ExcelColumn label="Id" value="id" />
-                                        <ExcelColumn label="Código" value="codigo" />
-                                        <ExcelColumn label="Descripcion" value="descripcion" />
-                                        <ExcelColumn label="Unidad" value="nameUnidad" />
-                                        <ExcelColumn label="Stop Minimo" value="stopMinimo" />
-                                        <ExcelColumn label="Cantidad Comprada" value="cantidadComprada" />
-                                        <ExcelColumn label="Cantidad Consumida" value="cantidadConsumida" />
-                                        <ExcelColumn label="Existencia" value="existencia" />
-                                        <ExcelColumn label="Estado" value="estado" />
-
-                                        <ExcelColumn label="Usuario Registro" value="usuarioRegistro" />
-                                        <ExcelColumn label="Fecha Registro" value="fechaRegistro" />
-                                        <ExcelColumn label="Usuario Modifico" value="usuarioModifico" />
-                                        <ExcelColumn label="Fecha Modifico" value="fechaModifico" />
-                                    </ExcelSheet>
-                                </ExcelFile>
+                                <Tooltip title="Exportar" /* onClick={() => setOpenModal(true)} */>
+                                    <IconButton size="large">
+                                        <IconFileExport />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
 
                             <Grid item xs={5}>

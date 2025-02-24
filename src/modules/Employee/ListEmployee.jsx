@@ -1,15 +1,13 @@
-import PropTypes from 'prop-types';
-import { useState, useEffect, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { GetAllEmployee, DeleteEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { useTheme } from '@mui/material/styles';
 import {
+    Avatar,
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
     IconButton,
     InputAdornment,
+    Modal,
     Table,
     TableBody,
     TableCell,
@@ -21,36 +19,37 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button,
-    Avatar,
-    Modal
+    Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { DeleteEmployee, GetAllEmployee, GetByIdEmployee } from 'api/clients/EmployeeClient';
+import PropTypes from 'prop-types';
+import { Fragment, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { visuallyHidden } from '@mui/utils';
-import BodyEmployee from './ViewEmployee';
-import { TitleButton, Message } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
+import BodyEmployee from './ViewEmployee';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 
-import ViewPDF from 'components/components/ViewPDF';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportEmployee } from './ReportEmployee';
-import useAuth from 'hooks/useAuth';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import Cargando from 'components/loading/Cargando';
+import useAuth from 'hooks/useAuth';
 import swal from 'sweetalert';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ColorDrummondltd } from 'themes/colors';
+import { generateReportEmployee } from './ReportEmployee';
 
 import config from 'config';
 import GenerateExcel from './GenerateExcel';
@@ -389,7 +388,7 @@ const ListEmployee = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employee.length) : 0;
 
     return (
-        <MainCard title="Lista De Empleados" content={false}>
+        <MainCard title="Lista de empleados" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} />
 

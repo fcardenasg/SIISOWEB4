@@ -1,47 +1,47 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography
+    Typography,
+    useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
-import ViewEmployee from 'components/views/ViewEmployee';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import InputText from 'components/input/InputText';
-import DetailedIcon from 'components/controllers/DetailedIcon';
+import { GetByIdMedicalFormula } from 'api/clients/MedicalFormulaClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import InputText from 'components/input/InputText';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import useAuth from 'hooks/useAuth';
 import { generateReport } from '../Programming/Attention/OccupationalExamination/MedicalOrder/Report';
-import { GetByMail } from 'api/clients/UserClient';
-import { GetByIdMedicalFormula } from 'api/clients/MedicalFormulaClient';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import InputSelect from 'components/input/InputSelect';
-import InputDatePicker from 'components/input/InputDatePicker';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton'
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
 import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { InsertMedicalFormula } from 'api/clients/MedicalFormulaClient';
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
-import { FormatDate } from 'components/helpers/Format';
-import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import { FormatDate } from 'components/helpers/Format';
+import InputOnChange from 'components/input/InputOnChange';
+import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
 
 const validationSchema = yup.object().shape({
     idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -227,7 +227,7 @@ const MedicalFormula = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Recetario"
+                        title="Registrar recetario"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -237,7 +237,7 @@ const MedicalFormula = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">GENERAR ORDEN</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Generar orden</Typography>}>
                         <Grid container justifyContent="center" alignItems="center" spacing={2}>
                             <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
@@ -277,7 +277,7 @@ const MedicalFormula = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">INDICACIÓN MÉDICA</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Indicación médica 1</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={2}>
                                 <InputOnChange

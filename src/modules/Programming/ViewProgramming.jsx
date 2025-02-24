@@ -172,8 +172,6 @@ const ViewProgramming = ({ programming, getAll }) => {
         programming?.estadoPac === 'ESTÁ SIENDO ATENDIDO' ? "error" :
             programming?.estadoPac === 'ATENDIDO' ? "success" : "gray";
 
-    console.log(programming);
-
     return (
         <Card
             sx={{

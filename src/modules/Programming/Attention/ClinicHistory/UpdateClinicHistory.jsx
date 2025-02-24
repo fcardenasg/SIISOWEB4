@@ -373,8 +373,6 @@ const UpdateClinicHistory = () => {
         } catch (err) { }
     };
 
-    console.log(lsAtencion?.colorTriage);
-
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostAssistance(documento, datos.fecha, id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,

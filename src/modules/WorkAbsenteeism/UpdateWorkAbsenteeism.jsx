@@ -36,6 +36,7 @@ import useAuth from 'hooks/useAuth';
 import Accordion from 'components/accordion/Accordion';
 import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
 import Cargando from 'components/loading/Cargando';
+import ViewTrafficLight from 'components/components/ViewTrafficLight';
 
 const ColorCard = (numeroDias) => {
     const theme = useTheme();
@@ -842,21 +843,12 @@ const UpdateWorkAbsenteeism = () => {
                     </Grid >
 
                     <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">MONITOR DE EVENTOS</Typography>}>
-                            <Grid container spacing={2} sx={{ pb: 2, pl: 4 }}>
-                                <Grid item xs={2}>
-                                    <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.main }} />
-                                    <Typography variant="h6">De 75 a 90 Días</Typography>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.warning.dark }} />
-                                    <Typography variant="h6">De 90 a 180 Días</Typography>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <RadioButtonCheckedTwoToneIcon color='error' />
-                                    <Typography variant="h6">{'> 180 Días'}</Typography>
-                                </Grid>
-                            </Grid>
+                        <SubCard darkTitle title={<Typography variant="h4">Monitor de eventos</Typography>}>
+                            <ViewTrafficLight
+                                title1="De 75 a 90 Días"
+                                title2="De 90 a 180 Días"
+                                title3="> 180 Días"
+                            />
 
                             <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4, textAlign: 'center' }}>
                                 <Grid item xs={6}>

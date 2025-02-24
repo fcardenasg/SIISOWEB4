@@ -52,23 +52,28 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
     doc.text(`FECHA: ${ViewFormat(lsDataReport.fecha)}`, marXR - 2, 30, { align: 'right' });
 
     doc.text('DATOS BÁSICOS DE LA ATENCIÓN', 7, 37);
-    doc.text('DESCRIPCIÓN', 7, 85);
+    doc.text('Diagnóstico'.toUpperCase(), 7, 85);
+    doc.text('DESCRIPCIÓN', 7, 115);
+
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
 
     /* CUADRO DATOS */
-    doc.line(5, 25, 5, 150); /* IZQUIERDA */
+    doc.line(5, 25, 5, 190); /* IZQUIERDA */
     doc.line(5, 32, marXR, 32); /* HORI ONE */
     doc.line(5, 39, marXR, 39); /* HORI TWO  */
 
     doc.line(5, 80, marXR, 80); /* HORI THREE */
     doc.line(5, 88, marXR, 88); /* HORI FOUR */
 
-    doc.line(5, 150, marXR, 150); /* HORI FIVE */
+    doc.line(5, 110, marXR, 110); /* HORI THREE */
+    doc.line(5, 118, marXR, 118); /* HORI FOUR */
+
+    doc.line(5, 190, marXR, 190); /* HORI FIVE */
 
     doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
-    doc.line(marXR, 25, marXR, 150); /* DERECHA */
+    doc.line(marXR, 25, marXR, 190); /* DERECHA */
 
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
@@ -109,9 +114,10 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsDat
 
     /* DESCRIPCIONES DE TEXTO */
     doc.setFontSize(9);
-    doc.text(`${lsDataReport.descripcion}`, 7, 95, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport?.diagnostico} - ${lsDataReport?.nameDiagnostico}`, 7, 95, { maxWidth: 200, lineHeightFactor: 1.5 });
+    doc.text(`${lsDataReport?.descripcion}`, 7, 122, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    getFirma(doc, lsDataUser, -20)
+    getFirma(doc, lsDataUser);
 }
 
 export function generateReport(lsDataReport = [], lsDataUser, option = true) {

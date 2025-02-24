@@ -144,10 +144,4 @@ const CardsEmployee = ({ lsEmployee = [], handleClick1, handleClick2, vista = ''
     );
 };
 
-CardsEmployee.propTypes = {
-    avatar: PropTypes.string,
-    name: PropTypes.string,
-    status: PropTypes.string
-};
-
 export default CardsEmployee;
