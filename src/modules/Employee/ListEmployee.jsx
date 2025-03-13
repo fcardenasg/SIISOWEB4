@@ -29,7 +29,7 @@ import { useNavigate } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { visuallyHidden } from '@mui/utils';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import BodyEmployee from './ViewEmployee';
 
@@ -53,6 +53,7 @@ import { generateReportEmployee } from './ReportEmployee';
 
 import config from 'config';
 import GenerateExcel from './GenerateExcel';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function getModalStyle() {
     const top = 50;
@@ -212,22 +213,20 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             })
         }}
     >
-        {numSelected > 0 ? (
+        {numSelected > 0 &&
             <Typography color="inherit" variant="h4">
                 {numSelected} {TitleButton.Seleccionadas}
             </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
+        }
+
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.empleado}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -270,7 +269,7 @@ const ListEmployee = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdEmployee(idCheck);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReportEmployee(lsDataReport?.data.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
@@ -421,7 +420,7 @@ const ListEmployee = () => {
 
                     <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
+                            <Grid item xs>
                                 <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
                                     <IconButton size="large">
                                         <IconFileExport />
@@ -429,7 +428,7 @@ const ListEmployee = () => {
                                 </Tooltip>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs>
                                 <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport}>
                                     <IconButton size="large">
                                         <PrintIcon />
@@ -437,12 +436,14 @@ const ListEmployee = () => {
                                 </Tooltip>
                             </Grid>
 
-                            <Grid item xs={4}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/employee/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
-                            </Grid>
+                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.empleado}>
+                                <Grid item xs={4}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/employee/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </Grid>
+                            </ValidateAction>
 
                             <Grid item xs={4}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
@@ -610,11 +611,13 @@ const ListEmployee = () => {
                                                         </IconButton>
                                                     </Tooltip>
 
-                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.documento}`)}>
-                                                        <IconButton size="large">
-                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                                    <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.empleado}>
+                                                        <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.documento}`)}>
+                                                            <IconButton size="large">
+                                                                <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </ValidateAction>
                                                 </TableCell>
                                             </TableRow>
                                         );

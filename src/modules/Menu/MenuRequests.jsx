@@ -16,7 +16,6 @@ const MenuRequests = () => {
                 {navigationMap.map((item) => (
                     <Grid item xs={12} md={6} lg={3}>
                         <HoverSocialCard
-                        diferent={true}
                             secondary={item.title}
                             onClick={() => navigate(`${item.url}`)}
                             primary={item.subtitle}

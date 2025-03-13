@@ -327,7 +327,7 @@ const ListCabRegistration = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsCabRegistration.length) : 0;
 
     return (
-        <MainCard title="Lista De Registro De Taxi" content={false}>
+        <MainCard title="Lista de solicitud de taxi" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} />
 

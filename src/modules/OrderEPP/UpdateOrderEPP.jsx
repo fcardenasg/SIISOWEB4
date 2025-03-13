@@ -119,7 +119,7 @@ const UpdateOrderEPP = () => {
 
     const handleClick = async (datos) => {
         const DataToUpdate = PutOrderEPP(id, documento, datos.fecha, datos.idProvedor,
-            lsDataAtencion.usuarioRegistro, lsDataAtencion.fechaRegistro, user.nameuser, FormatDate(new Date()));
+            lsDataAtencion.usuarioRegistro, lsDataAtencion.fechaRegistro, user?.nameuser, FormatDate(new Date()));
 
         try {
             if (Object.keys(datos.length !== 0)) {

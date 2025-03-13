@@ -4,6 +4,7 @@ export const Url = {
     Base: config.rutaApi,
 
     Login: 'api/Login',
+    AudioTexto: 'api/Login/GetChatIA',
     ConsultarCorreo: 'api/Login/mail-consult',
     RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',
     EnviarExamenesPorCorreo: 'api/Login/enviar-paraclinicos',
@@ -11,6 +12,11 @@ export const Url = {
     Usuario: 'api/Usuario',
 
     Usuarios: 'api/Usuarios',
+    UsuariosInsertPermiso: 'api/Usuarios/insert-permisos',
+    UsuariosUpdatePermiso: 'api/Usuarios/update-permisos',
+    UsuariosGetPermisos: 'api/Usuarios/get-permisos',
+    UsuariosListPermisos: 'api/Usuarios/list-permisos',
+    UsuariosPermisos: 'api/Usuarios/permisos',
     UsuariosCombo: 'api/Usuarios/combo',
     UsuariosVentanilla: 'api/Usuarios/combo-responventanilla',
     UsuariosRegTaxi: 'api/Usuarios/combo-registrataxi',
@@ -74,6 +80,7 @@ export const Url = {
     Medicamentos: 'api/Medicamentos',
     MedicamentosSearch: 'api/Medicamentos/product-search',
     MedicamentosId: 'api/Medicamentos/id',
+    MedicamentosDetalle: 'api/Medicamentos/detalle',
 
     PruebasAlcoholDroga: 'api/PruebasAlcoholDroga',
     PruebasAlcoholDrogaExcel: 'api/PruebasAlcoholDroga/excel',

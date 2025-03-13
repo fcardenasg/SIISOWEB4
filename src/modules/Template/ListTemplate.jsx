@@ -222,7 +222,7 @@ const ListTemplate = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllTemplate(0, 0, user.nameuser);
+            const lsServer = await GetAllTemplate(0, 0, user?.nameuser);
             if (lsServer.status === 200) {
                 setLsTemplate(lsServer.data.entities);
                 setRows(lsServer.data.entities);

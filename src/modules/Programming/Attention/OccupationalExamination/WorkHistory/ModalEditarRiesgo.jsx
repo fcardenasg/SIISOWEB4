@@ -71,11 +71,11 @@ const ModalEditarRiesgo = ({ open = false, diferen, onClose, idRisk, title, getA
         try {
             const DataToInsertCOMPANY = PutWorkHistoryEmpresa(idRisk, lsWorkHistory.fecha, lsWorkHistory.idAtencion, lsWorkHistory.documento,
                 datos.empresa, datos.cargo, datos.anio, datos.meses, lsWorkHistory.usuarioRegistro, lsWorkHistory.fechaRegistro,
-                user.nameuser, FormatDate(new Date()));
+                user?.nameuser, FormatDate(new Date()));
 
             const DataToInsertDLTD = PutWorkHistoryDLTD(idRisk, lsWorkHistory.fecha, lsWorkHistory.idAtencion, lsWorkHistory.documento,
                 lsWorkHistory.idEmpresa, datos.idCargo, datos.anio, datos.meses,
-                lsWorkHistory.usuarioRegistro, lsWorkHistory.fechaRegistro, user.nameuser, FormatDate(new Date()));
+                lsWorkHistory.usuarioRegistro, lsWorkHistory.fechaRegistro, user?.nameuser, FormatDate(new Date()));
 
             if (diferen === "DLTD") {
                 const result1 = await UpdateWorkHistorys(DataToInsertDLTD);

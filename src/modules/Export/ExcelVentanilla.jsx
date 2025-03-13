@@ -14,7 +14,13 @@ import LoadingGenerate from "components/loading/LoadingGenerate";
 import { DownloadFile } from "components/helpers/ConvertToBytes";
 import { GenerateExcelVentanillaUnica } from "api/clients/VentanillaUnicaClient";
 
-const ExcelVentanilla = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin }) => {
+const ArrayAtencion = [
+    { value: 0, label: "TODAS" },
+    { value: 1, label: "ATENDIDOS" },
+    { value: 2, label: "POR ATENDER" }
+]
+
+const ExcelVentanilla = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fechaFin, setAtencion, atencion }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -39,7 +45,7 @@ const ExcelVentanilla = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
         try {
             setLoading(true);
 
-            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined);
+            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin, undefined, undefined, atencion);
             const lsServerExcel = await GenerateExcelVentanillaUnica(parametros);
 
             if (lsServerExcel.status === 200) {
@@ -73,6 +79,17 @@ const ExcelVentanilla = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
                         value={sede}
                         options={lsSede}
                         onChange={(e) => setSede(e.target.value)}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <SelectOnChange
+                        name="idAtencion"
+                        label="Estado de Atención"
+                        value={atencion}
+                        options={ArrayAtencion}
+                        onChange={(e) => setAtencion(e.target.value)}
                         size={matchesXS ? 'small' : 'medium'}
                     />
                 </Grid>

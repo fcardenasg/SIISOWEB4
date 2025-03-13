@@ -127,7 +127,7 @@ const ModalAnsweredView = ({ lsCardRequests }) => {
         try {
             const DataToInsert = PutRequests(lsCardRequests.id, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
                 undefined, datos.observacion, FormatDate(datos.fechaEntrega), datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, undefined, undefined,
-                user.nameuser, undefined, dataPDF);
+                user?.nameuser, undefined, dataPDF);
 
             const result = await UpdateRequestsDataSend(DataToInsert);
             if (result.status === 200) {

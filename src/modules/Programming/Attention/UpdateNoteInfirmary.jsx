@@ -149,7 +149,7 @@ const UpdateNoteInfirmary = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdNoteInfirmary(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data, user.namesede);
 
@@ -357,7 +357,7 @@ const UpdateNoteInfirmary = () => {
     const handleClick = async (datos) => {
         try {
             const UpdateToInsert = PutNoteInfirmary(resultData, id, documento, datos.fecha, datos.idAtencion, datos.idContingencia, datos.dx1,
-                datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad, user.nameuser, undefined, user.nameuser, undefined, procedimiento);
+                datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad, user?.nameuser, undefined, user?.nameuser, undefined, procedimiento);
 
             if (resultIdRegistroAtencion) {
                 const result1 = await UpdateNoteInfirmarys(UpdateToInsert);

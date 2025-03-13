@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTheme } from "@emotion/react";
+import { useTheme } from '@mui/material/styles';
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import { ArrayTodaSede } from "components/Arrays";

@@ -1,42 +1,42 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import useAuth from 'hooks/useAuth';
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import InputText from 'components/input/InputText';
-import DetailedIcon from 'components/controllers/DetailedIcon';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import ControllerListen from 'components/controllers/ControllerListen';
-import ControlModal from 'components/controllers/ControlModal';
-import ViewEmployee from 'components/views/ViewEmployee';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { FormatDate } from 'components/helpers/Format';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import { generateReportPsycho } from '../Programming/Attention/Report/Psychological';
-import ViewPDF from 'components/components/ViewPDF';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByMail } from 'api/clients/UserClient';
-import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
-import Cargando from 'components/loading/Cargando';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import ControlModal from 'components/controllers/ControlModal';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { AccionMenu, CodCatalogo, DefaultData, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import InputCheck from 'components/input/InputCheck';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import Cargando from 'components/loading/Cargando';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
+import useAuth from 'hooks/useAuth';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReportPsycho } from '../Programming/Attention/Report/Psychological';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -141,7 +141,7 @@ const UpdatePsychologicalCounseling = () => {
         try {
             const DataToUpdate = PutMedicalAdvice(id, documento, datos.fecha, lsPsychologicalCounseling.idRegistroAtencion, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
-                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, undefined, undefined, user.nameuser, undefined);
+                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, undefined, undefined, user?.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {
@@ -170,7 +170,7 @@ const UpdatePsychologicalCounseling = () => {
     }, 1500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.asesoria_psicologica}>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -442,7 +442,7 @@ const UpdatePsychologicalCounseling = () => {
                 </Grid>
                 : <Cargando />
             }
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

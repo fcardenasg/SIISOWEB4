@@ -35,7 +35,7 @@ const ChangeSede = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                setGetSede(user.idsede);
+                setGetSede(user?.idsede);
 
                 const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
                 var resultSede = lsServerSede.data.entities.map((item) => ({
@@ -52,7 +52,7 @@ const ChangeSede = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = {
-                id: user.id,
+                id: user?.id,
                 idSede: datos.idSede
             }
 

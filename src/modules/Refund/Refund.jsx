@@ -28,7 +28,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, DefaultValue, Modulo } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -41,6 +41,7 @@ import { GetAllComboUser, GetByMail } from 'api/clients/UserClient';
 import { generateReportRefund } from './ReportRefund';
 import ViewPDF from 'components/components/ViewPDF';
 import SelectOnChange from 'components/input/SelectOnChange';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -98,7 +99,7 @@ const Refund = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdRefund(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportRefund(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -246,7 +247,7 @@ const Refund = () => {
                 fechaFinFormateada, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, datos.inicioReubicacion, datos.finReubicacion, datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, datos.fechaInicioHorario, datos.fechaFinHorario,
-                datos.idEstadoCaso, user.nameuser, undefined, undefined, undefined);
+                datos.idEstadoCaso, user?.nameuser, undefined, undefined, undefined);
 
             const result = await InsertRefund(DataToInsert);
             if (result.status === 200) {
@@ -277,7 +278,7 @@ const Refund = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.reintegro}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -742,7 +743,7 @@ const Refund = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

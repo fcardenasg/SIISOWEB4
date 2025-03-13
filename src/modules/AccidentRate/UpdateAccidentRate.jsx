@@ -30,7 +30,7 @@ import DetailedIcon from 'components/controllers/DetailedIcon';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, ValidationMessage, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -48,6 +48,7 @@ import { GetByMail } from 'api/clients/UserClient';
 import { generateReport } from '../AccidentRate/ReporteAccidentRate';
 import ViewPDF from 'components/components/ViewPDF';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -297,7 +298,7 @@ const UpdateAccidentRate = () => {
                 1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
-                lsAccidentRate.usuarioRegistro, undefined, user.nameuser, undefined);
+                lsAccidentRate.usuarioRegistro, undefined, user?.nameuser, undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 if (lsEmployee.length !== 0) {
@@ -317,7 +318,7 @@ const UpdateAccidentRate = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.accidente_trabajo}>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -683,7 +684,7 @@ const UpdateAccidentRate = () => {
                     </Grid>
                 </Grid> : <Cargando />
             }
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

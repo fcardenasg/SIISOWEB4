@@ -92,7 +92,7 @@ const MedicalFormula = ({ setListMedicalFormula, contingencia, setNewMedicalForm
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalFormula(resultData.idRecetario);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -108,7 +108,7 @@ const MedicalFormula = ({ setListMedicalFormula, contingencia, setNewMedicalForm
 
             const DataToInsert = PostMedicalFormula(FormatDate(new Date()), documento, contingencia,
                 lsAtencion.id, saveTipoOrden, datos.diagnostico, datos.descripcion,
-                user.nameuser, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user?.nameuser, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (contingencia === "") {
                 setOpenError(true);

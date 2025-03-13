@@ -199,7 +199,7 @@ const AddFramingham = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdFramingham(result);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportFramingham(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -211,7 +211,7 @@ const AddFramingham = () => {
             const DataToInsert = PostFramingham(documento, datos.fecha, tencion, datos.fechaLaboratorioFRA, colesterol,
                 hdl, trigliceridos, glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
                 frGlicemia, frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                user.nameuser, undefined, undefined, undefined);
+                user?.nameuser, undefined, undefined, undefined);
 
             if (lsEmployee.length !== 0) {
                 if (fuma && tencion && colesterol && hdl && trigliceridos && glicemia) {

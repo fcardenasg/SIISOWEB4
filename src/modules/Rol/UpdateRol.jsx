@@ -102,7 +102,7 @@ const UpdateRol = () => {
                 idItemMenu: valueItem,
                 idCardItem: valueCard === '' ? undefined : valueCard,
                 estado: estadoPermiso,
-                usuarioRegistro: user.nameuser,
+                usuarioRegistro: user?.nameuser,
 
                 isPermiso: true
             };
@@ -139,7 +139,7 @@ const UpdateRol = () => {
                 id: id,
                 nombreRol: datos.nombreRol,
                 estado: estadoPermiso,
-                usuarioModifico: user.nameuser,
+                usuarioModifico: user?.nameuser,
 
                 isPermiso: true
             };

@@ -143,7 +143,7 @@ const ListPlantillaAll = () => {
     useEffect(() => {
         async function GetAll() {
             try {
-                const lsServer = await GetAllTemplate(0, 0, user.nameuser);
+                const lsServer = await GetAllTemplate(0, 0, user?.nameuser);
                 setLsTemplate(lsServer.data.entities);
                 setRows(lsServer.data.entities);
             } catch (error) { }

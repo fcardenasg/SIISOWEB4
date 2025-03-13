@@ -48,7 +48,6 @@ const UpdateSupplier = () => {
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     /* Agregar algún estado que necesitemos para mensaje */
-    const [resultMessage, setResultMessage] = useState('');
     const [openError, setOpenError] = useState(false);
 
     async function GetAll() {
@@ -90,7 +89,7 @@ const UpdateSupplier = () => {
             /* Modificamos el correo por el nombre del usuario */
             const DataToUpdate = PutSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
                 datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-                supplier.usuarioRegistro, supplier.fechaRegistro, user.nameuser, FormatDate(new Date()));
+                supplier.usuarioRegistro, supplier.fechaRegistro, user?.nameuser, FormatDate(new Date()));
 
             /* Modificamos el consumo del servicio de actualziar */
             if (Object.keys(datos.length !== 0)) {

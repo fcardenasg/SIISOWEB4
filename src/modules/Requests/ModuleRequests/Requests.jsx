@@ -108,7 +108,7 @@ const Requests = () => {
         try {
             const DataToInsert = PostRequests(documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, datos.correoRecibioDLTD, FormatDate(fechaInicio),
                 FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion, undefined, undefined, undefined,
-                undefined, user.nameuser, null, null, null, null);
+                undefined, user?.nameuser, null, null, null, null);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {

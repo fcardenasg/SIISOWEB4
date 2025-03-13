@@ -158,7 +158,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const handleClickEmpresa = async (datos) => {
         try {
             const DataToInsert = PostWorkHistoryEmpresa(FormatDate(new Date()), atencion, documento, datos.empresa, datos.cargoEmpresa,
-                datos.anioEmpresa, datos.mesesEmpresa, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.anioEmpresa, datos.mesesEmpresa, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (atencion !== '') {
                 if (Object.keys(datos.length !== 0)) {
@@ -181,7 +181,7 @@ const WorkHistory = ({ documento, lsEmpleado, atencion }) => {
     const handleClickDLTD = async (datos) => {
         try {
             const DataToInsert = PostWorkHistoryDLTD(FormatDate(new Date()), atencion, documento, "",
-                datos.idCargo, datos.anio, datos.meses, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.idCargo, datos.anio, datos.meses, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (atencion !== '') {
                 if (Object.keys(datos.length !== 0)) {

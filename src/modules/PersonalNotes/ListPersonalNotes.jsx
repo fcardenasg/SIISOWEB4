@@ -202,7 +202,7 @@ const ListPersonalNotes = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllPersonalNotes(0, 0, user.nameuser);
+            const lsServer = await GetAllPersonalNotes(0, 0, user?.nameuser);
             setTypeCatalog(lsServer.data.entities);
             setRows(lsServer.data.entities);
         } catch (error) { }

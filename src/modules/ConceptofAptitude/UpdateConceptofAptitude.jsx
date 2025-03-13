@@ -152,7 +152,7 @@ const UpdateOrderEPP = () => {
         const idConceptoActitud_DATA = idConceptoActitud === '' ? datos.idConceptoActitud : idConceptoActitud;
 
         const DataToUpdate = PutConceptofAptitude(id, idConcepto, documento, datos.fecha, idConceptoActitud_DATA,
-            datos.observacionesNEMTA, user.nameuser, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
+            datos.observacionesNEMTA, user?.nameuser, user?.nameuser, FormatDate(new Date()), user?.nameuser, FormatDate(new Date()));
 
         try {
             const result = await UpdateConceptofAptitudes(DataToUpdate);

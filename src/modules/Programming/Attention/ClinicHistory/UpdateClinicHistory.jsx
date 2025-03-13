@@ -366,7 +366,7 @@ const UpdateClinicHistory = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdMedicalHistory(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
@@ -378,12 +378,12 @@ const UpdateClinicHistory = () => {
             const DataToInsert = PostAssistance(documento, datos.fecha, id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, descripAntecedente, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             const DataToUpdate = PutAssistance(resultData, documento, datos.fecha, id, datos.atencion, contingencia, DefaultValue.SINREGISTRO_GLOBAL,
                 DefaultValue.SINREGISTRO_GLOBAL, datos.motivoConsulta, datos.enfermedadActual, descripAntecedente, datos.revisionSistema, datos.examenFisico,
                 datos.examenParaclinico, datos.dx1, datos.dx2, datos.dx3, datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL,
-                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, user.nameuser, FormatDate(new Date()));
+                lsAtencion.usuarioRegistro, lsAtencion.fechaRegistro, user?.nameuser, FormatDate(new Date()));
 
             if (resultIdRegistroAtencion) {
                 const result1 = await UpdateMedicalHistorys(DataToUpdate);

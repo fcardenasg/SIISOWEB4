@@ -12,7 +12,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 
 import { useNavigate } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
-import { DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import useAuth from 'hooks/useAuth';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -36,6 +36,7 @@ import { generateReporteIndex } from '../Report';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { SendParaclinicalExams } from 'api/clients/MailClient';
 import { LoadingButton } from '@mui/lab';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const OrdersIndividual = () => {
     const { user } = useAuth();
@@ -97,12 +98,11 @@ const OrdersIndividual = () => {
 
             const lsDataReport = await GetByIdOrders(resultData);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(resultData);
-            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+            var lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
+            lsDataUser.data.usuarioActivo = user?.nombreusuario;
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
             if (action === 'correo') {
-                const ciudades = lsTipoExamen.map(orden => orden.idCiudad);
-
                 const Correo = {
                     Correo: lsEmployee.email,
                     Adjunto: dataPDFTwo.file64,
@@ -151,7 +151,7 @@ const OrdersIndividual = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostOrders(documento, datos.fecha, tipoExamen, datos.observaciones,
-                user.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado);
+                user?.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -173,7 +173,7 @@ const OrdersIndividual = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.ordenes}>
             <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -312,12 +312,11 @@ const OrdersIndividual = () => {
                                     </Grid>
                                 </Grid>
                             </Grid>
-
                         </Grid>
                     </SubCard>
                 </Grid>
             </Grid >
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

@@ -88,7 +88,7 @@ const OrderEPP = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdOrderEPP(result.idOrdenesEpp);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReportOrderEPP(lsDataReport.data, lsDataUser.data);
 
             setDataPDF(dataPDFTwo);
@@ -113,7 +113,7 @@ const OrderEPP = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostOrderEPP(documento, datos.fecha, datos.idProvedor,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOrderEPP(DataToInsert);

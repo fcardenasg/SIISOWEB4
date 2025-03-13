@@ -227,7 +227,7 @@ const UpdateAudiometry = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdParaclinics(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
@@ -251,7 +251,7 @@ const UpdateAudiometry = () => {
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
                 datos.idSuministradaPorAO, datos.idUsoAO, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
                 datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
-                savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                savePdf, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
 

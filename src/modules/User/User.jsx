@@ -1,28 +1,37 @@
-import { useState, useEffect } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
+    Box,
     Button,
+    Card,
     Grid,
+    Stack,
+    Typography,
     useMediaQuery
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import { useTheme } from '@mui/material/styles';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { alpha } from '@mui/material/styles';
+import animation from 'assets/img/animation.json';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
-import { TitleButton, CodCatalogo, ValidationMessage, Message } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import { PostUser } from 'formatdata/UserForm';
-import { InsertUser } from 'api/clients/UserClient';
 import { GetComboRol } from 'api/clients/RolClient';
+import { GetPermiso, InsertUser } from 'api/clients/UserClient';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import { CodCatalogo, IdUser, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import { UploadBox } from 'components/upload';
+import { PostUser } from 'formatdata/UserForm';
+import useAuth from 'hooks/useAuth';
+import Lottie from 'lottie-react';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
@@ -41,9 +50,10 @@ const lsVentanillaUnica = [
 const User = () => {
     const navigate = useNavigate();
     const theme = useTheme();
+    const { user } = useAuth();
+    console.log(user);
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [fileImg, setFileImg] = useState(null);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -57,12 +67,14 @@ const User = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, reset, watch, formState: { errors } } = methods;
+    const { handleSubmit, reset, setValue, watch, formState: { errors } } = methods;
     const values = watch();
+
+    console.log(values);
 
     async function getAll() {
         try {
-            const lsServerRol = await GetComboRol();
+            const lsServerRol = await GetPermiso();
             setLsRolUser(lsServerRol.data);
 
             const lsServerEspecialidad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESPECIALIDAD_MEDICO);
@@ -94,37 +106,32 @@ const User = () => {
         getAll();
     }, []);
 
-    const allowedFilesJPEG = ['image/jpeg'];
-    const allowedFilesPNG = ['image/png'];
-    const handleFile = (event) => {
-        let selectedFile = event.target.files[0];
+    const handleDropFirm = useCallback((acceptedFiles) => {
+        const archivo = acceptedFiles[0];
 
-        if (selectedFile) {
-            if (selectedFile && (allowedFilesJPEG.includes(selectedFile.type) || allowedFilesPNG.includes(selectedFile.type))) {
-                let reader = new FileReader();
-                reader.readAsDataURL(selectedFile);
-                reader.onloadend = (e) => {
-                    setFileImg(e.target.result);
-                }
-            }
-            else {
-                setFileImg('');
-                setOpenError(true);
-                setErrorMessage('Seleccione una Imagen (jpeg/png)');
+        if (archivo) {
+            const reader = new FileReader();
+            reader.readAsDataURL(archivo);
+            reader.onloadend = (event) => {
+                setValue('imgfirma', event.target.result, { shouldValidate: true });
             }
         }
-    }
+    }, [setValue]);
+
+    const handleRemoveFile = useCallback(() => {
+        setValue('imgfirma', null);
+    }, [setValue]);
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, datos.nombreUsuario, datos.nombre, datos.telefono,
                 datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
-                datos.tarjetaProfesional, fileImg, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica, datos.registraTaxi);
+                datos.tarjetaProfesional, datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro,
+                datos.respondeVentanillaUnica, datos.registraTaxi, datos.puedeAdministrarPermisos);
 
             const result = await InsertUser(DataToInsert);
             if (result.status === 200) {
                 if (result.data.message === "") {
-                    setFileImg(null);
                     reset();
                     setOpenSuccess(true);
                 } else {
@@ -143,123 +150,136 @@ const User = () => {
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            name="nombreUsuario"
-                            label="Usuario"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.nombreUsuario}
-                        />
-                    </FormProvider>
-                </Grid>
+            <FormProvider {...methods}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={12} lg={9}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    name="nombreUsuario"
+                                    label="Usuario"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.nombreUsuario}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            type="number"
-                            defaultValue=""
-                            name="documento"
-                            label="Documento"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.documento}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    name="documento"
+                                    label="Documento"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.documento}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            name="nombre"
-                            label="Nombres"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.nombre}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    name="nombre"
+                                    label="Nombres"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.nombre}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            type="number"
-                            defaultValue=""
-                            name="telefono"
-                            label="Teléfono"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.telefono}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    type="number"
+                                    defaultValue=""
+                                    name="telefono"
+                                    label="Teléfono"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.telefono}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            fullWidth
-                            name="correo"
-                            label="Correo"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.correo}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="correo"
+                                    label="Correo"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.correo}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="idRol"
-                            label="Rol"
-                            defaultValue=""
-                            options={lsRolUser}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idRol}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    name="idRol"
+                                    label="Rol"
+                                    defaultValue=""
+                                    options={lsRolUser}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.idRol}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="especialidad"
-                            label="Especialidad"
-                            defaultValue={null}
-                            options={lsEspecialidad}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.especialidad}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    name="especialidad"
+                                    label="Especialidad"
+                                    defaultValue={null}
+                                    options={lsEspecialidad}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.especialidad}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            fullWidth
-                            name="registroMedico"
-                            label="Registro Médico"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.registroMedico}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="registroMedico"
+                                    label="Registro Médico"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.registroMedico}
+                                />
+                            </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            name="licencia"
-                            label="Licencia"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.licencia}
-                        />
-                    </FormProvider>
-                </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    name="licencia"
+                                    label="Licencia"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.licencia}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
+                    <Grid item xs={12} md={12} lg={3}>
+                        <Grid container spacing={0.2} sx={{ textAlign: 'center' }}>
+                            <Grid item xs={12}>
+                                <Card sx={{ border: (theme) => `dashed 1px ${alpha(theme.palette.grey[500], 0.3)}` }}>
+                                    <UploadBox
+                                        name="imgfirma"
+                                        defaultValue={null}
+                                        onDrop={handleDropFirm}
+                                        placeholder={
+                                            <Stack alignItems="center" sx={{ color: 'text.disabled' }}>
+                                                <Box sx={{ alignContent: 'center', width: '80px', height: '80px', marginX: 'auto' }}>
+                                                    <Lottie animationData={animation} />
+                                                </Box>
+                                                <Typography variant="body1">Subir firma</Typography>
+                                            </Stack>
+                                        }
+                                        sx={{ py: 1.5, width: 'auto', height: 'auto', borderRadius: 1.5 }}
+                                    />
+                                </Card>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Button size="medium" sx={{ mt: 2 }} color="error" onClick={handleRemoveFile}>Remover</Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputText
                             defaultValue=""
                             name="tarjetaProfesional"
@@ -267,11 +287,9 @@ const User = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.tarjetaProfesional}
                         />
-                    </FormProvider>
-                </Grid>
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputSelect
                             name="idSede"
                             label="Sede de atención"
@@ -280,11 +298,9 @@ const User = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.idSede}
                         />
-                    </FormProvider>
-                </Grid>
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputSelect
                             name="idArea"
                             label="Area"
@@ -293,62 +309,62 @@ const User = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.idArea}
                         />
-                    </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ mt: 2 }}>
+                        <SubCard title="Control de acciones permitidas para el usuario">
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={4}>
+                                    <InputCheckBox
+                                        name="estado"
+                                        defaultValue={true}
+                                        label={`Estado del usuario: ${values.estado ? "Activo" : "Inactivo"}`}
+                                        size={30}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <InputCheckBox
+                                        name="respondeReintegro"
+                                        defaultValue={false}
+                                        label="¿Responde ordenes de reintegro?"
+                                        size={30}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <InputCheckBox
+                                        name="respondeVentanillaUnica"
+                                        defaultValue={false}
+                                        label="¿Responde ventanilla única?"
+                                        size={30}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <InputCheckBox
+                                        name="registraTaxi"
+                                        defaultValue={false}
+                                        label="¿Registra solicitud de taxi?"
+                                        size={30}
+                                    />
+                                </Grid>
+
+                                {user?.id == IdUser.fcardenas &&
+                                    <Grid item xs={12} md={4}>
+                                        <InputCheckBox
+                                            name="puedeAdministrarPermisos"
+                                            defaultValue={false}
+                                            label="¿Administra los permisos de usuarios?"
+                                            size={30}
+                                        />
+                                    </Grid>
+                                }
+                            </Grid>
+                        </SubCard>
+                    </Grid>
                 </Grid>
-
-                <FormProvider {...methods}>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputCheckBox
-                            name="estado"
-                            defaultValue={true}
-                            label={`Estado Usuario: ${values.estado ? "Activo" : "Inactivo"}`}
-                            size={30}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputCheckBox
-                            name="respondeReintegro"
-                            defaultValue={false}
-                            label="¿Este usuario responde ordenes de reintegro?"
-                            size={30}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputCheckBox
-                            name="respondeVentanillaUnica"
-                            defaultValue={false}
-                            label="¿Este usuario responde ventanilla única?"
-                            size={30}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputCheckBox
-                            name="registraTaxi"
-                            defaultValue={false}
-                            label="¿Registra solicitud de Taxi?"
-                            size={30}
-                        />
-                    </Grid>
-                </FormProvider>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <Grid container>
-                        <Grid item xs={12} md={6}>
-                            <Button size="large" variant="contained" component="label" startIcon={<EditIcon fontSize="large" />}>
-                                Subir firma
-                                <input hidden accept="image/*" type="file" onChange={handleFile} />
-                            </Button>
-                        </Grid>
-
-                        <Grid item xs={3}>
-                            <img src={fileImg} width="120" />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
+            </FormProvider>
 
             <Grid item xs={12} sx={{ pt: 4 }}>
                 <Grid container spacing={2}>
@@ -359,6 +375,7 @@ const User = () => {
                             </Button>
                         </AnimateButton>
                     </Grid>
+
                     <Grid item xs={6} md={4} lg={2}>
                         <AnimateButton>
                             <Button variant="outlined" fullWidth onClick={() => navigate("/user/list")}>

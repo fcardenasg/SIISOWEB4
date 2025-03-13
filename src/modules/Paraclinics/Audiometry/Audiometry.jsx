@@ -220,7 +220,7 @@ const Audiometry = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdParaclinics(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
@@ -244,7 +244,7 @@ const Audiometry = () => {
                 datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
                 datos.idSuministradaPorAO, datos.idUsoA, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
                 datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
-                savePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                savePdf, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
 
             if (Object.keys(datos.length !== 0)) {

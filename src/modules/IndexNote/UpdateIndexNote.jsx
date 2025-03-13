@@ -65,8 +65,8 @@ const UpdateIndexNote = () => {
                 descripcion: datos.descripcion,
                 titulo: datos.titulo,
                 
-                usuarioCreacion: user.nameuser,
-                usuarioModifica: user.nameuser
+                usuarioCreacion: user?.nameuser,
+                usuarioModifica: user?.nameuser
             }
 
             const result = await UpdateIndexNotes(DataToInsert);

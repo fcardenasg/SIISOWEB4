@@ -111,7 +111,7 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
                 idUsuario: datos.idUsuario !== "" ? datos.idUsuario : null,
                 observaciones: datos.observaciones !== "" ? datos.observaciones : null,
 
-                usuarioRegistro: user.nameuser,
+                usuarioRegistro: user?.nameuser,
             }
 
             const result = await InsertVentanillaUnicaDetalle(DataToInsert);

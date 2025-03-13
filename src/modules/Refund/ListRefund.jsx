@@ -29,7 +29,7 @@ import { visuallyHidden } from '@mui/utils';
 import swal from 'sweetalert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { MessageDelete, MessageError, ParamDelete } from 'components/alert/AlertAll';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { ViewFormat } from 'components/helpers/Format';
 
@@ -38,6 +38,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { DeleteRefund, GetAllRefund } from 'api/clients/RefundClient';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -182,22 +183,20 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             })
         }}
     >
-        {numSelected > 0 ? (
+        {numSelected > 0 &&
             <Typography color="inherit" variant="h4">
                 {numSelected} {TitleButton.Seleccionadas}
             </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
+        }
+
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.reintegro}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -360,10 +359,12 @@ const ListRefund = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/refund/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.reintegro}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/refund/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={6}>
@@ -507,11 +508,13 @@ const ListRefund = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/refund/update/${row.id}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.reintegro}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/refund/update/${row.id}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

@@ -30,7 +30,7 @@ import { visuallyHidden } from '@mui/utils';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { DeleteOccupationalMedicine, GetAllOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
-import { TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -40,6 +40,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import Chip from 'ui-component/extended/Chip';
 import { ViewFormat } from 'components/helpers/Format';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -190,22 +191,20 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             })
         }}
     >
-        {numSelected > 0 ? (
+        {numSelected > 0 &&
             <Typography color="inherit" variant="h4">
                 {numSelected} {TitleButton.Seleccionadas}
             </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
+        }
 
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.medicina_laboral}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -336,7 +335,7 @@ const ListOccupationalMedicine = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - occupationalMedicine.length) : 0;
 
     return (
-        <MainCard title={<Typography variant='h4'>Lista De Medicina Laboral</Typography>} content={false}>
+        <MainCard title={<Typography variant='h4'>Lista de medicina laboral</Typography>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -360,10 +359,12 @@ const ListOccupationalMedicine = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/occupationalmedicine/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.medicina_laboral}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/occupationalmedicine/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={6}>
@@ -527,11 +528,13 @@ const ListOccupationalMedicine = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/occupationalmedicine/update/${row.id}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.medicina_laboral}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/occupationalmedicine/update/${row.id}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

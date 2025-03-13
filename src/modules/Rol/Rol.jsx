@@ -139,7 +139,7 @@ const Rol = () => {
             const DataToInsert = {
                 nombreRol: datos.nombreRol,
                 lsItemMenu_CardItem: valueCard.valueCardItem,
-                usuarioRegistro: user.nameuser,
+                usuarioRegistro: user?.nameuser,
                 isPermiso: false,
                 isAdmin: isAdmin
             };

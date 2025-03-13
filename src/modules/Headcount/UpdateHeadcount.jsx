@@ -59,7 +59,7 @@ const UpdateHeadcount = () => {
                 anio: datos.anio,
                 mes: datos.mes,
                 cantidad: datos.cantidad,
-                usuarioRegistro: user.nameuser
+                usuarioRegistro: user?.nameuser
             };
 
             const result = await InsertHeadcount(DataToInsert);

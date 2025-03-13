@@ -1,13 +1,11 @@
-import PropTypes from 'prop-types';
-import { Controller } from 'react-hook-form';
 import {
     FormHelperText,
     Grid,
     TextField,
 } from '@mui/material';
+import { Controller } from 'react-hook-form';
 
 const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, ...others }) => {
-
     return (
         <>
             <Controller
@@ -38,13 +36,3 @@ const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, ...
 };
 
 export default InputText;
-
-InputText.propTypes = {
-    bug: PropTypes.object,
-    size: PropTypes.string,
-    label: PropTypes.string,
-    defaultValue: PropTypes.any,
-    name: PropTypes.string,
-    required: PropTypes.bool,
-    fullWidth: PropTypes.bool
-};

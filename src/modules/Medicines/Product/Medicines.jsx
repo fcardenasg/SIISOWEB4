@@ -16,13 +16,11 @@ import { InsertMedicines } from 'api/clients/MedicinesClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
-import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
 
 const ValidationMessageStop = {
     Requerido: 'Este campo es requerido',
@@ -34,9 +32,9 @@ const validationSchema = yup.object().shape({
     codigo: yup.string().required(ValidationMessage.Requerido),
     descripcion: yup.string().required(ValidationMessage.Requerido),
     idUnidad: yup.string().required(ValidationMessage.Requerido),
+    idLaboratorio: yup.string().required(ValidationMessage.Requerido),
     formaFarmaceutica: yup.string().required(ValidationMessage.Requerido),
     presentacionComercial: yup.string().required(ValidationMessage.Requerido),
-    idProveedor: yup.string().required(ValidationMessage.Requerido),
     stopMinimo: yup.string().required(ValidationMessageStop.Requerido).test(
         'minimo-mayor-maximo',
         ValidationMessageStop.MinimoMayorMaximo,
@@ -53,7 +51,7 @@ const validationSchema = yup.object().shape({
             return !stopMinimo || !value || Number(value) >= Number(stopMinimo);
         }
     ),
-    fechaLote: yup.string().nullable()
+    /* fechaLote: yup.string().nullable()
         .test('formato-fecha-lote', 'Formato de fecha inválido (YYYY-MM-DD)', (value) => {
             if (!value) return true;
             return /^\d{4}-\d{2}-\d{2}$/.test(value);
@@ -93,7 +91,7 @@ const validationSchema = yup.object().shape({
         .test('valid-year', 'Año de vencimiento inválido', (value) => {
             const year = new Date(value).getFullYear();
             return year <= new Date().getFullYear() + 20;
-        }),
+        }), */
 });
 
 const Medicines = () => {
@@ -105,14 +103,10 @@ const Medicines = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-
     const [lsUnidad, setLsUnidad] = useState([]);
-    const [lsProveedor, setLsProveedor] = useState([]);
+    const [lsLaboratorio, setLsLaboratorio] = useState([]);
 
-    const methods = useForm({
-        resolver: yupResolver(validationSchema)
-    });
-
+    const methods = useForm({ resolver: yupResolver(validationSchema) });
     const { handleSubmit, setValue, formState: { errors }, reset } = methods;
 
     async function getAll() {
@@ -120,15 +114,11 @@ const Medicines = () => {
             setValue("fechaLote", "");
             setValue("fechaVencimiento", "");
 
-            const lsServerTipo = await GetByTipoCatalogoCombo(CodCatalogo.UNIDAD);
-            setLsUnidad(lsServerTipo.data);
+            const lsServerUni = await GetByTipoCatalogoCombo(CodCatalogo.UNIDAD);
+            setLsUnidad(lsServerUni.data);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
-                value: item.codiProv,
-                label: item.nombProv
-            }));
-            setLsProveedor(resultProveedor);
+            const lsServerLab = await GetByTipoCatalogoCombo(CodCatalogo.LABORATORIO);
+            setLsLaboratorio(lsServerLab.data);
         } catch (error) { }
     }
 
@@ -138,15 +128,13 @@ const Medicines = () => {
 
     const handleClick = async (datos) => {
         try {
-            datos.usuarioRegistro = user.nameuser;
+            datos.usuarioRegistro = user?.nameuser;
             datos.stopMaximo = parseInt(datos.stopMaximo);
             datos.stopMinimo = parseInt(datos.stopMinimo);
             datos.idUnidad = parseInt(datos.idUnidad);
+            datos.idLaboratorio = parseInt(datos.idLaboratorio);
 
-            datos.idUnidad = datos.idUnidad || null;
             datos.concentracion = datos.concentracion || null;
-            datos.lote = datos.lote || null;
-            datos.fechaLote = datos.fechaLote || null;
             datos.registroSanitario = datos.registroSanitario || null;
 
             const result = await InsertMedicines(datos);
@@ -195,12 +183,12 @@ const Medicines = () => {
 
                     <Grid item xs={12} md={6} lg={4}>
                         <InputSelect
-                            name="idProveedor"
-                            label="Proveedor"
+                            name="idLaboratorio"
+                            label="Laboratorio"
                             defaultValue=""
-                            options={lsProveedor}
+                            options={lsLaboratorio}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idProveedor}
+                            bug={errors.idLaboratorio}
                         />
                     </Grid>
 
@@ -232,36 +220,6 @@ const Medicines = () => {
                             label="Concentración"
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.concentracion}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="lote"
-                            label="Lote"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.lote}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputDatePicker
-                            label="Fecha de lote"
-                            name="fechaLote"
-                            defaultValue=""
-                            bug={errors.fechaLote}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputDatePicker
-                            label="Fecha de vencimiento"
-                            name="fechaVencimiento"
-                            defaultValue=""
-                            bug={errors.fechaVencimiento}
-                            size={matchesXS ? 'small' : 'medium'}
                         />
                     </Grid>
 

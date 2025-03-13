@@ -335,13 +335,13 @@ const UpdateEvolutionNote = () => {
         try {
             const DataToInsert = PostEvolutionNote(documento, datos.fecha, id, datos.atencion, contingencia,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, datos.dx1, datos.dx2, datos.dx3,
-                datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user.nameuser,
+                datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user?.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             const DataToUpdate = PutEvolutionNote(resultData, documento, datos.fecha, id, datos.atencion, contingencia,
                 DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, datos.dx1, datos.dx2, datos.dx3,
                 datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, lsAtencion.usuarioRegistro,
-                lsAtencion.fechaRegistro, user.nameuser, FormatDate(new Date()));
+                lsAtencion.fechaRegistro, user?.nameuser, FormatDate(new Date()));
 
             if (resultIdRegistroAtencion) {
                 const result1 = await UpdateEvolutionNotes(DataToUpdate);

@@ -14,3 +14,11 @@ export const DeleteUser = async (idUsuarios) => await deleteData(Url.Usuarios, {
 export const GetAllComboVentanilla = async () => await getData(Url.UsuariosVentanilla);
 export const GetAllComboRegTaxi = async () => await getData(Url.UsuariosRegTaxi);
 export const GetAllComboByIdRol = async (idRol) => await getData(Url.UsuariosRol, { idRol });
+
+/* Permisos */
+export const InsertPermisosUser = async (idUsuario) => await getData(Url.UsuariosInsertPermiso, { idUsuario });
+export const GetPermisosUser = async (idUsuario) => await getData(Url.UsuariosGetPermisos, { idUsuario });
+export const UpdatePermiso = async (accion) => await putData(Url.UsuariosUpdatePermiso, accion);
+export const InsertPermisoIndividual = async (accion) => await postData(Url.UsuariosInsertPermiso, accion);
+export const GetPermiso = async () => await getData(Url.UsuariosListPermisos);
+export const GetSharePermission = async (accion) => await postData(Url.UsuariosPermisos, accion);

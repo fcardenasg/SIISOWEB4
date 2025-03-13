@@ -42,8 +42,10 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [tipoExcelAusentismo, setTipoExcelAusentismo] = useState(0);
     const [documento, setDocumento] = useState('');
     const [opcionBusqueda, setOpcionBusqueda] = useState(0);
+    const [atencion, setAtencion] = useState(0);
 
     const handleClose = () => {
+        setAtencion(0);
         setSede(0);
         setTipoExcelAusentismo(0);
         setOpcionBusqueda(0);
@@ -129,6 +131,7 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
+                        setAtencion={setAtencion} atencion={atencion}
                     /> : null
                 }
 

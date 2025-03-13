@@ -152,7 +152,7 @@ const UpdateRequests = () => {
         try {
             const DataToInsert = PutRequests(id, documento, FormatDate(datos.fechaReciboDLTD), datos.usuarioReciboDLTD, datos.correoRecibioDLTD, FormatDate(fechaInicio),
                 FormatDate(fechaFin), datosEmpleado.direccion, datosEmpleado.correo, datosEmpleado.telefono, datos.observacion, FormatDate(datos.fechaEntrega),
-                datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, lsDataRequiest.usuarioRegistro, null, user.nameuser, null, dataPDF);
+                datos.metodoUtilizado, datos.numeroGuia, datos.entidadSolicitante, lsDataRequiest.usuarioRegistro, null, user?.nameuser, null, dataPDF);
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {

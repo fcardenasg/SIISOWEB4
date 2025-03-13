@@ -1,8 +1,6 @@
-import { Link } from 'react-router-dom';
 import { ButtonBase } from '@mui/material';
-import LogoWhite from 'assets/img/LogoWhite.png'
-import LogoWhiteEnergy from 'assets/img/LogoWhiteEnergy.png'
 import config from 'config';
+import { Link } from 'react-router-dom';
 
 const LogoSection = () => {
     const menu = window.localStorage.getItem('systemMenu');

@@ -203,7 +203,7 @@ const OrdenesMasivas = () => {
         }
 
         try {
-            const DataToInsert = PostOrders(documentoEmpleado, datosControlados.fecha, datosControlados.tipoExamen, null, user.nameuser, undefined, '', undefined, datosControlados.citacion, datosControlados.consentimientoInformado);
+            const DataToInsert = PostOrders(documentoEmpleado, datosControlados.fecha, datosControlados.tipoExamen, null, user?.nameuser, undefined, '', undefined, datosControlados.citacion, datosControlados.consentimientoInformado);
             const resultOrden = await InsertOrders(DataToInsert);
             if (resultOrden.status === 200) {
                 const lsResultado = await GetByOrders(resultOrden.data);

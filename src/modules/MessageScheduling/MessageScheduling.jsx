@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
+    Badge,
     Box,
+    Button,
     CardContent,
     Checkbox,
+    Divider,
+    Drawer,
     Grid,
     IconButton,
     InputAdornment,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -21,31 +25,31 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
-import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
+import { DeleteMedicines, GetAllMedicines } from 'api/clients/MedicinesClient';
 
-import swal from 'sweetalert';
-import Chip from 'ui-component/extended/Chip';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
+import Chip from 'ui-component/extended/Chip';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
+import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonCheckedTwoTone';
+import SearchIcon from '@mui/icons-material/Search';
 import Cargando from 'components/loading/Cargando';
+import Iconify from 'components/iconify/iconify';
+import { useBoolean } from 'hooks/use-boolean';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import FilterProgramming from './FilterProgramming';
 
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -73,26 +77,27 @@ function stableSort(array, comparator) {
 const headCells = [
     {
         id: 'codigo',
-        numeric: false,
-        label: 'Código',
+        label: 'Documento',
         align: 'left'
     },
     {
         id: 'descripcion',
-        numeric: false,
-        label: 'Descripción',
+        label: 'Nombre',
         align: 'left'
     },
     {
         id: 'cantidad',
-        numeric: false,
-        label: 'Cantidad',
+        label: 'Última atención',
         align: 'left'
     },
     {
-        id: 'estado',
-        numeric: false,
-        label: 'Estado',
+        id: 'fechaVencimiento',
+        label: 'Fecha de examenes',
+        align: 'left'
+    },
+    {
+        id: 'fechaVencimiento',
+        label: 'Fecha de último examen',
         align: 'left'
     }
 ];
@@ -203,7 +208,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListMedicinesEntry = () => {
+const MessageScheduling = () => {
     const navigate = useNavigate();
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
@@ -218,7 +223,7 @@ const ListMedicinesEntry = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServer = await GetAllMedicines();
             if (lsServer.status === 200) {
@@ -229,7 +234,7 @@ const ListMedicinesEntry = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -240,11 +245,11 @@ const ListMedicinesEntry = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codigo', 'descripcion', 'cantidad'];
+                const properties = ['codigo', 'descripcion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });
@@ -267,12 +272,12 @@ const ListMedicinesEntry = () => {
     };
 
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
             const newSelectedId = lsMedicamentos.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
+
         setSelected([]);
     };
 
@@ -311,10 +316,11 @@ const ListMedicinesEntry = () => {
                     const result = await DeleteMedicines(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
+
+                        setSearch('');
+                        setSelected([]);
+                        getAll();
                     }
-                    setSearch('');
-                    setSelected([]);
-                    GetAll();
                 } else
                     setSelected([]);
             });
@@ -326,13 +332,15 @@ const ListMedicinesEntry = () => {
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
+
+
     return (
-        <MainCard title="Lista de medicamentos de entrantes" content={false}>
+        <MainCard title="Empleados para notificar EMO" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={4} md={6} lg={8.5}>
+                    <Grid item xs={12} sm={8}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -348,28 +356,20 @@ const ListMedicinesEntry = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={8} md={6} lg={3.5} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <Tooltip title="Exportar" /* onClick={() => setOpenModal(true)} */>
-                                    <IconButton size="large">
-                                        <IconFileExport />
-                                    </IconButton>
-                                </Tooltip>
+                    <Grid item sx={{ textAlign: 'right', justifyItems: 'center' }}>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+                                <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.success.main, mr: 1 }} />
+                                <Typography variant="h5">Tienen</Typography>
                             </Grid>
 
-                            <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/medicines-entry/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+                                <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.error.main, mr: 1 }} />
+                                <Typography variant="h5">No tienen</Typography>
                             </Grid>
 
-                            <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/medicines/menu")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
+                            <Grid item sx={{ ml: 3 }}>
+                                <FilterProgramming />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -445,7 +445,7 @@ const ListMedicinesEntry = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.descripcion}
+                                                    {row.codigo}
                                                 </Typography>
                                             </TableCell>
 
@@ -460,7 +460,7 @@ const ListMedicinesEntry = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.existencia === null ? "NO HAY EXISTENCIA" : `${row.existencia} EXISTENTES`}
+                                                    {row.codigo}
                                                 </Typography>
                                             </TableCell>
 
@@ -475,10 +475,37 @@ const ListMedicinesEntry = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.estado === true ?
-                                                        <Chip label="ACTIVO" size="small" chipcolor="success" /> :
-                                                        <Chip label="INACTIVO" size="small" chipcolor="error" />
-                                                    }
+                                                    {row.codigo}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.codigo}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.codigo}
                                                 </Typography>
                                             </TableCell>
 
@@ -507,6 +534,10 @@ const ListMedicinesEntry = () => {
             </TableContainer>
 
             <TablePagination
+                labelRowsPerPage="Filas por página:"
+                labelDisplayedRows={({ from, to, count }) => (
+                    `${from} - ${to} de ${count !== -1 ? count : `más de ${lsMedicamentos.length}`}`
+                )}
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={lsMedicamentos.length}
@@ -519,4 +550,4 @@ const ListMedicinesEntry = () => {
     );
 };
 
-export default ListMedicinesEntry;
+export default MessageScheduling;

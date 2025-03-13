@@ -170,7 +170,7 @@ const UpdateMedicalFormula = () => {
     const handleClick = async (datos) => {
         try {
             const DataToUpdate = PutMedicalFormula(id, datos.fecha, documento, datos.idContingencia, 0,
-                datos.idTipoRemision, datos.diagnostico, datos.descripcion, user.nameuser, user.nameuser,
+                datos.idTipoRemision, datos.diagnostico, datos.descripcion, user?.nameuser, user?.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {

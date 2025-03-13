@@ -66,7 +66,7 @@ const UploadPdf = ({ idListaReintegro }) => {
 
     const handleSave = async () => {
         try {
-            const DataToInsert = PostListaArchivoRefund(idListaReintegro, filePdf, user.nameuser,
+            const DataToInsert = PostListaArchivoRefund(idListaReintegro, filePdf, user?.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (filePdf !== null) {

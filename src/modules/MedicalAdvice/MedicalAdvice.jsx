@@ -38,7 +38,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -56,6 +56,8 @@ import UpdateAttMedicalAdvice from 'modules/Programming/Attention/AttentionMedic
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import InputCheck from 'components/input/InputCheck';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+import ExampleAudio from './ExampleAudio';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idSubmotivo: yup.string().required(ValidationMessage.Requerido),
@@ -191,7 +193,7 @@ const MedicalAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
@@ -235,7 +237,7 @@ const MedicalAdvice = () => {
         try {
             const DataToUpdate = PutMedicalAdvice(resultData, documento, datos.fecha, 0, DefaultData.ASESORIA_MEDICA, lsEmployee.sede, undefined, undefined,
                 undefined, undefined, textTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
-                user.nameuser, undefined, undefined, undefined);
+                user?.nameuser, undefined, undefined, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {
@@ -260,7 +262,7 @@ const MedicalAdvice = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.asesoria_medica}>
             <MessageSuccess open={openSuccess} message={resultData === 0 ? Message.Guardar : Message.Actualizar} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -284,9 +286,9 @@ const MedicalAdvice = () => {
                 maxWidth="md"
                 open={open}
                 onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
+                title="Dictado por voz"
             >
-                <ControllerListen />
+                <ExampleAudio />
             </ControlModal>
 
             <ControlModal
@@ -566,7 +568,7 @@ const MedicalAdvice = () => {
                 </UpdateAttMedicalAdvice>
 
             </Fragment>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

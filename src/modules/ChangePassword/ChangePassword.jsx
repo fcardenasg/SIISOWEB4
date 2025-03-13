@@ -60,7 +60,7 @@ const ChangePassword = () => {
     const handleClick = async () => {
         try {
 
-            const DataToInsert = PostChangePassword(user.id, txtAnteriorPass, txtNuevaPass);
+            const DataToInsert = PostChangePassword(user?.id, txtAnteriorPass, txtNuevaPass);
 
             if (txtAnteriorPass === '') {
                 setOpenError(true);

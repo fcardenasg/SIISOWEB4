@@ -192,7 +192,7 @@ const UpdateCabRegistration = () => {
             datos.idMedico,
             datos.idTipoTransporte,
             datos.cualTransporte,
-            user.nameuser
+            user?.nameuser
         );
 
         try {
@@ -232,7 +232,7 @@ const UpdateCabRegistration = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
-                            title="Actualizar Taxis"
+                            title="Actualizar solicitud de taxi"
                             disabled={true}
                             key={lsEmployee.documento}
                             documento={documento}

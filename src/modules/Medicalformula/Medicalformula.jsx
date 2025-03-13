@@ -172,7 +172,7 @@ const MedicalFormula = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostMedicalFormula(datos.fecha, documento, datos.idContingencia, 0,
-                datos.idTipoRemision, datos.diagnostico, datos.descripcion, user.nameuser, user.nameuser,
+                datos.idTipoRemision, datos.diagnostico, datos.descripcion, user?.nameuser, user?.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
@@ -277,7 +277,7 @@ const MedicalFormula = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Indicación médica 1</Typography>}>
+                    <SubCard darkTitle title={<Typography variant="h4">Indicación médica</Typography>}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={2}>
                                 <InputOnChange

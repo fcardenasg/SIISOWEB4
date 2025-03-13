@@ -38,7 +38,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, GetReportePdf, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
+import { CodCatalogo, Message, TitleButton, DefaultData, DefaultValue, ValidationMessage, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -56,6 +56,7 @@ import UpdateAttMedicalAdvice from 'modules/Programming/Attention/AttentionMedic
 import Cargando from 'components/loading/Cargando';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import InputCheck from 'components/input/InputCheck';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idSubmotivo: yup.string().required(ValidationMessage.Requerido),
@@ -242,7 +243,7 @@ const UpdateMedicalAdvice = () => {
         try {
             const DataToUpdate = PutMedicalAdvice(id, documento, datos.fecha, lsMedicalAdvice.idRegistroAtencion, DefaultData.ASESORIA_MEDICA,
                 lsEmployee.sede, undefined, undefined, undefined, undefined, textTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones,
-                datos.recomendaciones, '', undefined, undefined, undefined, user.nameuser, undefined);
+                datos.recomendaciones, '', undefined, undefined, undefined, user?.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {
@@ -271,7 +272,7 @@ const UpdateMedicalAdvice = () => {
     }, 1500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.asesoria_medica}>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -574,7 +575,7 @@ const UpdateMedicalAdvice = () => {
                     : <Cargando />
                 }
             </Fragment>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

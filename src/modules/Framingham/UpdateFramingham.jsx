@@ -239,7 +239,7 @@ const UpdateFramingham = () => {
             const DataToInsert = PutFramingham(id, documento, datos.fecha, tencion, datos.fechaLaboratorioFRA, colesterol,
                 hdl, trigliceridos, glicemia, fuma, datos.observacionFRA, frLdl, relacion, frEdad, frColesterol, frHdl,
                 frGlicemia, frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
-                undefined, undefined, user.nameuser, undefined);
+                undefined, undefined, user?.nameuser, undefined);
 
             if (lsEmployee.length !== 0) {
                 if (fuma && tencion && colesterol && hdl && trigliceridos && glicemia) {

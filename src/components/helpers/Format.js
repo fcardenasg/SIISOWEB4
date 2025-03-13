@@ -7,7 +7,7 @@ export function UpperFirstChar(cadena) {
 
 const FormatDate = (fecha) => {
     try {
-        if (fecha === null || fecha === undefined || fecha == "NaN-aN-aN") {
+        if (fecha == null || fecha == undefined || fecha == "NaN-aN-aN" || fecha == '') {
             return null;
         } else {
             let d = new Date(fecha);

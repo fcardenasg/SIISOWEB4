@@ -29,7 +29,7 @@ const SingleReportView = ({ documento, resultData, atencion }) => {
             var dataPDFTwo = null;
 
             var lsDataReport = await GetByIdDataReport(resultData);
-            var lsDataUser = await GetByMail(user.nameuser);
+            var lsDataUser = await GetByMail(user?.nameuser);
             var resultExpoDLTD = await GetDataExploracion(documento);
             //reporte riesgos
             var lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);

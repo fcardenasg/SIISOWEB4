@@ -247,7 +247,7 @@ const UpdateMedicalAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
@@ -280,7 +280,7 @@ const UpdateMedicalAdvice = () => {
         try {
             const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, id, DefaultData.ASESORIA_MEDICA, lsAtencion.sede, undefined, undefined,
                 undefined, undefined, idTipoAsesoria, textMotivo, datos.idSubmotivo, undefined, datos.observaciones, datos.recomendaciones, '', undefined,
-                user.nameuser, undefined, user.nameuser, undefined);
+                user?.nameuser, undefined, user?.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

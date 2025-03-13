@@ -217,7 +217,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
                 datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
                 realizada, MotivoAsistencia, Observacion, lsAlcoholAndDrugTesting.idMedico, lsAlcoholAndDrugTesting.usuarioRegistro,
-                lsAlcoholAndDrugTesting.fechaRegistro, user.nameuser, FormatDate(new Date()));
+                lsAlcoholAndDrugTesting.fechaRegistro, user?.nameuser, FormatDate(new Date()));
 
             if (realizada === DefaultValue.Opcion_SI && conceptoAptitud === '') {
                 setOpenError(true);

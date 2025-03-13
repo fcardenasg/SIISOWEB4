@@ -1,29 +1,40 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
+    Box,
     Button,
+    Card,
+    Divider,
     Grid,
+    Stack,
+    Typography,
     useMediaQuery
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import { useTheme } from '@mui/material/styles';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { alpha } from '@mui/material/styles';
+import animation from 'assets/img/animation.json';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
-import { TitleButton, CodCatalogo, ValidationMessage, Message } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import { PutUser } from 'formatdata/UserForm';
-import { GetByIdUser, UpdateUsers } from 'api/clients/UserClient';
-import Cargando from 'components/loading/Cargando';
 import { GetComboRol } from 'api/clients/RolClient';
+import { GetByIdUser, UpdateUsers } from 'api/clients/UserClient';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import { CodCatalogo, IdUser, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import Cargando from 'components/loading/Cargando';
+import { UploadBox } from 'components/upload';
+import { PutUser } from 'formatdata/UserForm';
+import Lottie from 'lottie-react';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import ListActionMenu from './ListActionMenu';
+import useAuth from 'hooks/useAuth';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
@@ -41,12 +52,12 @@ const lsVentanillaUnica = [
 
 const UpdateUser = () => {
     const { id } = useParams();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsUsuario, setLsUsuario] = useState([]);
-    const [fileImg, setFileImg] = useState(null);
     const [timeWait, setTimeWait] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openError, setOpenError] = useState(false);
@@ -69,9 +80,9 @@ const UpdateUser = () => {
             try {
                 const lsServerUpdate = await GetByIdUser(id);
                 if (lsServerUpdate.status === 200) {
-                    setValue("estado", lsServerUpdate.data.estado)
+                    setValue("estado", lsServerUpdate.data.estado);
+                    setValue("puedeAdministrarPermisos", lsServerUpdate.data.puedeAdministrarPermisos);
                     setLsUsuario(lsServerUpdate.data);
-                    setFileImg(lsServerUpdate.data.firma);
                 }
 
                 const lsServerRol = await GetComboRol();
@@ -104,26 +115,21 @@ const UpdateUser = () => {
         getAll();
     }, []);
 
-    const allowedFilesJPEG = ['image/jpeg'];
-    const allowedFilesPNG = ['image/png'];
-    const handleFile = (event) => {
-        let selectedFile = event.target.files[0];
+    const handleDropFirm = useCallback((acceptedFiles) => {
+        const archivo = acceptedFiles[0];
 
-        if (selectedFile) {
-            if (selectedFile && allowedFilesJPEG.includes(selectedFile.type) || allowedFilesPNG.includes(selectedFile.type)) {
-                let reader = new FileReader();
-                reader.readAsDataURL(selectedFile);
-                reader.onloadend = (e) => {
-                    setFileImg(e.target.result);
-                }
-            }
-            else {
-                setFileImg('');
-                setOpenError(true);
-                setErrorMessage('Seleccione una Imagen');
+        if (archivo) {
+            const reader = new FileReader();
+            reader.readAsDataURL(archivo);
+            reader.onloadend = (event) => {
+                setValue('imgfirma', event.target.result, { shouldValidate: true });
             }
         }
-    }
+    }, [setValue]);
+
+    const handleRemoveFile = useCallback(() => {
+        setValue('imgfirma', null);
+    }, [setValue]);
 
     const handleClick = async (datos) => {
         try {
@@ -131,7 +137,8 @@ const UpdateUser = () => {
 
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, resert, datos.nombre, datos.telefono, datos.idArea,
                 datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                fileImg, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica, datos.registraTaxi);
+                datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica,
+                datos.registraTaxi, datos.puedeAdministrarPermisos);
 
             const result = await UpdateUsers(DataToUpdate);
             if (result.status === 200) {
@@ -149,9 +156,8 @@ const UpdateUser = () => {
     };
 
     setTimeout(() => {
-        if (lsUsuario.length != 0) {
+        if (lsUsuario.length != 0)
             setTimeWait(true);
-        }
     }, 1000);
 
     return (
@@ -160,121 +166,134 @@ const UpdateUser = () => {
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             {timeWait ?
-                <Fragment>
+                <FormProvider {...methods}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsUsuario.nombreUsuario}
-                                    name="nombreUsuario"
-                                    label="Usuario"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.nombreUsuario}
-                                />
-                            </FormProvider>
+                        <Grid item xs={9}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={lsUsuario.nombreUsuario}
+                                        name="nombreUsuario"
+                                        label="Usuario"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.nombreUsuario}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={lsUsuario.documento}
+                                        name="documento"
+                                        label="Documento"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.documento}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={lsUsuario.nombre}
+                                        name="nombre"
+                                        label="Nombre"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.nombre}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={lsUsuario.telefono}
+                                        name="telefono"
+                                        label="Teléfono"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.telefono}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={lsUsuario.correo}
+                                        fullWidth
+                                        name="correo"
+                                        label="Correo"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.correo}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputSelect
+                                        name="idRol"
+                                        label="Rol"
+                                        defaultValue={lsUsuario.idRol}
+                                        options={lsRolUser}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idRol}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputSelect
+                                        name="especialidad"
+                                        label="Especialidad"
+                                        defaultValue={lsUsuario.especialidad}
+                                        options={lsEspecialidad}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.especialidad}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={lsUsuario.registroMedico}
+                                        fullWidth
+                                        name="registroMedico"
+                                        label="Registro Médico"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.registroMedico}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={lsUsuario.licencia}
+                                        name="licencia"
+                                        label="Licencia"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.licencia}
+                                    />
+                                </Grid>
+                            </Grid>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsUsuario.documento}
-                                    name="documento"
-                                    label="Documento"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.documento}
-                                />
-                            </FormProvider>
+                        <Grid item xs={12} md={12} lg={3}>
+                            <Grid container spacing={0.2} sx={{ textAlign: 'center' }}>
+                                <Grid item xs={12}>
+                                    <Card sx={{ border: (theme) => `dashed 1px ${alpha(theme.palette.grey[500], 0.3)}` }}>
+                                        <UploadBox
+                                            name="imgfirma"
+                                            defaultValue={lsUsuario?.firma}
+                                            onDrop={handleDropFirm}
+                                            placeholder={
+                                                <Stack alignItems="center" sx={{ color: 'text.disabled' }}>
+                                                    <Box sx={{ alignContent: 'center', width: '80px', height: '80px', marginX: 'auto' }}>
+                                                        <Lottie animationData={animation} />
+                                                    </Box>
+                                                    <Typography variant="body1">Subir firma</Typography>
+                                                </Stack>
+                                            }
+                                            sx={{ py: 1.5, width: 'auto', height: 'auto', borderRadius: 1.5 }}
+                                        />
+                                    </Card>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Button size="medium" sx={{ mt: 2 }} color="error" onClick={handleRemoveFile}>Remover</Button>
+                                </Grid>
+                            </Grid>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsUsuario.nombre}
-                                    name="nombre"
-                                    label="Nombre"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.nombre}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsUsuario.telefono}
-                                    name="telefono"
-                                    label="Teléfono"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.telefono}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsUsuario.correo}
-                                    fullWidth
-                                    name="correo"
-                                    label="Correo"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.correo}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="idRol"
-                                    label="Rol"
-                                    defaultValue={lsUsuario.idRol}
-                                    options={lsRolUser}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.idRol}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="especialidad"
-                                    label="Especialidad"
-                                    defaultValue={lsUsuario.especialidad}
-                                    options={lsEspecialidad}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.especialidad}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsUsuario.registroMedico}
-                                    fullWidth
-                                    name="registroMedico"
-                                    label="Registro Médico"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.registroMedico}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsUsuario.licencia}
-                                    name="licencia"
-                                    label="Licencia"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.licencia}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6} lg={3}>
                             <FormProvider {...methods}>
                                 <InputText
                                     defaultValue={lsUsuario.tarjetaProfesional}
@@ -286,7 +305,7 @@ const UpdateUser = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6} lg={3}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idSede"
@@ -299,7 +318,7 @@ const UpdateUser = () => {
                             </FormProvider>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6} lg={3}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="idArea"
@@ -312,66 +331,77 @@ const UpdateUser = () => {
                             </FormProvider>
                         </Grid>
 
-                        <FormProvider {...methods}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputCheckBox
-                                    name="estado"
-                                    defaultValue={lsUsuario.estado}
-                                    label={`Estado Usuario: ${values.estado ? "Activo" : "Inactivo"}`}
-                                    size={30}
-                                />
-                            </Grid>
+                        <Grid item xs={12} md={6} lg={3}>
+                            <InputCheckBox
+                                name="checkResetearPass"
+                                defaultValue={false}
+                                label="¿Restablecer contraseña?"
+                                size={30}
+                            />
+                        </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputCheckBox
-                                    name="checkResetearPass"
-                                    defaultValue={false}
-                                    label="¿Restablecer contraseña?"
-                                    size={30}
-                                />
-                            </Grid>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <SubCard title={<Typography variant='h4'>Acciones permitidas para el usuario</Typography>}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputCheckBox
+                                            name="estado"
+                                            defaultValue={lsUsuario.estado}
+                                            label={`Estado de usuario: ${values.estado ? "Activo" : "Inactivo"}`}
+                                            size={30}
+                                        />
+                                    </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputCheckBox
-                                    name="respondeReintegro"
-                                    defaultValue={lsUsuario.respondeReintegro}
-                                    label="¿Este usuario responde ordenes de reintegro?"
-                                    size={30}
-                                />
-                            </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputCheckBox
+                                            name="respondeReintegro"
+                                            defaultValue={lsUsuario.respondeReintegro}
+                                            label="¿Responde ordenes de reintegro?"
+                                            size={30}
+                                        />
+                                    </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputCheckBox
-                                    name="respondeVentanillaUnica"
-                                    defaultValue={lsUsuario.respondeVentanillaUnica}
-                                    label="¿Este usuario responde ventanilla única?"
-                                    size={30}
-                                />
-                            </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputCheckBox
+                                            name="respondeVentanillaUnica"
+                                            defaultValue={lsUsuario.respondeVentanillaUnica}
+                                            label="¿Responde ventanilla única?"
+                                            size={30}
+                                        />
+                                    </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputCheckBox
-                                    name="registraTaxi"
-                                    defaultValue={lsUsuario.registraTaxi}
-                                    label="¿Registra solicitud de Taxi?"
-                                    size={30}
-                                />
-                            </Grid>
-                        </FormProvider>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputCheckBox
+                                            name="registraTaxi"
+                                            defaultValue={lsUsuario.registraTaxi}
+                                            label="¿Registra solicitud de taxi?"
+                                            size={30}
+                                        />
+                                    </Grid>
 
-                        <Grid item xs={12} md={6} lg={4}>
-                            <Grid container>
-                                <Grid item xs={12} md={6}>
-                                    <Button size="large" variant="contained" component="label" startIcon={<EditIcon fontSize="large" />}>
-                                        Subir firma
-                                        <input hidden accept="image/*" type="file" onChange={handleFile} />
-                                    </Button>
+                                    {user?.id == IdUser.fcardenas &&
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputCheckBox
+                                                name="puedeAdministrarPermisos"
+                                                defaultValue={lsUsuario.puedeAdministrarPermisos}
+                                                label="¿Administra los permisos de usuarios?"
+                                                size={30}
+                                            />
+                                        </Grid>
+                                    }
+
+                                    {console.log(lsUsuario)}
+                                    {console.log(user)}
+
+                                    {user?.puedeAdministrarPermisos == true && <>
+                                        <Grid item xs={12} sx={{ my: 2 }}><Divider /></Grid>
+
+                                        <Grid item xs={12}>
+                                            <ListActionMenu />
+                                        </Grid>
+                                    </>}
                                 </Grid>
-
-                                <Grid item xs={3}>
-                                    <img src={fileImg} width="120" />
-                                </Grid>
-                            </Grid>
+                            </SubCard>
                         </Grid>
                     </Grid>
 
@@ -393,7 +423,7 @@ const UpdateUser = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </Fragment> : <Cargando />
+                </FormProvider> : <Cargando />
             }
         </MainCard>
     );

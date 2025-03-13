@@ -29,7 +29,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { DeleteWorkAbsenteeism, GetAllWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -42,6 +42,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ViewFormat } from 'components/helpers/Format';
 import Chip from 'ui-component/extended/Chip';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -192,22 +193,20 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             })
         }}
     >
-        {numSelected > 0 ? (
+        {numSelected > 0 &&
             <Typography color="inherit" variant="h4">
                 {numSelected} {TitleButton.Seleccionadas}
             </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
+        }
 
-            </Typography>
-        )}
-        <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.ausentismo_laboral}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -362,10 +361,12 @@ const ListWorkAbsenteeism = () => {
                     <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
-                                    onClick={() => navigate("/work-absenteeism/history")}>
-                                    {TitleButton.Historico}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.ausentismo_laboral}>
+                                    <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
+                                        onClick={() => navigate("/work-absenteeism/history")}>
+                                        {TitleButton.Historico}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={4}>
@@ -545,11 +546,13 @@ const ListWorkAbsenteeism = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.ausentismo_laboral}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

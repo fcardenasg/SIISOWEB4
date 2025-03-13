@@ -483,11 +483,11 @@ const ListMedicines = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    <Chip
-                                                        label={`${ViewFormat(row.fechaVencimiento)} - ${row.tiempoTranscurrido?.label}`}
+                                                    {/* <Chip
+                                                        label={row.tiempoTranscurrido?.label ? `${ViewFormat(row.fechaVencimiento)} - ${row.tiempoTranscurrido?.label}` : row.tiempoTranscurrido?.label}
                                                         size="small"
                                                         chipcolor={row.tiempoTranscurrido?.codigo}
-                                                    />
+                                                    /> */}
                                                 </Typography>
                                             </TableCell>
 

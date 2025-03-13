@@ -19,7 +19,7 @@ import {
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import { useForm, FormProvider } from 'react-hook-form';
 import Transitions from 'ui-component/extended/Transitions';
-import { Message } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo } from 'components/helpers/Enums';
 import useAuth from 'hooks/useAuth';
 import { MessageSuccess, MessageError, ParamDelete } from 'components/alert/AlertAll';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -33,6 +33,7 @@ import { PostOrdersParaclinico } from 'formatdata/OrdersForm';
 import { DeleteOrdersParaclinicos, GetAllOrdersParaclinicos, InsertOrdersParaclinicos } from 'api/clients/OrdersClient';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import swal from 'sweetalert';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledButton }) => {
     const { user } = useAuth();
@@ -172,7 +173,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
             var ciudadMap = fechaExmaneFisico ? DefaultValue.SINREGISTRO_GLOBAL : ciudad;
 
             const DataToInsert = PostOrdersParaclinico(paraclinicos, idOrdenes, proveedorMap, ciudadMap, datos.idTipoExamenLaboratorio,
-                datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, user.nameuser, undefined, "", undefined);
+                datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, user?.nameuser, undefined, "", undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertOrdersParaclinicos(DataToInsert);
@@ -227,15 +228,13 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                                             <TableCell>{new Date(row.fechaRegistro).toLocaleString()}</TableCell>
 
                                             <TableCell>
-                                                <Grid container spacing={2}>
-                                                    <Grid item xs={6}>
-                                                        <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
-                                                            <IconButton color="error" size="small">
-                                                                <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Grid>
-                                                </Grid>
+                                                <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.detalle_ordenes}>
+                                                    <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
+                                                        <IconButton color="error" size="small">
+                                                            <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>))}
                                 </TableBody>
@@ -246,7 +245,6 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                     <Grid item xs={12}>
                         <Transitions type="collapse" in={addItemClickedEmpresa} position="top-left" direction="up">
                             <Grid container sx={{ pt: 5 }} spacing={2}>
-
                                 <Grid item xs={xsGrid}>
                                     <SelectOnChange
                                         name="idParaclinico"
@@ -347,12 +345,15 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                             </Grid>
                         </Transitions>
 
-                        {!addItemClickedEmpresa ?
-                            <Grid item sx={{ pl: 2, pt: 3 }}>
-                                <Button disabled={lsEmployee.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
-                                    + Agregar Paraclinico
-                                </Button>
-                            </Grid> : null}
+                        {!addItemClickedEmpresa &&
+                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.detalle_ordenes}>
+                                <Grid item sx={{ pl: 2, pt: 3 }}>
+                                    <Button disabled={lsEmployee.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
+                                        + Agregar Paraclinico
+                                    </Button>
+                                </Grid>
+                            </ValidateAction>
+                        }
                     </Grid>
                 </Grid>
             </SubCard>

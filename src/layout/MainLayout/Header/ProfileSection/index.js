@@ -209,7 +209,7 @@ const ProfileSection = () => {
                                             <ListItemText primary={<Typography variant="body2">Cambiar de sede</Typography>} />
                                         </ListItemButton>
 
-                                        {user?.idrol === 1 && (
+                                        {user?.idrol == 1 && (
                                             <ListItemButton
                                                 sx={{ borderRadius: `${customization.borderRadius}px` }}
                                                 selected={selectedIndex === 0}

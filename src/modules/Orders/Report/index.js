@@ -1,6 +1,6 @@
-import jsPDF from "jspdf";
-import { generateReportConcentimiento, generateReportCitacion, generateReportParaclinico } from "./ReportesParaclinicos";
 import { DefaultValue } from "components/helpers/Enums";
+import jsPDF from "jspdf";
+import { generateReportCitacion, generateReportConcentimiento, generateReportParaclinico } from "./ReportesParaclinicos";
 
 import config from "config";
 
@@ -26,15 +26,32 @@ function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-0408") {
     doc.line(5, 25, 210, 25);
 }
 
+function obtenerNombres(usuarioActivo, nombre) {
+    // Dividir los nombres en arreglos
+    const nombresUsuarioActivo = usuarioActivo.split(' ');
+    const nombresRegistro = nombre.split(' ');
+
+    // Obtener los primeros tres nombres o menos
+    const usuarioImpresion = nombresUsuarioActivo.slice(0, 3).join(' ');
+    const usuarioRegistro = nombresRegistro.slice(0, 3).join(' ');
+
+    return {
+        usuarioImpresion,
+        usuarioRegistro
+    };
+}
+
 function getPiePage(doc, lsDataUser) {
+    const resultName = obtenerNombres(lsDataUser.usuarioActivo, lsDataUser.nombre);
+
     doc.setFontSize(8);
     doc.setLineWidth(1);
     doc.setDrawColor(255, 0, 0);
     doc.line(5, doc.internal.pageSize.height - 10, 210, doc.internal.pageSize.height - 10);
 
-    doc.text(`FECHA DE SISTEMA:  ${new Date().toLocaleString()}`, 10, doc.internal.pageSize.height - 4);
-    doc.text(`USUARIO ACTIVO:  ${lsDataUser.nombre}`, 150, doc.internal.pageSize.height - 4);
-    /* doc.text(`Pag. ${page} of ${sizePage}`, 190, doc.internal.pageSize.height - 4); */
+    doc.text(`F. DE SISTEMA: ${new Date().toLocaleString()}`, 5, doc.internal.pageSize.height - 4);
+    doc.text(`U. DE IMPRESIÓN: ${resultName.usuarioImpresion}`, 70, doc.internal.pageSize.height - 4);
+    doc.text(`U. DE REGISTRO: ${resultName.usuarioRegistro}`, 140, doc.internal.pageSize.height - 4);
 }
 
 export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataReportParaclinico) {
@@ -76,7 +93,6 @@ export function generateReporteIndex(lsDataReport = [], lsDataUser = [], lsDataR
     var dataPDF = doc.output("bloburl");
     var bytePDF = doc.output('datauristring');
     var file64 = bytePDF.split('pdf;base64,')[1];
-
 
     return { dataPDF, file64 };
 }

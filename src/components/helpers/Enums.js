@@ -113,6 +113,7 @@ export const CodCatalogo = {
     PAD_MOTIVO_NO_ASIS: 54,
 
     UNIDAD: 36,
+    LABORATORIO: 245 /* 246 */,
 
     PAD_MUESTRA_AD: 115,
     PAD_MUESTRA_AL: 117,
@@ -207,12 +208,36 @@ export const DefaultData = {
     SinRegistro: 1,
 }
 
+export const IdUser = {
+    fcardenas: 9,
+}
+
+export const AccionMenu = {
+    agregar: 1,
+    actualizar: 2,
+    eliminar: 3
+}
+
+export const Modulo = {
+    asesoria_medica: 1,
+    asesoria_psicologica: 2,
+    otras_asesorias: 3,
+    ordenes: 4,
+    detalle_ordenes: 5,
+    empleado: 6,
+    accidente_trabajo: 7,
+    reintegro: 8,
+    medicina_laboral: 9,
+    ausentismo_laboral: 10
+}
+
 export const DefaultValue = {
     SINREGISTRO_GLOBAL: 1,
-    TIPO_TRANSPORTE_OTRO: 10159, /* 9886 local  10159 servidor*/
+    TIPO_TRANSPORTE_OTRO: 10159,
     BANDERA_DRUMMOND: 7116,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
     GeneroWomen: 2,
+    PROVEEDOR_MEDICAMENTO: 3539,
     OrdenadoPor_Reintegro_MedicoDLTD: 5180,
 
     ATENCION_ATENDIDO: 'ATENDIDO',
@@ -332,6 +357,7 @@ export const TitleButton = {
     Actualizar: 'Actualizar',
     Eliminar: 'Eliminar',
     Agregar: 'Nuevo',
+    Filter: 'Filtrar',
     Seleccionadas: 'Seleccionadas',
     Regresar: 'Regresar',
     RegresarACargos: 'Regresar a cargos',

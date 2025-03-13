@@ -12,7 +12,7 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
-import { DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import useAuth from 'hooks/useAuth';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
@@ -36,6 +36,7 @@ import { generateReporteIndex } from '../Report';
 import InputCheckBox from 'components/input/InputCheckBox';
 import { SendParaclinicalExams } from 'api/clients/MailClient';
 import { LoadingButton } from '@mui/lab';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateOrdersIndividual = () => {
     const { user } = useAuth();
@@ -124,16 +125,15 @@ const UpdateOrdersIndividual = () => {
 
     async function generateReport(action = '') {
         try {
-            if (action === 'correo') {
+            if (action === 'correo')
                 setLoading(true);
-            }
 
             const lsDataReport = await GetByIdOrders(id);
             const lsDataReportParaclinico = await GetAllOrdersParaclinicos(id);
 
-            const idUsuario = lsDataReport.data.usuarioModifico === "" ? lsDataReport.data.usuarioRegistro : lsDataReport.data.usuarioModifico;
-
+            const idUsuario = lsDataReport.data?.usuarioModifico ? lsDataReport.data.usuarioModifico : lsDataReport.data.usuarioRegistro;
             const lsDataUser = await GetByMail(idUsuario);
+            lsDataUser.data.usuarioActivo = user?.nombreusuario;
             const dataPDFTwo = generateReporteIndex(lsDataReport.data, lsDataUser.data, lsDataReportParaclinico.data);
 
             if (action === 'correo') {
@@ -177,7 +177,7 @@ const UpdateOrdersIndividual = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutOrders(id, documento, datos.fecha, tipoExamen, datos.observaciones,
-                lsDataOrdenes.usuarioRegistro, undefined, user.nameuser, undefined, datos.citacion,
+                lsDataOrdenes.usuarioRegistro, undefined, user?.nameuser, undefined, datos.citacion,
                 datos.consentimientoInformado);
 
             if (Object.keys(datos.length !== 0)) {
@@ -193,7 +193,7 @@ const UpdateOrdersIndividual = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.ordenes}>
             <MessageUpdate open={openSuccess} message={errorMessage} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -338,7 +338,7 @@ const UpdateOrdersIndividual = () => {
                         </SubCard>
                     </Grid>
                 </Grid> : <Cargando />}
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

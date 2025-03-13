@@ -370,7 +370,7 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
                 ges: datos.ges || null,
-                usuarioRegistro: user.nameuser,
+                usuarioRegistro: user?.nameuser,
                 oficio: datos.oficio || null,
                 fechaIngreso: datos.fechaIngreso || null,
                 fechaUltimoControl: datos.fechaUltimoControl || null,

@@ -35,7 +35,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, SaveAdvice, } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -50,6 +50,7 @@ import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import Cargando from 'components/loading/Cargando';
 import InputCheck from 'components/input/InputCheck';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -189,7 +190,7 @@ const UpdateOtherAdvice = () => {
         try {
             const DataToUpdate = PutMedicalAdvice(id, documento, datos.fecha, lsOtherAdvice.idRegistroAtencion, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
-                datos.recomendaciones, undefined, undefined, undefined, undefined, user.nameuser, undefined);
+                datos.recomendaciones, undefined, undefined, undefined, undefined, user?.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {
@@ -218,7 +219,7 @@ const UpdateOtherAdvice = () => {
     }, 500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.otras_asesorias}>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -503,7 +504,7 @@ const UpdateOtherAdvice = () => {
                 </Grid> : <Cargando />
             }
 
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

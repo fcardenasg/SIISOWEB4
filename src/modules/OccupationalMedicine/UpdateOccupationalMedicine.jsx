@@ -19,7 +19,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, AccionMenu, Modulo } from 'components/helpers/Enums';
 import UploadIcon from '@mui/icons-material/Upload';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
@@ -44,6 +44,7 @@ import {
 } from '@tabler/icons';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const OccupationalMedicine = () => {
     const { user } = useAuth();
@@ -404,7 +405,7 @@ const OccupationalMedicine = () => {
         try {
             datos.id = id;
             datos.cedula = documento;
-            datos.usuarioModifico = user.nameuser;
+            datos.usuarioModifico = user?.nameuser;
             datos.sede = lsEmployee.sede;
             datos.urlDocumento = filePdf || null;
             datos.fechaCalificacionUltimaInstancia = fechaCaliUltimaInstancia || null;
@@ -456,7 +457,7 @@ const OccupationalMedicine = () => {
     }, 2000);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.medicina_laboral}>
             <ControlModal
                 title={Message.VistaArchivo}
                 open={openViewArchivo}
@@ -467,7 +468,7 @@ const OccupationalMedicine = () => {
                     <Grid item xs={3}>
                         <Button variant="outlined" color="error" size={matchesXS ? 'small' : 'large'} /* fullWidth */
                             onClick={() => setFilePdfMin(null)} startIcon={<RemoveCircleOutlineIcon fontSize="large" />}>
-                            Remover Archivo
+                            Remover archivo
                         </Button>
                     </Grid>
 
@@ -492,7 +493,7 @@ const OccupationalMedicine = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ViewEmployee
-                                title="Actualizar Medicina Laboral"
+                                title="Actualizar medicina laboral"
                                 disabled={true}
                                 key={lsEmployee.documento}
                                 documento={documento}
@@ -1762,7 +1763,7 @@ const OccupationalMedicine = () => {
                     </Grid>
                 </Fragment> : <Cargando />
             }
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

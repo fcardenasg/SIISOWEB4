@@ -124,7 +124,7 @@ const ListParaclinico = ({ setLsOrdenesParaclinicos, lsOrdenesParaclinicos }) =>
                 datos.idTipoExamenRNM,
                 datos.fechaExamenFisico,
                 datos.asistio,
-                user.nameuser,
+                user?.nameuser,
                 new Date(),
                 "",
                 undefined

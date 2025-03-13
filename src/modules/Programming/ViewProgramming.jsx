@@ -46,7 +46,7 @@ const ViewProgramming = ({ programming, getAll }) => {
     useEffect(() => {
         const handleDisabledButton = () => {
             try {
-                if (programming?.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO && programming?.usuarioCierreAtencion === user.nameuser) {
+                if (programming?.estadoPac === DefaultValue.ATENCION_ESTASIENDOATENDIDO && programming?.usuarioCierreAtencion === user?.nameuser) {
                     setDisabledButton(false);
                 } else if (programming?.estadoPac === DefaultValue.ATENCION_PENDIENTE_ATENDIDO) {
                     setDisabledButton(false);

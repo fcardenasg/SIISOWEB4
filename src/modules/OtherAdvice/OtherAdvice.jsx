@@ -38,7 +38,7 @@ import { FormatDate } from 'components/helpers/Format';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, DefaultValue, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -52,6 +52,7 @@ import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
 import InputCheck from 'components/input/InputCheck';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idTipoAsesoria: yup.string().required(ValidationMessage.Requerido),
@@ -186,7 +187,7 @@ const OtherAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
@@ -197,7 +198,7 @@ const OtherAdvice = () => {
         try {
             const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, 0, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
-                datos.recomendaciones, undefined, undefined, user.nameuser, undefined, undefined, undefined);
+                datos.recomendaciones, undefined, undefined, user?.nameuser, undefined, undefined, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {
@@ -222,7 +223,7 @@ const OtherAdvice = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.otras_asesorias}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -503,7 +504,7 @@ const OtherAdvice = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

@@ -1,43 +1,43 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import HistoryIcon from '@mui/icons-material/History';
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllWorkAbsenteeismNumeroDia, InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { NumeroDias } from 'components/helpers/Format';
+import InputDatePick from 'components/input/InputDatePick';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { PostWorkAbsenteeism } from 'formatdata/WorkAbsenteeismForm';
-import SelectOnChange from 'components/input/SelectOnChange';
-import InputDatePick from 'components/input/InputDatePick';
-import { NumeroDias } from 'components/helpers/Format';
-import { GetAllWorkAbsenteeismNumeroDia, InsertWorkAbsenteeism } from 'api/clients/WorkAbsenteeismClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
-import InputOnChange from 'components/input/InputOnChange';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonCheckedTwoTone';
-import UserCountCard from 'ui-component/cards/UserCountCard';
 import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
-import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import Accordion from 'components/accordion/Accordion';
-import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewTrafficLight from 'components/components/ViewTrafficLight';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import useAuth from 'hooks/useAuth';
+import UserCountCard from 'ui-component/cards/UserCountCard';
+import HistoryWorkAbsenteeism from './HistoryWorkAbsenteeism';
 
 const ColorCard = (numeroDias) => {
     const theme = useTheme();
@@ -325,7 +325,7 @@ const WorkAbsenteeism = () => {
                 datos.proveedor, departamentoIPS, datos.ciudadIPS, datos.nombreProfesional, datos.especialidad, datos.registroProfesional, datos.tipoAtencion,
                 datos.cumplimientoRequisito, datos.expideInCapacidad, datos.observacionCumplimiento,
 
-                datos.observacion, undefined, undefined, user.nameuser, undefined, lsEmployee.tipoContrato, lsEmployee.type,
+                datos.observacion, undefined, undefined, user?.nameuser, undefined, lsEmployee.tipoContrato, lsEmployee.type,
                 undefined, undefined);
 
             if (Object.keys(datos.length !== 0)) {
@@ -355,7 +355,7 @@ const WorkAbsenteeism = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.ausentismo_laboral}>
             <MessageSuccess onClose={() => setOpenSuccess(false)} open={openSuccess} />
             <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
 
@@ -774,7 +774,7 @@ const WorkAbsenteeism = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

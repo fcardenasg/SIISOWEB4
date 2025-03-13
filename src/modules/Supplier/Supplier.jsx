@@ -27,6 +27,7 @@ import { PostSupplier } from 'formatdata/SupplierForm';
 const validationSchema = yup.object().shape({
     codiProv: yup.string().required(`${ValidationMessage.Requerido}`),
     nombProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    idTipoProveedor: yup.string().required(`${ValidationMessage.Requerido}`),
 
 });
 
@@ -40,7 +41,6 @@ const Supplier = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [resultMessage, setResultMessage] = useState('');
 
     const [lsSupplier, setLsSupplier] = useState([]);
     const [lsCiudad, setLsCiudad] = useState([]);
@@ -50,7 +50,7 @@ const Supplier = () => {
     });
 
     /* Modificamos aquí para validar los campos también */
-    const { handleSubmit, errors, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     /* Modificamos la toma de datos de los combos */
     async function GetAll() {
@@ -81,7 +81,7 @@ const Supplier = () => {
             /* Recordar aquí modificar el correo por el nombre de usuario */
             const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
                 datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertSupplier(DataToInsert);
@@ -102,7 +102,7 @@ const Supplier = () => {
     return (
         <MainCard title="Registrar Proveedor">
             {/* Agregamos el resultado del mensaje */}
-            <MessageSuccess message={resultMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <Grid container spacing={2}>
@@ -113,7 +113,7 @@ const Supplier = () => {
                             name="codiProv"
                             label="Código"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.codiProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -124,7 +124,7 @@ const Supplier = () => {
                             name="nombProv"
                             label="Nombre"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.nombProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -135,7 +135,7 @@ const Supplier = () => {
                             name="teleProv"
                             label="Teléfono"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.teleProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -147,7 +147,7 @@ const Supplier = () => {
                             name="emaiProv"
                             label="Email"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.emaiProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -159,7 +159,7 @@ const Supplier = () => {
                             name="contaProv"
                             label="Contacto"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.contaProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -170,7 +170,7 @@ const Supplier = () => {
                             label="Ciudad"
                             options={lsCiudad}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.ciudProv}
                         />
                     </FormProvider>
                 </Grid>
@@ -182,7 +182,7 @@ const Supplier = () => {
                             defaultValue=""
                             options={lsSupplier}
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.idTipoProveedor}
                         />
                     </FormProvider>
                 </Grid>
@@ -193,7 +193,7 @@ const Supplier = () => {
                             name="direProv"
                             label="Dirrección"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
+                            bug={errors?.direProv}
                         />
                     </FormProvider>
                 </Grid>

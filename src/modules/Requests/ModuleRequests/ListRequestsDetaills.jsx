@@ -108,7 +108,7 @@ const ListRequestsDetaills = ({ lsEmployee, idSolicitud }) => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostRequestsDetalle(idSolicitud, datos.idTipoSolicitud, datos.idAreaRespuesta, null,
-                datos.observacion, user.nameuser, null, null, null, false, null);
+                datos.observacion, user?.nameuser, null, null, null, false, null);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertRequestsDetaills(DataToInsert);

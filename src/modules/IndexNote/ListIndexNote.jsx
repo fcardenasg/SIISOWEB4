@@ -208,7 +208,7 @@ const ListIndexNote = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllIndexNote(user.nameuser);
+            const lsServer = await GetAllIndexNote(user?.nameuser);
             setTypeCatalog(lsServer.data);
             setRows(lsServer.data);
         } catch (error) { }

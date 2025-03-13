@@ -234,7 +234,7 @@ const AccidentRate = ({ documentoAT }) => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAccidentRate(resultData.id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -247,7 +247,7 @@ const AccidentRate = ({ documentoAT }) => {
                 1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 if (lsEmployee.length !== 0) {

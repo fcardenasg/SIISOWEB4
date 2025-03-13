@@ -29,7 +29,7 @@ import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, DefaultValue, Modulo } from 'components/helpers/Enums';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { Message, TitleButton } from 'components/helpers/Enums';
@@ -43,6 +43,7 @@ import Cargando from 'components/loading/Cargando';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { generateReportRefund } from './ReportRefund';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -283,7 +284,7 @@ const Refund = () => {
                 fechaFinFormateada, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
                 datos.idConceptoReintegro, datos.inicioReubicacion, datos.finReubicacion, datos.descripcion,
                 datos.idTipoHorario, datos.idOrdenadoPorHorario, datos.fechaInicioHorario, datos.fechaFinHorario,
-                datos.idEstadoCaso, user.nameuser, FormatDate(new Date()), user.nameuser, FormatDate(new Date()));
+                datos.idEstadoCaso, user?.nameuser, FormatDate(new Date()), user?.nameuser, FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 if (documento !== '' && lsEmployee.length !== 0) {
@@ -326,7 +327,7 @@ const Refund = () => {
     }, 2000);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.reintegro}>
             <MessageUpdate message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -786,7 +787,7 @@ const Refund = () => {
                     </Grid>
                 </Grid> : <Cargando />
             }
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

@@ -28,7 +28,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -46,6 +46,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReport } from '../AccidentRate/ReporteAccidentRate';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -247,7 +248,7 @@ const AccidentRate = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAccidentRate(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
@@ -260,7 +261,7 @@ const AccidentRate = () => {
                 1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
                 datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
                 datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
-                user.nameuser, undefined, '', undefined);
+                user?.nameuser, undefined, '', undefined);
 
             if (Object.keys(datos.length !== 0)) {
                 if (lsEmployee.length !== 0) {
@@ -282,7 +283,7 @@ const AccidentRate = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.accidente_trabajo}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -633,7 +634,7 @@ const AccidentRate = () => {
                     </SubCard>
                 </Grid>
             </Grid >
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

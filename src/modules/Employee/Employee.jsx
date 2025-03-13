@@ -25,9 +25,10 @@ import { GetAllCompany } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import SelectOnChange from 'components/input/SelectOnChange';
-import { TitleButton, CodCatalogo, ValidationMessage, DefaultValue, Message } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, ValidationMessage, DefaultValue, Message, AccionMenu, Modulo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
@@ -352,7 +353,7 @@ const Employee = () => {
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
                 ges: datos.ges || null,
-                usuarioRegistro: user.nameuser,
+                usuarioRegistro: user?.nameuser,
                 oficio: datos.oficio || null,
                 fechaIngreso: datos.fechaIngreso || null,
                 fechaUltimoControl: datos.fechaUltimoControl || null,
@@ -375,512 +376,514 @@ const Employee = () => {
     };
 
     return (
-        <MainCard>
-            <FormProvider {...methods}>
-                <MessageSuccess open={openUpdate} onClose={() => setOpenUpdate(false)} />
-                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.empleado}>
+            <MainCard>
+                <FormProvider {...methods}>
+                    <MessageSuccess open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Datos personales</Typography>}>
-                    <ModalChildren
-                        open={open}
-                        onClose={() => setOpen(false)}
-                        title="Tomar Fotografía"
-                    >
-                        <WebCamCapture
-                            CaptureImg={CapturePhoto}
-                            RemoverImg={() => setImgSrc(null)}
-                            ImgSrc={imgSrc}
-                            WebCamRef={WebCamRef}
-                        />
-                    </ModalChildren>
-
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <PhotoModel
-                                OpenModal={() => setOpen(true)}
-                                EstadoImg={imgSrc}
+                    <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Datos personales</Typography>}>
+                        <ModalChildren
+                            open={open}
+                            onClose={() => setOpen(false)}
+                            title="Tomar Fotografía"
+                        >
+                            <WebCamCapture
+                                CaptureImg={CapturePhoto}
                                 RemoverImg={() => setImgSrc(null)}
+                                ImgSrc={imgSrc}
+                                WebCamRef={WebCamRef}
                             />
-                        </Grid>
+                        </ModalChildren>
 
-                        <Grid item xs={12} md={6} lg={8}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        type="number"
-                                        name="documento"
-                                        label="Documento"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.documento}
-                                    />
-                                </Grid>
-                                
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="nombres"
-                                        label="Nombres"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.nombres}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="email"
-                                        label="Email"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.email}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="celular"
-                                        label="Celular"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.celular}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        defaultValue=""
-                                        name="escolaridad"
-                                        label="Escolaridad"
-                                        options={lsEscolaridad}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.escolaridad}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        defaultValue=""
-                                        name="empresa"
-                                        label="Empresa"
-                                        options={company}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.empresa}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        defaultValue=""
-                                        name="sede"
-                                        label="Sede"
-                                        options={lsSede}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.sede}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputDatePicker
-                                        defaultValue={null}
-                                        label="Fecha de Nacimiento"
-                                        name="fechaNaci"
-                                        bug={errors.fechaNaci}
-                                    />
-                                </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <PhotoModel
+                                    OpenModal={() => setOpen(true)}
+                                    EstadoImg={imgSrc}
+                                    RemoverImg={() => setImgSrc(null)}
+                                />
+                            </Grid>
 
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        defaultValue=""
-                                        name="genero"
-                                        label="Genero"
-                                        options={lsGenero}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.genero}
-                                    />
-                                </Grid>
+                            <Grid item xs={12} md={6} lg={8}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            type="number"
+                                            name="documento"
+                                            label="Documento"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.documento}
+                                        />
+                                    </Grid>
 
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        defaultValue=""
-                                        name="estadoCivil"
-                                        label="Estado civil"
-                                        options={lsEstadoCivil}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.estadoCivil}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="contacto"
-                                        label="Contacto"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.contacto}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="telefonoContacto"
-                                        label="Teléfono Contacto"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.telefonoContacto}
-                                    />
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="nombres"
+                                            label="Nombres"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.nombres}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="email"
+                                            label="Email"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.email}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="celular"
+                                            label="Celular"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.celular}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="escolaridad"
+                                            label="Escolaridad"
+                                            options={lsEscolaridad}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.escolaridad}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="empresa"
+                                            label="Empresa"
+                                            options={company}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.empresa}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="sede"
+                                            label="Sede"
+                                            options={lsSede}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.sede}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputDatePicker
+                                            defaultValue={null}
+                                            label="Fecha de Nacimiento"
+                                            name="fechaNaci"
+                                            bug={errors.fechaNaci}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="genero"
+                                            label="Genero"
+                                            options={lsGenero}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.genero}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="estadoCivil"
+                                            label="Estado civil"
+                                            options={lsEstadoCivil}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.estadoCivil}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="contacto"
+                                            label="Contacto"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.contacto}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue=""
+                                            fullWidth
+                                            name="telefonoContacto"
+                                            label="Teléfono Contacto"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.telefonoContacto}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
+                    </SubCard>
+
+                    <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Información contractual</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <SelectOnChange
+                                    name="tipoContrato"
+                                    label="Tipo de Contrato"
+                                    value={idTipoContrato}
+                                    options={lsTipoContrato}
+                                    onChange={(e) => {
+                                        setIdTipoContrato(e.target.value);
+
+                                        if (e.target.value === 9717) {
+                                            setValue("fechaContrato", null);
+                                            setValue("turno", "");
+                                            setValue("grupo", "");
+                                            setValue("rotation", "");
+                                            setValue("generalPosition", "");
+                                            setValue("arl", "");
+                                        }
+                                    }}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputDatePicker
+                                    defaultValue={null}
+                                    disabled={idTipoContrato === 9717 ? true : false}
+                                    label="Fecha de Contrato"
+                                    name="fechaContrato"
+                                    bug={errors.fechaContrato}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="type"
+                                    label="Rol"
+                                    options={lsRol}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.type}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="rosterPosition"
+                                    label="Roster Position"
+                                    options={lsRosterPosition}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.rosterPosition}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
+                                    name="generalPosition"
+                                    label="General Position"
+                                    options={lsGeneralPosition}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.generalPosition}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="departamento"
+                                    label="Departamento"
+                                    options={lsDepartEmpresa}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.departamento}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="area"
+                                    label="Area"
+                                    options={lsArea}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.area}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="subArea"
+                                    label="Subarea"
+                                    options={lsSubArea}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.subArea}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
+                                    name="grupo"
+                                    label="Grupo"
+                                    options={lsGrupo}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.grupo}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
+                                    name="turno"
+                                    label="Turno"
+                                    options={lsTurno}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.turno}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    disabled={idTipoContrato === 9717 ? true : false}
+                                    name="rotation"
+                                    label="Rotación"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.rotation}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="oficio"
+                                    label="Profesión"
+                                    options={lsOficio}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.oficio}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="ges"
+                                    label="Ges"
+                                    options={lsGes}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.ges}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="payStatus"
+                                    label="Estado"
+                                    options={lsEstado}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.payStatus}
+                                />
+                            </Grid>
+                        </Grid>
+                    </SubCard>
+
+                    <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Información demográfica</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <SelectOnChange
+                                    name="dptoNacido"
+                                    label="Departamento de Nacimiento"
+                                    value={dptoNacido}
+                                    options={lsDepartamento}
+                                    onChange={handleChangeDptoNacido}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="municipioNacido"
+                                    label="Municipio de Nacimiento"
+                                    options={lsMunicipioN}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.municipioNacido}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <SelectOnChange
+                                    name="dptoResidencia"
+                                    label="Departamento de Residencia"
+                                    options={lsDepartamento}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    value={dptoResidencia}
+                                    onChange={handleChangeDptoResidencia}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="municipioResidencia"
+                                    label="Municipio de Residencia"
+                                    options={lsMunicipioR}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.municipioResidencia}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="direccionResidencia"
+                                    label="Dirección de Residencia"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.direccionResidencia}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <SelectOnChange
+                                    name="dptoResidenciaTrabaja"
+                                    label="Departamento de Residencia Laboral"
+                                    options={lsDepartamento}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    value={dptoResidenciaTrabaja}
+                                    onChange={handleChangeDptoResidenciaTrabaja}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="municipioResidenciaTrabaja"
+                                    label="Municipio de Residencia Laboral"
+                                    options={lsMunicipioTrabaja}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.municipioResidenciaTrabaja}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="direccionResidenciaTrabaja"
+                                    label="Dirección de Residencia Laboral"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.direccionResidenciaTrabaja}
+                                />
+                            </Grid>
+                        </Grid>
+                    </SubCard>
+
+                    <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Seguridad social</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="eps"
+                                    label="EPS"
+                                    options={lsEps}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.eps}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="afp"
+                                    label="AFP"
+                                    options={lsAfp}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.afp}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    disabled={idTipoContrato === 9717 ? true : false}
+                                    name="arl"
+                                    label="ARL"
+                                    options={lsArl}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.arl}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputSelect
+                                    defaultValue=""
+                                    name="cesantias"
+                                    label="Cesantias"
+                                    options={lsCesantias}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.cesantias}
+                                />
+                            </Grid>
+                        </Grid>
+                    </SubCard>
+
+                    <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Otros datos del empleado</Typography>}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputDatePicker
+                                    defaultValue={null}
+                                    label="Fecha de ingreso"
+                                    name="fechaIngreso"
+                                    bug={errors.fechaIngreso}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputDatePicker
+                                    defaultValue={null}
+                                    label="Fecha de último control"
+                                    name="fechaUltimoControl"
+                                    bug={errors.fechaUltimoControl}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputDatePicker
+                                    defaultValue={null}
+                                    label="Fecha de egreso"
+                                    name="fechaEgreso"
+                                    bug={errors.fechaEgreso}
+                                />
+                            </Grid>
+                        </Grid>
+                    </SubCard>
+
+                    <Grid item xs={12} sx={{ mb: 2 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6} md={4} lg={2}>
+                                <AnimateButton>
+                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={6} md={4} lg={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                </SubCard>
-
-                <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Información contractual</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="tipoContrato"
-                                label="Tipo de Contrato"
-                                value={idTipoContrato}
-                                options={lsTipoContrato}
-                                onChange={(e) => {
-                                    setIdTipoContrato(e.target.value);
-
-                                    if (e.target.value === 9717) {
-                                        setValue("fechaContrato", null);
-                                        setValue("turno", "");
-                                        setValue("grupo", "");
-                                        setValue("rotation", "");
-                                        setValue("generalPosition", "");
-                                        setValue("arl", "");
-                                    }
-                                }}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputDatePicker
-                                defaultValue={null}
-                                disabled={idTipoContrato === 9717 ? true : false}
-                                label="Fecha de Contrato"
-                                name="fechaContrato"
-                                bug={errors.fechaContrato}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="type"
-                                label="Rol"
-                                options={lsRol}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.type}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="rosterPosition"
-                                label="Roster Position"
-                                options={lsRosterPosition}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.rosterPosition}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                disabled={idTipoContrato === 9717 ? true : false}
-                                name="generalPosition"
-                                label="General Position"
-                                options={lsGeneralPosition}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.generalPosition}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="departamento"
-                                label="Departamento"
-                                options={lsDepartEmpresa}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.departamento}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="area"
-                                label="Area"
-                                options={lsArea}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.area}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="subArea"
-                                label="Subarea"
-                                options={lsSubArea}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.subArea}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                disabled={idTipoContrato === 9717 ? true : false}
-                                name="grupo"
-                                label="Grupo"
-                                options={lsGrupo}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.grupo}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                disabled={idTipoContrato === 9717 ? true : false}
-                                name="turno"
-                                label="Turno"
-                                options={lsTurno}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.turno}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                disabled={idTipoContrato === 9717 ? true : false}
-                                name="rotation"
-                                label="Rotación"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.rotation}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="oficio"
-                                label="Profesión"
-                                options={lsOficio}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.oficio}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="ges"
-                                label="Ges"
-                                options={lsGes}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.ges}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="payStatus"
-                                label="Estado"
-                                options={lsEstado}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.payStatus}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Información demográfica</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="dptoNacido"
-                                label="Departamento de Nacimiento"
-                                value={dptoNacido}
-                                options={lsDepartamento}
-                                onChange={handleChangeDptoNacido}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="municipioNacido"
-                                label="Municipio de Nacimiento"
-                                options={lsMunicipioN}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.municipioNacido}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="dptoResidencia"
-                                label="Departamento de Residencia"
-                                options={lsDepartamento}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={dptoResidencia}
-                                onChange={handleChangeDptoResidencia}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="municipioResidencia"
-                                label="Municipio de Residencia"
-                                options={lsMunicipioR}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.municipioResidencia}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="direccionResidencia"
-                                label="Dirección de Residencia"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.direccionResidencia}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <SelectOnChange
-                                name="dptoResidenciaTrabaja"
-                                label="Departamento de Residencia Laboral"
-                                options={lsDepartamento}
-                                size={matchesXS ? 'small' : 'medium'}
-                                value={dptoResidenciaTrabaja}
-                                onChange={handleChangeDptoResidenciaTrabaja}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="municipioResidenciaTrabaja"
-                                label="Municipio de Residencia Laboral"
-                                options={lsMunicipioTrabaja}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.municipioResidenciaTrabaja}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputText
-                                defaultValue=""
-                                fullWidth
-                                name="direccionResidenciaTrabaja"
-                                label="Dirección de Residencia Laboral"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.direccionResidenciaTrabaja}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Seguridad social</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="eps"
-                                label="EPS"
-                                options={lsEps}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.eps}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="afp"
-                                label="AFP"
-                                options={lsAfp}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.afp}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                disabled={idTipoContrato === 9717 ? true : false}
-                                name="arl"
-                                label="ARL"
-                                options={lsArl}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.arl}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputSelect
-                                defaultValue=""
-                                name="cesantias"
-                                label="Cesantias"
-                                options={lsCesantias}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.cesantias}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <SubCard sx={{ mb: 2 }} darkTitle title={<Typography variant="h4">Otros datos del empleado</Typography>}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputDatePicker
-                                defaultValue={null}
-                                label="Fecha de ingreso"
-                                name="fechaIngreso"
-                                bug={errors.fechaIngreso}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputDatePicker
-                                defaultValue={null}
-                                label="Fecha de último control"
-                                name="fechaUltimoControl"
-                                bug={errors.fechaUltimoControl}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={4}>
-                            <InputDatePicker
-                                defaultValue={null}
-                                label="Fecha de egreso"
-                                name="fechaEgreso"
-                                bug={errors.fechaEgreso}
-                            />
-                        </Grid>
-                    </Grid>
-                </SubCard>
-
-                <Grid item xs={12} sx={{ mb: 2 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6} md={4} lg={2}>
-                            <AnimateButton>
-                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={6} md={4} lg={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/employee/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </FormProvider>
-        </MainCard>
+                </FormProvider>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

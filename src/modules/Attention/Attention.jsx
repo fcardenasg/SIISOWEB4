@@ -146,7 +146,7 @@ const Attention = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAttention(result);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
@@ -332,7 +332,7 @@ const Attention = () => {
 
             const DataToInsert = PostAttention(documento, datos.fecha, sede, tipoAtencion, atencion, datos.estadoCaso, undefined, undefined,
                 "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita, talla, peso, imc, undefined,
-                undefined, undefined, undefined, user.nameuser, undefined, undefined, undefined);
+                undefined, undefined, undefined, user?.nameuser, undefined, undefined, undefined);
 
             if (sede === '') {
                 setOpenError(true);

@@ -57,8 +57,12 @@ const ListAnsweredView = Loadable(lazy(() => import('modules/Requests/AnsweredVi
 const MenuRequests = Loadable(lazy(() => import('modules/Menu/MenuRequests')));
 const MenuMedicines = Loadable(lazy(() => import('modules/Menu/MenuMedicines')));
 
-const ListMedicinesEntry = Loadable(lazy(() => import('modules/Medicines/Entry/ListMedicinesEntry')));
-const MedicinesEntry = Loadable(lazy(() => import('modules/Medicines/Entry/MedicinesEntry')));
+const ListWarehouse = Loadable(lazy(() => import('modules/Warehouse/ListWarehouse')));
+const UpdateWarehouse = Loadable(lazy(() => import('modules/Warehouse/UpdateWarehouse')));
+const Warehouse = Loadable(lazy(() => import('modules/Warehouse/Warehouse')));
+
+const ListMedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/ListMedicinesOrders')));
+const MedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/MedicinesOrders')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -230,6 +234,8 @@ const ListSupport = Loadable(lazy(() => import('modules/Help/Support/ListSupport
 const HelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/HelpManagement')));
 const ViewHelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/ViewHelpManagement')));
 const Indicators = Loadable(lazy(() => import('modules/Help/Indicators/Indicators')));
+
+const MessageScheduling = Loadable(lazy(() => import('modules/MessageScheduling/MessageScheduling')));
 
 const MainRoutes = {
     path: '/',
@@ -448,19 +454,29 @@ const MainRoutes = {
 
         /* Render de Medicamentos */
         {
+            path: '/warehouse/list',
+            element: <ListWarehouse />
+        },
+        {
+            path: '/warehouse/add',
+            element: <Warehouse />
+        },
+        {
+            path: '/warehouse/update/:id',
+            element: <UpdateWarehouse />
+        },
+        {
             path: '/medicines/menu',
             element: <MenuMedicines />
         },
-
         {
-            path: '/medicines-entry/list',
-            element: <ListMedicinesEntry />
+            path: '/medicines-orders/list',
+            element: <ListMedicinesOrders />
         },
         {
-            path: '/medicines-entry/add',
-            element: <MedicinesEntry />
+            path: '/medicines-orders/add',
+            element: <MedicinesOrders />
         },
-
         {
             path: '/medicines/list',
             element: <ListMedicines />
@@ -993,6 +1009,11 @@ const MainRoutes = {
         {
             path: '/help/support-management/indicators',
             element: <Indicators />
+        },
+        /* Programación */
+        {
+            path: '/programming/view',
+            element: <MessageScheduling />
         },
     ]
 };

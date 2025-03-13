@@ -17,7 +17,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, AccionMenu, Modulo } from 'components/helpers/Enums';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -42,6 +42,7 @@ import {
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const OccupationalMedicine = () => {
     const { user } = useAuth();
@@ -299,7 +300,7 @@ const OccupationalMedicine = () => {
     const handleClick = async (datos) => {
         try {
             datos.cedula = documento;
-            datos.usuarioRegistro = user.nameuser;
+            datos.usuarioRegistro = user?.nameuser;
             datos.sede = lsEmployee.sede;
             datos.urlDocumento = filePdf || null;
             datos.fechaCalificacionUltimaInstancia = fechaCaliUltimaInstancia || null;
@@ -360,7 +361,7 @@ const OccupationalMedicine = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.medicina_laboral}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -376,7 +377,7 @@ const OccupationalMedicine = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar Medicina Laboral"
+                        title="Registrar medicina laboral"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}
@@ -1576,7 +1577,7 @@ const OccupationalMedicine = () => {
                     </StickyActionBar>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 
 

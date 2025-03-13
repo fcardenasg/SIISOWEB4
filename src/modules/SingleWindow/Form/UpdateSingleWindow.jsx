@@ -38,6 +38,7 @@ import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import { useNavigate, useParams } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
 import InputDatePicker from 'components/input/InputDatePicker';
+import { useBoolean } from 'hooks/use-boolean';
 
 const validationSchema = yup.object().shape({
     idCondicion: yup.string().required(ValidationMessage.Requerido),
@@ -50,6 +51,7 @@ const UpdateSingleWindow = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const inicioComponente = useBoolean(true);
 
     const navigate = useNavigate();
     const [documento, setDocumento] = useState("");
@@ -59,7 +61,7 @@ const UpdateSingleWindow = () => {
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
 
     const [lsTipo, setLsTipo] = useState([]);
-    const [dataSingle, setDataSingle] = useState([]);
+    const [dataSingle, setDataSingle] = useState(null);
     const [lsMedioIngreso, setLsMedioIngreso] = useState([]);
     const [lsCondiciones, setLsCondiciones] = useState([]);
     const [lsImportancia, setLsImportancia] = useState([]);
@@ -76,6 +78,7 @@ const UpdateSingleWindow = () => {
 
     const { handleSubmit, setValue, watch, formState: { errors } } = methods;
     const values = watch();
+    const valueIdTipo = watch("idTipo");
 
     async function downloadFile() { DownloadFile(`ventanillaunica${new Date().getTime()}.pdf`, archivoAdjunto.replace("data:application/pdf;base64,", "")); }
 
@@ -125,9 +128,14 @@ const UpdateSingleWindow = () => {
 
 
     useEffect(() => {
-        if (values.idTipo) {
+        if (inicioComponente.value) {
+            inicioComponente.onFalse();
+            return;
+        }
+
+        if (valueIdTipo != dataSingle.idTipo) {
             var lsTipoMemory = lsTipo;
-            var codigoTiempo = lsTipoMemory.filter(code => code.value === values.idTipo)[0].codigo;
+            var codigoTiempo = lsTipoMemory.find(code => code.value === valueIdTipo).codigo;
 
             var numerotiempo = codigoTiempo.substring(4);
             setValue("tiempoRespuesta", numerotiempo);
@@ -142,8 +150,11 @@ const UpdateSingleWindow = () => {
             var dateNow = new Date();
             var numeroRadicado = `${codigoRadicado}${dateNow.getFullYear()}${dateNow.getMonth()}${dateNow.getDay()}${dateNow.getHours()}${dateNow.getMinutes()}${dateNow.getSeconds()}`;
             setValue("numRadicado", numeroRadicado);
+        } else {
+            setValue("numRadicado", dataSingle.numRadicado);
         }
-    }, [values.idTipo]);
+
+    }, [valueIdTipo]);
 
     useEffect(() => {
         if (values.fechaRecibido) {
@@ -299,7 +310,7 @@ const UpdateSingleWindow = () => {
             </ControlModal>
 
             <SubCard title={<Typography variant='h4'>Indexación de documentos recibidos</Typography>}>
-                {dataSingle.length !== 0 ?
+                {dataSingle !== null ?
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <SubCard title={<Typography variant="h4">Información de la solicitud</Typography>}>

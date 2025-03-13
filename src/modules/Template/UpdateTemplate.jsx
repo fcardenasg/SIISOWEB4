@@ -115,8 +115,8 @@ const UpdateTemplate = () => {
         try {
             var savePdf = archivoPdf === null ? "" : archivoPdf;
 
-            const DataToUpdate = PutTemplate(id, datos.dx1, user.nameuser, datos.descripcion,
-                lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user.nameuser, FormatDate(new Date()), savePdf);
+            const DataToUpdate = PutTemplate(id, datos.dx1, user?.nameuser, datos.descripcion,
+                lsTemplate.usuarioRegistro, lsTemplate.fechaRegistro, user?.nameuser, FormatDate(new Date()), savePdf);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateTemplates(DataToUpdate);

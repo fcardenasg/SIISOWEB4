@@ -67,19 +67,6 @@ const GenerateExcel = ({ setOpenModal, openModal }) => {
         }
     }
 
-    /* async function getDataForExport() {
-        try {
-            const parametros = ParametrosExcel(sede, fechaInicio, fechaFin);
-            const lsServerExcel = await GetExcelCabRegistration(parametros);
-
-            if (lsServerExcel.status === 200) {
-                setLsCabRegistration(lsServerExcel.data);
-                setStatusData(true);
-            }
-
-        } catch (error) { }
-    } */
-
     const handleClose = () => {
         setSede(0);
         setOpenModal(false);

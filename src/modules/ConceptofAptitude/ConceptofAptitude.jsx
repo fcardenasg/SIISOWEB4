@@ -94,7 +94,7 @@ const ConceptofAptitude = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdConceptofAptitude(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReportConceptofAptitude(lsDataReport.data, lsDataUser.data);
 
             setDataPDF(dataPDFTwo);
@@ -147,7 +147,7 @@ const ConceptofAptitude = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostConceptofAptitude(idConcepto, documento, datos.fecha, datos.idConceptoActitud,
-                datos.observacionesNEMTA, user.nameuser, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                datos.observacionesNEMTA, user?.nameuser, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertConceptofAptitude(DataToInsert);

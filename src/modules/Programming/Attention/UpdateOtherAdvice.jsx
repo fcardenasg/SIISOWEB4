@@ -221,7 +221,7 @@ const UpdateOtherAdvice = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportOtherAdvice(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
@@ -232,7 +232,7 @@ const UpdateOtherAdvice = () => {
         try {
             const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, id, datos.idTipoAtencion, lsEmployee.sede,
                 undefined, undefined, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, undefined, datos.observaciones,
-                datos.recomendaciones, undefined, undefined, user.nameuser, undefined, user.nameuser, undefined);
+                datos.recomendaciones, undefined, undefined, user?.nameuser, undefined, user?.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

@@ -79,7 +79,7 @@ const EditPermiso = ({ idPermiso, getAllPermisos }) => {
                 idItemMenu: valueItem,
                 idCardItem: valueCard,
                 estado: estadoPermiso,
-                usuarioModifico: user.nameuser,
+                usuarioModifico: user?.nameuser,
                 isPermiso: true,
             };
 

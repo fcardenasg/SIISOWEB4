@@ -63,7 +63,7 @@ const ModalRequestAnswered = ({ idSolicitudDetalle, getAllRefresh }) => {
 
     const handleClick = async () => {
         try {
-            const UpdateToInsert = PutRequestsDetalle(idSolicitudDetalle, user.nameuser, user.nameuser, dataPDF);
+            const UpdateToInsert = PutRequestsDetalle(idSolicitudDetalle, user?.nameuser, user?.nameuser, dataPDF);
 
             if (dataPDF !== null) {
                 const result = await UpdateRequestsDetaills(UpdateToInsert);

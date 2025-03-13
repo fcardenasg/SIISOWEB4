@@ -86,8 +86,8 @@ const Template = () => {
 
             var savePdf = archivoPdf === null ? "" : archivoPdf;
 
-            const DataToInsert = PostTemplate(datos.dx1, user.nameuser, datos.descripcion,
-                user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), savePdf);
+            const DataToInsert = PostTemplate(datos.dx1, user?.nameuser, datos.descripcion,
+                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), savePdf);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertTemplate(DataToInsert);

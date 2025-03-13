@@ -136,7 +136,7 @@ const ListIndexNotes = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServer = await GetAllIndexNote(user.nameuser);
+                const lsServer = await GetAllIndexNote(user?.nameuser);
                 setLsPersonalNotes(lsServer.data);
                 setRows(lsServer.data);
             } catch (error) { }

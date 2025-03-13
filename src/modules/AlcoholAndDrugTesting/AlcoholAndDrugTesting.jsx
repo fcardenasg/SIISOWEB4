@@ -114,7 +114,7 @@ const AlcoholAndDrugTesting = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAlcoholAndDrugTesting(resultData.idPruebasAlcoholDroga);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
 
@@ -203,7 +203,7 @@ const AlcoholAndDrugTesting = () => {
                 datos.idMuestra1, cocaina, datos.sustancia2, datos.idMuestra2, marihuana, datos.sustancia3, datos.idMuestra3,
                 datos.idResultado3, datos.sustancia4, datos.idMuestra4, datos.idResultado4, datos.sustancia5, datos.idMuestra5,
                 datos.idResultado5, datos.sustancia6, datos.idMuestra6, alcohol, datos.idRemitido, documentoSolicita, "", concepto,
-                realizada, MotivoAsistencia, Observacion, user.nameuser, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                realizada, MotivoAsistencia, Observacion, user?.nameuser, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (realizada === DefaultValue.Opcion_SI && conceptoAptitud === '') {
                 setOpenError(true);

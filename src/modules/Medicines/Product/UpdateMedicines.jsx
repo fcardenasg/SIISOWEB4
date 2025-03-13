@@ -24,6 +24,7 @@ import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
+import ListDetails from './ListDetails';
 
 const ValidationMessageStop = {
     Requerido: 'Este campo es requerido',
@@ -37,7 +38,6 @@ const validationSchema = yup.object().shape({
     idUnidad: yup.string().required(ValidationMessage.Requerido),
     formaFarmaceutica: yup.string().required(ValidationMessage.Requerido),
     presentacionComercial: yup.string().required(ValidationMessage.Requerido),
-    idProveedor: yup.string().required(ValidationMessage.Requerido),
     stopMinimo: yup.string().required(ValidationMessageStop.Requerido).test(
         'minimo-mayor-maximo',
         ValidationMessageStop.MinimoMayorMaximo,
@@ -54,7 +54,7 @@ const validationSchema = yup.object().shape({
             return !stopMinimo || !value || Number(value) >= Number(stopMinimo);
         }
     ),
-    fechaLote: yup.string().nullable()
+    /* fechaLote: yup.string().nullable()
         .test('formato-fecha-lote', 'Formato de fecha inválido (YYYY-MM-DD)', (value) => {
             if (!value) return true;
             return /^\d{4}-\d{2}-\d{2}$/.test(value);
@@ -94,7 +94,7 @@ const validationSchema = yup.object().shape({
         .test('valid-year', 'Año de vencimiento inválido', (value) => {
             const year = new Date(value).getFullYear();
             return year <= new Date().getFullYear() + 20;
-        }),
+        }), */
 });
 
 const UpdateMedicines = () => {
@@ -105,7 +105,7 @@ const UpdateMedicines = () => {
     const { id } = useParams();
 
     const [dataMedicines, setDataMedicines] = useState(null);
-    const [lsProveedor, setLsProveedor] = useState([]);
+    const [lsLaboratorio, setLsLaboratorio] = useState([]);
     const [lsUnidad, setLsUnidad] = useState([]);
     const [openError, setOpenError] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -126,12 +126,8 @@ const UpdateMedicines = () => {
             const lsServerTipo = await GetByTipoCatalogoCombo(CodCatalogo.UNIDAD);
             setLsUnidad(lsServerTipo.data);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
-                value: item.codiProv,
-                label: item.nombProv
-            }));
-            setLsProveedor(resultProveedor);
+            const lsServerLab = await GetByTipoCatalogoCombo(CodCatalogo.LABORATORIO);
+            setLsLaboratorio(lsServerLab.data);
         } catch (error) { }
     }
 
@@ -142,7 +138,7 @@ const UpdateMedicines = () => {
     const handleClick = async (datos) => {
         try {
             datos.id = id;
-            datos.usuarioModifico = user.nameuser;
+            datos.usuarioModifico = user?.nameuser;
             datos.stopMaximo = parseInt(datos.stopMaximo);
             datos.stopMinimo = parseInt(datos.stopMinimo);
             datos.idUnidad = parseInt(datos.idUnidad);
@@ -197,12 +193,12 @@ const UpdateMedicines = () => {
 
                             <Grid item xs={12} md={6} lg={4}>
                                 <InputSelect
-                                    name="idProveedor"
-                                    label="Proveedor"
-                                    defaultValue={dataMedicines.idProveedor}
-                                    options={lsProveedor}
+                                    name="idLaboratorio"
+                                    label="Laboratorio"
+                                    defaultValue={dataMedicines.idLaboratorio}
+                                    options={lsLaboratorio}
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.idProveedor}
+                                    bug={errors.idLaboratorio}
                                 />
                             </Grid>
 
@@ -234,36 +230,6 @@ const UpdateMedicines = () => {
                                     label="Concentración"
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.concentracion}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={dataMedicines.lote}
-                                    name="lote"
-                                    label="Lote"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.lote}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputDatePicker
-                                    label="Fecha de lote"
-                                    name="fechaLote"
-                                    defaultValue={dataMedicines.fechaLote}
-                                    bug={errors.fechaLote}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputDatePicker
-                                    label="Fecha de vencimiento"
-                                    name="fechaVencimiento"
-                                    defaultValue={dataMedicines.fechaVencimiento}
-                                    bug={errors.fechaVencimiento}
-                                    size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
 
@@ -318,6 +284,10 @@ const UpdateMedicines = () => {
                                     size={30}
                                     defaultValue={dataMedicines.estado}
                                 />
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ mt: 2 }}>
+                                <ListDetails idMedicamento={id} />
                             </Grid>
                         </Grid>
                     </FormProvider>

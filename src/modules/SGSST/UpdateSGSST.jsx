@@ -75,7 +75,7 @@ const UpdateSGSST = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PutSGSST(id, datos.codigo, datos.nombre, filePdf, user.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+            const DataToInsert = PutSGSST(id, datos.codigo, datos.nombre, filePdf, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
             if (filePdf) {
                 const result = await UpdateSGSSTS(DataToInsert);

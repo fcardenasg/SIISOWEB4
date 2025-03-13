@@ -190,7 +190,7 @@ const UpdateAttention = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAttention(id);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
@@ -475,7 +475,7 @@ const UpdateAttention = () => {
             const DataToInsert = PutAttention(id, documento, datos.fecha, sede, tipoAtencion, atencion, datos.estadoCaso, undefined,
                 lsDataAtencion.numeroHistoria, "PENDIENTE POR ATENCIÓN", undefined, undefined, undefined, motivoFinal, datos.medico, documentoSolicita,
                 talla, peso, imc, lsDataAtencion.usuarioCierreAtencion, lsDataAtencion.fechaDigitacion, lsDataAtencion.fechaCierreAtencion,
-                lsDataAtencion.duracion, lsDataAtencion.usuarioRegistro, undefined, user.nameuser, undefined);
+                lsDataAtencion.duracion, lsDataAtencion.usuarioRegistro, undefined, user?.nameuser, undefined);
 
             const result = await UpdateAttentions(DataToInsert);
             if (result.status === 200) {

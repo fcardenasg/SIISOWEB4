@@ -189,7 +189,7 @@ const UpdatePsychological = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdAdvice(resultData);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportPsycho(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
@@ -200,7 +200,7 @@ const UpdatePsychological = () => {
         try {
             const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, id, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
                 undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
-                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, user.nameuser, undefined, user.nameuser, undefined);
+                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, user?.nameuser, undefined, user?.nameuser, undefined);
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

@@ -56,7 +56,7 @@ const EditHeadcount = ({ idHeadcount, getAllHeadcount }) => {
                 anio: datos.anio,
                 mes: datos.mes,
                 cantidad: datos.cantidad,
-                usuarioModifico: user.nameuser,
+                usuarioModifico: user?.nameuser,
             };
 
             const result = await UpdateHeadcounts(DataToInsert);

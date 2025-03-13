@@ -107,7 +107,7 @@ const CabRegistration = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdCabRegistration(result.idRegistroTaxi);
-            const lsDataUser = await GetByMail(user.nameuser);
+            const lsDataUser = await GetByMail(user?.nameuser);
             const dataPDFTwo = generateReporteReportCabRegistration(lsDataReport.data, lsDataUser.data);
             setDataPDF(dataPDFTwo);
         } catch (err) {
@@ -152,7 +152,7 @@ const CabRegistration = () => {
 
             const sortedTransporte = catalogs[6].data.sort((a, b) => { return a.value - b.value; });
             setLsTipoTransporte(sortedTransporte);
-            
+
             setLsMedico(catalogs[7].data);
         } catch (error) {
             handleError('Error al cargar los catálogos.');
@@ -179,7 +179,7 @@ const CabRegistration = () => {
                 datos.idMedico,
                 datos.idTipoTransporte,
                 datos.cualTransporte,
-                user.nameuser
+                user?.nameuser
             );
 
             if (Object.keys(datos).length !== 0) {
@@ -187,8 +187,8 @@ const CabRegistration = () => {
                 if (result.status === 200) {
                     setOpenSuccess(true);
                     reset();
-                    setTextDx1(''); 
-                    setLsDx1([]); 
+                    setTextDx1('');
+                    setLsDx1([]);
                     setDocumento('');
                     setLsEmployee([]);
                     setResult(result.data);
@@ -215,7 +215,7 @@ const CabRegistration = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <ViewEmployee
-                        title="Registrar atención"
+                        title="Registrar solicitud de taxi"
                         key={lsEmployee?.documento}
                         documento={documento}
                         onChange={(e) => setDocumento(e.target.value)}

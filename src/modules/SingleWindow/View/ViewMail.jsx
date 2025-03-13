@@ -157,12 +157,12 @@ const ViewMail = ({ lsData }) => {
 
             const DataToUpdate = {
                 id: lsData.id,
-                idUsuarioEnvia: user.nameuser,
+                idUsuarioEnvia: user?.nameuser,
                 idMedicoFirmante: datos.idMedicoFirmante,
                 redaccionActa: datos.redaccionActa,
                 redaccionCorreo: stateMensaje,
                 asuntoCorreo: datos.asunto,
-                usuarioModifico: user.nameuser
+                usuarioModifico: user?.nameuser
             }
 
             const result = await NotificarSolicitante(objCorreo);
@@ -179,7 +179,7 @@ const ViewMail = ({ lsData }) => {
                     setTimeout(() => {
                         setErrorMessage('Información del correo guardada con éxito');
                         setOpenSuccessOut(true);
-                    }, 4500);
+                    }, 2500);
                 }
             } else {
                 setLoading(false);
