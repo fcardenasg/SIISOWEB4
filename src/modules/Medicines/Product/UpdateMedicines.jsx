@@ -25,6 +25,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
 import ListDetails from './ListDetails';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
+import { GetComboMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 
 const ValidationMessageStop = {
     Requerido: 'Este campo es requerido',
@@ -33,11 +35,7 @@ const ValidationMessageStop = {
 };
 
 const validationSchema = yup.object().shape({
-    codigo: yup.string().required(ValidationMessage.Requerido),
-    descripcion: yup.string().required(ValidationMessage.Requerido),
-    idUnidad: yup.string().required(ValidationMessage.Requerido),
-    formaFarmaceutica: yup.string().required(ValidationMessage.Requerido),
-    presentacionComercial: yup.string().required(ValidationMessage.Requerido),
+    idProducto: yup.object().required(ValidationMessage.Requerido),
     stopMinimo: yup.string().required(ValidationMessageStop.Requerido).test(
         'minimo-mayor-maximo',
         ValidationMessageStop.MinimoMayorMaximo,
@@ -54,62 +52,20 @@ const validationSchema = yup.object().shape({
             return !stopMinimo || !value || Number(value) >= Number(stopMinimo);
         }
     ),
-    /* fechaLote: yup.string().nullable()
-        .test('formato-fecha-lote', 'Formato de fecha inválido (YYYY-MM-DD)', (value) => {
-            if (!value) return true;
-            return /^\d{4}-\d{2}-\d{2}$/.test(value);
-        })
-        .test('is-after-1950', 'El año debe ser mayor al que intenta registrar', (value) => {
-            if (!value) return true;
-            const year = new Date(value).getFullYear();
-            return year >= 1950;
-        })
-        .test('is-not-past-date', 'La fecha de vencimiento no puede ser anterior o actual', (value) => {
-            if (!value) return true;
-            const inputDate = new Date(value);
-            const currentDate = new Date();
-
-            inputDate.setHours(0, 0, 0, 0);
-            currentDate.setHours(0, 0, 0, 0);
-
-            return inputDate >= currentDate;
-        })
-        .test('valid-year', 'Año de lote inválido', (value) => {
-            if (!value) return true;
-            const year = new Date(value).getFullYear();
-            return year <= new Date().getFullYear() + 10;
-        }),
-    fechaVencimiento: yup.string().required('La fecha de vencimiento es obligatoria')
-        .matches(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)')
-        .test('is-not-past-date', 'La fecha de vencimiento no puede ser anterior o actual', (value) => {
-            if (!value) return true;
-            const inputDate = new Date(value);
-            const currentDate = new Date();
-
-            inputDate.setHours(0, 0, 0, 0);
-            currentDate.setHours(0, 0, 0, 0);
-
-            return inputDate >= currentDate;
-        })
-        .test('valid-year', 'Año de vencimiento inválido', (value) => {
-            const year = new Date(value).getFullYear();
-            return year <= new Date().getFullYear() + 20;
-        }), */
 });
 
 const UpdateMedicines = () => {
     const { user } = useAuth();
+    const { id } = useParams();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const { id } = useParams();
 
     const [dataMedicines, setDataMedicines] = useState(null);
-    const [lsLaboratorio, setLsLaboratorio] = useState([]);
-    const [lsUnidad, setLsUnidad] = useState([]);
     const [openError, setOpenError] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [lsMedicamento, setLsMedicamento] = useState([]);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -123,11 +79,8 @@ const UpdateMedicines = () => {
             if (lsServerData.status === 200)
                 setDataMedicines(lsServerData.data);
 
-            const lsServerTipo = await GetByTipoCatalogoCombo(CodCatalogo.UNIDAD);
-            setLsUnidad(lsServerTipo.data);
-
-            const lsServerLab = await GetByTipoCatalogoCombo(CodCatalogo.LABORATORIO);
-            setLsLaboratorio(lsServerLab.data);
+            const lsServerMedicamento = await GetComboMedicamentosProductos();
+            setLsMedicamento(lsServerMedicamento.data);
         } catch (error) { }
     }
 
@@ -141,13 +94,6 @@ const UpdateMedicines = () => {
             datos.usuarioModifico = user?.nameuser;
             datos.stopMaximo = parseInt(datos.stopMaximo);
             datos.stopMinimo = parseInt(datos.stopMinimo);
-            datos.idUnidad = parseInt(datos.idUnidad);
-
-            datos.idUnidad = datos.idUnidad || null;
-            datos.concentracion = datos.concentracion || null;
-            datos.lote = datos.lote || null;
-            datos.fechaLote = datos.fechaLote || null;
-            datos.registroSanitario = datos.registroSanitario || null;
 
             const result = await UpdateMediciness(datos);
             if (result.data.exito) {
@@ -163,7 +109,7 @@ const UpdateMedicines = () => {
     };
 
     return (
-        <MainCard title="Registrar medicamento">
+        <MainCard title="Actualizar medicamento">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -171,85 +117,13 @@ const UpdateMedicines = () => {
                 <Fragment>
                     <FormProvider {...methods}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={dataMedicines.codigo}
-                                    name="codigo"
-                                    label="Código"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.codigo}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={dataMedicines.descripcion}
-                                    name="descripcion"
-                                    label="Descripción"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.descripcion}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputSelect
-                                    name="idLaboratorio"
-                                    label="Laboratorio"
-                                    defaultValue={dataMedicines.idLaboratorio}
-                                    options={lsLaboratorio}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.idLaboratorio}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputSelect
-                                    name="idUnidad"
-                                    label="Unidad"
-                                    defaultValue={dataMedicines.idUnidad}
-                                    options={lsUnidad}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.idUnidad}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={dataMedicines.formaFarmaceutica}
-                                    name="formaFarmaceutica"
-                                    label="Forma farmacéutica"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.formaFarmaceutica}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={dataMedicines.concentracion}
-                                    name="concentracion"
-                                    label="Concentración"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.concentracion}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={dataMedicines.presentacionComercial}
-                                    name="presentacionComercial"
-                                    label="Presentación comercial"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.presentacionComercial}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={dataMedicines.registroSanitario}
-                                    name="registroSanitario"
-                                    label="Registro sanitario"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.registroSanitario}
+                            <Grid item xs={12} md={6} lg={6}>
+                                <InputSelectAutocomplete
+                                    disabled
+                                    name="idProducto"
+                                    label="Producto"
+                                    options={lsMedicamento}
+                                    defaultValue={dataMedicines.idProducto}
                                 />
                             </Grid>
 
@@ -277,7 +151,7 @@ const UpdateMedicines = () => {
                                 />
                             </Grid>
 
-                            <Grid item alignItems="center" xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={2}>
                                 <InputCheckBox
                                     label="Estado"
                                     name="estado"

@@ -22,7 +22,8 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button
+    Button,
+    ListItemText
 } from '@mui/material';
 import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
 import { visuallyHidden } from '@mui/utils';
@@ -69,13 +70,13 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'codigo',
-        label: 'Código',
+        id: 'producto',
+        label: 'Producto',
         align: 'left'
     },
     {
-        id: 'descripcion',
-        label: 'Descripción',
+        id: 'nameSede',
+        label: 'Sede',
         align: 'left'
     },
     {
@@ -84,13 +85,13 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'fechaVencimiento',
-        label: 'Fecha de vencimiento',
+        id: 'estado',
+        label: 'Estado',
         align: 'left'
     },
     {
-        id: 'estado',
-        label: 'Estado',
+        id: 'usuarioRegistro',
+        label: 'Bitácora',
         align: 'left'
     }
 ];
@@ -373,14 +374,14 @@ const ListMedicines = () => {
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <ViewTrafficLight
                             success
                             title1="Mayor a 6 meses"
                             title2="Mayor a 3 meses y menor o igual a 6 meses"
                             title3="Igual o menor a 3 meses / Vencida"
                         />
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </CardContent>
 
@@ -438,7 +439,7 @@ const ListMedicines = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
+                                                    {row.producto}
                                                 </Typography>
                                             </TableCell>
 
@@ -453,7 +454,7 @@ const ListMedicines = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.descripcion}
+                                                    {row.nameSede}
                                                 </Typography>
                                             </TableCell>
 
@@ -483,11 +484,12 @@ const ListMedicines = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {/* <Chip
-                                                        label={row.tiempoTranscurrido?.label ? `${ViewFormat(row.fechaVencimiento)} - ${row.tiempoTranscurrido?.label}` : row.tiempoTranscurrido?.label}
+                                                    <Chip
                                                         size="small"
-                                                        chipcolor={row.tiempoTranscurrido?.codigo}
-                                                    /> */}
+                                                        label={row?.estado ? "ACTIVO" : "INACTIVO"}
+                                                        chipcolor={row?.estado ? 'success' : 'error'}
+                                                        sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                                    />
                                                 </Typography>
                                             </TableCell>
 
@@ -498,16 +500,16 @@ const ListMedicines = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    <Chip
-                                                        label={row.estado ? "ACTIVO" : "INACTIVO"}
-                                                        size="small"
-                                                        chipcolor={row.estado ? "success" : "error"}
-                                                    />
-                                                </Typography>
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro?.toUpperCase()}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'caption' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>

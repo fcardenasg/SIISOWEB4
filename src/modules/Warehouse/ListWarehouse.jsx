@@ -22,7 +22,8 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button
+    Button,
+    ListItemText
 } from '@mui/material';
 import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
 import { visuallyHidden } from '@mui/utils';
@@ -43,6 +44,7 @@ import ReactExport from "react-export-excel";
 import Cargando from 'components/loading/Cargando';
 import { ViewFormat } from 'components/helpers/Format';
 import ViewTrafficLight from 'components/components/ViewTrafficLight';
+import { DeleteMedicamentosProductos, GetAllMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -69,28 +71,28 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'codigo',
-        label: 'Código',
+        id: 'nombre',
+        label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'descripcion',
-        label: 'Descripción',
+        id: 'nameLaboratorio',
+        label: 'Laboratorio',
         align: 'left'
     },
     {
-        id: 'cantidad',
-        label: 'Cantidad',
+        id: 'nameFormaFarmaceutica',
+        label: 'Forma farmacéutica',
         align: 'left'
     },
     {
-        id: 'fechaVencimiento',
-        label: 'Fecha de vencimiento',
+        id: 'presentacionComercial',
+        label: 'Presentación comercial',
         align: 'left'
     },
     {
-        id: 'estado',
-        label: 'Estado',
+        id: 'usuarioRegistro',
+        label: 'Bitácora',
         align: 'left'
     }
 ];
@@ -218,7 +220,7 @@ const ListWarehouse = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllMedicines();
+            const lsServer = await GetAllMedicamentosProductos();
             if (lsServer.status === 200) {
                 setLsMedicamentos(lsServer.data);
                 setRows(lsServer.data);
@@ -306,7 +308,7 @@ const ListWarehouse = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteMedicines(idCheck);
+                    const result = await DeleteMedicamentosProductos(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
 
@@ -421,7 +423,7 @@ const ListWarehouse = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
+                                                    {row.nombre}
                                                 </Typography>
                                             </TableCell>
 
@@ -436,7 +438,7 @@ const ListWarehouse = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.descripcion}
+                                                    {row.nameLaboratorio}
                                                 </Typography>
                                             </TableCell>
 
@@ -451,12 +453,42 @@ const ListWarehouse = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    <Chip
-                                                        label={row.estado ? "ACTIVO" : "INACTIVO"}
-                                                        size="small"
-                                                        chipcolor={row.estado ? "success" : "error"}
-                                                    />
+                                                    {row.nameFormaFarmaceutica}
                                                 </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.presentacionComercial}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro?.toUpperCase()}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'caption' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>

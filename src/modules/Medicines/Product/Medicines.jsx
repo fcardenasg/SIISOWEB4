@@ -21,6 +21,8 @@ import InputText from 'components/input/InputText';
 import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
+import { GetComboMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 
 const ValidationMessageStop = {
     Requerido: 'Este campo es requerido',
@@ -29,12 +31,7 @@ const ValidationMessageStop = {
 };
 
 const validationSchema = yup.object().shape({
-    codigo: yup.string().required(ValidationMessage.Requerido),
-    descripcion: yup.string().required(ValidationMessage.Requerido),
-    idUnidad: yup.string().required(ValidationMessage.Requerido),
-    idLaboratorio: yup.string().required(ValidationMessage.Requerido),
-    formaFarmaceutica: yup.string().required(ValidationMessage.Requerido),
-    presentacionComercial: yup.string().required(ValidationMessage.Requerido),
+    idProducto: yup.object().required(ValidationMessage.Requerido),
     stopMinimo: yup.string().required(ValidationMessageStop.Requerido).test(
         'minimo-mayor-maximo',
         ValidationMessageStop.MinimoMayorMaximo,
@@ -51,47 +48,6 @@ const validationSchema = yup.object().shape({
             return !stopMinimo || !value || Number(value) >= Number(stopMinimo);
         }
     ),
-    /* fechaLote: yup.string().nullable()
-        .test('formato-fecha-lote', 'Formato de fecha inválido (YYYY-MM-DD)', (value) => {
-            if (!value) return true;
-            return /^\d{4}-\d{2}-\d{2}$/.test(value);
-        })
-        .test('is-after-1950', 'El año debe ser mayor al que intenta registrar', (value) => {
-            if (!value) return true;
-            const year = new Date(value).getFullYear();
-            return year >= 1950;
-        })
-        .test('is-not-past-date', 'La fecha de vencimiento no puede ser anterior o actual', (value) => {
-            if (!value) return true;
-            const inputDate = new Date(value);
-            const currentDate = new Date();
-
-            inputDate.setHours(0, 0, 0, 0);
-            currentDate.setHours(0, 0, 0, 0);
-
-            return inputDate >= currentDate;
-        })
-        .test('valid-year', 'Año de lote inválido', (value) => {
-            if (!value) return true;
-            const year = new Date(value).getFullYear();
-            return year <= new Date().getFullYear() + 10;
-        }),
-    fechaVencimiento: yup.string().required('La fecha de vencimiento es obligatoria')
-        .matches(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)')
-        .test('is-not-past-date', 'La fecha de vencimiento no puede ser anterior o actual', (value) => {
-            if (!value) return true;
-            const inputDate = new Date(value);
-            const currentDate = new Date();
-
-            inputDate.setHours(0, 0, 0, 0);
-            currentDate.setHours(0, 0, 0, 0);
-
-            return inputDate >= currentDate;
-        })
-        .test('valid-year', 'Año de vencimiento inválido', (value) => {
-            const year = new Date(value).getFullYear();
-            return year <= new Date().getFullYear() + 20;
-        }), */
 });
 
 const Medicines = () => {
@@ -103,22 +59,15 @@ const Medicines = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [lsUnidad, setLsUnidad] = useState([]);
-    const [lsLaboratorio, setLsLaboratorio] = useState([]);
+    const [lsMedicamento, setLsMedicamento] = useState([]);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
-    const { handleSubmit, setValue, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     async function getAll() {
         try {
-            setValue("fechaLote", "");
-            setValue("fechaVencimiento", "");
-
-            const lsServerUni = await GetByTipoCatalogoCombo(CodCatalogo.UNIDAD);
-            setLsUnidad(lsServerUni.data);
-
-            const lsServerLab = await GetByTipoCatalogoCombo(CodCatalogo.LABORATORIO);
-            setLsLaboratorio(lsServerLab.data);
+            const lsServerMedicamento = await GetComboMedicamentosProductos();
+            setLsMedicamento(lsServerMedicamento.data);
         } catch (error) { }
     }
 
@@ -129,21 +78,14 @@ const Medicines = () => {
     const handleClick = async (datos) => {
         try {
             datos.usuarioRegistro = user?.nameuser;
+            datos.idSede = parseInt(user?.idsede);
             datos.stopMaximo = parseInt(datos.stopMaximo);
             datos.stopMinimo = parseInt(datos.stopMinimo);
-            datos.idUnidad = parseInt(datos.idUnidad);
-            datos.idLaboratorio = parseInt(datos.idLaboratorio);
-
-            datos.concentracion = datos.concentracion || null;
-            datos.registroSanitario = datos.registroSanitario || null;
 
             const result = await InsertMedicines(datos);
             if (result.data.exito) {
                 setOpenSuccess(true);
                 reset();
-
-                setValue("fechaLote", "");
-                setValue("fechaVencimiento", "");
             } else {
                 setOpenError(true);
                 setErrorMessage(result.data.datos);
@@ -155,91 +97,18 @@ const Medicines = () => {
     };
 
     return (
-        <MainCard title="Registrar medicamento">
+        <MainCard title={`Registrar medicamento - Sede: ${user.namesede}`}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <FormProvider {...methods}>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="codigo"
-                            label="Código"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.codigo}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="descripcion"
-                            label="Descripción"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.descripcion}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputSelect
-                            name="idLaboratorio"
-                            label="Laboratorio"
-                            defaultValue=""
-                            options={lsLaboratorio}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idLaboratorio}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputSelect
-                            name="idUnidad"
-                            label="Unidad"
-                            defaultValue=""
-                            options={lsUnidad}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idUnidad}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="formaFarmaceutica"
-                            label="Forma farmacéutica"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.formaFarmaceutica}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="concentracion"
-                            label="Concentración"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.concentracion}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="presentacionComercial"
-                            label="Presentación comercial"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.presentacionComercial}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="registroSanitario"
-                            label="Registro sanitario"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.registroSanitario}
+                    <Grid item xs={12} md={6} lg={6}>
+                        <InputSelectAutocomplete
+                            name="idProducto"
+                            label="Producto"
+                            options={lsMedicamento}
+                            defaultValue={null}
                         />
                     </Grid>
 
@@ -267,7 +136,7 @@ const Medicines = () => {
                         />
                     </Grid>
 
-                    <Grid item alignItems="center" xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={2}>
                         <InputCheckBox
                             label="Estado"
                             name="estado"

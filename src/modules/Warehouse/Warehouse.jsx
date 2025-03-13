@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import { InsertMedicines } from 'api/clients/MedicinesClient';
+import { InsertMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
@@ -22,76 +22,10 @@ import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
-const ValidationMessageStop = {
-    Requerido: 'Este campo es requerido',
-    MinimoMayorMaximo: 'El valor mínimo no puede ser mayor que el valor máximo',
-    MaximoMenorMinimo: 'El valor máximo no puede ser menor que el valor mínimo',
-};
-
 const validationSchema = yup.object().shape({
-    codigo: yup.string().required(ValidationMessage.Requerido),
-    descripcion: yup.string().required(ValidationMessage.Requerido),
-    idUnidad: yup.string().required(ValidationMessage.Requerido),
+    nombre: yup.string().required(ValidationMessage.Requerido),
     idLaboratorio: yup.string().required(ValidationMessage.Requerido),
-    formaFarmaceutica: yup.string().required(ValidationMessage.Requerido),
-    presentacionComercial: yup.string().required(ValidationMessage.Requerido),
-    stopMinimo: yup.string().required(ValidationMessageStop.Requerido).test(
-        'minimo-mayor-maximo',
-        ValidationMessageStop.MinimoMayorMaximo,
-        function (value) {
-            const stopMaximo = this.resolve(yup.ref('stopMaximo'));
-            return !stopMaximo || !value || Number(value) <= Number(stopMaximo);
-        }
-    ),
-    stopMaximo: yup.string().required(ValidationMessageStop.Requerido).test(
-        'maximo-menor-minimo',
-        ValidationMessageStop.MaximoMenorMinimo,
-        function (value) {
-            const stopMinimo = this.resolve(yup.ref('stopMinimo'));
-            return !stopMinimo || !value || Number(value) >= Number(stopMinimo);
-        }
-    ),
-    /* fechaLote: yup.string().nullable()
-        .test('formato-fecha-lote', 'Formato de fecha inválido (YYYY-MM-DD)', (value) => {
-            if (!value) return true;
-            return /^\d{4}-\d{2}-\d{2}$/.test(value);
-        })
-        .test('is-after-1950', 'El año debe ser mayor al que intenta registrar', (value) => {
-            if (!value) return true;
-            const year = new Date(value).getFullYear();
-            return year >= 1950;
-        })
-        .test('is-not-past-date', 'La fecha de vencimiento no puede ser anterior o actual', (value) => {
-            if (!value) return true;
-            const inputDate = new Date(value);
-            const currentDate = new Date();
-
-            inputDate.setHours(0, 0, 0, 0);
-            currentDate.setHours(0, 0, 0, 0);
-
-            return inputDate >= currentDate;
-        })
-        .test('valid-year', 'Año de lote inválido', (value) => {
-            if (!value) return true;
-            const year = new Date(value).getFullYear();
-            return year <= new Date().getFullYear() + 10;
-        }),
-    fechaVencimiento: yup.string().required('La fecha de vencimiento es obligatoria')
-        .matches(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)')
-        .test('is-not-past-date', 'La fecha de vencimiento no puede ser anterior o actual', (value) => {
-            if (!value) return true;
-            const inputDate = new Date(value);
-            const currentDate = new Date();
-
-            inputDate.setHours(0, 0, 0, 0);
-            currentDate.setHours(0, 0, 0, 0);
-
-            return inputDate >= currentDate;
-        })
-        .test('valid-year', 'Año de vencimiento inválido', (value) => {
-            const year = new Date(value).getFullYear();
-            return year <= new Date().getFullYear() + 20;
-        }), */
+    formaFarmaceutica: yup.string().required(ValidationMessage.Requerido)
 });
 
 const Warehouse = () => {
@@ -107,13 +41,10 @@ const Warehouse = () => {
     const [lsLaboratorio, setLsLaboratorio] = useState([]);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
-    const { handleSubmit, setValue, formState: { errors }, reset } = methods;
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     async function getAll() {
         try {
-            setValue("fechaLote", "");
-            setValue("fechaVencimiento", "");
-
             const lsServerUni = await GetByTipoCatalogoCombo(CodCatalogo.UNIDAD);
             setLsUnidad(lsServerUni.data);
 
@@ -129,24 +60,16 @@ const Warehouse = () => {
     const handleClick = async (datos) => {
         try {
             datos.usuarioRegistro = user?.nameuser;
-            datos.stopMaximo = parseInt(datos.stopMaximo);
-            datos.stopMinimo = parseInt(datos.stopMinimo);
-            datos.idUnidad = parseInt(datos.idUnidad);
-            datos.idLaboratorio = parseInt(datos.idLaboratorio);
-
             datos.concentracion = datos.concentracion || null;
-            datos.registroSanitario = datos.registroSanitario || null;
+            datos.presentacionComercial = datos.presentacionComercial || null;
 
-            const result = await InsertMedicines(datos);
+            const result = await InsertMedicamentosProductos(datos);
             if (result.data.exito) {
                 setOpenSuccess(true);
                 reset();
-
-                setValue("fechaLote", "");
-                setValue("fechaVencimiento", "");
             } else {
                 setOpenError(true);
-                setErrorMessage(result.data.datos);
+                setErrorMessage(result.data.mensaje);
             }
         } catch (error) {
             setOpenError(true);
@@ -155,7 +78,7 @@ const Warehouse = () => {
     };
 
     return (
-        <MainCard title="Registrar medicamento">
+        <MainCard title="Registrar producto de medicamento">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -167,7 +90,7 @@ const Warehouse = () => {
                             name="nombre"
                             label="Nombre"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.descripcion}
+                            bug={errors.nombre}
                         />
                     </Grid>
 
@@ -190,6 +113,16 @@ const Warehouse = () => {
                             options={lsUnidad}
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors.formaFarmaceutica}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputText
+                            defaultValue=""
+                            name="codInvima"
+                            label="Código invima"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors.codInvima}
                         />
                     </Grid>
 

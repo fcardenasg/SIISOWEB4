@@ -77,6 +77,10 @@ export const Url = {
     RecetarioByDocAndOrder: 'api/Recetario/GetAllByDocumentAndTypeOrder',
     RecetarioId: 'api/Recetario/id',
 
+    MedicamentosProductos: 'api/MedicamentosProductos',
+    MedicamentosProductosCombo: 'api/MedicamentosProductos/combo',
+    MedicamentosProductosId: 'api/MedicamentosProductos/id',
+
     Medicamentos: 'api/Medicamentos',
     MedicamentosSearch: 'api/Medicamentos/product-search',
     MedicamentosId: 'api/Medicamentos/id',
