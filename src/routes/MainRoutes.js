@@ -63,6 +63,7 @@ const Warehouse = Loadable(lazy(() => import('modules/Warehouse/Warehouse')));
 
 const ListMedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/ListMedicinesOrders')));
 const MedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/MedicinesOrders')));
+const UpdateMedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/UpdateMedicinesOrders')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -476,6 +477,10 @@ const MainRoutes = {
         {
             path: '/medicines-orders/add',
             element: <MedicinesOrders />
+        },
+        {
+            path: '/medicines-orders/update/:id',
+            element: <UpdateMedicinesOrders />
         },
         {
             path: '/medicines/list',
@@ -909,10 +914,6 @@ const MainRoutes = {
             path: '/programming/update',
             element: <ListProgrammingUpdate />
         },
-
-        /* Indicadores */
-
-
         /* Rol */
         {
             path: '/rol/add',

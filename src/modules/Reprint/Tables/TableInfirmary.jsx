@@ -184,7 +184,7 @@ const TableInfirmary = () => {
             const lsDataReport = await GetByIdNoteInfirmary(id);
             const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
 
-            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data, user.namesede);
+            const dataPDFTwo = generateReportNursing(lsDataReport.data, lsDataUser.data, user?.namesede);
 
             setDataPDF(dataPDFTwo);
         } catch (err) { }

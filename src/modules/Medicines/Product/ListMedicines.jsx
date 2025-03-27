@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
     IconButton,
     InputAdornment,
+    ListItemText,
     Table,
     TableBody,
     TableCell,
@@ -21,29 +22,26 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button,
-    ListItemText
+    Typography
 } from '@mui/material';
-import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
+import { DeleteMedicines, GetAllMedicines } from 'api/clients/MedicinesClient';
 
-import swal from 'sweetalert';
-import Chip from 'ui-component/extended/Chip';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
+import Chip from 'ui-component/extended/Chip';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
+import SearchIcon from '@mui/icons-material/Search';
 import Cargando from 'components/loading/Cargando';
-import { ViewFormat } from 'components/helpers/Format';
-import ViewTrafficLight from 'components/components/ViewTrafficLight';
+import useAuth from 'hooks/useAuth';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -204,6 +202,7 @@ EnhancedTableToolbar.propTypes = {
 
 const ListMedicines = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
@@ -219,7 +218,7 @@ const ListMedicines = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllMedicines();
+            const lsServer = await GetAllMedicines(user?.idsede);
             if (lsServer.status === 200) {
                 setLsMedicamentos(lsServer.data);
                 setRows(lsServer.data);
@@ -327,7 +326,7 @@ const ListMedicines = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
     return (
-        <MainCard title="Lista de medicamentos" content={false}>
+        <MainCard title={`Lista de medicamentos - Sede: ${user?.namesede}`} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -373,15 +372,6 @@ const ListMedicines = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-
-                    {/* <Grid item xs={12}>
-                        <ViewTrafficLight
-                            success
-                            title1="Mayor a 6 meses"
-                            title2="Mayor a 3 meses y menor o igual a 6 meses"
-                            title3="Igual o menor a 3 meses / Vencida"
-                        />
-                    </Grid> */}
                 </Grid>
             </CardContent>
 

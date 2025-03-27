@@ -11,18 +11,16 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetComboMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 import { InsertMedicines } from 'api/clients/MedicinesClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
-import InputSelect from 'components/input/InputSelect';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
 import InputText from 'components/input/InputText';
 import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
-import { GetComboMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 
 const ValidationMessageStop = {
     Requerido: 'Este campo es requerido',
@@ -97,7 +95,7 @@ const Medicines = () => {
     };
 
     return (
-        <MainCard title={`Registrar medicamento - Sede: ${user.namesede}`}>
+        <MainCard title={`Registrar medicamento - Sede: ${user?.namesede}`}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

@@ -10,6 +10,7 @@ import {
     Grid,
     IconButton,
     InputAdornment,
+    ListItemText,
     Table,
     TableBody,
     TableCell,
@@ -26,20 +27,21 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
-import { DeleteMedicines, GetAllMedicines } from 'api/clients/MedicinesClient';
+import { DeleteMedicines } from 'api/clients/MedicinesClient';
 
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-import Chip from 'ui-component/extended/Chip';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
+import { GetAllMedicamentosPedido } from 'api/clients/MedicamentosPedidoClient';
 import Cargando from 'components/loading/Cargando';
+import useAuth from 'hooks/useAuth';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -66,27 +68,21 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'codigo',
+        id: 'numPedido',
         numeric: false,
-        label: 'Código',
+        label: 'N° pedido',
         align: 'left'
     },
     {
-        id: 'descripcion',
+        id: 'nameProveedor',
         numeric: false,
-        label: 'Descripción',
+        label: 'Proveedor',
         align: 'left'
     },
     {
-        id: 'cantidad',
+        id: 'usuarioRegistro',
         numeric: false,
-        label: 'Cantidad',
-        align: 'left'
-    },
-    {
-        id: 'estado',
-        numeric: false,
-        label: 'Estado',
+        label: 'Bitácora',
         align: 'left'
     }
 ];
@@ -110,11 +106,13 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
                         }}
                     />
                 </TableCell>
+
                 {numSelected > 0 && (
                     <TableCell padding="none" colSpan={8}>
                         <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
                     </TableCell>
                 )}
+
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -199,6 +197,7 @@ EnhancedTableToolbar.propTypes = {
 
 const ListMedicinesOrders = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
@@ -212,9 +211,9 @@ const ListMedicinesOrders = () => {
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    async function GetAll() {
+    async function getAll() {
         try {
-            const lsServer = await GetAllMedicines();
+            const lsServer = await GetAllMedicamentosPedido(user.idsede);
             if (lsServer.status === 200) {
                 setLsMedicamentos(lsServer.data);
                 setRows(lsServer.data);
@@ -223,7 +222,7 @@ const ListMedicinesOrders = () => {
     }
 
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
     const handleSearch = (event) => {
@@ -308,7 +307,7 @@ const ListMedicinesOrders = () => {
                     }
                     setSearch('');
                     setSelected([]);
-                    GetAll();
+                    getAll();
                 } else
                     setSelected([]);
             });
@@ -321,7 +320,7 @@ const ListMedicinesOrders = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
     return (
-        <MainCard title="Lista de pedidos" content={false}>
+        <MainCard title={`Lista de pedidos - Sede: ${user?.namesede}`} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -384,6 +383,7 @@ const ListMedicinesOrders = () => {
                             selected={selected}
                             onClick={handleDelete}
                         />
+
                         <TableBody>
                             {stableSort(lsMedicamentos, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -424,7 +424,7 @@ const ListMedicinesOrders = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
+                                                    {row.numPedido}
                                                 </Typography>
                                             </TableCell>
 
@@ -439,7 +439,7 @@ const ListMedicinesOrders = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.descripcion}
+                                                    {row.nameProveedor}
                                                 </Typography>
                                             </TableCell>
 
@@ -450,34 +450,20 @@ const ListMedicinesOrders = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.existencia === null ? "NO HAY EXISTENCIA" : `${row.existencia} EXISTENTES`}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.estado === true ?
-                                                        <Chip label="ACTIVO" size="small" chipcolor="success" /> :
-                                                        <Chip label="INACTIVO" size="small" chipcolor="error" />
-                                                    }
-                                                </Typography>
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro?.toUpperCase()}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'caption' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/medicines/update/${row.id}`)}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/medicines-orders/update/${row.id}`)}>
                                                     <IconButton size="large">
                                                         <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>

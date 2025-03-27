@@ -11,22 +11,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetComboMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 import { GetByIdMedicines, UpdateMediciness } from 'api/clients/MedicinesClient';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
-import InputDatePicker from 'components/input/InputDatePicker';
-import InputSelect from 'components/input/InputSelect';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
 import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
 import ListDetails from './ListDetails';
-import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
-import { GetComboMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 
 const ValidationMessageStop = {
     Requerido: 'Este campo es requerido',
@@ -109,7 +105,7 @@ const UpdateMedicines = () => {
     };
 
     return (
-        <MainCard title="Actualizar medicamento">
+        <MainCard title={`Actualizar medicamento - Sede: ${user?.namesede}`}>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
