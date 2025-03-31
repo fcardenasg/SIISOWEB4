@@ -87,7 +87,7 @@ const Attention = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                setSede(user.idsede);
+                setSede(user?.idsede);
 
                 const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
                 setLsSede(lsServerSede.data);

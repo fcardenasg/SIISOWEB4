@@ -213,7 +213,7 @@ const ListMedicinesOrders = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllMedicamentosPedido(user.idsede);
+            const lsServer = await GetAllMedicamentosPedido(user?.idsede);
             if (lsServer.status === 200) {
                 setLsMedicamentos(lsServer.data);
                 setRows(lsServer.data);

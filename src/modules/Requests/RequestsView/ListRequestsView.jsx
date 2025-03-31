@@ -88,7 +88,7 @@ const ListRequestsView = () => {
             setMessageAtencion('');
             setLsRequests([]);
 
-            await GetAllRequestsPendientes(user.idsede, false).then(response => {
+            await GetAllRequestsPendientes(user?.idsede, false).then(response => {
                 if (response.data.length === 0) {
                     setMessageAtencion(Message.NoRegistro);
                 } else if (response.data.length !== 0) {

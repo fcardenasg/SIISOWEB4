@@ -51,7 +51,7 @@ function SearchProduct({ captureData, dataProducto, disabled }) {
             }
 
             if (inputValue.length > 0) {
-                axios.get(`${Url.Base}${Url.MedicamentosSearch}/${user.idsede}/${inputValue}`).then((response) => {
+                axios.get(`${Url.Base}${Url.MedicamentosSearch}/${user?.idsede}/${inputValue}`).then((response) => {
                     if (response.data.exito) {
                         if (response.data.datos.length > 0)
                             setLsData(response.data.datos);

@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
     IconButton,
     InputAdornment,
+    ListItemText,
     Table,
     TableBody,
     TableCell,
@@ -21,26 +22,26 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
+import { DeleteMedicines } from 'api/clients/MedicinesClient';
 
-import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllSupplier, DeleteSupplier, GetExcelSupplier } from 'api/clients/SupplierClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import SearchIcon from '@mui/icons-material/Search';
+import { GetAllMedicamentosPedido } from 'api/clients/MedicamentosPedidoClient';
 import Cargando from 'components/loading/Cargando';
-import { DownloadFile } from 'components/helpers/ConvertToBytes';
-import LoadingGenerate from 'components/loading/LoadingGenerate';
+import useAuth from 'hooks/useAuth';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -67,27 +68,21 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'codiProv',
+        id: 'numPedido',
         numeric: false,
-        label: 'Código',
+        label: 'N° pedido',
         align: 'left'
     },
     {
-        id: 'nombProv',
+        id: 'nameProveedor',
         numeric: false,
-        label: 'Nombre',
+        label: 'Proveedor',
         align: 'left'
     },
     {
-        id: 'nameTipoProv',
+        id: 'usuarioRegistro',
         numeric: false,
-        label: 'Tipo de proveedor',
-        align: 'left'
-    },
-    {
-        id: 'teleProv',
-        numeric: false,
-        label: 'Teléfono',
+        label: 'Bitácora',
         align: 'left'
     }
 ];
@@ -111,11 +106,13 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
                         }}
                     />
                 </TableCell>
+
                 {numSelected > 0 && (
                     <TableCell padding="none" colSpan={8}>
                         <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
                     </TableCell>
                 )}
+
                 {numSelected <= 0 &&
                     headCells.map((headCell) => (
                         <TableCell
@@ -179,7 +176,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -198,62 +195,35 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListSupplier = () => {
+const ListSupplierParameterization = () => {
     const navigate = useNavigate();
-    const [supplier, setSupplier] = useState([]);
+    const { user } = useAuth();
+    const [lsMedicamentos, setLsMedicamentos] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
-    const [resultMessage, setResultMessage] = useState('');
-
-    const [loading, setLoading] = useState(false);
-    const [openError, setOpenError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('nombProv');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('fechaRegistro');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    //Primer metodo a actualizar
     async function getAll() {
         try {
-            const lsServer = await GetAllSupplier(0, 0);
+            const lsServer = await GetAllMedicamentosPedido(user?.idsede);
             if (lsServer.status === 200) {
-                setSupplier(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                setLsMedicamentos(lsServer.data);
+                setRows(lsServer.data);
             }
-        } catch (error) {
-        }
+        } catch (error) { }
     }
 
     useEffect(() => {
         getAll();
-    }, []);
-
-    async function getDataForExport() {
-        try {
-            setLoading(true);
-            const lsServerExcel = await GetExcelSupplier();
-
-            if (lsServerExcel.status === 200) {
-                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
-
-                setTimeout(() => {
-                    setLoading(false);
-                }, 1000);
-            }
-
-        } catch (error) {
-            setLoading(false);
-
-            setOpenError(true);
-            setErrorMessage(Message.ErrorExcel);
-        }
-    }
+    }, [])
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -263,7 +233,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv', 'nameTipoProv'];
+                const properties = ['codigo', 'descripcion', 'cantidad'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -277,9 +247,9 @@ const ListSupplier = () => {
                 }
                 return matches;
             });
-            setSupplier(newRows);
+            setLsMedicamentos(newRows);
         } else {
-            setSupplier(rows);
+            setLsMedicamentos(rows);
         }
     };
 
@@ -292,7 +262,7 @@ const ListSupplier = () => {
     const handleSelectAllClick = (event) => {
 
         if (event.target.checked) {
-            const newSelectedId = supplier.map((n) => n.codiProv);
+            const newSelectedId = lsMedicamentos.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -331,37 +301,31 @@ const ListSupplier = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    await DeleteSupplier(idCheck).then(result => {
-                        if (result.data.message === Message.Eliminar) {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                            setSelected([]);
-                            setSearch('');
-                            getAll();
-                        } else {
-                            setResultMessage(result.data.message);
-                            setOpenDelete(true);
-                        }
-                    });
+                    const result = await DeleteMedicines(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                    }
+                    setSearch('');
+                    setSelected([]);
+                    getAll();
                 } else
                     setSelected([]);
             });
         } catch (error) {
-            setResultMessage(Message.ErrorServicio);
-            setOpenDelete(true);
+
         }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
     return (
-        <MainCard title="Lista de proveedores" content={false}>
-            <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
+        <MainCard title="Listado de parametrización de proveedor" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={4} md={6} lg={8.5}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -377,10 +341,10 @@ const ListSupplier = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sm={8} md={6} lg={3.5} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
-                                <Tooltip disable={loading} onClick={() => getDataForExport()} title="Exportar">
+                                <Tooltip title="Exportar" /* onClick={() => setOpenModal(true)} */>
                                     <IconButton size="large">
                                         <IconFileExport />
                                     </IconButton>
@@ -389,14 +353,14 @@ const ListSupplier = () => {
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/supplier/add")}>
+                                    onClick={() => navigate("/supplier-parameterization/add")}>
                                     {TitleButton.Agregar}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/parameterization/menu")}>
+                                    onClick={() => navigate("/supplier-parameterization/add")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
@@ -406,7 +370,7 @@ const ListSupplier = () => {
             </CardContent>
 
             <TableContainer>
-                {supplier.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsMedicamentos.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -414,19 +378,20 @@ const ListSupplier = () => {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={supplier.length}
+                            rowCount={lsMedicamentos.length}
                             theme={theme}
                             selected={selected}
                             onClick={handleDelete}
                         />
+
                         <TableBody>
-                            {stableSort(supplier, getComparator(order, orderBy))
+                            {stableSort(lsMedicamentos, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
 
                                     if (typeof row === 'string') return null;
 
-                                    const isItemSelected = isSelected(row.codiProv);
+                                    const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -438,7 +403,7 @@ const ListSupplier = () => {
                                             key={index}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.codiProv)}>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
@@ -452,15 +417,14 @@ const ListSupplier = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
-                                                align="left"
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codiProv}
+                                                    {row.numPedido}
                                                 </Typography>
                                             </TableCell>
 
@@ -468,14 +432,14 @@ const ListSupplier = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nombProv}
+                                                    {row.nameProveedor}
                                                 </Typography>
                                             </TableCell>
 
@@ -483,34 +447,23 @@ const ListSupplier = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.nameTipoProv}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.teleProv}
-                                                </Typography>
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro?.toUpperCase()}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'caption' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/supplier/update/${row.codiProv}`)}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/supplier-parameterization/update/${row.id}`)}>
                                                     <IconButton size="large">
                                                         <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
@@ -536,7 +489,7 @@ const ListSupplier = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={supplier.length}
+                count={lsMedicamentos.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -546,4 +499,4 @@ const ListSupplier = () => {
     );
 };
 
-export default ListSupplier;
+export default ListSupplierParameterization;

@@ -22,6 +22,7 @@ import { FormatDate } from 'components/helpers/Format';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { PostSupplier } from 'formatdata/SupplierForm';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 /* Validamos campos, los que sean necesarios */
 const validationSchema = yup.object().shape({
@@ -96,18 +97,14 @@ const Supplier = () => {
         }
     };
 
-
-
-
     return (
-        <MainCard title="Registrar Proveedor">
-            {/* Agregamos el resultado del mensaje */}
+        <MainCard title="Registrar proveedor">
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+            <FormProvider {...methods}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputText
                             defaultValue=""
                             name="codiProv"
@@ -115,10 +112,8 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.codiProv}
                         />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputText
                             defaultValue=""
                             name="nombProv"
@@ -126,10 +121,8 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.nombProv}
                         />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputText
                             defaultValue=""
                             name="teleProv"
@@ -137,10 +130,8 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.teleProv}
                         />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputText
                             defaultValue=""
                             fullWidth
@@ -149,10 +140,8 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.emaiProv}
                         />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputText
                             defaultValue=""
                             fullWidth
@@ -161,10 +150,8 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.contaProv}
                         />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputSelect
                             name="ciudProv"
                             label="Ciudad"
@@ -172,10 +159,8 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.ciudProv}
                         />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputSelect
                             name="idTipoProveedor"
                             label="Tipo Proveedor"
@@ -184,10 +169,9 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.idTipoProveedor}
                         />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormProvider {...methods}>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
                         <InputText
                             defaultValue=""
                             name="direProv"
@@ -195,9 +179,18 @@ const Supplier = () => {
                             size={matchesXS ? 'small' : 'medium'}
                             bug={errors?.direProv}
                         />
-                    </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputCheckBox
+                            label="¿Es un proveedor activo para campaña?"
+                            name="estadoCampania"
+                            size={30}
+                            defaultValue={false}
+                        />
+                    </Grid>
                 </Grid>
-            </Grid>
+            </FormProvider>
 
             <Grid item xs={12} sx={{ pt: 4 }}>
                 <Grid container spacing={2}>

@@ -4,13 +4,12 @@ import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import { Box, Grid, IconButton, TextField, Tooltip, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { Url } from 'api/instances/AuthRoute';
+import record from 'assets/img/record.json';
+import axios from "axios";
 import Lottie from 'lottie-react';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ControllerCopy from './ControllerCopy';
-import axios from "axios";
-import record from 'assets/img/record.json';
-import { Url } from 'api/instances/AuthRoute';
-import { motion, AnimatePresence } from "framer-motion";
 
 const ControllerListen = () => {
     const theme = useTheme();

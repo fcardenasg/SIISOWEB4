@@ -84,6 +84,9 @@ export const Url = {
     MedicamentosPedidoId: 'api/MedicamentosPedido/id',
     MedicamentosPedido: 'api/MedicamentosPedido',
 
+    MedicamentosEntregaId: 'api/MedicamentosEntrega/id',
+    MedicamentosEntrega: 'api/MedicamentosEntrega',
+
     MedicamentosPedidoDetalleId: 'api/MedicamentosPedido/detalle/id',
     MedicamentosPedidoDetalle: 'api/MedicamentosPedido/detalle',
     MedicamentosPedidoDetalleCantidades: 'api/MedicamentosPedido/detalle/cantidades',

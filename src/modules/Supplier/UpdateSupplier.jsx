@@ -25,6 +25,7 @@ import { TitleButton, CodCatalogo, Message, ValidationMessage } from 'components
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 /* Validamos campos, los que sean necesarios */
 const validationSchema = yup.object().shape({
@@ -89,7 +90,7 @@ const UpdateSupplier = () => {
             /* Modificamos el correo por el nombre del usuario */
             const DataToUpdate = PutSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
                 datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-                supplier.usuarioRegistro, supplier.fechaRegistro, user?.nameuser, FormatDate(new Date()));
+                supplier.usuarioRegistro, supplier.fechaRegistro, user?.nameuser, FormatDate(new Date()), datos.estadoCampania);
 
             /* Modificamos el consumo del servicio de actualziar */
             if (Object.keys(datos.length !== 0)) {
@@ -109,16 +110,15 @@ const UpdateSupplier = () => {
     };
 
     return (
-        <MainCard title="Actualizar Proveedor">
-            {/* Indicamos el mensaje que nos da como resultado aquí */}
+        <MainCard title="Actualizar proveedor">
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             {supplier.length != 0 ? (
                 <Fragment>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                    <FormProvider {...methods}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={supplier.codiProv}
                                     fullWidth
@@ -128,10 +128,8 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.codiProv}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={supplier.nombProv}
                                     fullWidth
@@ -140,10 +138,8 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.nombProv}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={supplier.teleProv}
                                     fullWidth
@@ -152,10 +148,8 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.teleProv}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={supplier.emaiProv}
                                     fullWidth
@@ -164,10 +158,8 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.emaiProv}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={supplier.contaProv}
                                     fullWidth
@@ -176,10 +168,8 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.contaProv}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputSelect
                                     name="ciudProv"
                                     label="Ciudad"
@@ -188,10 +178,8 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.ciudProv}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputSelect
                                     name="idTipoProveedor"
                                     label="Tipo Proveedor"
@@ -200,10 +188,8 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.idTipoProveedor}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={supplier.direProv}
                                     fullWidth
@@ -212,9 +198,18 @@ const UpdateSupplier = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.direProv}
                                 />
-                            </FormProvider>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputCheckBox
+                                    label="¿Es un proveedor activo para campaña?"
+                                    name="estadoCampania"
+                                    size={30}
+                                    defaultValue={supplier.estadoCampania}
+                                />
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </FormProvider>
 
                     <Grid item xs={12} sx={{ pt: 4 }}>
                         <Grid container spacing={2}>
