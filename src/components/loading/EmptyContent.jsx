@@ -28,7 +28,7 @@ export default function EmptyContent({ title, action, filled, description, sx, .
         sx={{
           width: 250,
           maxWidth: '100%',
-          height: 'auto',
+          height: 'auto'
         }}
       />
 

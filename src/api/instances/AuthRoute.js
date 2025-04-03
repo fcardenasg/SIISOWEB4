@@ -4,6 +4,7 @@ export const Url = {
     Base: config.rutaApi,
 
     Login: 'api/Login',
+    LoginQueryProgramming: 'api/Login/query-programming',
     AudioTexto: 'api/Login/GetChatIA',
     ConsultarCorreo: 'api/Login/mail-consult',
     RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',

@@ -42,6 +42,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { GetAllMedicamentosPedido } from 'api/clients/MedicamentosPedidoClient';
 import Cargando from 'components/loading/Cargando';
 import useAuth from 'hooks/useAuth';
+import { QueryProgramming } from 'api/clients/UserClient';
+import { ViewFormat } from 'components/helpers/Format';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -70,21 +72,33 @@ const headCells = [
     {
         id: 'numPedido',
         numeric: false,
-        label: 'N° pedido',
+        label: 'Documento',
         align: 'left'
     },
     {
         id: 'nameProveedor',
         numeric: false,
-        label: 'Proveedor',
+        label: 'Nombre',
         align: 'left'
     },
     {
         id: 'usuarioRegistro',
         numeric: false,
-        label: 'Bitácora',
+        label: 'Tipo de examen',
         align: 'left'
-    }
+    },
+    {
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Último EMO',
+        align: 'left'
+    },
+    {
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Tiempo transcurrido',
+        align: 'left'
+    },
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -195,7 +209,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListSupplierParameterization = () => {
+const Programming = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
@@ -203,8 +217,8 @@ const ListSupplierParameterization = () => {
     const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
-    const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('fechaUltimoEMO');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -213,10 +227,10 @@ const ListSupplierParameterization = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllMedicamentosPedido(user?.idsede);
-            if (lsServer.status === 200) {
-                setLsMedicamentos(lsServer.data);
-                setRows(lsServer.data);
+            const lsServer = await QueryProgramming();
+            if (lsServer.data.success) {
+                setLsMedicamentos(lsServer.data.data);
+                setRows(lsServer.data.data);
             }
         } catch (error) { }
     }
@@ -320,7 +334,7 @@ const ListSupplierParameterization = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
     return (
-        <MainCard title="Listado de parametrización de proveedor" content={false}>
+        <MainCard title="Listado de programación" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -416,7 +430,7 @@ const ListSupplierParameterization = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.numPedido}
+                                                    {row.documento}
                                                 </Typography>
                                             </TableCell>
 
@@ -431,7 +445,7 @@ const ListSupplierParameterization = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameProveedor}
+                                                    {row.nombre}
                                                 </Typography>
                                             </TableCell>
 
@@ -442,16 +456,42 @@ const ListSupplierParameterization = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <ListItemText
-                                                    primary={row?.usuarioRegistro?.toUpperCase()}
-                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
-                                                    primaryTypographyProps={{ typography: 'caption' }}
-                                                    secondaryTypographyProps={{
-                                                        mt: 0.5,
-                                                        component: 'span',
-                                                        typography: 'caption',
-                                                    }}
-                                                />
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.tipoExamen}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {ViewFormat(row.fechaUltimoEMO)}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {`${row.fechaProximoEMO} meses`}
+                                                </Typography>
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
@@ -491,4 +531,4 @@ const ListSupplierParameterization = () => {
     );
 };
 
-export default ListSupplierParameterization;
+export default Programming;

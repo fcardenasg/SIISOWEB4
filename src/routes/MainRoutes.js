@@ -245,6 +245,8 @@ const ListSupplierParameterization = Loadable(lazy(() => import('modules/OrderSc
 const SupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/SupplierParameterization')));
 const UpdateSupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/UpdateSupplierParameterization')));
 
+const Programming = Loadable(lazy(() => import('modules/OrderScheduling/Programming/Programming')));
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -261,7 +263,7 @@ const MainRoutes = {
         {
             path: '/typecatalog/add',
             element: <TypeCatalog />
-        },
+        }, 
         {
             path: '/typecatalog/update/:id',
             element: <UpdateTypeCatalog />
@@ -1050,10 +1052,10 @@ const MainRoutes = {
             path: '/supplier-parameterization/update/:id',
             element: <UpdateSupplierParameterization />
         },
-        /* {
+        {
             path: '/schedule-orders/list',
-            element: <MessageScheduling />
-        }, */
+            element: <Programming />
+        },
     ]
 };
 

@@ -229,7 +229,7 @@ export default function MedicinesOrders() {
 
                 <Grid item xs={4} md={2}>
                     <AnimateButton>
-                        <Button variant="outlined" fullWidth onClick={() => navigate("/medicines-orders/list")}>
+                        <Button variant="outlined" fullWidth onClick={() => navigate("/supplier-parameterization/list")}>
                             {TitleButton.Cancelar}
                         </Button>
                     </AnimateButton>

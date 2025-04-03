@@ -22,3 +22,6 @@ export const UpdatePermiso = async (accion) => await putData(Url.UsuariosUpdateP
 export const InsertPermisoIndividual = async (accion) => await postData(Url.UsuariosInsertPermiso, accion);
 export const GetPermiso = async () => await getData(Url.UsuariosListPermisos);
 export const GetSharePermission = async (accion) => await postData(Url.UsuariosPermisos, accion);
+
+/* Programación */
+export const QueryProgramming = async () => await getData(Url.LoginQueryProgramming);
