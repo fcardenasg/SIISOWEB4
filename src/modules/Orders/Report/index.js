@@ -9,10 +9,10 @@ function getHeader(doc = new jsPDF(), lsDataReport, version = "SIG-0408") {
     doc.addImage(config.logotipo, "PNG", 5, 5, config.typeDashboard === 'DLTD' ? 60 : 50, 15);
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.text("SISTEMA INTEGRADO DE INFORMACIÓN DE SALUD OCUPACIONAL", 120, 8, null, null, "center");
-    doc.text("EXAMENES MEDICOS OCUPACIONALES", 120, 12, null, null, "center");
+    doc.text("ÁREA DE SALUD OCUPACIONAL", 120, 8, null, null, "center");
+    doc.text("DIVISIÓN MÉDICA", 120, 12, null, null, "center");
     doc.setFontSize(8);
-    doc.text("Solicitud de Servicio de Examen Médico", 120, 16, null, null, "center");
+    doc.text("SOLICITUD DE SERVICIO DE EXAMEN MÉDICO", 120, 16, null, null, "center");
     doc.text(`${lsDataReport.nameTipoExamen}`, 120, 20, null, null, "center");
 
     doc.setFontSize(12);
