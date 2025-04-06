@@ -68,9 +68,11 @@ const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/Psycholo
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
 
-const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalFormula')));
-const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/MedicalFormula')));
+const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalformula')));
+const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/Medicalformula')));
 const UpdateMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/UpdateMedicalFormula')));
+
+const MedicalCalendar = Loadable(lazy(() => import('modules/Medicalcalendar/calendar/index')));
 
 const ListAlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/ListAlcoholAndDrugTesting')));
 const AlcoholAndDrugTesting = Loadable(lazy(() => import('modules/AlcoholAndDrugTesting/AlcoholAndDrugTesting')));
@@ -986,8 +988,12 @@ const MainRoutes = {
         },
         {
             path: '/chat-gpt/view',
-            element: <ChatGPT />
+            element: <ChatGPT/>
         },
+        {
+            path: '/medical-calendar',
+            element: <MedicalCalendar />
+        },        
 
         /* Soporte */
         {

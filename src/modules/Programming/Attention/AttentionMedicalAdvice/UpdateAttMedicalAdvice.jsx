@@ -1,8 +1,10 @@
 import { Grid, Typography } from '@mui/material';
-import ViewCall from './ViewCall';
+import ViewCall from './ViewCall'; 
 import SubCard from 'ui-component/cards/SubCard';
 
-const UpdateAttMedicalAdvice = ({ children, setUserEdit, userEdit }) => {
+
+
+const UpdateAttMedicalAdvice = ({ children, setUserEdit, userEdit,channelCurrent=null }) => {
 
     return (
         <SubCard title={<Typography variant='h4'>Asesorías médicas especializadas</Typography>}>
@@ -21,7 +23,9 @@ const UpdateAttMedicalAdvice = ({ children, setUserEdit, userEdit }) => {
                     <Grid item sx={{ width: 342, margin: { xs: '0 auto', md: 'initial' } }}>
                         <ViewCall
                             onCancel={() => setUserEdit(false)}
+                            channelCurrent={channelCurrent}
                         />
+                     
                     </Grid>
                 )}
             </Grid>

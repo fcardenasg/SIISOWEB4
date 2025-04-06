@@ -1,232 +1,367 @@
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
-import { useTheme } from '@mui/material/styles';
-import {
-    Button,
-    Grid,
-    Typography,
-    useScrollTrigger
-} from '@mui/material';
+import { useTheme } from "@mui/material/styles";
+import { Button, Grid, Typography, useScrollTrigger, Box } from "@mui/material";
 
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import SubCard from 'ui-component/cards/SubCard';
-import { Fragment } from 'react';
-import { AgoraVideoPlayer } from "agora-rtc-react";
+import SubCard from "ui-component/cards/SubCard";
+import { Fragment } from "react";
 
-import MicIcon from '@mui/icons-material/Mic';
-import MicOffIcon from '@mui/icons-material/MicOff';
-import VideocamIcon from '@mui/icons-material/Videocam';
-import VideocamOffIcon from '@mui/icons-material/VideocamOff';
+import PhoneCallbackIcon from "@mui/icons-material/PhoneCallback";
 
-import { channelName, config, useClient, useMicrophoneAndCameraTracks } from './settings';
-
-import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
-import CloseIcon from '@mui/icons-material/Close';
-
+import { useSearchParams } from "react-router-dom";
+import AgoraRTC from "agora-rtc-sdk-ng";
+import CryptoJS from "crypto-js";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { MessageError } from "components/alert/AlertAll";
+import { height } from "@mui/system";
 
 function ElevationScroll({ children, window }) {
-    const trigger = useScrollTrigger({
-        disableHysteresis: true,
-        threshold: 130,
-        target: window || undefined
-    });
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 130,
+    target: window || undefined,
+  });
 
-    return React.cloneElement(children, {
-        style: {
-            position: trigger ? 'fixed' : 'relative',
-            top: trigger ? 83 : 0,
-            width: trigger ? 318 : '100%'
-        }
-    });
+  return React.cloneElement(children, {
+    style: {
+      position: trigger ? "fixed" : "relative",
+      top: trigger ? 83 : 0,
+      width: trigger ? 318 : "100%",
+    },
+  });
 }
 
-ElevationScroll.propTypes = {
-    children: PropTypes.node,
-    window: PropTypes.object
-};
+const ViewCall = ({ onCancel, channelCurrent }) => {
+  const theme = useTheme();
+  const [inCall, setInCall] = useState(false);
+  const [start, setStart] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [trackState, setTrackState] = useState({ video: true, audio: true });
 
-const ViewCall = ({ onCancel, ...others }) => {
-    const theme = useTheme();
-    const [inCall, setInCall] = useState(false);
-    const [start, setStart] = useState(false);
-    const [users, setUsers] = useState([]);
-    const [trackState, setTrackState] = useState({ video: true, audio: true });
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-    const client = useClient();
-    const { ready, tracks } = useMicrophoneAndCameraTracks();
+  dayjs.extend(utc);
 
-    useEffect(() => {
-        function getControles() {
-            let init = async (name) => {
-                client.on("user-published", async (user, mediaType) => {
-                    await client.subscribe(user, mediaType);
-                    if (mediaType === "video") {
-                        setUsers((prevUsers) => {
-                            return [...prevUsers, user];
-                        });
-                    }
-                    if (mediaType === "audio") {
-                        user.audioTrack.play();
-                    }
-                });
+  const [searchParams] = useSearchParams();
+  let appId = searchParams.get("appId");
+  let channel = searchParams.get("channel");
+  let tokenend = searchParams.get("tokenend");
 
-                client.on("user-unpublished", (user, mediaType) => {
-                    if (mediaType === "audio") {
-                        if (user.audioTrack) user.audioTrack.stop();
-                    }
-                    if (mediaType === "video") {
-                        setUsers((prevUsers) => {
-                            return prevUsers.filter((User) => User.uid !== user.uid);
-                        });
-                    }
-                });
+  let fechaactual;
 
-                client.on("user-left", (user) => {
-                    setUsers((prevUsers) => {
-                        return prevUsers.filter((User) => User.uid !== user.uid);
-                    });
-                });
+  if (channelCurrent?.channel) {
+    appId = "24620e849c55400aad51c1da9141ac46";
+    channel = channelCurrent.channel;
+    fechaactual = channelCurrent.fecha;
+  }
 
-                try {
-                    await client.join(config.appId, name, config.token, null);
-                } catch (error) {
-                    
-                }
+  let token = null;
+  let uid = 0;
 
-                if (tracks) await client.publish([tracks[0], tracks[1]]);
-                setStart(true);
-            };
+  const localAudioTrackRef = useRef(null);
+  const localVideoTrackRef = useRef(null);
 
-            if (ready && tracks) {
-                try {
-                    init(channelName);
-                } catch (error) {
-                    
-                }
-            }
-        }
+  const [client, setClient] = useState(null);
 
-        getControles();
-    }, [channelName, client, ready, tracks]);
+  const videoContainerRef = useRef(null);
+  const videoContainerRemoteRef = useRef(null);
 
-    const mute = async (type) => {
-        if (type === "audio") {
-            await tracks[0].setEnabled(!trackState.audio);
-            setTrackState((ps) => {
-                return { ...ps, audio: !ps.audio };
-            });
-        } else if (type === "video") {
-            await tracks[1].setEnabled(!trackState.video);
-            setTrackState((ps) => {
-                return { ...ps, video: !ps.video };
-            });
-        }
-    };
+  const SECRET_kEY = "rubikapp";
 
-    const leaveChannel = async () => {
-        await client.leave();
-        client.removeAllListeners();
-        tracks[0].close();
-        tracks[1].close();
-        setStart(false);
-        setInCall(false);
-    };
+  useEffect(() => {
+    const agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    setClient(agoraClient);
+  }, []);
 
-    return (
-        <ElevationScroll {...others}>
+  useEffect(() => {
+    if (client) {
+      setupEventListeners();
+    }
+  }, [client]);
 
-            <SubCard
-                title="VIDEO LLAMADA"
-                sx={{
-                    background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
-                    width: '100%',
-                    maxWidth: 600
-                }}
-                container={false}
-            >
-                <PerfectScrollbar style={{ height: 'calc(80vh - 80px)', overflowX: 'hidden' }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Button variant="outlined" color='error' fullWidth onClick={leaveChannel} startIcon={<PhoneCallbackIcon />}>
-                                Colgar
-                            </Button>
-                        </Grid>
+  async function joinChannel() {
+    let bytes;
+    let decryptedDate;
+    let expirationDate;
+    let today = dayjs().startOf("day");
 
-                        <Grid item xs={6}>
-                            <Button variant="outlined" color='error' fullWidth onClick={onCancel} startIcon={<CloseIcon />}>
-                                Cerrar
-                            </Button>
-                        </Grid>
+    if (channelCurrent && channelCurrent.fecha) {
+      expirationDate = dayjs.utc(channelCurrent.fecha);      
+    } else {
+      bytes = CryptoJS.AES.decrypt(decodeURIComponent(tokenend), SECRET_kEY);
+      decryptedDate = bytes.toString(CryptoJS.enc.Utf8);
+      expirationDate = dayjs.utc(decryptedDate);  
+    }
 
-                        {inCall ? (
-                            <Fragment>
+    if (today.isBefore(expirationDate)) {
+      setOpenError(true);
+      setErrorMessage(
+        `Reunión programada para el ${expirationDate.format("DD/MM/YYYY")}`
+      );
+      return;
+    } else if (today.format("YYYY-MM-DD") > expirationDate.format("YYYY-MM-DD")) {
+      setOpenError(true);
+      setErrorMessage("Esta reunión ha caducado");
+      return;
+    } else {     
+      try {
+        await client.join(appId, channel, token, uid);
+        await createLocalTracks();
+        await publishLocalTracks();
+        displayLocalVideo();
+        setInCall(true);
+      } catch (error) {
+        console.error("Error al unirse al canal. verifique que tenga una reuinion programada:", error);
+        setOpenError(true);
+        setErrorMessage("No se encontró una reunión programada. Verifique e intente nuevamente.");
+      }
+    }
+  }
 
-                                <Grid item xs={12} sx={{ mb: 18 }}>
-                                    <Typography>
-                                        DOCTOR
-                                    </Typography>
+  async function createLocalTracks() {
+    localAudioTrackRef.current = await AgoraRTC.createMicrophoneAudioTrack();
+    localVideoTrackRef.current = await AgoraRTC.createCameraVideoTrack();
+  }
 
-                                    <AgoraVideoPlayer
-                                        videoTrack={tracks[1]}
-                                        style={{ height: "800%", width: "100%" }}
-                                    />
-                                </Grid>
+  async function publishLocalTracks() {
+    await client.publish([
+      localAudioTrackRef.current,
+      localVideoTrackRef.current,
+    ]);
+  }
 
-                                <Grid item xs={12}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={3}>
-                                            <Button
-                                                variant="contained"
-                                                color={trackState.audio ? "primary" : "error"}
-                                                onClick={() => mute("audio")}
-                                            >
-                                                {trackState.audio ? <MicIcon /> : <MicOffIcon />}
-                                            </Button>
-                                        </Grid>
+  function displayLocalVideo() {
+    const localPlayerContainer = document.createElement("div");
+    localPlayerContainer.id = uid;
+    localPlayerContainer.style.width = "100%";
+    localPlayerContainer.style.height = "98%";
+    localPlayerContainer.style.borderRadius = "10px";
 
-                                        <Grid item xs={3}>
-                                            <Button
-                                                variant="contained"
-                                                color={trackState.video ? "primary" : "error"}
-                                                onClick={() => mute("video")}
-                                            >
-                                                {trackState.video ? <VideocamIcon /> : <VideocamOffIcon />}
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
+    if (videoContainerRef.current) {
+      videoContainerRef.current.appendChild(localPlayerContainer);
+    }
 
+    localVideoTrackRef.current.play(localPlayerContainer);
+  }
 
+  function displayRemoteVideo(user) {
+    const remoteVideoTrack = user.videoTrack;
+    const remotePlayerContainer = document.createElement("div");
+    remotePlayerContainer.id = user.uid.toString() + "1";
+    remotePlayerContainer.style.width = "100%";
+    remotePlayerContainer.style.height = "98%";
+    remotePlayerContainer.style.borderRadius = "10px";
 
-                            </Fragment>
-                        ) : (
-                            <Grid item xs={12}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={6}>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={() => setInCall(true)}
-                                        >
-                                            Join Call
-                                        </Button>
-                                    </Grid>
+    if (videoContainerRemoteRef.current) {
+      videoContainerRemoteRef.current.appendChild(remotePlayerContainer);
+    }
 
-                                </Grid>
-                            </Grid>
-                        )}
+    remoteVideoTrack.play(remotePlayerContainer);
+  }
 
+  async function leaveChannel() {
+    onCancel();
 
-                    </Grid>
-                </PerfectScrollbar>
-            </SubCard>
-        </ElevationScroll>
-    );
-};
+    if (localAudioTrackRef.current) {
+      await localAudioTrackRef.current.stop();
+      await localAudioTrackRef.current.close();
+      localAudioTrackRef.current = null;
+    }
+    if (localVideoTrackRef.current) {
+      await localVideoTrackRef.current.stop();
+      await localVideoTrackRef.current.close();
+      localVideoTrackRef.current = null;
+    }
 
-ViewCall.propTypes = {
-    onCancel: PropTypes.func,
+    const localPlayerContainer = document.getElementById(uid);
+    localPlayerContainer && localPlayerContainer.remove();
+
+    client.remoteUsers.forEach((user) => {
+      const playerContainer = document.getElementById(user.uid);
+      playerContainer && playerContainer.remove();
+    });
+
+    await client.leave();
+  }
+
+  function setupEventListeners() {
+    client.on("user-published", async (user, mediaType) => {
+      await client.subscribe(user, mediaType);
+      console.log("subscribe success");
+
+      if (mediaType === "video") {
+        displayRemoteVideo(user);
+      }
+
+      if (mediaType === "audio") {
+        user.audioTrack.play();
+      }
+    });
+
+    client.on("user-unpublished", (user) => {
+      const remotePlayerContainer = document.getElementById(user.uid);
+      remotePlayerContainer && remotePlayerContainer.remove();
+    });
+  }
+
+  return (
+    <>
+      <MessageError
+        error={errorMessage}
+        open={openError}
+        onClose={() => setOpenError(false)}
+      />
+
+      <ElevationScroll>
+        <SubCard
+          title="VIDEO LLAMADA"
+          sx={{
+            background:
+              theme.palette.mode === "dark"
+                ? theme.palette.dark.main
+                : theme.palette.grey[50],
+            width: "100%",
+            height: "auto",
+            maxWidth: 600,
+          }}
+          container={false}
+        >
+          <Grid container spacing={2}>
+            <Fragment>
+              <Grid item xs={12} sx={{ mt: 1.5 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: 2,
+                    border: "1px solid rgb(219, 219, 219)",
+                  }}
+                >
+                  <Box
+                    id="video-container"
+                    ref={videoContainerRef}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                      height: "160px",
+                      borderRadius: 1,
+                      paddingX: 2,
+                      paddingY: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "start",
+                        alignItems: "start",
+                        background: "success",
+                        gap: 1,
+                        width: "auto",
+                        marginX: 1,
+                        marginTop: 1,
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Typography
+                        textAlign="start"
+                        variant="h5"
+                        color="GrayText"
+                      >
+                        Medico
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      paddingX: 2,
+                      paddingBottom: 2,
+                    }}
+                  >
+                    <Button
+                      disabled={inCall}
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() => {
+                        setInCall(true);
+                        joinChannel();
+                      }}
+                      startIcon={<PhoneCallbackIcon />}
+                    >
+                      {inCall ? "Conectado" : "Conectar"}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      fullWidth
+                      onClick={leaveChannel}
+                      startIcon={<PhoneCallbackIcon />}
+                    >
+                      Colgar
+                    </Button>
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: 2,
+                    border: "1px solid rgb(219, 219, 219)",
+                  }}
+                >
+                  <Box
+                    id="video-container-paciente"
+                    ref={videoContainerRemoteRef}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                      height: "170px",
+                      borderRadius: 1,
+                      paddingX: 2,
+                      paddingY: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "start",
+                        alignItems: "start",
+                        background: "success",
+                        gap: 1,
+                        width: "auto",
+                        marginX: 1,
+                        marginTop: 1,
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Typography
+                        textAlign="start"
+                        variant="h5"
+                        color="GrayText"
+                      >
+                        Paciente
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
+            </Fragment>
+          </Grid>
+        </SubCard>
+      </ElevationScroll>
+    </>
+  );
 };
 
 export default ViewCall;
