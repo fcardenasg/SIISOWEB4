@@ -1,27 +1,30 @@
-import { Button, Divider, Grid, IconButton, ListItemText, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip } from '@mui/material';
-import { DefaultValue, TitleButton, ValidationMessage } from 'components/helpers/Enums';
-import { useBoolean } from 'hooks/use-boolean';
-import { useEffect, useState } from 'react';
+import { Button, Checkbox, Grid, IconButton, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { useCallback, useEffect, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import InputSelect from 'components/input/InputSelect';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { FormProvider, useForm } from 'react-hook-form';
+import swal from 'sweetalert';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
 import SearchProduct from '../SearchProduct';
 
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import Iconify from 'components/iconify/iconify';
+import { DeleteMedicinesPedidoDetalle, GetAllMedicinesPedidoDetalle, InsertMedicinesPedidoDetalle, UpdateMedicinesPedidoDetalleCantidades } from 'api/clients/MedicamentosPedidoClient';
+import { MessageDelete, MessageError, MessageSuccess, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import InputText from 'components/input/InputText';
+import InputCheckBox from 'components/input/InputCheckBox';
 import InputDatePicker from 'components/input/InputDatePicker';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
-import Transitions from 'ui-component/extended/Transitions';
+import InputText from 'components/input/InputText';
+import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
+import { CheckBox } from '@mui/icons-material';
+import { useBoolean } from 'hooks/use-boolean';
+import { parse } from 'date-fns';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -34,7 +37,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 const getComparator = (order, orderBy) =>
-    order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+    order === 'desc' ? (a, b) => descendingComparator(a[0], b[0], orderBy) : (a, b) => -descendingComparator(a[0], b[0], orderBy);
 
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
@@ -47,72 +50,208 @@ function stableSort(array, comparator) {
 }
 
 const validationSchema = yup.object().shape({
-    codigo: yup.string().required(ValidationMessage.Requerido),
-    descripcion: yup.string().required(ValidationMessage.Requerido),
-    idUnidad: yup.string().required(ValidationMessage.Requerido)
+    registroSanitario: yup.string().required(ValidationMessage.Requerido),
+    cantidadPedida: yup
+        .string()
+        .required(ValidationMessage.Requerido)
+        .test('is-greater-than-zero', 'La cantidad debe ser mayor a cero', (value) => {
+            return parseInt(value, 10) > 0;
+        }),
+    fechaVencimiento: yup.string().required(`${ValidationMessage.Requerido}`)
+        .matches(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)')
+        .test('is-not-past-date', 'La fecha de vencimiento no puede ser anterior o actual', (value) => {
+            if (!value) return true;
+            const inputDate = new Date(value);
+            const currentDate = new Date();
+
+            inputDate.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+
+            return inputDate >= currentDate;
+        })
+        .test('valid-year', 'Año de vencimiento inválido', (value) => {
+            const year = new Date(value).getFullYear();
+            return year <= new Date().getFullYear() + 20;
+        }),
 });
 
-export default function AddMedicinesOrders() {
+export default function AddMedicinesOrders({ idPedido }) {
     const theme = useTheme();
+    const { user } = useAuth();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(4);
     const [dataProducto, setDataProducto] = useState(null);
-    const [lsProveedor, setLsProveedor] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [cantidadRecibida, setCantidadRecibida] = useState({});
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [llegoLaCantidadPedida, setLlegoLaCantidadPedida] = useState(false);
+    const [dataModel, setDataModel] = useState([]);
+    const [editingRowId, setEditingRowId] = useState(null);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
-
     const { handleSubmit, setValue, formState: { errors }, reset } = methods;
 
-    const handleChangeRowsPerPage = (event) => {
-        if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
-        setPage(0);
-    };
+    async function getAll() {
+        try {
+            cleanDate();
+
+            const lsServer = await GetAllMedicinesPedidoDetalle(idPedido);
+            console.log(lsServer);
+            if (lsServer.status == 200)
+                setDataModel(lsServer.data);
+        } catch (error) { }
+    }
 
     useEffect(() => {
-        async function getAll() {
-            try {
-                cleanDate();
-
-                const lsServerProveedor = await GetAllSupplier(0, 0);
-                var resultProveedor = lsServerProveedor.data.entities.filter(fil => fil.tipoProv == DefaultValue.PROVEEDOR_MEDICAMENTO).map((item) => ({
-                    value: item.codiProv,
-                    label: item?.nombProv?.toUpperCase()
-                }));
-                setLsProveedor(resultProveedor);
-            } catch (error) { }
-        }
-
         getAll();
     }, []);
 
     function cleanDate() {
         setValue("fechaVencimiento", "");
-        setValue("fechaCompra", "");
         setValue("fechaLote", "");
     }
 
+    const handleDelete = async (idPedidoDetalle) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteMedicinesPedidoDetalle(idPedidoDetalle);
+                    if (result.status === 200) {
+                        getAll();
+                        setOpenDelete(true);
+                    }
+                }
+            });
+        } catch (error) {
+
+        }
+    }
+
+    const handleClick = async (datos) => {
+        try {
+            if (dataProducto == null) {
+                setOpenError(true);
+                setErrorMessage("Debe seleccionar un producto para registrar el medicamento al pedido");
+                return;
+            }
+
+            datos.idMedicamentos = dataProducto.id;
+            datos.idMedicamentosPedido = parseInt(idPedido);
+            datos.referencia = datos.referencia || null;
+            datos.lote = datos.lote || null;
+            datos.fechaLote = datos.fechaLote || null;
+            datos.cantidadPedida = parseInt(datos.cantidadPedida);
+            datos.usuarioRegistro = user?.nameuser;
+
+            const result = await InsertMedicinesPedidoDetalle(datos);
+            if (result.data.exito) {
+                getAll();
+                setOpenSuccess(true);
+                reset();
+                setDataProducto(null);
+            } else {
+                setOpenError(true);
+                setErrorMessage(result.data.mensaje);
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
+
+    const handleCantidadRecibidaChange = (idPedidoDetalle, value) => {
+        setCantidadRecibida((prevState) => ({
+            ...prevState,
+            [idPedidoDetalle]: value
+        }));
+    };
+
+    const handleClickRecibida = async (idPedidoDetalle) => {
+        try {
+            if (!cantidadRecibida[idPedidoDetalle]) {
+                setOpenError(true);
+                setErrorMessage("Debe registrar una cantidad recibida");
+                return;
+            } else if (cantidadRecibida[idPedidoDetalle] <= 0) {
+                setOpenError(true);
+                setErrorMessage("La cantidad no puede ser menor o igual a cero");
+                return;
+            }
+
+            const model = {
+                id: idPedidoDetalle,
+                llegoLaCantidadPedida: false,
+                cantidadRecibida: parseInt(cantidadRecibida[idPedidoDetalle]),
+                usuarioModifico: user?.nameuser
+            }
+
+            const result = await UpdateMedicinesPedidoDetalleCantidades(model);
+            if (result.status === 200) {
+                getAll();
+                setEditingRowId(null);
+                setOpenSuccess(true);
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
+
+    const handleClickCheckboxRecibida = useCallback(async (event, idPedidoDetalle) => {
+        try {
+            const model = {
+                id: idPedidoDetalle,
+                llegoLaCantidadPedida: true,
+                usuarioModifico: user?.nameuser
+            }
+
+            const result = await UpdateMedicinesPedidoDetalleCantidades(model);
+            if (result.status === 200) {
+                setLlegoLaCantidadPedida(event.target.checked);
+                getAll();
+                setOpenSuccess(true);
+            }
+        } catch (error) {
+            setOpenError(true);
+            setErrorMessage(Message.RegistroNoGuardado);
+        }
+    }, [llegoLaCantidadPedida]);
+
     return (
         <SubCard title="Agregar medicamentos">
-            <Grid container sx={{ pb: 3 }} spacing={2}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <Grid container spacing={2} direction="row" sx={{ pb: 3, alignItems: "center" }}>
                 <FormProvider {...methods}>
                     <Grid item xs={12}>
                         <SearchProduct captureData={setDataProducto} dataProducto={dataProducto} />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputSelect
-                            name="idProveedor"
-                            label="Proveedor"
+                    <Grid item xs={12} md={6} lg={3}>
+                        <InputText
                             defaultValue=""
-                            options={lsProveedor}
+                            name="registroSanitario"
+                            label="Registro sanitario"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idProveedor}
+                            bug={errors.registroSanitario}
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={3}>
+                        <InputText
+                            defaultValue=""
+                            name="referencia"
+                            label="Referencia"
+                            size={matchesXS ? 'small' : 'medium'}
+                            bug={errors.referencia}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={3}>
                         <InputText
                             defaultValue=""
                             name="lote"
@@ -122,7 +261,7 @@ export default function AddMedicinesOrders() {
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={3}>
                         <InputDatePicker
                             label="Fecha de lote"
                             name="fechaLote"
@@ -132,17 +271,7 @@ export default function AddMedicinesOrders() {
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputDatePicker
-                            label="Fecha de compra"
-                            name="fechaCompra"
-                            defaultValue=""
-                            bug={errors.fechaCompra}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={3}>
                         <InputDatePicker
                             label="Fecha de vencimiento"
                             name="fechaVencimiento"
@@ -152,15 +281,32 @@ export default function AddMedicinesOrders() {
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={3}>
                         <InputText
                             defaultValue=""
                             type="number"
-                            name="cantidad"
-                            label="Cantidad"
+                            name="cantidadPedida"
+                            label="Cantidad pedida"
                             size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.cantidad}
+                            bug={errors.cantidadPedida}
                         />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={1.5}>
+                        <InputCheckBox
+                            label="Estado"
+                            name="estado"
+                            size={30}
+                            defaultValue={true}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={1.5}>
+                        <AnimateButton>
+                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                {TitleButton.AgregarOrden}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
                 </FormProvider>
             </Grid>
@@ -172,69 +318,130 @@ export default function AddMedicinesOrders() {
                             <Table aria-label="collapsible table">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell />
-                                        <TableCell>Proveedor</TableCell>
-                                        <TableCell>Fecha de compra</TableCell>
+                                        <TableCell>Medicamento</TableCell>
                                         <TableCell>Fecha de vencimiento</TableCell>
-                                        <TableCell>Cantidad</TableCell>
+                                        <TableCell>Can. solicitada</TableCell>
+                                        <TableCell>Can. recibida</TableCell>
                                         <TableCell>Bitácora</TableCell>
                                         <TableCell>Acción</TableCell>
                                     </TableRow>
                                 </TableHead>
 
                                 <TableBody>
-                                    {stableSort([], getComparator('asc', 'fechaVencimiento'))
-                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                                            <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-                                                <TableCell>
-                                                    <Iconify width={20} icon="hugeicons:medicine-02" />
-                                                </TableCell>
+                                    {dataModel.map((row) => (
+                                        <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }} key={row.id}>
+                                            <TableCell>
+                                                <ListItemText
+                                                    primary={row?.nameMedicamentos}
+                                                    secondary={`R. sanitario: ${row?.registroSanitario}`.toUpperCase()}
+                                                    primaryTypographyProps={{ typography: 'body2' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell>{ViewFormat(row?.fechaVencimiento)}</TableCell>
+                                            <TableCell align='center'>{row?.cantidadPedida}</TableCell>
+                                            <TableCell align='center'>
+                                                <Grid container spacing={1} alignItems="center">
+                                                    {editingRowId === row.id ? (
+                                                        <>
+                                                            <Grid item>
+                                                                <TextField
+                                                                    sx={{ width: 70 }}
+                                                                    id={`cantidad-recibida-${row.id}`}
+                                                                    type="number"
+                                                                    size="small"
+                                                                    defaultValue={row?.cantidadRecibida}
+                                                                    value={cantidadRecibida[row.id] || ''}
+                                                                    onChange={(e) => handleCantidadRecibidaChange(row.id, e.target.value)}
+                                                                />
+                                                            </Grid>
 
-                                                <TableCell>{row?.nameProveedor}</TableCell>
-                                                <TableCell>{ViewFormat(row?.fechaCompra)}</TableCell>
-                                                <TableCell>{ViewFormat(row?.fechaVencimiento)}</TableCell>
-                                                <TableCell>{row?.cantidad}</TableCell>
-                                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                                                    <ListItemText
-                                                        primary={row?.usuarioRegistro}
-                                                        secondary={new Date(row?.fechaRegistro).toLocaleString()}
-                                                        primaryTypographyProps={{ typography: 'body2' }}
-                                                        secondaryTypographyProps={{
-                                                            mt: 0.5,
-                                                            component: 'span',
-                                                            typography: 'caption',
-                                                        }}
-                                                    />
-                                                </TableCell>
+                                                            <Grid item>
+                                                                <Tooltip title="Registrar" onClick={() => handleClickRecibida(row.id)}>
+                                                                    <IconButton color="info" size="small">
+                                                                        <SaveIcon sx={{ fontSize: '1.5rem' }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Grid>
 
-                                                <TableCell>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={6}>
-                                                            <Tooltip title="Eliminar" /* onClick={() => handleDelete(row?.id)} */>
-                                                                <IconButton color="error" size="small">
-                                                                    <HighlightOffIcon sx={{ fontSize: '2rem' }} />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </Grid>
-                                                    </Grid>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
+                                                            <Grid item>
+                                                                <Tooltip title={TitleButton.Cancelar} onClick={() => {
+                                                                    setEditingRowId(null);
+                                                                    setCantidadRecibida((prevState) => ({ ...prevState, [row.id]: '' }));
+                                                                }}>
+                                                                    <IconButton color="error" size="small">
+                                                                        <HighlightOffIcon sx={{ fontSize: '1.5rem' }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Grid>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Grid item>
+                                                                {row?.cantidadRecibida}
+                                                            </Grid>
+
+                                                            <Grid item>
+                                                                <Tooltip
+                                                                    title="Editar: Esta opción es para colocar la cantidad que recibió, esta misma es diferente a la solicitada"
+                                                                    onClick={() => setEditingRowId(row.id)}
+                                                                >
+                                                                    <IconButton color="info" size="small">
+                                                                        <EditIcon sx={{ fontSize: '1.3rem' }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Grid>
+
+                                                            {row?.cantidadRecibida === 0 && (
+                                                                <Grid item>
+                                                                    <Tooltip title="Indicaciones: Al marcar el Checkbox indica que la cantidad que solicito llego completa">
+                                                                        <Checkbox
+                                                                            onChange={(event) => handleClickCheckboxRecibida(event, row.id)}
+                                                                            checked={llegoLaCantidadPedida}
+                                                                            sx={{
+                                                                                color: theme.palette.primary,
+                                                                                '&.Mui-checked': {
+                                                                                    color: theme.palette.primary
+                                                                                },
+                                                                                '& .MuiSvgIcon-root': { fontSize: '1.3rem' }
+                                                                            }}
+                                                                        />
+                                                                    </Tooltip>
+                                                                </Grid>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </Grid>
+                                            </TableCell>
+                                            <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'body2' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Tooltip disabled={row?.cantidadRecibida !== 0} title="Eliminar" onClick={() => handleDelete(row?.id)}>
+                                                    <IconButton color="error" size="small">
+                                                        <HighlightOffIcon sx={{ fontSize: '2rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <TablePagination
-                            rowsPerPageOptions={[4, 12, 24]}
-                            component="div"
-                            count={[].length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={(event, newPage) => setPage(newPage)}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
                     </Grid>
                 </Grid>
             </SubCard>

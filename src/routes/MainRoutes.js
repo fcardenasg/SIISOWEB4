@@ -63,6 +63,11 @@ const Warehouse = Loadable(lazy(() => import('modules/Warehouse/Warehouse')));
 
 const ListMedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/ListMedicinesOrders')));
 const MedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/MedicinesOrders')));
+const UpdateMedicinesOrders = Loadable(lazy(() => import('modules/Medicines/Orders/UpdateMedicinesOrders')));
+
+const ListMedicationOutlet = Loadable(lazy(() => import('modules/Medicines/Outlet/ListMedicationOutlet')));
+const MedicationOutlet = Loadable(lazy(() => import('modules/Medicines/Outlet/MedicationOutlet')));
+const UpdateMedicationOutlet = Loadable(lazy(() => import('modules/Medicines/Outlet/UpdateMedicationOutlet')));
 
 const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/ListPsychologicalCounseling')));
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
@@ -237,7 +242,12 @@ const HelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/H
 const ViewHelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/ViewHelpManagement')));
 const Indicators = Loadable(lazy(() => import('modules/Help/Indicators/Indicators')));
 
-const MessageScheduling = Loadable(lazy(() => import('modules/MessageScheduling/MessageScheduling')));
+const MenuProgramming = Loadable(lazy(() => import('modules/Menu/MenuProgramming')));
+const ListSupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/ListSupplierParameterization')));
+const SupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/SupplierParameterization')));
+const UpdateSupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/UpdateSupplierParameterization')));
+
+const Programming = Loadable(lazy(() => import('modules/OrderScheduling/Programming/Programming')));
 
 const MainRoutes = {
     path: '/',
@@ -255,7 +265,7 @@ const MainRoutes = {
         {
             path: '/typecatalog/add',
             element: <TypeCatalog />
-        },
+        }, 
         {
             path: '/typecatalog/update/:id',
             element: <UpdateTypeCatalog />
@@ -456,6 +466,10 @@ const MainRoutes = {
 
         /* Render de Medicamentos */
         {
+            path: '/medicines/menu',
+            element: <MenuMedicines />
+        },
+        {
             path: '/warehouse/list',
             element: <ListWarehouse />
         },
@@ -467,10 +481,7 @@ const MainRoutes = {
             path: '/warehouse/update/:id',
             element: <UpdateWarehouse />
         },
-        {
-            path: '/medicines/menu',
-            element: <MenuMedicines />
-        },
+        /* Medicamentos solicitados */
         {
             path: '/medicines-orders/list',
             element: <ListMedicinesOrders />
@@ -479,6 +490,11 @@ const MainRoutes = {
             path: '/medicines-orders/add',
             element: <MedicinesOrders />
         },
+        {
+            path: '/medicines-orders/update/:id',
+            element: <UpdateMedicinesOrders />
+        },
+        /* Medicamentos por sede */
         {
             path: '/medicines/list',
             element: <ListMedicines />
@@ -490,6 +506,19 @@ const MainRoutes = {
         {
             path: '/medicines/update/:id',
             element: <UpdateMedicines />
+        },
+        /* Medicamentos entregados */
+        {
+            path: '/medication-outlet/list',
+            element: <ListMedicationOutlet />
+        },
+        {
+            path: '/medication-outlet/add',
+            element: <MedicationOutlet />
+        },
+        {
+            path: '/medication-outlet/update/:id',
+            element: <UpdateMedicationOutlet />
         },
 
         /* Render de Pruebas de Alcohol y Droga */
@@ -911,10 +940,6 @@ const MainRoutes = {
             path: '/programming/update',
             element: <ListProgrammingUpdate />
         },
-
-        /* Indicadores */
-
-
         /* Rol */
         {
             path: '/rol/add',
@@ -1018,8 +1043,24 @@ const MainRoutes = {
         },
         /* Programación */
         {
-            path: '/programming/view',
-            element: <MessageScheduling />
+            path: '/programming/menu',
+            element: <MenuProgramming />
+        },
+        {
+            path: '/supplier-parameterization/list',
+            element: <ListSupplierParameterization />
+        },
+        {
+            path: '/supplier-parameterization/add',
+            element: <SupplierParameterization />
+        },
+        {
+            path: '/supplier-parameterization/update/:id',
+            element: <UpdateSupplierParameterization />
+        },
+        {
+            path: '/schedule-orders/list',
+            element: <Programming />
         },
     ]
 };

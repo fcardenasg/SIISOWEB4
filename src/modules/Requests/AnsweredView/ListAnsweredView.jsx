@@ -88,7 +88,7 @@ const ListAnsweredView = () => {
             setMessageAtencion('');
             setLsRequests([]);
 
-            await GetAllBySedeRequests(user.idsede).then(response => {
+            await GetAllBySedeRequests(user?.idsede).then(response => {
                 if (response.data.length === 0) {
                     setMessageAtencion(Message.NoRegistro);
                 } else if (response.data.length !== 0) {

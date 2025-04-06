@@ -1,7 +1,7 @@
 import LogoReportLtd from 'assets/img/LogoReportLTD.png';
 import LogoReportEnergy from 'assets/img/LogoReportEnergy.png';
-import LogoWhiteLtd from 'assets/img/LogoWhite.png'
-import LogoWhiteEnergy from 'assets/img/LogoWhiteEnergy.png'
+import LogoWhiteLtd from 'assets/img/LogoWhite.png';
+import LogoWhiteEnergy from 'assets/img/LogoWhiteEnergy.png';
 
 const rutaLocal = 'https://localhost:44347/';
 const rutaLtd = 'https://siiso.drummondltd.com:44347/';

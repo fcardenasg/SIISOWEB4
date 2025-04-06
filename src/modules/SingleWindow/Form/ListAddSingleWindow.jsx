@@ -249,7 +249,8 @@ const ListAddSingleWindow = ({ documento, idResult }) => {
                                             </Grid>
                                         </Grid>
                                     </TableCell>
-                                </TableRow>))}
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>

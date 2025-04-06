@@ -12,7 +12,7 @@ import List from '@mui/material/List';
 import Stack from '@mui/material/Stack';
 import { alpha, useTheme } from '@mui/material/styles';
 
-import { ListItemButton, ListItemText } from '@mui/material';
+import { Grid, ListItemButton, ListItemText } from '@mui/material';
 import { Url } from 'api/instances/AuthRoute';
 import axios from 'axios';
 import Iconify from 'components/iconify/iconify';
@@ -20,9 +20,11 @@ import Label from 'components/label';
 import { useBoolean } from 'hooks/use-boolean';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SearchNotFound from './SearchNotFound';
+import useAuth from 'hooks/useAuth';
 
 function SearchProduct({ captureData, dataProducto, disabled }) {
     const theme = useTheme();
+    const { user } = useAuth();
     const search = useBoolean();
     const [searchQuery, setSearchQuery] = useState('');
     const [lsData, setLsData] = useState([]);
@@ -49,7 +51,7 @@ function SearchProduct({ captureData, dataProducto, disabled }) {
             }
 
             if (inputValue.length > 0) {
-                axios.get(`${Url.Base}${Url.MedicamentosSearch}/${inputValue}`).then((response) => {
+                axios.get(`${Url.Base}${Url.MedicamentosSearch}/${user?.idsede}/${inputValue}`).then((response) => {
                     if (response.data.exito) {
                         if (response.data.datos.length > 0)
                             setLsData(response.data.datos);
@@ -66,7 +68,6 @@ function SearchProduct({ captureData, dataProducto, disabled }) {
             setLsData([]);
         }
     }, []);
-
 
     const notFound = searchQuery && !lsData.length;
 
@@ -90,10 +91,19 @@ function SearchProduct({ captureData, dataProducto, disabled }) {
                     <IconButton disabled={disabled}>
                         <Iconify icon="eva:search-fill" />
                     </IconButton>
-                    <Typography variant="body2" color={disabled ? '#B0BEC5' : '#78909C'}>
-                        {dataProducto?.descripcion || `Buscar producto por nombre o código...`}
+
+                    <Typography sx={{ fontWeight: 600 }} color={disabled ? '#B0BEC5' : 'textPrimary'}>
+                        {dataProducto?.producto || `Buscar producto por nombre o código...`}
                     </Typography>
                 </Stack>
+
+                {dataProducto &&
+                    <Typography align="right" variant="body2" color="textSecondary">
+                        {`Laboratorio: ${dataProducto?.nameLaboratorio} 
+                        / Forma farmacéutica: ${dataProducto?.nameFormaFarmaceutica}
+                        / Cantidad: ${dataProducto?.cantidad}`.toUpperCase()}
+                    </Typography>
+                }
             </Stack>
         </Stack>
     );
@@ -143,13 +153,12 @@ function SearchProduct({ captureData, dataProducto, disabled }) {
                 <PerfectScrollbar style={{ width: '100%', height: 'calc(100vh - 440px)', overflowX: 'hidden', minHeight: 380 }}>
                     {notFound ? <SearchNotFound query={searchQuery} sx={{ py: 10 }} /> : <>
                         {lsData?.map((item, index) => {
-                            const partsTitle = parse(item.descripcion, match(item.descripcion, searchQuery));
+                            const partsTitle = parse(item.producto, match(item.producto, searchQuery));
                             const themecolor = theme.palette.success.main;
 
                             return (
                                 <List key={index} disablePadding>
                                     <ListItemButton
-                                        disabled={item?.cantidad ? false : true}
                                         onClick={() => handleButtonClick(item)}
                                         sx={{
                                             borderWidth: 1,
@@ -174,7 +183,7 @@ function SearchProduct({ captureData, dataProducto, disabled }) {
                                             secondary={
                                                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                                                     <Box key={index} component="span" sx={{ color: 'text.secondary', mr: 2 }}>
-                                                        FORMA FARMACÉUTICA: {(item?.formaFarmaceutica ?? "SIN REGISTRO")}
+                                                        {item?.nameLaboratorio} - {item?.nameFormaFarmaceutica}
                                                     </Box>
 
                                                     <Label color={item?.cantidad ? "success" : "error"}>{`CANTIDAD: ${item?.cantidad ?? 0}`}</Label>
@@ -182,7 +191,7 @@ function SearchProduct({ captureData, dataProducto, disabled }) {
                                             }
                                         />
 
-                                        {item.descripcion && <Label color="success">{item?.inicialLabel}</Label>}
+                                        {item.producto && <Label color="success">{item?.inicialLabel}</Label>}
                                     </ListItemButton>
                                 </List>
                             )

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
@@ -21,26 +21,25 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import { IconFileExport } from '@tabler/icons';
 
-import swal from 'sweetalert';
+import { DeleteSupplier, GetAllSupplier, GetExcelSupplier } from 'api/clients/SupplierClient';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllSupplier, DeleteSupplier, GetExcelSupplier } from 'api/clients/SupplierClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Cargando from 'components/loading/Cargando';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import SearchIcon from '@mui/icons-material/Search';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
-import LoadingGenerate from 'components/loading/LoadingGenerate';
+import Cargando from 'components/loading/Cargando';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -79,15 +78,15 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'teleProv',
+        id: 'nameTipoProv',
         numeric: false,
-        label: 'Teléfono',
+        label: 'Tipo de proveedor',
         align: 'left'
     },
     {
-        id: 'emaiProv',
+        id: 'teleProv',
         numeric: false,
-        label: 'Correo Electronico',
+        label: 'Teléfono',
         align: 'left'
     }
 ];
@@ -263,7 +262,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv'];
+                const properties = ['codiProv', 'nombProv', 'nameTipoProv'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -356,7 +355,7 @@ const ListSupplier = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - supplier.length) : 0;
 
     return (
-        <MainCard title="Lista de Proveedores" content={false}>
+        <MainCard title="Lista de proveedores" content={false}>
             <MessageDelete message={resultMessage} open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -460,7 +459,7 @@ const ListSupplier = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    #{row.codiProv}
+                                                    {row.codiProv}
                                                 </Typography>
                                             </TableCell>
 
@@ -490,7 +489,7 @@ const ListSupplier = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.teleProv}
+                                                    {row.nameTipoProv}
                                                 </Typography>
                                             </TableCell>
 
@@ -505,7 +504,7 @@ const ListSupplier = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.emaiProv}
+                                                    {row.teleProv}
                                                 </Typography>
                                             </TableCell>
 

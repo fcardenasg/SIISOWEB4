@@ -4,6 +4,7 @@ export const Url = {
     Base: config.rutaApi,
 
     Login: 'api/Login',
+    LoginQueryProgramming: 'api/Login/query-programming',
     AudioTexto: 'api/Login/GetChatIA',
     ConsultarCorreo: 'api/Login/mail-consult',
     RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',
@@ -80,6 +81,16 @@ export const Url = {
     MedicamentosProductos: 'api/MedicamentosProductos',
     MedicamentosProductosCombo: 'api/MedicamentosProductos/combo',
     MedicamentosProductosId: 'api/MedicamentosProductos/id',
+
+    MedicamentosPedidoId: 'api/MedicamentosPedido/id',
+    MedicamentosPedido: 'api/MedicamentosPedido',
+
+    MedicamentosEntregaId: 'api/MedicamentosEntrega/id',
+    MedicamentosEntrega: 'api/MedicamentosEntrega',
+
+    MedicamentosPedidoDetalleId: 'api/MedicamentosPedido/detalle/id',
+    MedicamentosPedidoDetalle: 'api/MedicamentosPedido/detalle',
+    MedicamentosPedidoDetalleCantidades: 'api/MedicamentosPedido/detalle/cantidades',
 
     Medicamentos: 'api/Medicamentos',
     MedicamentosSearch: 'api/Medicamentos/product-search',

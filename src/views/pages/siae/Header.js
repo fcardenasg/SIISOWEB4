@@ -170,7 +170,7 @@ const HeaderPage = () => {
                                             lineHeight: 1.4
                                         }}
                                     >
-                                        Dr. Osvaldo Díaz López, celular 317 661 3014; <a href="mailto:odiaz@drummondltd.com">odiaz@drummondltd.com</a>. Mina El Descanso
+                                        Dr. Jorge Araujo, celular 318 735 81 15; <a href="mailto:odiaz@drummondltd.com">odiaz@drummondltd.com</a>. Mina El Descanso
                                     </Typography>
                                 </li>
                                 <li>
@@ -218,7 +218,7 @@ const HeaderPage = () => {
                                             lineHeight: 1.4
                                         }}
                                     >
-                                        Doctor Guillermo Yánez Celular 315721 0577; <a href="mailto:gyanez@drummondltd.com">gyanez@drummondltd.com</a>.
+                                        Dr. Osvaldo Díaz López, celular 317 661 3014; <a href="mailto:gyanez@drummondltd.com">gyanez@drummondltd.com</a>.
                                     </Typography>
                                 </li>
                             </ul>
