@@ -176,10 +176,10 @@ const MedicalAdvice = () => {
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      message: true, 
-      whatsapp: true, 
-      email: true, 
-    }
+      message: true,
+      whatsapp: true,
+      email: true,
+    },
   });
 
   const {
@@ -348,25 +348,22 @@ const MedicalAdvice = () => {
     );
 
     try {
-      const urlpaciente = linkAgorapaciente(
-        fechaCurrent,
-        uniqueId
-      );
+      const urlpaciente = linkAgorapaciente(fechaCurrent, uniqueId);
 
       if (state) {
         channel = `rubikapp-${uniqueId}`;
-        const formatData={
-            channel:channel,
-            fecha:fechaCurrent
-        }
+        const formatData = {
+          channel: channel,
+          fecha: fechaCurrent,
+        };
         setChannelCurrent(formatData);
       } else {
-        const soloFecha1 = fechaCurrent.split('T')[0];  
-        const soloFecha2 = channelCurrent?.fecha.split('T')[0];  
-        if(soloFecha1!==soloFecha2){
-          channelCurrent.fecha=fechaCurrent
+        const soloFecha1 = fechaCurrent.split("T")[0];
+        const soloFecha2 = channelCurrent?.fecha.split("T")[0];
+        if (soloFecha1 !== soloFecha2) {
+          channelCurrent.fecha = fechaCurrent;
           channel = channelCurrent?.channel;
-        }else{
+        } else {
           channel = channelCurrent?.channel;
         }
       }
@@ -402,7 +399,7 @@ const MedicalAdvice = () => {
         state,
         channel
       );
-    
+
       const result = await SaveAdvice(DataToUpdate);
       if (result.status === 200) {
         if (result.data === Message.ErrorDocumento) {
@@ -544,7 +541,11 @@ const MedicalAdvice = () => {
       </DialogFormula>
 
       <Fragment>
-        <UpdateAttMedicalAdvice setUserEdit={setUserEdit} userEdit={userEdit} channelCurrent={channelCurrent} >
+        <UpdateAttMedicalAdvice
+          setUserEdit={setUserEdit}
+          userEdit={userEdit}
+          channelCurrent={channelCurrent}
+        >
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item xs={12}>

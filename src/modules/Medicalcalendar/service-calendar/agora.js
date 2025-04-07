@@ -22,19 +22,14 @@ export function linkAgoramedico(fecha,data,uniqueId) {
 export function linkAgorapaciente(fecha,uniqueId) {
     const appId = '24620e849c55400aad51c1da9141ac46';    
     const channel = `rubikapp-${uniqueId}`;
-    const SECRET_kEY = 'rubikapp';
-
-    const fechaLocal = new Date();
-   console.log(fechaLocal.toLocaleString());
-
-    console.log("fecha paciente::",fecha)
+    const SECRET_kEY = 'rubikapp';  
   
 
     let url;
 
     if (appId && channel &&fecha) {
         const encryptedDate = CryptoJS.AES.encrypt(fecha, SECRET_kEY).toString();
-        url = `/videocall-patient?appId=${appId}&channel=${channel}&tokenend=${encodeURIComponent(encryptedDate)}`;
+        url = `videocall-patient?appId=${appId}&channel=${channel}&tokenend=${encodeURIComponent(encryptedDate)}`;
     }
 
     return url;
