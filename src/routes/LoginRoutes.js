@@ -10,6 +10,8 @@ import Loadable from 'ui-component/Loadable';
 const AuthLogin = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));
 const ChangePassword = Loadable(lazy(() => import('modules/ChangePassword/ChangePassword')));
 const AuthForgotPassword = Loadable(lazy(() => import('views/pages/authentication/authentication3/ForgotPassword3')));
+const VideoCallPatient = Loadable(lazy(() => import('modules/Medicalcalendar/calendar/AttentionMedicalAdvice/VideoCallPatient')));
+
 
 const LoginRoutes = {
     path: '/',
@@ -32,7 +34,11 @@ const LoginRoutes = {
         {
             path: '/ForgotPassword',
             element: <AuthForgotPassword />
-        }
+        },
+        {
+            path: '/videocall-patient',
+            element: <VideoCallPatient />
+        },
     ]
 };
 

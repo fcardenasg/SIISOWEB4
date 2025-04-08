@@ -142,10 +142,12 @@ const ExampleAudio = () => {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "start",
+                height: "auto", 
+           
             }}
         >
-            <Box sx={{ marginBottom: 3, width: "100%" }}>
+            <Box sx={{ marginBottom: 3, width: "100%", height: "35vh",}}>
                 <Box
                     sx={{
                         position: "relative",
@@ -155,6 +157,7 @@ const ExampleAudio = () => {
                         color: "gray",
                         transition: "color 0.5s ease",
                         minHeight: "100px",
+                        height: "35vh",             
                     }}
                 >
                     <TextareaAutosize
@@ -163,6 +166,7 @@ const ExampleAudio = () => {
                         onChange={handleTextChange}
                         style={{
                             width: "100%",
+                            height: "100%",
                             padding: "10px",
                             fontSize: "16px",
                             borderRadius: "8px",
@@ -212,10 +216,11 @@ const ExampleAudio = () => {
                         borderRadius: 1,
                         border: "1px solid #ddd",
                         width: "100%",
+                        height: "35vh",
                         backgroundColor: "#f9f9f9",
                         marginTop: 1,
                         opacity: isLoading ? 0.5 : 1,
-                        transition: "opacity 0.5s ease",
+                        transition: "opacity 0.8s ease",
                     }}
                 >
                     <Typography
@@ -225,9 +230,9 @@ const ExampleAudio = () => {
                             color: "gray",
                             marginBottom: 0,
                             animation: isLoading
-                                ? `${blurAnimation} 1s ease-in-out infinite`
+                                ? `${blurAnimation} 3s ease-in-out infinite`
                                 : "none",
-                            transition: "opacity 0.5s ease",
+                            transition: "opacity 0.8s ease",
                         }}
                     >
                         <ReactMarkdown>{correctedText}</ReactMarkdown>
@@ -256,6 +261,7 @@ const ExampleAudio = () => {
                     </Button>
                 </Box>
             )}
+          
         </Box>
     );
 };

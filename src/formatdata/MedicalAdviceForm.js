@@ -10,10 +10,10 @@ export function PostMedicalAdvice(documento, fecha, idRegistroAtencion, idTipoAt
 
 export function PutMedicalAdvice(id, documento, fecha, idRegistroAtencion, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno,
     idTipoAsesoria, idMotivo, idSubmotivo, idCausa, motivo, recomendaciones, pautas, idEstadoAsesoria, usuarioRegistro, fechaRegistro,
-    usuarioModifico, fechaModifico) {
+    usuarioModifico, fechaModifico,IdCalendario,urlpaciente,message,whatsapp,email,state,channel) {
     return {
         id, documento, fecha, idRegistroAtencion, idTipoAtencion, idSede, idContingencia, idEstadoCaso, idTurno, idDiaTurno, idTipoAsesoria,
         idMotivo, idSubmotivo, idCausa, motivo, recomendaciones, pautas, idEstadoAsesoria, usuarioRegistro, fechaRegistro, usuarioModifico,
-        fechaModifico
+        fechaModifico,IdCalendario,urlpaciente,message,whatsapp,email,state,channel
     };
 }
