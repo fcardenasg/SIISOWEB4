@@ -1,54 +1,54 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import ViewEmployee from 'components/views/ViewEmployee';
-import { useNavigate, useParams } from 'react-router-dom';
-import ControlModal from 'components/controllers/ControlModal';
 import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import ControlModal from 'components/controllers/ControlModal';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
-import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import { FormProvider, useForm } from 'react-hook-form';
 
-import InputDatePicker from 'components/input/InputDatePicker';
-import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import DetailedIcon from 'components/controllers/DetailedIcon';
-import InputText from 'components/input/InputText';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, ValidationMessage, AccionMenu, Modulo } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import SelectOnChange from 'components/input/SelectOnChange';
-import { GetByIdAccidentRate, UpdateAccidentRates } from 'api/clients/AccidentRateClient';
-import { PutAccidentRate } from 'formatdata/AccidentRateForm';
-import InputOnChange from 'components/input/InputOnChange';
-import Cargando from 'components/loading/Cargando';
-import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
+import { GetByIdAccidentRate, UpdateAccidentRates } from 'api/clients/AccidentRateClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReport } from '../AccidentRate/ReporteAccidentRate';
 import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
+import Cargando from 'components/loading/Cargando';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import { PutAccidentRate } from 'formatdata/AccidentRateForm';
+import useAuth from 'hooks/useAuth';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReport } from '../AccidentRate/ReporteAccidentRate';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -290,7 +290,7 @@ const UpdateAccidentRate = () => {
     setTimeout(() => {
         if (lsAccidentRate.length !== 0)
             setTimeWait(true);
-    }, 2000);
+    }, 500);
 
     const handleClick = async (datos) => {
         try {
@@ -318,7 +318,7 @@ const UpdateAccidentRate = () => {
     };
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.accidente_trabajo}>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Accidentedetrabajo}>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

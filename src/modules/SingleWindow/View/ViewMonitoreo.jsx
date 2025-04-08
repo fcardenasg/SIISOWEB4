@@ -274,7 +274,7 @@ const ViewRespuesta = () => {
                         setMessageError("Se notifico correctamente al usuario");
                         setOpenSuccess(true);
                         setLoading(false);
-                    }, 1000);
+                    }, 500);
                 } else {
                     setLoading(false);
                     setOpenDelete(true);
@@ -473,7 +473,7 @@ const ViewRespuesta = () => {
                         <TableCell align="center">
                             <Tooltip title="Ver Atenciones" onClick={() => { setIdVentanilla(row?.id); setOpenModal(true); }}>
                                 <IconButton size="large">
-                                    <PreviewIcon color="info" sx={{ fontSize: '1.5rem' }} />
+                                    <PreviewIcon color="primary" sx={{ fontSize: '1.5rem' }} />
                                 </IconButton>
                             </Tooltip>
 

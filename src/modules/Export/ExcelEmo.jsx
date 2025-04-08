@@ -48,7 +48,7 @@ const ExcelEmo = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin, fec
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

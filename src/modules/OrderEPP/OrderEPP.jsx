@@ -1,33 +1,33 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { ValidationMessage } from 'components/helpers/Enums';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import ControlModal from 'components/controllers/ControlModal';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
-import { GetByIdOrderEPP, InsertOrderEPP } from 'api/clients/OrderEPPClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostOrderEPP } from 'formatdata/OrderEPPForm';
-import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetByIdOrderEPP, InsertOrderEPP } from 'api/clients/OrderEPPClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
-import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportOrderEPP } from './ReportEPP';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
+import ControlModal from 'components/controllers/ControlModal';
+import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PostOrderEPP } from 'formatdata/OrderEPPForm';
+import useAuth from 'hooks/useAuth';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
+import { generateReportOrderEPP } from './ReportEPP';
 
 const validationSchema = yup.object().shape({
     idProvedor: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -97,8 +97,8 @@ const OrderEPP = () => {
 
     async function GetAll() {
         try {
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -129,7 +129,7 @@ const OrderEPP = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.OrdenesEPP}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -211,7 +211,7 @@ const OrderEPP = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

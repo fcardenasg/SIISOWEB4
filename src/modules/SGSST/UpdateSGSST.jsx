@@ -13,7 +13,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { GetByIdSGSST, UpdateSGSSTS } from 'api/clients/SGSST';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import { FormatDate } from 'components/helpers/Format';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
@@ -21,6 +21,7 @@ import { PutSGSST } from 'formatdata/SGSST';
 import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateSGSST = () => {
     const { user } = useAuth();
@@ -93,73 +94,75 @@ const UpdateSGSST = () => {
     };
 
     return (
-        <MainCard title="Actualizar SG-SST">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.SGSST}>
+            <MainCard title={<>Actualizar SG-SST</>}>
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            {lsData.length !== 0 ?
-                <Fragment>
-                    <Grid container alignItems="center" spacing={2}>
-                        <Grid item xs={12} md={6} lg={2}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsData.codigo}
-                                    fullWidth
-                                    name="codigo"
-                                    label="Código"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={8}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsData.nombre}
-                                    fullWidth
-                                    name="nombre"
-                                    label="Nombre"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
-                                />
-                            </FormProvider>
-                        </Grid>
-
-                        <Grid textAlign="center" item xs={12} md={6} lg={2}>
-                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                SUBIR PDF
-                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                            </Button>
-                        </Grid>
-                    </Grid>
-
-                    <Grid item textAlign="center" xs={8} sx={{ pt: 4 }}>
-                        <ViewPDF dataPDF={filePdf} width="1000" height="500" />
-                    </Grid>
-
-                    <Grid item xs={12} sx={{ pt: 4 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6} md={4} lg={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Actualizar}
-                                    </Button>
-                                </AnimateButton>
+                {lsData.length !== 0 ?
+                    <Fragment>
+                        <Grid container alignItems="center" spacing={2}>
+                            <Grid item xs={12} md={6} lg={2}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={lsData.codigo}
+                                        fullWidth
+                                        name="codigo"
+                                        label="Código"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
                             </Grid>
 
-                            <Grid item xs={6} md={4} lg={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/sg-sst/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                            <Grid item xs={12} md={6} lg={8}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={lsData.nombre}
+                                        fullWidth
+                                        name="nombre"
+                                        label="Nombre"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </FormProvider>
+                            </Grid>
+
+                            <Grid textAlign="center" item xs={12} md={6} lg={2}>
+                                <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                    SUBIR PDF
+                                    <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                </Button>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </Fragment> : <Cargando />
-            }
-        </MainCard>
+
+                        <Grid item textAlign="center" xs={8} sx={{ pt: 4 }}>
+                            <ViewPDF dataPDF={filePdf} width="1000" height="500" />
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ pt: 4 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/sg-sst/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Fragment> : <Cargando />
+                }
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

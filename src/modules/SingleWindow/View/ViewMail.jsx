@@ -179,7 +179,7 @@ const ViewMail = ({ lsData }) => {
                     setTimeout(() => {
                         setErrorMessage('Información del correo guardada con éxito');
                         setOpenSuccessOut(true);
-                    }, 2500);
+                    }, 500);
                 }
             } else {
                 setLoading(false);

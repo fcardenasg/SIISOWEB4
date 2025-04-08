@@ -1,5 +1,5 @@
 import { Button, Divider, Grid } from '@mui/material';
-import { DefaultValue, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, DefaultValue, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import { useEffect, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -20,6 +20,7 @@ import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
 import useAuth from 'hooks/useAuth';
 import AddMedicinesOrders from './AddMedicinesOrders';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     numPedido: yup.string().required(ValidationMessage.Requerido),
@@ -48,8 +49,8 @@ export default function UpdateMedicinesOrders() {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerProveedor = await GetAllSupplier(0, 0);
-                var resultProveedor = lsServerProveedor.data.entities.filter(fil => fil.tipoProv == DefaultValue.PROVEEDOR_MEDICAMENTO).map((item) => ({
+                const lsServerProveedor = await GetAllSupplier();
+                var resultProveedor = lsServerProveedor.data.filter(fil => fil.tipoProv == DefaultValue.PROVEEDOR_MEDICAMENTO).map((item) => ({
                     value: item.codiProv,
                     label: item?.nombProv?.toUpperCase()
                 }));
@@ -84,81 +85,83 @@ export default function UpdateMedicinesOrders() {
     };
 
     return (
-        <MainCard title={`Registrar pedido - Sede: ${user?.namesede}`}>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Pedidos}>
+            <MainCard title={`Registrar pedido - Sede: ${user?.namesede}`}>
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            {dataModel !== null ?
-                <FormProvider {...methods}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={3}>
-                            <InputText
-                                disabled
-                                defaultValue={dataModel.numPedido}
-                                name="numPedido"
-                                label="Número de pedido"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.numPedido}
-                            />
+                {dataModel !== null ?
+                    <FormProvider {...methods}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={3}>
+                                <InputText
+                                    disabled
+                                    defaultValue={dataModel.numPedido}
+                                    name="numPedido"
+                                    label="Número de pedido"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.numPedido}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={3}>
+                                <InputDatePicker
+                                    label="Fecha de pedido"
+                                    name="fechaPedido"
+                                    defaultValue={dataModel.fechaPedido}
+                                    bug={errors.fechaPedido}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={3}>
+                                <InputSelect
+                                    name="idProveedor"
+                                    label="Proveedor"
+                                    defaultValue={dataModel.idProveedor}
+                                    options={lsProveedor}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.idProveedor}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={3}>
+                                <InputText
+                                    defaultValue={dataModel.numCompra}
+                                    name="numCompra"
+                                    label="Número de compra"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.numCompra}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ my: 1 }}><Divider /></Grid>
+
+                            <Grid item xs={12}>
+                                <AddMedicinesOrders idPedido={id} />
+                            </Grid>
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={3}>
-                            <InputDatePicker
-                                label="Fecha de pedido"
-                                name="fechaPedido"
-                                defaultValue={dataModel.fechaPedido}
-                                bug={errors.fechaPedido}
-                                size={matchesXS ? 'small' : 'medium'}
-                            />
-                        </Grid>
+                        <Grid container spacing={2} sx={{ mt: 3 }}>
+                            <Grid item xs={4} md={2}>
+                                <AnimateButton>
+                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        {TitleButton.Actualizar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
 
-                        <Grid item xs={12} md={6} lg={3}>
-                            <InputSelect
-                                name="idProveedor"
-                                label="Proveedor"
-                                defaultValue={dataModel.idProveedor}
-                                options={lsProveedor}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.idProveedor}
-                            />
+                            <Grid item xs={4} md={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/medicines-orders/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
                         </Grid>
-
-                        <Grid item xs={12} md={6} lg={3}>
-                            <InputText
-                                defaultValue={dataModel.numCompra}
-                                name="numCompra"
-                                label="Número de compra"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.numCompra}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ my: 1 }}><Divider /></Grid>
-
-                        <Grid item xs={12}>
-                            <AddMedicinesOrders idPedido={id} />
-                        </Grid>
-                    </Grid>
-
-                    <Grid container spacing={2} sx={{ mt: 3 }}>
-                        <Grid item xs={4} md={2}>
-                            <AnimateButton>
-                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    {TitleButton.Actualizar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={4} md={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/medicines-orders/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                    </Grid>
-                </FormProvider> : <Cargando />
-            }
-        </MainCard>
+                    </FormProvider> : <Cargando />
+                }
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 }

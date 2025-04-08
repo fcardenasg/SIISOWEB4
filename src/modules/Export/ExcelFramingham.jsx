@@ -48,7 +48,7 @@ const ExcelFramingham = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

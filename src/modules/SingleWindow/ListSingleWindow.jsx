@@ -31,7 +31,7 @@ import { visuallyHidden } from '@mui/utils';
 import { useTheme } from '@mui/material/styles';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import SearchIcon from '@mui/icons-material/Search';
 import { DeleteVentanillaUnica, GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
@@ -41,6 +41,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
 import useAuth from 'hooks/useAuth';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -437,19 +438,23 @@ const ViewRespuesta = () => {
                         </TableCell>
 
                         <TableCell align="center">
-                            <Tooltip placement="left" title="Actualizar" onClick={() => navigate(`/single-window/update/${row.id}`)}>
-                                <IconButton size="large">
-                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                </IconButton>
-                            </Tooltip>
-
-                            {user.idrol === 1 && (
-                                <Tooltip placement="left" title="Eliminar" onClick={() => handleDelete(row?.id)}>
+                            <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Indexacion}>
+                                <Tooltip placement="left" title="Actualizar" onClick={() => navigate(`/single-window/update/${row.id}`)}>
                                     <IconButton size="large">
-                                        <DeleteOutlineIcon sx={{ fontSize: '1.3rem' }} />
+                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                     </IconButton>
                                 </Tooltip>
-                            )}
+                            </ValidateAction>
+
+                            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Indexacion}>
+                                {user.idrol === 1 && (
+                                    <Tooltip placement="left" title="Eliminar" onClick={() => handleDelete(row?.id)}>
+                                        <IconButton size="large">
+                                            <DeleteOutlineIcon sx={{ fontSize: '1.3rem' }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                            </ValidateAction>
                         </TableCell>
                     </TableRow >
                 );
@@ -498,10 +503,12 @@ const ViewRespuesta = () => {
                     </Grid>
 
                     <Grid item xs={6} md={1.5} textAlign="right">
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/single-window/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                        <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Indexacion}>
+                            <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                onClick={() => navigate("/single-window/add")}>
+                                {TitleButton.Agregar}
+                            </Button>
+                        </ValidateAction>
                     </Grid>
 
                     <Grid item xs={6} md={1.5}>

@@ -176,7 +176,7 @@ const PsychologicalCounseling = () => {
     };
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.asesoria_psicologica}>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Asesoriapsicologica}>
             <MessageSuccess open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

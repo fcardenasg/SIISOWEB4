@@ -53,3 +53,17 @@ export default function InputSelectAutocomplete({
         />
     );
 }
+
+export function InputSelectAutocompleteControl({ label, options, onChange, value, ...other }) {
+    return (
+        <Autocomplete
+            disablePortal
+            fullWidth
+            options={options}
+            renderInput={(params) => <TextField {...params} label={label} />}
+            onChange={onChange}
+            value={value}
+            {...other}
+        />
+    );
+}

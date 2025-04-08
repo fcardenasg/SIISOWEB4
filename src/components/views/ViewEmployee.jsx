@@ -33,7 +33,7 @@ import {
     IconBuildingFactory2,
     IconGenderBigender
 } from '@tabler/icons';
-import { ViewFormat } from "components/helpers/Format";
+import { UpperFirstChar, ViewFormat } from "components/helpers/Format";
 import SubCard from 'ui-component/cards/SubCard';
 import Accordion from 'components/accordion/Accordion';
 
@@ -94,7 +94,7 @@ const ViewEmployeeDetails = [
     { icons: <IconSchool stroke={2} size="1.3rem" />, label: 'Escolaridad' },
     { icons: <IconBuildingFactory2 stroke={2} size="1.3rem" />, label: 'Empresa' },
     { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de Nacimiento' },
-    { icons: <IconGenderBigender stroke={2} size="1.3rem" />, label: 'Genero' },
+    { icons: <IconGenderBigender stroke={2} size="1.3rem" />, label: 'Sexo' },
     { icons: <IconHierarchy stroke={2} size="1.3rem" />, label: 'Estado Civil' },
     { icons: <IconUser stroke={2} size="1.3rem" />, label: 'Contacto' },
     { icons: <IconPhone stroke={2} size="1.3rem" />, label: 'Telefono de Contacto' },
@@ -137,17 +137,6 @@ const ViewDataDetails = ({ title, nameData }) => {
     );
 }
 
-/* const EmployeeInfo = ({ lsEmployee = [], disabled = false, documento, onChange, handleDocumento }) => {
-    const theme = useTheme();
-    const isMobil = useMediaQuery(theme.breakpoints.down('md'));
-
-    const [openUpdate, setOpenUpdate] = useState(false);
-
-    return (
-       
-    );
-}; */
-
 const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onChange, handleDocumento, children = null }) => {
     const theme = useTheme();
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -171,7 +160,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
     return (
         <Fragment>
-            <SubCard title={title !== '' ? <Typography variant="h4">{title}</Typography> : null}
+            <SubCard title={title !== '' ? <Typography variant="h4">{UpperFirstChar(title)}</Typography> : null}
                 secondary={
                     <Fragment>
                         <Grid container spacing={2}>

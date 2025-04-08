@@ -35,7 +35,7 @@ import ControllerListen from 'components/controllers/ControllerListen';
 import ControlModal from 'components/controllers/ControlModal';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputOnChange from 'components/input/InputOnChange';
 import InputText from 'components/input/InputText';
@@ -49,6 +49,7 @@ import TableAntecedentes from 'modules/Programming/Attention/OccupationalExamina
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReportFramingham } from './ReportFramingham';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -221,7 +222,6 @@ const AddFramingham = () => {
                         setOpenSuccess(true);
                         setResult(result.data);
                     }
-
                 } else {
                     setOpenError(true);
                     setErrorMessage('Por favor, coloque todos los datos');
@@ -238,7 +238,7 @@ const AddFramingham = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Framingham}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -465,7 +465,7 @@ const AddFramingham = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

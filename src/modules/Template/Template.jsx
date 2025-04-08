@@ -22,13 +22,14 @@ import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
 import { InsertTemplate } from 'api/clients/TemplateClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     dx1: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -126,112 +127,114 @@ const Template = () => {
     }
 
     return (
-        <MainCard title="Registrar Plantilla">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Plantilla}>
+            <MainCard title="Registrar Plantilla">
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <ControlModal
-                title="VISUALIZAR ARCHIVO"
-                open={openViewArchivo}
-                onClose={() => setOpenViewArchivo(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={archivoPdf} />
-            </ControlModal>
+                <ControlModal
+                    title="VISUALIZAR ARCHIVO"
+                    open={openViewArchivo}
+                    onClose={() => setOpenViewArchivo(false)}
+                    maxWidth="xl"
+                >
+                    <ViewPDF dataPDF={archivoPdf} />
+                </ControlModal>
 
-            <ControlModal
-                maxWidth="md"
-                open={open}
-                onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
-            >
-                <ControllerListen />
-            </ControlModal>
+                <ControlModal
+                    maxWidth="md"
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    title="DICTADO POR VOZ"
+                >
+                    <ControllerListen />
+                </ControlModal>
 
-            <Grid container spacing={2}>
-                <Grid item xs={2}>
-                    <InputOnChange
-                        label="Dx 1"
-                        onKeyDown={handleDx1}
-                        onChange={(e) => setTextDx1(e?.target.value)}
-                        value={textDx1}
-                        size={matchesXS ? 'small' : 'medium'}
-                    />
-                </Grid>
-
-                <Grid item xs={10}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="dx1"
-                            label="Dx1"
-                            defaultValue=""
-                            options={lsDx1}
-                            bug={errors.dx1}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </FormProvider>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            fullWidth
-                            multiline
-                            rows={5}
-                            name="descripcion"
-                            label="Descripción"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.descripcion}
-                        />
-                    </FormProvider>
-                </Grid>
-                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                    <DetailedIcon
-                        title={DetailIcons[0].title}
-                        onClick={() => setOpen(true)}
-                        icons={DetailIcons[0].icons}
-                    />
-                </Grid>
-            </Grid>
-
-            <Grid item sx={{ pt: 4 }} xs={12}>
                 <Grid container spacing={2}>
                     <Grid item xs={2}>
-                        <AnimateButton>
-                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                {TitleButton.Guardar}
-                            </Button>
-                        </AnimateButton>
+                        <InputOnChange
+                            label="Dx 1"
+                            onKeyDown={handleDx1}
+                            onChange={(e) => setTextDx1(e?.target.value)}
+                            value={textDx1}
+                            size={matchesXS ? 'small' : 'medium'}
+                        />
                     </Grid>
 
-                    <Grid item xs={2}>
-                        <AnimateButton>
-                            <Button fullWidth variant="contained" component="label">
-                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                {TitleButton.SubirArchivo}
-                            </Button>
-                        </AnimateButton>
+                    <Grid item xs={10}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="dx1"
+                                label="Dx1"
+                                defaultValue=""
+                                options={lsDx1}
+                                bug={errors.dx1}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
+                        </FormProvider>
                     </Grid>
 
-                    <Grid item xs={2}>
-                        <AnimateButton>
-                            <Button disabled={archivoPdf === null ? true : false} fullWidth variant="contained" component="label" onClick={() => setOpenViewArchivo(true)}>
-                                {TitleButton.VerArchivo}
-                            </Button>
-                        </AnimateButton>
+                    <Grid item xs={12}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                multiline
+                                rows={5}
+                                name="descripcion"
+                                label="Descripción"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.descripcion}
+                            />
+                        </FormProvider>
                     </Grid>
-
-                    <Grid item xs={2}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/template/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
+                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                        <DetailedIcon
+                            title={DetailIcons[0].title}
+                            onClick={() => setOpen(true)}
+                            icons={DetailIcons[0].icons}
+                        />
                     </Grid>
                 </Grid>
-            </Grid>
-        </MainCard>
+
+                <Grid item sx={{ pt: 4 }} xs={12}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button fullWidth variant="contained" component="label">
+                                    <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                    {TitleButton.SubirArchivo}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button disabled={archivoPdf === null ? true : false} fullWidth variant="contained" component="label" onClick={() => setOpenViewArchivo(true)}>
+                                    {TitleButton.VerArchivo}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/template/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

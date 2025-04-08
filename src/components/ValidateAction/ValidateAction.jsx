@@ -14,7 +14,7 @@ const ValidateAction = ({ children, idModulo, idAccion }) => {
             const getAll = async () => {
                 try {
                     const model = {
-                        idUsuario: user.id,
+                        idUsuario: user?.id,
                         idModulo: idModulo
                     };
 
@@ -36,7 +36,7 @@ const ValidateAction = ({ children, idModulo, idAccion }) => {
 
             getAll();
         }
-    }, [idModulo, user.id, idAccion]);
+    }, [idModulo, user?.id, idAccion]);
 
     if (loading) return null;
     if (error) return <div>{error}</div>;

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
@@ -22,23 +22,24 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
-import swal from 'sweetalert';
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
-import { GetAllAlcoholAndDrugTesting, DeleteAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import ReactExport from "react-export-excel";
+import SearchIcon from '@mui/icons-material/Search';
 import { IconFileExport } from '@tabler/icons';
+import { DeleteAlcoholAndDrugTesting, GetAllAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
+import { ViewFormat } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
+import ReactExport from "react-export-excel";
+import swal from 'sweetalert';
+import MainCard from 'ui-component/cards/MainCard';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -193,11 +194,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Pruebadealcoholydroga}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -406,10 +409,12 @@ const ListAlcoholAndDrugTesting = () => {
                             </Grid>
 
                             <Grid item xs={8}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/alcoholanddrugtesting/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Pruebadealcoholydroga}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/alcoholanddrugtesting/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -535,11 +540,13 @@ const ListAlcoholAndDrugTesting = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/alcoholanddrugtesting/update/${row.idPruebasAlcoholDroga}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Pruebadealcoholydroga}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/alcoholanddrugtesting/update/${row.idPruebasAlcoholDroga}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

@@ -29,7 +29,7 @@ import { IconFileExport } from '@tabler/icons';
 
 import { DeleteSupplier, GetAllSupplier, GetExcelSupplier } from 'api/clients/SupplierClient';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -40,6 +40,7 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import Cargando from 'components/loading/Cargando';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -84,9 +85,9 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'teleProv',
+        id: 'nameCiudad',
         numeric: false,
-        label: 'Teléfono',
+        label: 'Ciudad',
         align: 'left'
     }
 ];
@@ -178,16 +179,18 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Proveedor}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -220,10 +223,10 @@ const ListSupplier = () => {
     //Primer metodo a actualizar
     async function getAll() {
         try {
-            const lsServer = await GetAllSupplier(0, 0);
+            const lsServer = await GetAllSupplier();
             if (lsServer.status === 200) {
-                setSupplier(lsServer.data.entities);
-                setRows(lsServer.data.entities);
+                setSupplier(lsServer.data);
+                setRows(lsServer.data);
             }
         } catch (error) {
         }
@@ -243,7 +246,7 @@ const ListSupplier = () => {
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {
@@ -262,7 +265,7 @@ const ListSupplier = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codiProv', 'nombProv', 'nameTipoProv'];
+                const properties = ['codiProv', 'nombProv', 'nameTipoProv', 'nameCiudad'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -387,10 +390,12 @@ const ListSupplier = () => {
                             </Grid>
 
                             <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/supplier/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Proveedor}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/supplier/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={5}>
@@ -504,16 +509,18 @@ const ListSupplier = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.teleProv}
+                                                    {row.nameCiudad}
                                                 </Typography>
                                             </TableCell>
 
-                                            <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/supplier/update/${row.codiProv}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                            <TableCell align="center">
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Proveedor}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/supplier/update/${row.codiProv}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

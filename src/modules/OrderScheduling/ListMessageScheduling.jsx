@@ -3,17 +3,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-    Badge,
     Box,
     Button,
     CardContent,
     Checkbox,
-    Divider,
-    Drawer,
     Grid,
     IconButton,
     InputAdornment,
-    Stack,
     Table,
     TableBody,
     TableCell,
@@ -29,26 +25,22 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
-import { IconFileExport } from '@tabler/icons';
-import { DeleteMedicines, GetAllMedicines } from 'api/clients/MedicinesClient';
+import { DeleteMedicines } from 'api/clients/MedicinesClient';
 
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-import Chip from 'ui-component/extended/Chip';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonCheckedTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
+import { QueryProgramming } from 'api/clients/UserClient';
+import { ViewFormat } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
-import Iconify from 'components/iconify/iconify';
-import { useBoolean } from 'hooks/use-boolean';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import FilterProgramming from './FilterProgramming';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -76,30 +68,35 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'codigo',
+        id: 'numPedido',
+        numeric: false,
         label: 'Documento',
         align: 'left'
     },
     {
-        id: 'descripcion',
+        id: 'nameProveedor',
+        numeric: false,
         label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'cantidad',
-        label: 'Última atención',
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Tipo de examen',
         align: 'left'
     },
     {
-        id: 'fechaVencimiento',
-        label: 'Fecha de examenes',
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Último EMO',
         align: 'left'
     },
     {
-        id: 'fechaVencimiento',
-        label: 'Fecha de último examen',
+        id: 'usuarioRegistro',
+        numeric: false,
+        label: 'Tiempo transcurrido',
         align: 'left'
-    }
+    },
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -183,15 +180,12 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             })
         }}
     >
-        {numSelected > 0 ? (
+        {numSelected > 0 &&
             <Typography color="inherit" variant="h4">
                 {numSelected} {TitleButton.Seleccionadas}
             </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
+        }
 
-            </Typography>
-        )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
             <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
@@ -208,7 +202,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const MessageScheduling = () => {
+const ListMessageScheduling = () => {
     const navigate = useNavigate();
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
@@ -225,10 +219,10 @@ const MessageScheduling = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllMedicines();
-            if (lsServer.status === 200) {
-                setLsMedicamentos(lsServer.data);
-                setRows(lsServer.data);
+            const lsServer = await QueryProgramming();
+            if (lsServer.data.success) {
+                setLsMedicamentos(lsServer.data.data);
+                setRows(lsServer.data.data);
             }
         } catch (error) { }
     }
@@ -273,7 +267,7 @@ const MessageScheduling = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = lsMedicamentos.map((n) => n.id);
+            const newSelectedId = lsMedicamentos.map((n) => n.documento);
             setSelected(newSelectedId);
             return;
         }
@@ -332,10 +326,8 @@ const MessageScheduling = () => {
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
 
-
-
     return (
-        <MainCard title="Empleados para notificar EMO" content={false}>
+        <MainCard title="Listado de programación de ordenes" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -357,19 +349,23 @@ const MessageScheduling = () => {
                     </Grid>
 
                     <Grid item sx={{ textAlign: 'right', justifyItems: 'center' }}>
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                                <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.success.main, mr: 1 }} />
-                                <Typography variant="h5">Tienen</Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/programming/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </AnimateButton>
                             </Grid>
 
-                            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                                <RadioButtonCheckedTwoToneIcon sx={{ color: theme.palette.error.main, mr: 1 }} />
-                                <Typography variant="h5">No tienen</Typography>
-                            </Grid>
-
-                            <Grid item sx={{ ml: 3 }}>
-                                <FilterProgramming />
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                        onClick={() => navigate("/programming/view")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -397,7 +393,7 @@ const MessageScheduling = () => {
 
                                     if (typeof row === 'string') return null;
 
-                                    const isItemSelected = isSelected(row.id);
+                                    const isItemSelected = isSelected(row.documento);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -409,7 +405,7 @@ const MessageScheduling = () => {
                                             key={index}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.documento)}>
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
@@ -423,14 +419,14 @@ const MessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
+                                                onClick={(event) => handleClick(event, row.documento)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
+                                                    {row.documento}
                                                 </Typography>
                                             </TableCell>
 
@@ -438,14 +434,14 @@ const MessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
+                                                onClick={(event) => handleClick(event, row.documento)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
+                                                    {row.nombre}
                                                 </Typography>
                                             </TableCell>
 
@@ -453,14 +449,14 @@ const MessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
+                                                onClick={(event) => handleClick(event, row.documento)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
+                                                    {row.tipoExamen}
                                                 </Typography>
                                             </TableCell>
 
@@ -468,14 +464,14 @@ const MessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
+                                                onClick={(event) => handleClick(event, row.documento)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
+                                                    {ViewFormat(row.fechaUltimoEMO)}
                                                 </Typography>
                                             </TableCell>
 
@@ -483,34 +479,19 @@ const MessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
+                                                onClick={(event) => handleClick(event, row.documento)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.codigo}
+                                                    {`${row.fechaProximoEMO} meses`}
                                                 </Typography>
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/medicines/update/${row.id}`)}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/medicines/update/${row.documento}`)}>
                                                     <IconButton size="large">
                                                         <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
@@ -550,4 +531,4 @@ const MessageScheduling = () => {
     );
 };
 
-export default MessageScheduling;
+export default ListMessageScheduling;

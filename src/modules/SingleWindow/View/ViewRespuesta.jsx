@@ -420,7 +420,7 @@ const ViewRespuesta = () => {
                             <AnimateButton>
                                 <Tooltip title="Responder" onClick={() => { setOpenModal(true); setIdVentanilla(row?.id) }}>
                                     <IconButton size="large">
-                                        <ReplyIcon color="info" sx={{ fontSize: '1.5rem' }} />
+                                        <ReplyIcon color="primary" sx={{ fontSize: '1.5rem' }} />
                                     </IconButton>
                                 </Tooltip>
                             </AnimateButton>

@@ -20,7 +20,7 @@ import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -34,6 +34,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateVisiometrics = () => {
     const { user } = useAuth();
@@ -184,8 +185,8 @@ const UpdateVisiometrics = () => {
             }));
             setLsControl(resultControl);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -266,11 +267,11 @@ const UpdateVisiometrics = () => {
     setTimeout(() => {
         if (lsVisiometrics.length !== 0)
             setTimeWait(true);
-    }, 2500);
+    }, 500);
 
     return (
         <MainCard title="Actualizar Visiometria">
-            <Fragment>
+            <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Visiometria}>
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -570,7 +571,7 @@ const UpdateVisiometrics = () => {
                         </Grid>
                     </Grid> : <Cargando />
                 }
-            </Fragment >
+            </ValidateActionSkeleton>
         </MainCard>
     );
 };

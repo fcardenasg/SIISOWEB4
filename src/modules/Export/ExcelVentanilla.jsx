@@ -56,7 +56,7 @@ const ExcelVentanilla = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
 
                     setTimeout(() => {
                         setLoading(false);
-                    }, 1000);
+                    }, 500);
                 }
             }
 

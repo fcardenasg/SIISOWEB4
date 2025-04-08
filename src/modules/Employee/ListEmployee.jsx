@@ -220,7 +220,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         }
 
         {numSelected > 0 && (
-            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.empleado}>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Empleado}>
                 <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                     <IconButton size="large">
                         <DeleteIcon fontSize="small" />
@@ -436,7 +436,7 @@ const ListEmployee = () => {
                                 </Tooltip>
                             </Grid>
 
-                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.empleado}>
+                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Empleado}>
                                 <Grid item xs={4}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                         onClick={() => navigate("/employee/add")}>
@@ -611,7 +611,7 @@ const ListEmployee = () => {
                                                         </IconButton>
                                                     </Tooltip>
 
-                                                    <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.empleado}>
+                                                    <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Empleado}>
                                                         <Tooltip title="Actualizar" onClick={() => navigate(`/employee/update/${row.documento}`)}>
                                                             <IconButton size="large">
                                                                 <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />

@@ -31,7 +31,7 @@ import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton, Message } from 'components/helpers/Enums';
+import { TitleButton, Message, AccionMenu, Modulo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllConceptofAptitude, DeleteConceptofAptitude } from 'api/clients/ConceptofAptitudeClient';
 
@@ -45,6 +45,7 @@ import { IconFileExport } from '@tabler/icons';
 import config from 'config';
 import useAuth from 'hooks/useAuth';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -198,11 +199,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Conceptodeaptitud}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -396,10 +399,12 @@ const ListConceptofAptitude = () => {
                             </Grid>
 
                             <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/conceptofaptitude/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Conceptodeaptitud}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/conceptofaptitude/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={5}>
@@ -529,12 +534,14 @@ const ListConceptofAptitude = () => {
                                             </Typography>
                                         </TableCell>
 
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            <Tooltip title="Actualizar" onClick={() => navigate(`/conceptofaptitude/update/${row.idTrabajoenAltura}`)}>
-                                                <IconButton size="large">
-                                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                </IconButton>
-                                            </Tooltip>
+                                        <TableCell align="center">
+                                            <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Conceptodeaptitud}>
+                                                <Tooltip title="Actualizar" onClick={() => navigate(`/conceptofaptitude/update/${row.idTrabajoenAltura}`)}>
+                                                    <IconButton size="large">
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </ValidateAction>
                                         </TableCell>
                                     </TableRow>
                                 );

@@ -1,38 +1,38 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ControlModal from 'components/controllers/ControlModal';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
 import { GetByIdCabRegistration, UpdateCabRegistrations } from 'api/clients/CabRegistrationClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, ValidationMessage, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutCabRegistration } from 'formatdata/CabRegistrationForm';
-import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ViewEmployee from 'components/views/ViewEmployee';
+import { GetAllComboRegTaxi, GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
-import { GetAllComboRegTaxi, GetByMail } from 'api/clients/UserClient';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PutCabRegistration } from 'formatdata/CabRegistrationForm';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
 import { generateReporteReportCabRegistration } from './ReportCabRegistration';
-import ViewPDF from 'components/components/ViewPDF';
-import InputOnChange from 'components/input/InputOnChange';
 
 const validationSchema = yup.object().shape({
     idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -212,10 +212,10 @@ const UpdateCabRegistration = () => {
         if (lsDataAtencion.length !== 0) {
             setTimeWait(true);
         }
-    }, 2000);
+    }, 500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Solicituddetaxi}>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -364,7 +364,7 @@ const UpdateCabRegistration = () => {
                     </Grid>
                 </Grid> : <Cargando />
             }
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

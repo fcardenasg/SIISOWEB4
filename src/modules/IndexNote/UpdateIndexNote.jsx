@@ -17,12 +17,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormatDate } from 'components/helpers/Format';
 import useAuth from 'hooks/useAuth';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Cargando from 'components/loading/Cargando';
 import { PutPersonalNotes } from 'formatdata/PersonalNotesForm';
 import { GetByIdIndexNote, GetByIdPersonalNotes, UpdateIndexNotes, UpdatePersonalNotess } from 'api/clients/PersonalNotesClient';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     descripcion: yup.string().required(ValidationMessage.Requerido)
@@ -64,7 +65,7 @@ const UpdateIndexNote = () => {
                 id,
                 descripcion: datos.descripcion,
                 titulo: datos.titulo,
-                
+
                 usuarioCreacion: user?.nameuser,
                 usuarioModifica: user?.nameuser
             }
@@ -80,63 +81,65 @@ const UpdateIndexNote = () => {
     };
 
     return (
-        <MainCard title="Actualizar Apuntes de Indexación">
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Apuntesdeindexacion}>
+            <MainCard title="Actualizar Apuntes de Indexación">
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-                {lsPersonalNotes.length != 0 ?
-                    <Fragment>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        defaultValue={lsPersonalNotes.titulo}
-                                        name="titulo"
-                                        label="Titulo"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.titulo}
-                                    />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
-                                    <InputText
-                                        rows={5}
-                                        multiline
-                                        defaultValue={lsPersonalNotes.descripcion}
-                                        name="descripcion"
-                                        label="Descripción"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.descripcion}
-                                    />
-                                </FormProvider>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ pt: 4 }}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    {lsPersonalNotes.length != 0 ?
+                        <Fragment>
                             <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth type="submit">
-                                            {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            defaultValue={lsPersonalNotes.titulo}
+                                            name="titulo"
+                                            label="Titulo"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.titulo}
+                                        />
+                                    </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/index-notes/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
+                                <Grid item xs={12}>
+                                    <FormProvider {...methods}>
+                                        <InputText
+                                            rows={5}
+                                            multiline
+                                            defaultValue={lsPersonalNotes.descripcion}
+                                            name="descripcion"
+                                            label="Descripción"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.descripcion}
+                                        />
+                                    </FormProvider>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </Fragment> : <Cargando />}
-            </form>
-        </MainCard>
+
+                            <Grid item xs={12} sx={{ pt: 4 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth type="submit">
+                                                {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/index-notes/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Fragment> : <Cargando />}
+                </form>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

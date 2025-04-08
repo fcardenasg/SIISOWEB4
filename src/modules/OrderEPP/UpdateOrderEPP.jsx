@@ -1,38 +1,39 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ControlModal from 'components/controllers/ControlModal';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import useAuth from 'hooks/useAuth';
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
-import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdOrderEPP, UpdateOrderEPPs } from 'api/clients/OrderEPPClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
+import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutOrderEPP } from 'formatdata/OrderEPPForm';
 import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
-import ViewEmployee from 'components/views/ViewEmployee';
-import Cargando from 'components/loading/Cargando';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportOrderEPP } from './ReportEPP';
 import ViewPDF from 'components/components/ViewPDF';
+import Cargando from 'components/loading/Cargando';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { generateReportOrderEPP } from './ReportEPP';
 
 const validationSchema = yup.object().shape({
     idProvedor: yup.string().required(ValidationMessage.Requerido),
@@ -77,8 +78,8 @@ const UpdateOrderEPP = () => {
                 handleLoadingDocument(event);
             }
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -135,10 +136,10 @@ const UpdateOrderEPP = () => {
         if (lsDataAtencion.length !== 0) {
             setTimeWait(true);
         }
-    }, 2000);
+    }, 500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.OrdenesEPP}>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -223,7 +224,7 @@ const UpdateOrderEPP = () => {
                     </Grid>
                 </Grid > : <Cargando />
             }
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

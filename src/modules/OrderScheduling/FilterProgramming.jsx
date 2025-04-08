@@ -1,56 +1,23 @@
-import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import {
     Badge,
-    Box,
     Button,
-    CardContent,
-    Checkbox,
     Divider,
     Drawer,
     Grid,
     IconButton,
-    InputAdornment,
     Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TablePagination,
-    TableRow,
-    TableSortLabel,
-    TextField,
-    Toolbar,
     Tooltip,
     Typography,
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { visuallyHidden } from '@mui/utils';
-import { IconFileExport } from '@tabler/icons';
-import { DeleteMedicines, GetAllMedicines } from 'api/clients/MedicinesClient';
-
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { CodCatalogo, TitleButton } from 'components/helpers/Enums';
-import swal from 'sweetalert';
-import MainCard from 'ui-component/cards/MainCard';
-import Chip from 'ui-component/extended/Chip';
-
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import RadioButtonCheckedTwoToneIcon from '@mui/icons-material/RadioButtonCheckedTwoTone';
-import SearchIcon from '@mui/icons-material/Search';
-import Cargando from 'components/loading/Cargando';
-import Iconify from 'components/iconify/iconify';
-import { useBoolean } from 'hooks/use-boolean';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import SelectOnChange from 'components/input/SelectOnChange';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import Iconify from 'components/iconify/iconify';
+import SelectOnChange from 'components/input/SelectOnChange';
+import { useBoolean } from 'hooks/use-boolean';
 
 const FilterProgramming = () => {
     const theme = useTheme();

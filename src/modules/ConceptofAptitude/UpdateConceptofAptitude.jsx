@@ -20,7 +20,7 @@ import { GetByIdConceptofAptitude, UpdateConceptofAptitudes } from 'api/clients/
 import { GetAllCatalog } from 'api/clients/CatalogClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { PutConceptofAptitude } from 'formatdata/ConceptofAptitudeForm';
 import SubCard from 'ui-component/cards/SubCard';
@@ -32,6 +32,7 @@ import Cargando from 'components/loading/Cargando';
 import { GetByMail } from 'api/clients/UserClient';
 import { generateReportConceptofAptitude } from './ReportConceptofAptitude';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateOrderEPP = () => {
     const { user } = useAuth();
@@ -169,10 +170,10 @@ const UpdateOrderEPP = () => {
         if (lsDataAtencion.length !== 0) {
             setTimeWait(true);
         }
-    }, 2000);
+    }, 500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Conceptodeaptitud}>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -295,7 +296,7 @@ const UpdateOrderEPP = () => {
                     </Grid>
                 </Grid > : <Cargando />
             }
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

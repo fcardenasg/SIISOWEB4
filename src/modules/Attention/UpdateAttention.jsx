@@ -1,41 +1,42 @@
-import { useState, useEffect, Fragment, useCallback } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
-    Button,
-    Grid,
-    useMediaQuery,
-    Typography,
     Alert,
     AlertTitle,
+    Button,
+    Grid,
+    Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import InputOnChange from 'components/input/InputOnChange';
-import SelectOnChange from 'components/input/SelectOnChange';
-import ControllerListen from 'components/controllers/ControllerListen';
-import ControlModal from 'components/controllers/ControlModal';
-import InputDatePicker from 'components/input/InputDatePicker';
+import Chip from '@mui/material/Chip';
 import { GetByIdAttention, GetByTriageAttention, UpdateAttentions } from 'api/clients/AttentionClient';
 import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, DefaultValue, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutAttention } from 'formatdata/AttentionForm';
-import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import ViewEmployee from 'components/views/ViewEmployee';
-import Chip from '@mui/material/Chip';
-import Cargando from 'components/loading/Cargando';
 import { GetAllComboByIdRol, GetByMail } from 'api/clients/UserClient';
-import { generateReport } from './ReportAtten';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import ControlModal from 'components/controllers/ControlModal';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import SelectOnChange from 'components/input/SelectOnChange';
+import Cargando from 'components/loading/Cargando';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PutAttention } from 'formatdata/AttentionForm';
+import useAuth from 'hooks/useAuth';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReport } from './ReportAtten';
 
 const calculateImc = (peso, talla) => {
     try {
@@ -495,7 +496,7 @@ const UpdateAttention = () => {
     }, 1500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Atencion}>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -845,7 +846,7 @@ const UpdateAttention = () => {
                     </Grid>
                 </Grid > : <Cargando />
             }
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

@@ -454,10 +454,10 @@ const OccupationalMedicine = () => {
     setTimeout(() => {
         if (lsOccupationalMedicine.length !== 0)
             setTimeWait(true);
-    }, 2000);
+    }, 500);
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.medicina_laboral}>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Medicinalaboral}>
             <ControlModal
                 title={Message.VistaArchivo}
                 open={openViewArchivo}
@@ -1599,7 +1599,7 @@ const OccupationalMedicine = () => {
 
                                             <Grid item xs={4} md={2} lg={1.3}>
                                                 <Tooltip title="Descargar">
-                                                    <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="info" size={matchesXS ? 'small' : 'large'} fullWidth onClick={downloadFileMin}>
+                                                    <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="primary" size={matchesXS ? 'small' : 'large'} fullWidth onClick={downloadFileMin}>
                                                         <DownloadIcon fontSize="medium" />
                                                     </Button>
                                                 </Tooltip>

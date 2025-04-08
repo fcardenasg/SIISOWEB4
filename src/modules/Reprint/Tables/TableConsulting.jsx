@@ -434,7 +434,7 @@ const TableConsulting = () => {
                                             <TableCell align="center" sx={{ pr: 3 }}>
                                                 <Tooltip title="Imprimir" onClick={() => handleClickReport(row.id, extenderReport)}>
                                                     <IconButton size="large">
-                                                        <PrintIcon color="info" sx={{ fontSize: '1.3rem' }} />
+                                                        <PrintIcon color="primary" sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>

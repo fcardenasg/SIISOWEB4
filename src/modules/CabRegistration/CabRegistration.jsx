@@ -10,9 +10,11 @@ import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import {
+    AccionMenu,
     CodCatalogo,
     DefaultValue,
     Message,
+    Modulo,
     TitleButton,
     ValidationMessage
 } from 'components/helpers/Enums';
@@ -35,6 +37,7 @@ import { GetAllComboRegTaxi, GetByMail } from 'api/clients/UserClient';
 import { GetByIdCabRegistration, InsertCabRegistration } from 'api/clients/CabRegistrationClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -200,7 +203,7 @@ const CabRegistration = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Solicituddetaxi}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
             <ControlModal
@@ -344,7 +347,7 @@ const CabRegistration = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

@@ -21,10 +21,11 @@ import { GetAllTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Cargando from 'components/loading/Cargando';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -90,75 +91,77 @@ const UpdateCatalog = () => {
     };
 
     return (
-        <MainCard title="Actualizar catálogo">
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Catalogo}>
+            <MainCard title="Actualizar catálogo">
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            {lsCatalog.length != 0 ?
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
-                                <InputSelect
-                                    name="idTipoCatalogo"
-                                    label="Tipo Catalogo"
-                                    defaultValue={lsCatalog.idTipoCatalogo}
-                                    options={typecatalogo}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.idTipoCatalogo}
-                                />
-                            </FormProvider>
-                        </Grid>
+                {lsCatalog.length != 0 ?
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6}>
+                                <FormProvider {...methods}>
+                                    <InputSelect
+                                        name="idTipoCatalogo"
+                                        label="Tipo Catalogo"
+                                        defaultValue={lsCatalog.idTipoCatalogo}
+                                        options={typecatalogo}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoCatalogo}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsCatalog.codigo}
-                                    fullWidth
-                                    name="codigo"
-                                    label="Código"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.codigo}
-                                />
-                            </FormProvider>
-                        </Grid>
+                            <Grid item xs={12} md={6}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={lsCatalog.codigo}
+                                        fullWidth
+                                        name="codigo"
+                                        label="Código"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.codigo}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    defaultValue={lsCatalog.nombre}
-                                    fullWidth
-                                    name="nombre"
-                                    label="Nombre"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.nombre}
-                                />
-                            </FormProvider>
-                        </Grid>
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        defaultValue={lsCatalog.nombre}
+                                        fullWidth
+                                        name="nombre"
+                                        label="Nombre"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.nombre}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth type="submit">
-                                            {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth type="submit">
+                                                {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </form>
-                : <Cargando />}
-        </MainCard>
+                    </form>
+                    : <Cargando />}
+            </MainCard>
+        </ValidateAction>
     );
 };
 

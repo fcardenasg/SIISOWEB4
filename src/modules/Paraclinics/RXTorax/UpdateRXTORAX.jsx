@@ -1,35 +1,36 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import ViewEmployee from 'components/views/ViewEmployee';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { useNavigate, useParams } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
-import { FormProvider, useForm } from 'react-hook-form';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
 import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
+import ViewEmployee from 'components/views/ViewEmployee';
+import useAuth from 'hooks/useAuth';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import InputText from 'components/input/InputText';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { PutParaclinics } from 'formatdata/ParaclinicsForm';
-import { UpdateParaclinicss, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
-import Cargando from 'components/loading/Cargando';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
-import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetByIdParaclinics, UpdateParaclinicss } from 'api/clients/ParaclinicsClient';
+import { GetAllSupplier } from 'api/clients/SupplierClient';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import Cargando from 'components/loading/Cargando';
+import { PutParaclinics } from 'formatdata/ParaclinicsForm';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateRXTORAX = () => {
     const { user } = useAuth();
@@ -131,8 +132,8 @@ const UpdateRXTORAX = () => {
             }));
             setLsConclusion(resultConclusion);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -178,11 +179,11 @@ const UpdateRXTORAX = () => {
     setTimeout(() => {
         if (lsRxTorax.length !== 0)
             setTimeWait(true);
-    }, 2500);
+    }, 500);
 
     return (
-        <MainCard title="Actualizar RX TORAX">
-            <Fragment>
+        <MainCard title={<>Actualizar RX TORAX</>}>
+            <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Rxtorax}>
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -335,7 +336,7 @@ const UpdateRXTORAX = () => {
                         </Grid>
                     </Grid> : <Cargando />
                 }
-            </Fragment >
+            </ValidateActionSkeleton>
         </MainCard>
     );
 };

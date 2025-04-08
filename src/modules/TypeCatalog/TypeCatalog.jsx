@@ -16,9 +16,10 @@ import { PostTypeCatalog } from 'formatdata/TypeCatalogForm';
 import useAuth from 'hooks/useAuth';
 import { InsertTypeCatalog } from 'api/clients/TypeCatalogClient';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(ValidationMessage.Requerido),
@@ -59,45 +60,47 @@ const TypeCatalog = () => {
     };
 
     return (
-        <MainCard title="Registrar Tipo de Catálogo">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Tipodecatalogo}>
+            <MainCard title="Registrar Tipo de Catálogo">
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <form onSubmit={handleSubmit(handleClick)}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                name="nombre"
-                                label="Nombre"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors.nombre}
-                            />
-                        </FormProvider>
-                    </Grid>
-                </Grid>
-
-                <Grid item sx={{ pt: 4 }} xs={12}>
+                <form onSubmit={handleSubmit(handleClick)}>
                     <Grid container spacing={2}>
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="contained" fullWidth type='submit'>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
+                        <Grid item xs={12}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue=""
+                                    name="nombre"
+                                    label="Nombre"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.nombre}
+                                />
+                            </FormProvider>
                         </Grid>
                     </Grid>
-                </Grid>
-            </form>
-        </MainCard>
+
+                    <Grid item sx={{ pt: 4 }} xs={12}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="contained" fullWidth type='submit'>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/typecatalog/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </form>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

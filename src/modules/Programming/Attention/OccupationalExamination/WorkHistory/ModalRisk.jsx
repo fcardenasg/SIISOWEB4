@@ -133,7 +133,7 @@ const ModalRisk = ({ open = false, diferen, onClose, getAll, getSumaRiesgo, idRi
     setTimeout(() => {
         if (row.length !== 0)
             setTimeWait(true);
-    }, 2000);
+    }, 500);
 
     return (
         <Fragment>

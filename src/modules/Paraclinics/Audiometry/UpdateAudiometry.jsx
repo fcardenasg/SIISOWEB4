@@ -1,42 +1,43 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography
+    Typography,
+    useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import ViewEmployee from 'components/views/ViewEmployee';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { useNavigate, useParams } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
 import InputCheckBox from 'components/input/InputCheckBox';
+import InputDatePicker from 'components/input/InputDatePicker';
+import ViewEmployee from 'components/views/ViewEmployee';
+import useAuth from 'hooks/useAuth';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import UploadIcon from '@mui/icons-material/Upload';
+import { GetAllByCodeOrName, } from 'api/clients/CIE11Client';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetByIdParaclinics, UpdateParaclinicss } from 'api/clients/ParaclinicsClient';
+import { GetAllSupplier } from 'api/clients/SupplierClient';
+import { GetByMail } from 'api/clients/UserClient';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import { FormatDate } from 'components/helpers/Format'
-import InputText from 'components/input/InputText';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { PutParaclinics } from 'formatdata/ParaclinicsForm';
-import { UpdateParaclinicss, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
-import Cargando from 'components/loading/Cargando';
-import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
-import MainCard from 'ui-component/cards/MainCard';
-import UploadIcon from '@mui/icons-material/Upload';
-import InputOnChange from 'components/input/InputOnChange';
-import { GetAllByCodeOrName, } from 'api/clients/CIE11Client';
-import { GetByMail } from 'api/clients/UserClient';
-import { generateReport } from './ReporteAudiometry';
-import ViewPDF from 'components/components/ViewPDF';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import Cargando from 'components/loading/Cargando';
+import { PutParaclinics } from 'formatdata/ParaclinicsForm';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReport } from './ReporteAudiometry';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateAudiometry = () => {
     const { id } = useParams();
@@ -189,8 +190,8 @@ const UpdateAudiometry = () => {
             }));
             setLsConducta(resultConducta);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -270,11 +271,11 @@ const UpdateAudiometry = () => {
     setTimeout(() => {
         if (lsAudiometrics.length !== 0)
             setTimeWait(true);
-    }, 2500);
+    }, 500);
 
     return (
-        <MainCard title="Actualizar Audiometría">
-            <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Audiometria}>
+            <MainCard title="Actualizar Audiometría">
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -781,8 +782,8 @@ const UpdateAudiometry = () => {
                         </Grid>
                     </Grid> : <Cargando />
                 }
-            </Fragment >
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton >
 
     );
 };

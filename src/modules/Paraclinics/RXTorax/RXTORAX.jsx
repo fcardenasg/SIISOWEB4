@@ -19,7 +19,7 @@ import InputText from 'components/input/InputText';
 
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -31,6 +31,7 @@ import Cargando from 'components/loading/Cargando';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const RXTORAX = () => {
     const { user } = useAuth();
@@ -124,8 +125,8 @@ const RXTORAX = () => {
             }));
             setLsConclusion(resultConclusion);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -173,8 +174,8 @@ const RXTORAX = () => {
     };
 
     return (
-        <MainCard title="Registrar RX TORAX">
-            <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Rxtorax}>
+            <MainCard title={<>Registrar RX TORAX</>}>
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -314,8 +315,8 @@ const RXTORAX = () => {
                         </SubCard>
                     </Grid>
                 </Grid>
-            </Fragment>
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

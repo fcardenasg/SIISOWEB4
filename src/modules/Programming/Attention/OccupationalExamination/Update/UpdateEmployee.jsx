@@ -57,6 +57,7 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
     const [lsMunicipioR, setMunicipioR] = useState([]);
     const [lsDepartamento, setDepartamento] = useState([]);
     const [lsSede, setSede] = useState([]);
+    const [lsGrupoLGBT, setLsGrupoLGBT] = useState([]);
     const [lsGenero, setGenero] = useState([]);
     const [lsCodigoFilter, setCodigoFilter] = useState([]);
     const [lsEstadoCivil, setEstadoCivil] = useState([]);
@@ -175,6 +176,13 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 label: item.nombre
             }));
             setGenero(resultGenero);
+
+            const lsServerGrupoLGBT = await GetAllByTipoCatalogo(0, 0, CodCatalogo.GrupoLGBT);
+            var resultGrupoLGBT = lsServerGrupoLGBT.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsGrupoLGBT(resultGrupoLGBT);
 
             const lsServerEstadoCivil = await GetAllByTipoCatalogo(0, 0, CodCatalogo.EstadoCivil);
             var resultEstadoCivil = lsServerEstadoCivil.data.entities.map((item) => ({
@@ -344,6 +352,7 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 rosterPosition: datos.rosterPosition || null,
                 tipoContrato: idTipoContrato,
                 generalPosition: datos.generalPosition || null,
+                grupoLGBT: datos.grupoLGBT || null,
                 genero: datos.genero || null,
                 sede: datos.sede || null,
                 direccionResidencia: datos.direccionResidencia || null,
@@ -510,13 +519,25 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                         <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="genero"
-                                                label="Genero"
+                                                label="Sexo"
                                                 defaultValue={employee.genero}
                                                 options={lsGenero}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors.genero}
                                             />
                                         </Grid>
+
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputSelect
+                                                defaultValue={employee.grupoLGBT}
+                                                name="grupoLGBT"
+                                                label="Género"
+                                                options={lsGrupoLGBT}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.grupoLGBT}
+                                            />
+                                        </Grid>
+
                                         <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="estadoCivil"

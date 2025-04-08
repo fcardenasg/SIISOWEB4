@@ -190,7 +190,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         }
 
         {numSelected > 0 && (
-            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.reintegro}>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Reintegro}>
                 <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                     <IconButton size="large">
                         <DeleteIcon fontSize="small" />
@@ -335,7 +335,7 @@ const ListRefund = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsRefund.length) : 0;
 
     return (
-        <MainCard title={<Typography variant="h4">Lista de reintegro</Typography>} content={false}>
+        <MainCard title="Lista de reintegro" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
             <MessageError error={messageError} onClose={() => setOpenError(true)} open={openError} />
 
@@ -359,7 +359,7 @@ const ListRefund = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.reintegro}>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Reintegro}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                         onClick={() => navigate("/refund/add")}>
                                         {TitleButton.Agregar}
@@ -508,7 +508,7 @@ const ListRefund = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.reintegro}>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Reintegro}>
                                                     <Tooltip title="Actualizar" onClick={() => navigate(`/refund/update/${row.id}`)}>
                                                         <IconButton size="large">
                                                             <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />

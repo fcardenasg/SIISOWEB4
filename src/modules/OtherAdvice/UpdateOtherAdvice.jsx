@@ -1,56 +1,55 @@
-import { useState, Fragment, useEffect } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import BiotechIcon from '@mui/icons-material/Biotech';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ImageIcon from '@mui/icons-material/Image';
 
+import { ColorDrummondltd } from 'themes/colors';
 import ListMedicalFormula from '../Programming/Attention/OccupationalExamination/MedicalOrder/ListMedicalFormula';
 import MedicalFormula from '../Programming/Attention/OccupationalExamination/MedicalOrder/MedicalFormula';
 import UpdateMedicalFormula from '../Programming/Attention/OccupationalExamination/MedicalOrder/UpdateMedicalFormula';
 import DialogFormula from '../Programming/Attention/OccupationalExamination/Modal/DialogFormula';
-import { ColorDrummondltd } from 'themes/colors';
 
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import InputText from 'components/input/InputText';
-import InputDatePicker from 'components/input/InputDatePicker';
-import ViewEmployee from 'components/views/ViewEmployee';
-import ControllerListen from 'components/controllers/ControllerListen';
-import ControlModal from 'components/controllers/ControlModal';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import DetailedIcon from 'components/controllers/DetailedIcon';
-import { FormatDate } from 'components/helpers/Format';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdAdvice, SaveAdvice, } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SubCard from 'ui-component/cards/SubCard';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ViewPDF from 'components/components/ViewPDF';
-import { generateReportOtherAdvice } from '../Programming/Attention/Report/OtherAdvice';
 import { GetByMail } from 'api/clients/UserClient';
-import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
-import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
-import Cargando from 'components/loading/Cargando';
+import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import ControlModal from 'components/controllers/ControlModal';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import InputCheck from 'components/input/InputCheck';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import Cargando from 'components/loading/Cargando';
+import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PutMedicalAdvice } from 'formatdata/MedicalAdviceForm';
+import useAuth from 'hooks/useAuth';
+import HoverSocialCard from 'modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReportOtherAdvice } from '../Programming/Attention/Report/OtherAdvice';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -219,7 +218,7 @@ const UpdateOtherAdvice = () => {
     }, 500);
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.otras_asesorias}>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Otrasasesorias}>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
