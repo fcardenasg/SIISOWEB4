@@ -300,6 +300,7 @@ const ListActionMenu = () => {
                         <Table aria-label="collapsible table">
                             <TableHead>
                                 <TableRow>
+                                    <TableCell>Módulo principal</TableCell>
                                     <TableCell>Módulo</TableCell>
                                     <TableCell>Agregar</TableCell>
                                     <TableCell>Actualizar</TableCell>
@@ -311,6 +312,7 @@ const ListActionMenu = () => {
                                 {stableSort(lsPermisos, getComparator('asc', 'fechaVencimiento'))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                                         <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
+                                            <TableCell>{row.moduloPrincipal}</TableCell>
                                             <TableCell>{row.modulo}</TableCell>
                                             <TableCell>
                                                 <Switch

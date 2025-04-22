@@ -5,6 +5,18 @@ export function UpperFirstChar(cadena) {
         return cadena.charAt(0).toUpperCase() + cadena.slice(1).toLowerCase();
 }
 
+export function validateData(dato) {
+    if (dato === undefined || dato === null || dato === '') {
+        return 'SIN REGISTRO';
+    }
+
+    if (typeof dato === 'string') {
+        return dato.toUpperCase();
+    }
+
+    return dato;
+}
+
 const FormatDate = (fecha) => {
     try {
         if (fecha == null || fecha == undefined || fecha == "NaN-aN-aN" || fecha == '') {
@@ -61,11 +73,15 @@ function GetEdad(dateString) {
                 edad--
             }
             return edad;
-        } else return 0;
+        } else
+            return null;
     } catch (error) { }
 }
 
 function GetAnioMeses(fechaParametro) {
+    if (fechaParametro == null || fechaParametro == "")
+        return null;
+
     const fechaActual = new Date();
     const fechaObjetivo = new Date(fechaParametro);
 

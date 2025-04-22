@@ -23,6 +23,7 @@ import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from 'com
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(ValidationMessage.Requerido),
@@ -68,7 +69,7 @@ const Catalog = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostCatalog(datos.nombre, datos.codigo, datos.idTipoCatalogo, user?.nameuser,
-                FormatDate(new Date()), '', FormatDate(new Date()));
+                FormatDate(new Date()), '', FormatDate(new Date()), datos.estado);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await InsertCatalog(DataToInsert);
@@ -89,10 +90,10 @@ const Catalog = () => {
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                <form onSubmit={handleSubmit(handleClick)}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                <FormProvider {...methods}>
+                    <form onSubmit={handleSubmit(handleClick)}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6}>
                                 <InputSelect
                                     name="idTipoCatalogo"
                                     label="Tipo Catalogo"
@@ -101,11 +102,9 @@ const Catalog = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.idTipoCatalogo}
                                 />
-                            </FormProvider>
-                        </Grid>
+                            </Grid>
 
-                        <Grid item xs={12} md={6}>
-                            <FormProvider {...methods}>
+                            <Grid item xs={12} md={6}>
                                 <InputText
                                     defaultValue=""
                                     fullWidth
@@ -114,11 +113,9 @@ const Catalog = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.codigo}
                                 />
-                            </FormProvider>
-                        </Grid>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
+                            <Grid item xs={10}>
                                 <InputText
                                     defaultValue=""
                                     fullWidth
@@ -127,30 +124,39 @@ const Catalog = () => {
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.nombre}
                                 />
-                            </FormProvider>
-                        </Grid>
-                    </Grid>
-
-                    <Grid item xs={12} sx={{ pt: 4 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth type="submit">
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
                             </Grid>
 
                             <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                                <InputCheckBox
+                                    name="estado"
+                                    defaultValue={true}
+                                    label="Estado"
+                                    size={30}
+                                />
                             </Grid>
                         </Grid>
-                    </Grid>
-                </form>
+
+                        <Grid item xs={12} sx={{ pt: 4 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth type="submit">
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </FormProvider>
             </MainCard>
         </ValidateAction>
     );

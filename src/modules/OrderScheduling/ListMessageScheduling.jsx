@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,11 +32,9 @@ import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { QueryProgramming } from 'api/clients/UserClient';
 import { ViewFormat } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -157,18 +154,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
     );
 }
 
-EnhancedTableHead.propTypes = {
-    theme: PropTypes.object,
-    selected: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
-};
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -197,11 +182,6 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     </Toolbar>
 );
 
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onClick: PropTypes.func
-};
-
 const ListMessageScheduling = () => {
     const navigate = useNavigate();
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
@@ -219,11 +199,11 @@ const ListMessageScheduling = () => {
 
     async function getAll() {
         try {
-            const lsServer = await QueryProgramming();
+            /* const lsServer = await QueryProgramming();
             if (lsServer.data.success) {
                 setLsMedicamentos(lsServer.data.data);
                 setRows(lsServer.data.data);
-            }
+            } */
         } catch (error) { }
     }
 
@@ -355,15 +335,6 @@ const ListMessageScheduling = () => {
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                         onClick={() => navigate("/programming/add")}>
                                         {TitleButton.Agregar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <AnimateButton>
-                                    <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                        onClick={() => navigate("/programming/view")}>
-                                        {TitleButton.Cancelar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>

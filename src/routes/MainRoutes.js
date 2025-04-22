@@ -73,8 +73,8 @@ const ListPsychologicalCounseling = Loadable(lazy(() => import('modules/Psycholo
 const PsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/PsychologicalCounseling')));
 const UpdatePsychologicalCounseling = Loadable(lazy(() => import('modules/PsychologicalCounseling/UpdatePsychologicalCounseling')));
 
-const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalformula')));
-const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/Medicalformula')));
+const ListMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/ListMedicalFormula')));
+const MedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/MedicalFormula')));
 const UpdateMedicalFormula = Loadable(lazy(() => import('modules/MedicalFormula/UpdateMedicalFormula')));
 
 const MedicalCalendar = Loadable(lazy(() => import('modules/Medicalcalendar/calendar/index')));
@@ -243,7 +243,7 @@ const ViewHelpManagement = Loadable(lazy(() => import('modules/Help/HelpManageme
 const Indicators = Loadable(lazy(() => import('modules/Help/Indicators/Indicators')));
 
 const ListMessageScheduling = Loadable(lazy(() => import('modules/OrderScheduling/ListMessageScheduling')));
-const MessageScheduling = Loadable(lazy(() => import('modules/OrderScheduling/MessageScheduling')));
+const OrderScheduling = Loadable(lazy(() => import('modules/OrderScheduling/OrderScheduling')));
 
 const MainRoutes = {
     path: '/',
@@ -1009,12 +1009,12 @@ const MainRoutes = {
         },
         {
             path: '/chat-gpt/view',
-            element: <ChatGPT/>
+            element: <ChatGPT />
         },
         {
             path: '/medical-calendar',
             element: <MedicalCalendar />
-        },        
+        },
 
         /* Soporte */
         {
@@ -1044,7 +1044,7 @@ const MainRoutes = {
         },
         {
             path: '/programming/add',
-            element: <MessageScheduling />
+            element: <OrderScheduling />
         },
         {
             path: '/schedule-orders/monitoring',

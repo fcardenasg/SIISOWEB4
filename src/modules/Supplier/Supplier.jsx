@@ -29,8 +29,9 @@ import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkel
 const validationSchema = yup.object().shape({
     codiProv: yup.string().required(`${ValidationMessage.Requerido}`),
     nombProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    teleProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    ciudProv: yup.string().required(`${ValidationMessage.Requerido}`),
     idTipoProveedor: yup.string().required(`${ValidationMessage.Requerido}`),
-
 });
 
 const Supplier = () => {
@@ -83,14 +84,15 @@ const Supplier = () => {
             /* Recordar aquí modificar el correo por el nombre de usuario */
             const DataToInsert = PostSupplier(datos.codiProv, datos.nombProv, datos.teleProv, datos.emaiProv,
                 datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
-                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), datos.estadoCampania);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertSupplier(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    reset();
-                }
+            const result = await InsertSupplier(DataToInsert);
+            if (result.data.exito) {
+                setOpenSuccess(true);
+                reset();
+            } else {
+                setOpenError(true);
+                setErrorMessage(result.data.mensaje);
             }
         } catch (error) {
             setOpenError(true);

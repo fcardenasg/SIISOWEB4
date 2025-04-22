@@ -33,7 +33,7 @@ const validationSchema = yup.object().shape({
     codiProv: yup.string().required(`${ValidationMessage.Requerido}`),
     nombProv: yup.string().required(`${ValidationMessage.Requerido}`),
     teleProv: yup.string().required(`${ValidationMessage.Requerido}`),
-    emaiProv: yup.string().required(`${ValidationMessage.Requerido}`),
+    ciudProv: yup.string().required(`${ValidationMessage.Requerido}`),
     idTipoProveedor: yup.string().required(`${ValidationMessage.Requerido}`),
 });
 
@@ -93,16 +93,12 @@ const UpdateSupplier = () => {
                 datos.contaProv, datos.ciudProv, datos.idTipoProveedor, datos.direProv,
                 supplier.usuarioRegistro, supplier.fechaRegistro, user?.nameuser, FormatDate(new Date()), datos.estadoCampania);
 
-            /* Modificamos el consumo del servicio de actualziar */
-            if (Object.keys(datos.length !== 0)) {
-                await UpdateSuppliers(DataToUpdate).then(result => {
-                    if (result.status === 200) {
-                        setOpenUpdate(true);
-                    } else {
-                        setOpenError(true);
-                        setErrorMessage(Message.RegistroNoGuardado);
-                    }
-                });
+            const result = await UpdateSuppliers(DataToUpdate);
+            if (result.data.exito) {
+                setOpenUpdate(true);
+            } else {
+                setOpenError(true);
+                setErrorMessage(result.data.mensaje);
             }
         } catch (error) {
             setOpenError(true);

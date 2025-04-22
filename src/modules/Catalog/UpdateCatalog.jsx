@@ -26,6 +26,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Cargando from 'components/loading/Cargando';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import InputCheckBox from 'components/input/InputCheckBox';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -76,7 +77,7 @@ const UpdateCatalog = () => {
 
     const onSubmit = async (datos) => {
         const DataToUpdate = PutCatalog(id, datos.nombre, datos.codigo, datos.idTipoCatalogo,
-            lsCatalog.usuarioRegistro, lsCatalog.fechaRegistro, user?.nameuser, FormatDate(new Date()));
+            lsCatalog.usuarioRegistro, lsCatalog.fechaRegistro, user?.nameuser, FormatDate(new Date()), datos.estado);
         try {
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateCatalogs(DataToUpdate);
@@ -97,10 +98,10 @@ const UpdateCatalog = () => {
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
                 {lsCatalog.length != 0 ?
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
-                                <FormProvider {...methods}>
+                    <FormProvider {...methods}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6}>
                                     <InputSelect
                                         name="idTipoCatalogo"
                                         label="Tipo Catalogo"
@@ -109,11 +110,9 @@ const UpdateCatalog = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idTipoCatalogo}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6}>
                                     <InputText
                                         defaultValue={lsCatalog.codigo}
                                         fullWidth
@@ -122,11 +121,9 @@ const UpdateCatalog = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.codigo}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={10}>
                                     <InputText
                                         defaultValue={lsCatalog.nombre}
                                         fullWidth
@@ -135,31 +132,40 @@ const UpdateCatalog = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.nombre}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="contained" fullWidth type="submit">
-                                                {TitleButton.Actualizar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                <Grid item xs={2}>
+                                    <InputCheckBox
+                                        name="estado"
+                                        defaultValue={lsCatalog.estado}
+                                        label="Estado"
+                                        size={30}
+                                    />
+                                </Grid>
 
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
+                                <Grid item xs={12}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="contained" fullWidth type="submit">
+                                                    {TitleButton.Actualizar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => navigate("/catalog/list")}>
+                                                    {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </form>
-                    : <Cargando />}
+                        </form>
+                    </FormProvider> : <Cargando />
+                }
             </MainCard>
         </ValidateAction>
     );

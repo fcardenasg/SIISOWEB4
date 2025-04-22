@@ -1,44 +1,44 @@
-import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import de Material-ui
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
-    Typography
+    Typography,
+    useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 // Terceros
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 
 // Import del Proyecto
-import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
-import PhotoModel from 'components/form/PhotoModel';
-import ModalChildren from 'components/form/ModalChildren';
-import WebCamCapture from 'components/form/WebCam';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { GetByIdEmployee, UpdateEmployees } from 'api/clients/EmployeeClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetAllCompany } from 'api/clients/CompanyClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
-import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
-import SelectOnChange from 'components/input/SelectOnChange';
-import { TitleButton, ValidationMessage, CodCatalogo, Message, DefaultValue, AccionMenu, Modulo } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import InputDatePicker from 'components/input/InputDatePicker';
-import Cargando from 'components/loading/Cargando';
+import { GetByIdEmployee, UpdateEmployees } from 'api/clients/EmployeeClient';
 import userEmpleado from 'assets/img/user.png';
+import ModalChildren from 'components/form/ModalChildren';
+import PhotoModel from 'components/form/PhotoModel';
+import WebCamCapture from 'components/form/WebCam';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
+import Cargando from 'components/loading/Cargando';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import useAuth from 'hooks/useAuth';
+import { SNACKBAR_OPEN } from 'store/actions';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),

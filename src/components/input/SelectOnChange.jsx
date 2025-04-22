@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { Fragment } from 'react';
 
-const SelectOnChange = ({ disabled, options, value, onChange, size, label, name }) => {
+const SelectOnChange = ({ disabled, defaultValue, options, value, onChange, size, label, name, ...others }) => {
 
     return (
         <Fragment>
@@ -16,14 +16,16 @@ const SelectOnChange = ({ disabled, options, value, onChange, size, label, name 
                     {label}
                 </InputLabel>
                 <Select
+                    defaultValue={defaultValue}
                     labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                    id={`${name}-demo-simple-select`}
                     label={label}
                     onChange={onChange}
                     value={value}
                     fullWidth
                     size={size}
                     disabled={disabled}
+                    {...others}
                 >
                     {options.map((option) => (
                         <MenuItem key={option.value} value={option.value}>

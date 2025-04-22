@@ -76,8 +76,8 @@ const UpdateOrderEPP = () => {
                 handleLoadingDocument(event);
             }
 
-            const lsServerCatalogo = await GetAllCatalog(0, 0);
-            var resultCatalogo = lsServerCatalogo.data.entities.map((item) => ({
+            const lsServerCatalogo = await GetAllCatalog();
+            var resultCatalogo = lsServerCatalogo.data.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));

@@ -41,6 +41,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import Cargando from 'components/loading/Cargando';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import Chip from 'ui-component/extended/Chip';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -67,12 +68,6 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'codiProv',
-        numeric: false,
-        label: 'Código',
-        align: 'left'
-    },
-    {
         id: 'nombProv',
         numeric: false,
         label: 'Nombre',
@@ -89,6 +84,12 @@ const headCells = [
         numeric: false,
         label: 'Ciudad',
         align: 'left'
+    },
+    {
+        id: 'estadoCampania',
+        numeric: false,
+        label: '¿Activo en campaña?',
+        align: 'center'
     }
 ];
 
@@ -212,8 +213,8 @@ const ListSupplier = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('nombProv');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('estadoCampania');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -458,22 +459,6 @@ const ListSupplier = () => {
                                                 scope="row"
                                                 onClick={(event) => handleClick(event, row.codiProv)}
                                                 sx={{ cursor: 'pointer' }}
-                                                align="left"
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.codiProv}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.codiProv)}
-                                                sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
@@ -511,6 +496,22 @@ const ListSupplier = () => {
                                                 >
                                                     {row.nameCiudad}
                                                 </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                align="center"
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.codiProv)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Chip
+                                                    size="small"
+                                                    label={row?.estadoCampania ? "ACTIVO" : "INACTIVO"}
+                                                    chipcolor={row?.estadoCampania ? 'success' : 'error'}
+                                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center">

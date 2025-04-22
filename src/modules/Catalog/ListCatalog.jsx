@@ -22,7 +22,8 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    Button
+    Button,
+    ListItemText
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
@@ -40,6 +41,7 @@ import ReactExport from "react-export-excel";
 import { IconFileExport } from '@tabler/icons';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import Chip from 'ui-component/extended/Chip';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -70,27 +72,23 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'idCatalogo',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
         id: 'nombre',
-        numeric: false,
         label: 'Nombre',
         align: 'left'
     },
     {
         id: 'codigo',
-        numeric: false,
         label: 'Código',
         align: 'left'
     },
     {
         id: 'nameTypeCatalog',
-        numeric: false,
         label: 'Tipo Catálogo',
+        align: 'left'
+    },
+    {
+        id: 'estado',
+        label: 'Estado',
         align: 'left'
     }
 ];
@@ -210,8 +208,8 @@ const ListCatalog = () => {
     const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('idCatalogo');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -220,9 +218,9 @@ const ListCatalog = () => {
 
     async function GetAll() {
         try {
-            const lsServer = await GetAllCatalog(0, 0);
-            setCatalog(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllCatalog();
+            setCatalog(lsServer.data);
+            setRows(lsServer.data);
         } catch (error) { }
     }
 
@@ -436,14 +434,12 @@ const ListCatalog = () => {
                                                 scope="row"
                                                 onClick={(event) => handleClick(event, row.idCatalogo)}
                                                 sx={{ cursor: 'pointer' }}
-                                                align="center"
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {' '}
-                                                    #{row.idCatalogo}{' '}
+                                                    {row.nombre}
                                                 </Typography>
                                             </TableCell>
 
@@ -458,7 +454,7 @@ const ListCatalog = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nombre}{' '}
+                                                    {row.codigo}
                                                 </Typography>
                                             </TableCell>
 
@@ -473,7 +469,7 @@ const ListCatalog = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.codigo}{' '}
+                                                    {row.nameTypeCatalog}
                                                 </Typography>
                                             </TableCell>
 
@@ -484,12 +480,12 @@ const ListCatalog = () => {
                                                 onClick={(event) => handleClick(event, row.idCatalogo)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.nameTypeCatalog}{' '}
-                                                </Typography>
+                                                <Chip
+                                                    size="small"
+                                                    label={row?.estado ? "ACTIVO" : "INACTIVO"}
+                                                    chipcolor={row?.estado ? 'success' : 'error'}
+                                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center">

@@ -1,33 +1,29 @@
-import { useState, useEffect, Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     Typography,
     useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from "yup";
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import useAuth from 'hooks/useAuth';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetAllCatalog } from 'api/clients/CatalogClient';
+import { GetByIdPanorama, UpdatePanoramas } from 'api/clients/PanoramaClient';
+import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
 import { FormatDate } from 'components/helpers/Format';
 import InputMultiSelects from 'components/input/InputMultiSelects';
-import Cargando from 'components/loading/Cargando';
-import { GetByIdPanorama } from 'api/clients/PanoramaClient';
-import { PutPanorama } from 'formatdata/PanoramaForm';
-import { GetAllBySubTipoCatalogo, GetAllCatalog, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
-import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
-import { SNACKBAR_OPEN } from 'store/actions';
-import { UpdatePanoramas } from 'api/clients/PanoramaClient';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import SelectOnChange from 'components/input/SelectOnChange';
+import Cargando from 'components/loading/Cargando';
+import { PutPanorama } from 'formatdata/PanoramaForm';
+import useAuth from 'hooks/useAuth';
+import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -109,8 +105,8 @@ const Panorama = () => {
                 setRiesgo(lsServerPanorama.data.riesgo);
             }
 
-            const lsServerCatalogo = await GetAllCatalog(0, 0);
-            var lsResultCatalogo = lsServerCatalogo.data.entities.map((item) => ({
+            const lsServerCatalogo = await GetAllCatalog();
+            var lsResultCatalogo = lsServerCatalogo.data.map((item) => ({
                 value: item.idCatalogo,
                 label: item.nombre
             }));
@@ -192,13 +188,13 @@ const Panorama = () => {
                 <Fragment>
                     <Grid container spacing={2}>
                         {lsPanorama.length != 0 ?
-                             <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <Typography>
                                     ID: {lsPanorama.idCargo}
                                     Cargo: {lsPanorama.nameRoster}
                                 </Typography> </Grid> : <></>}
 
-                                <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <SelectOnChange
                                 name="idRiesgo"
                                 label="Riesgo"
@@ -210,7 +206,7 @@ const Panorama = () => {
                         </Grid>
 
                         {lsClase.length != 0 ?
-                               <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <SelectOnChange
                                     name="clase"
                                     label="Clase"
@@ -220,7 +216,7 @@ const Panorama = () => {
                                     onChange={(e) => setClase(e.target.value)}
                                 />
                             </Grid> :
-                         <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="clase"
@@ -234,7 +230,7 @@ const Panorama = () => {
                                 </FormProvider>
                             </Grid>}
 
-                            <Grid item xs={12} md={6} lg={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <FormProvider {...methods}>
                                 <InputSelect
                                     name="exposicion"

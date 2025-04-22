@@ -13,13 +13,12 @@ import {
     TableRow,
     Tooltip
 } from '@mui/material';
-
-import { QueryProgramming } from 'api/clients/UserClient';
 import { ViewFormat } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import { useBoolean } from 'hooks/use-boolean';
 import MainCard from 'ui-component/cards/MainCard';
-import OptionsMenu from './components/OptionsMenu';
+import { GetEmpleadoProgramacionOrdenes, QueryProgramming } from 'api/clients/ProgramacionOrdenesClient';
+import EmployeeDetail from './components/EmployeeDetail';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -44,11 +43,10 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const ListDetailMassive = () => {
+const ListDetailMassive = ({ valueGes, fechaInicio, fechaFin }) => {
     const openViewDetail = useBoolean(false);
 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [documentoForDetalle, setDocumentoForDetalle] = useState(null);
+    const [employeeData, setEmployeeData] = useState(null);
     const [lsOrdenesParaclinicos, setLsOrdenesParaclinicos] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
@@ -61,52 +59,72 @@ const ListDetailMassive = () => {
     useEffect(() => {
         async function getAllListParaclinicos() {
             try {
-                const lsServer = await QueryProgramming();
-                if (lsServer.data.success) {
-                    setLsOrdenesParaclinicos(lsServer.data.data);
+                if (valueGes || fechaInicio || fechaFin) {
+                    const params = {
+                        idGes: valueGes.value,
+                        fechaInicio: fechaInicio,
+                        fechaFin: fechaFin
+                    }
+
+                    const response = await QueryProgramming(params);
+                    if (response.data.exito) {
+                        setLsOrdenesParaclinicos(response.data.datos);
+                    } else {
+                        setLsOrdenesParaclinicos([]);
+                    }
                 }
             } catch (error) { }
         }
 
         getAllListParaclinicos();
-    }, []);
+    }, [valueGes, fechaInicio, fechaFin]);
 
     const handleClickPhone = (documento) => {
         alert(`${documento} - Envio por celular al paciente`);
-
-        setAnchorEl(null);
     };
 
     const handleClickWhatsApp = (documento) => {
         alert(`${documento} - Envio por WhatsApp al paciente`);
-
-        setAnchorEl(null);
     };
 
     const handleClickMessage = (documento) => {
         alert(`${documento} - Envio por mensaje al paciente`);
-
-        setAnchorEl(null);
     };
 
     const handleClickMail = (documento) => {
         alert(`${documento} - Envio por correo al paciente`);
-
-        setAnchorEl(null);
     };
 
     const handleClickPrint = (documento) => {
         alert(`${documento} - Imprimir al paciente`);
-
-        setAnchorEl(null);
     };
 
-    const handleClickViewDetail = (documento) => {
-        //Petición para obtener el detalle del paciente
-        setDocumentoForDetalle(documento);
+    const handleDocumento = async (event) => {
 
-        //Procede a abrir el detalle del paciente
-        openViewDetail.onTrue();
+    }
+
+    const handleClickViewDetail = async (documento) => {
+        try {
+            if (documento) {
+                var lsServerEmployee = await GetEmpleadoProgramacionOrdenes(documento);
+
+                if (lsServerEmployee?.data.status === 200) {
+                    const dataemployee = lsServerEmployee.data.data;
+                    setEmployeeData(dataemployee);
+                    openViewDetail.onTrue();
+                } else {
+                    if (lsServerEmployee?.data.data) {
+                        const dataemployee = lsServerEmployee.data.data;
+                        setEmployeeData(dataemployee);
+                        openViewDetail.onTrue();
+                    } else {
+                        setEmployeeData(null);
+                    }
+                }
+            } else {
+                setEmployeeData(null);
+            }
+        } catch (error) { }
     };
 
     return (
@@ -116,10 +134,11 @@ const ListDetailMassive = () => {
                     <Table aria-label="collapsible table">
                         <TableHead>
                             <TableRow>
+                                <TableCell />
                                 <TableCell>Nombre</TableCell>
-                                <TableCell>F. último examen</TableCell>
+                                <TableCell>Fecha del último examen</TableCell>
                                 <TableCell>Último tipo de examen</TableCell>
-                                <TableCell align="center">
+                                {/* <TableCell align="center">
                                     <Tooltip placement="top" title="VISIOMETRÍA">
                                         <IconButton>
                                             <Iconify icon="pepicons-pencil:monitor-eye" width={25} />
@@ -139,9 +158,9 @@ const ListDetailMassive = () => {
                                             <Iconify icon="medical-icon:radiology" width={25} />
                                         </IconButton>
                                     </Tooltip>
-                                </TableCell>
-                                <TableCell align="center">Estado</TableCell>
-                                <TableCell align="center">Acción</TableCell>
+                                </TableCell> */}
+                                {/* <TableCell align="center">Estado</TableCell> */}
+                                <TableCell>Ciudad de residencia</TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -149,24 +168,26 @@ const ListDetailMassive = () => {
                             {stableSort(lsOrdenesParaclinicos, getComparator('asc', 'nameEmpleado'))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                                     <TableRow hover role="checkbox">
-                                        <TableCell sx={{ cursor: 'pointer' }} onClick={() => handleClickViewDetail(row.documento)}>{row.nombre}</TableCell>
-                                        <TableCell sx={{ cursor: 'pointer' }} onClick={() => handleClickViewDetail(row.documento)}>{ViewFormat(row.fechaUltimoEMO)}</TableCell>
-                                        <TableCell sx={{ cursor: 'pointer' }} onClick={() => handleClickViewDetail(row.documento)}>{row.tipoExamen}</TableCell>
-                                        <TableCell align="center"><Checkbox /></TableCell>
-                                        <TableCell align="center"><Checkbox /></TableCell>
-                                        <TableCell align="center"><Checkbox /></TableCell>
-                                        <TableCell>OK</TableCell>
-                                        <TableCell align="center">
-                                            {/* <OptionsMenu
-                                                setAnchorEl={setAnchorEl}
-                                                anchorEl={anchorEl}
-                                                onClickMail={() => handleClickMail(row.documento)}
-                                                onClickPhone={() => handleClickPhone(row.documento)}
-                                                onClickMessage={() => handleClickWhatsApp(row.documento)}
-                                                onClickWhatsApp={() => handleClickMessage(row.documento)}
-                                                onClickPrint={() => handleClickPrint(row.documento)}
-                                            /> */}
+                                        <TableCell>{row.examenesProgramados ? "SI" : "NO"}</TableCell>
+                                        <TableCell sx={{ cursor: 'pointer' }} onClick={() => handleClickViewDetail(row.documento)}>
+                                            {row.nombre}
+                                        </TableCell>
+                                        <TableCell sx={{ cursor: 'pointer' }} onClick={() => handleClickViewDetail(row.documento)}>
+                                            {ViewFormat(row.fechaUltimoEMO)} - {`HACE ${row.fechaProximoEMO} MESES`}
+                                        </TableCell>
+                                        <TableCell sx={{ cursor: 'pointer' }} onClick={() => handleClickViewDetail(row.documento)}>
+                                            {row.tipoExamen}
+                                        </TableCell>
+                                        <TableCell sx={{ cursor: 'pointer' }} onClick={() => handleClickViewDetail(row.documento)}>
+                                            {row.ciudadResidencia}
+                                        </TableCell>
 
+                                        {/* <TableCell align="center"><Checkbox /></TableCell>
+                                        <TableCell align="center"><Checkbox /></TableCell>
+                                        <TableCell align="center"><Checkbox /></TableCell> */}
+
+                                        {/* <TableCell>OK</TableCell>
+                                        <TableCell align="center">
                                             <IconButton onClick={() => handleClickMail(row.documento)}>
                                                 <Iconify icon="fluent:mail-24-filled" />
                                             </IconButton>
@@ -186,8 +207,9 @@ const ListDetailMassive = () => {
                                             <IconButton onClick={() => handleClickPrint(row.documento)}>
                                                 <Iconify icon="solar:printer-outline" />
                                             </IconButton>
-                                        </TableCell>
-                                    </TableRow>))
+                                        </TableCell> */}
+                                    </TableRow>
+                                ))
                             }
                         </TableBody>
                     </Table>
@@ -208,11 +230,9 @@ const ListDetailMassive = () => {
                 />
             </Grid>
 
-            {(openViewDetail.value && documentoForDetalle) &&
-                <Grid item sx={{ width: 342, margin: { xs: '0 auto', md: 'initial' } }}>
-                    <MainCard>
-                        {documentoForDetalle}
-                    </MainCard>
+            {(openViewDetail.value && employeeData) &&
+                <Grid item sx={{ width: 370, margin: { xs: '0 auto', md: 'initial' } }}>
+                    <EmployeeDetail employeeData={employeeData} openViewDetail={openViewDetail} />
                 </Grid>
             }
         </Grid>

@@ -355,7 +355,7 @@ const WorkAbsenteeism = () => {
     };
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.ausentismo_laboral}>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Ausentismolaboral}>
             <MessageSuccess onClose={() => setOpenSuccess(false)} open={openSuccess} />
             <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
 

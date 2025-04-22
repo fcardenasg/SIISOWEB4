@@ -4,7 +4,6 @@ export const Url = {
     Base: config.rutaApi,
 
     Login: 'api/Login',
-    LoginQueryProgramming: 'api/Login/query-programming',
     AudioTexto: 'api/Login/GetChatIA',
     ConsultarCorreo: 'api/Login/mail-consult',
     RecuperarPasswordCorreo: 'api/Login/RecuperarPasswordCorreo',
@@ -221,6 +220,14 @@ export const Url = {
 
     ApuntesIndexacion: 'api/ApuntesIndexacion',
     ApuntesIndexacionId: 'api/ApuntesIndexacion/id',
+
+    ProgramacionOrdenes: 'api/ProgramacionOrdenes',
+    PrograOrdenesQueryProgramming: 'api/ProgramacionOrdenes/query-programming',
+    ProgramacionOrdenesId: 'api/ProgramacionOrdenes/id',
+    ProgramacionOrdenesEmpleado: 'api/ProgramacionOrdenes/empleado',
+    ProgramacionOrdenesProveedor: 'api/ProgramacionOrdenes/proveedor',
+    ProgramacionOrdenesComboCiudad: 'api/ProgramacionOrdenes/combo-ciudad',
+    ProgramacionOrdenesProCiuIndi: 'api/ProgramacionOrdenes/proveedor-ciudad-individual',
 
     Accidentalidad: 'api/Accidentalidad',
     AccidentalidadExcel: 'api/Accidentalidad/excel',
