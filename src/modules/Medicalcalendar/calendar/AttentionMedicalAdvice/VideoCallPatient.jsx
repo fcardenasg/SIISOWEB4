@@ -67,40 +67,27 @@ const ViewCall = () => {
   }, [client]);
 
   async function joinChannel() {
-   
-    const bytes = CryptoJS.AES.decrypt(decodeURIComponent(tokenend), SECRET_kEY);
+    const bytes = CryptoJS.AES.decrypt(
+      decodeURIComponent(tokenend),
+      SECRET_kEY
+    );
     const decryptedDate = bytes.toString(CryptoJS.enc.Utf8);
-    const extractedDate = dayjs.utc(decryptedDate).format("YYYY-MM-DD"); 
-    
-    const today = new Date().toISOString().split('T')[0];  
+    const extractedDate = dayjs.utc(decryptedDate).format("YYYY-MM-DD");
 
-   
-    if (today < extractedDate) {  
-        setOpenError(true);
-        setErrorMessage(
-            `Reunión programada para el ${extractedDate}`
-        );
-        return;
-    } else if (today > extractedDate) {  
-        setOpenError(true);
-        setErrorMessage("Esta reunión ha caducado");
-        return;
-    } else {  
-        try {
-         
-            await client.join(appId, channel, token, uid);
-            await createLocalTracks();
-            await publishLocalTracks();
-            displayLocalVideo();
-            setInCall(true);
-        } catch (error) {
-            console.error("Error al unirse al canal:", error);
-            setOpenError(true);
-            setErrorMessage("Error al conectar con el canal.");
-        }
+    const today = new Date().toISOString().split("T")[0];
+
+    try {
+      await client.join(appId, channel, token, uid);
+      await createLocalTracks();
+      await publishLocalTracks();
+      displayLocalVideo();
+      setInCall(true);
+    } catch (error) {
+      console.error("Error al unirse al canal:", error);
+      setOpenError(true);
+      setErrorMessage("Error al conectar con el canal.");
     }
-}
-
+  }
 
   async function createLocalTracks() {
     localAudioTrackRef.current = await AgoraRTC.createMicrophoneAudioTrack();

@@ -200,7 +200,9 @@ const UpdateMedicalAdvice = () => {
       setLsCodigoMotivo(lsServerMotivo.data);
 
       const lsServerAtencion = await GetByIdAdvice(id);
+    
       if (lsServerAtencion.status === 200) {       
+        console.log("lsServerAtencion", lsServerAtencion.data);
         if (lsServerAtencion?.data && lsServerAtencion?.data?.channel) {
           setChannelCurrent({
             channel: lsServerAtencion?.data?.channel,

@@ -10,6 +10,8 @@ import {
   Box,
   FormControlLabel,
   Switch,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -75,6 +77,11 @@ import StickyActionBar from "components/StickyActionBar/StickyActionBar";
 import ExampleAudio from "./ExampleAudio";
 import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
 import { linkAgorapaciente } from "modules/Medicalcalendar/service-calendar/agora";
+import {
+  LocalizationProvider,
+  MobileDateTimePicker,
+} from "@mui/x-date-pickers";
+import InputDatePickerTime from "components/input/InputDatePickerTime";
 
 const validationSchema = yup.object().shape({
   idSubmotivo: yup.string().required(ValidationMessage.Requerido),
@@ -128,13 +135,22 @@ const MedicalAdvice = () => {
   const encodedData = searchParams.get("data");
   const extraParam = searchParams.get("extraParam");
 
+  let appId = searchParams.get("appId");
+  let channelurl = searchParams.get("channel");
+
+  console.log(channelurl);
+
   const data = useMemo(() => {
     return encodedData ? JSON.parse(decodeURIComponent(encodedData)) : null;
   }, [encodedData]);
 
+  console.log("data", data);
+
   const IdCalendario = useMemo(() => {
     return extraParam ? JSON.parse(decodeURIComponent(extraParam)) : null;
   }, [extraParam]);
+
+  console.log("data", IdCalendario);
 
   const [extenderDescripcion, setExtenderDescripcion] = useState(false);
   const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
@@ -350,7 +366,14 @@ const MedicalAdvice = () => {
     try {
       const urlpaciente = linkAgorapaciente(fechaCurrent, uniqueId);
 
-      if (state) {
+      if (state && channelurl) {
+        channel = channelurl;
+        const formatData = {
+          channel: channel,
+          fecha: fechaCurrent,
+        };
+        setChannelCurrent(formatData);
+      } else if (state) {
         channel = `rubikapp-${uniqueId}`;
         const formatData = {
           channel: channel,
@@ -360,6 +383,9 @@ const MedicalAdvice = () => {
       } else {
         const soloFecha1 = fechaCurrent.split("T")[0];
         const soloFecha2 = channelCurrent?.fecha.split("T")[0];
+
+        console.log("soloFecha1", soloFecha1);
+        console.log("soloFecha2", soloFecha2);
         if (soloFecha1 !== soloFecha2) {
           channelCurrent.fecha = fechaCurrent;
           channel = channelCurrent?.channel;
@@ -399,6 +425,8 @@ const MedicalAdvice = () => {
         state,
         channel
       );
+
+      console.log("DataToUpdate", DataToUpdate);
 
       const result = await SaveAdvice(DataToUpdate);
       if (result.status === 200) {
@@ -569,10 +597,21 @@ const MedicalAdvice = () => {
                   threshold={568}
                 >
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                       <FormProvider {...methods}>
                         <InputDatePicker
                           label="Fecha"
+                          name="fecha"
+                          disabled={disableField}
+                          defaultValue={data?.fecha ? data.fecha : new Date()}
+                        />
+                      </FormProvider>
+                    </Grid> */}
+
+                    <Grid item xs={6}>
+                      <FormProvider {...methods}>
+                        <InputDatePickerTime
+                          label="Fecha y hora"
                           name="fecha"
                           disabled={disableField}
                           defaultValue={data?.fecha ? data.fecha : new Date()}

@@ -27,6 +27,11 @@ export const Url = {
     UsuariosId: 'api/Usuarios/id',
     UsuariosEmail: 'api/Usuarios/email',
 
+    default:"api/CalendarioCitas",
+    getevents: 'api/CalendarioCitas/get-idmedico',
+
+   
+
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
 

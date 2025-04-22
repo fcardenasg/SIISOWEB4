@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { Url } from '../../../api/instances/AuthRoute';
+
 
 const getColor = (estado) => {
     switch (estado) {
@@ -14,9 +16,11 @@ const getColor = (estado) => {
 };
 
 export async function getEvents(filtercitas) {  
+
+
     
     try {
-        const response = await axios.post(`https://localhost:44347/api/CalendarioCitas/get-idmedico`,filtercitas,{
+        const response = await axios.post(`${Url.Base}${Url.getevents}`,filtercitas,{
             headers: {
                 "Content-Type": "application/json"
             }
@@ -55,7 +59,7 @@ export async function getEvents(filtercitas) {
 export async function addEvent(event) {
     console.log(event);
     try {
-        const response = await axios.post('https://localhost:44347/api/CalendarioCitas', event);      
+        const response = await axios.post(`${Url.Base}${Url.default}`, event);      
         return response.data;
     } catch (error) {
         throw error;
@@ -65,7 +69,7 @@ export async function addEvent(event) {
 export async function updateEvent(event) {
     console.log("datos para actualizar",event)
     try {
-        const response = await axios.put('https://localhost:44347/api/CalendarioCitas', event);
+        const response = await axios.put(`${Url.Base}${Url.default}`, event);
         return response.data;
     } catch (error) {       
         console.log(error)
@@ -75,7 +79,7 @@ export async function updateEvent(event) {
 
 export async function removeEvent(eventId) {
     try {
-        const response = await axios.delete(`https://localhost:44347/api/CalendarioCitas/${eventId}`);
+        const response = await axios.delete(`${Url.Base}${Url.default}/${eventId}`);
         return response.data;
     } catch (error) {
         throw error;
