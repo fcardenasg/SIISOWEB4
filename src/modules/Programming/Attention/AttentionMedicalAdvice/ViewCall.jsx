@@ -49,9 +49,14 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
   let channel = searchParams.get("channel");
   let tokenend = searchParams.get("tokenend");
 
-  let fechaactual;
+  console.log(channel)
+
+  let fechaactual; 
 
   if (channelCurrent?.channel) {
+    console.log("entro", channelCurrent.channel);
+    console.log("entro fecha", channelCurrent.fecha);
+
     appId = "24620e849c55400aad51c1da9141ac46";
     channel = channelCurrent.channel;
     fechaactual = channelCurrent.fecha;
@@ -85,15 +90,19 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
     let bytes;
     let decryptedDate;
     let expirationDate;
-    let today = dayjs().startOf("day");
+    let today = dayjs().startOf("day").startOf('day');
 
     if (channelCurrent && channelCurrent.fecha) {
-      expirationDate = dayjs.utc(channelCurrent.fecha);      
+      expirationDate = dayjs.utc(channelCurrent.fecha).startOf('day');      
     } else {
       bytes = CryptoJS.AES.decrypt(decodeURIComponent(tokenend), SECRET_kEY);
       decryptedDate = bytes.toString(CryptoJS.enc.Utf8);
-      expirationDate = dayjs.utc(decryptedDate);  
+      expirationDate = dayjs.utc(decryptedDate).startOf('day');  
     }
+
+    console.log(channelCurrent)
+    console.log(expirationDate)
+    console.log(today)
 
     if (today.isBefore(expirationDate)) {
       setOpenError(true);
@@ -105,7 +114,9 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
       setOpenError(true);
       setErrorMessage("Esta reunión ha caducado");
       return;
-    } else {     
+    } else {  
+      console.log("canal final=", channel);
+
       try {
         await client.join(appId, channel, token, uid);
         await createLocalTracks();
@@ -115,7 +126,7 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
       } catch (error) {
         console.error("Error al unirse al canal. verifique que tenga una reuinion programada:", error);
         setOpenError(true);
-        setErrorMessage("No se encontró una reunión programada. Verifique e intente nuevamente.");
+        setErrorMessage("Error al unirse, verifique que su camara este funcionando e intente nuevamente.");
       }
     }
   }
