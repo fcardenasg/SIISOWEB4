@@ -175,9 +175,9 @@ const UpdateMedicalAdvice = () => {
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      message: true, 
-      whatsapp: true, 
-      email: true, 
+      message: true,
+      whatsapp: true,
+      email: true,
     }
   });
 
@@ -237,7 +237,7 @@ const UpdateMedicalAdvice = () => {
       }
 
       setLsAtencion([{ id: 0 }]);
-    } catch (error) {}
+    } catch (error) { }
   }
 
   useEffect(() => {
@@ -275,7 +275,7 @@ const UpdateMedicalAdvice = () => {
       );
       setDataPDF(dataPDFTwo);
       //setDataPDF(`data:application/pdf;base64,${lsDataReport.data}`);
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleCallClick = () => {
@@ -301,7 +301,7 @@ const UpdateMedicalAdvice = () => {
 
         setLsSubmotivo(submotivo);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleClick = async (datos) => {
@@ -310,10 +310,10 @@ const UpdateMedicalAdvice = () => {
 
     const fechaSeleccionada = new Date(datos?.fecha);
 
- 
+
     const fechaAjustada = new Date(
       fechaSeleccionada.getTime() -
-        fechaSeleccionada.getTimezoneOffset() * 60000
+      fechaSeleccionada.getTimezoneOffset() * 60000
     );
     const urlpaciente = linkAgorapaciente(
       fechaCurrent,
@@ -328,38 +328,38 @@ const UpdateMedicalAdvice = () => {
     setChannelCurrent(formatData);
 
     const DataToUpdate = PutMedicalAdvice(
-        id,
-        documento,
-        datos.fecha,
-        lsMedicalAdvice.idRegistroAtencion,
-        DefaultData.ASESORIA_MEDICA,
-        lsEmployee.sede,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        textTipoAsesoria,
-        textMotivo,
-        datos.idSubmotivo,
-        undefined,
-        datos.observaciones,
-        datos.recomendaciones,
-        "",
-        undefined,
-        undefined,
-        undefined,
-        user?.nameuser,
-        undefined,
-         0,
-        urlpaciente ? urlpaciente : null,
-        datos.message ? datos.message : true,
-        datos.whatsapp ? datos.whatsapp : false,
-        datos.email ? datos.email : false,
-        false,
-        formatData?.channel
-      );   
+      id,
+      documento,
+      datos.fecha,
+      lsMedicalAdvice.idRegistroAtencion,
+      DefaultData.ASESORIA_MEDICA,
+      lsEmployee.sede,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      textTipoAsesoria,
+      textMotivo,
+      datos.idSubmotivo,
+      undefined,
+      datos.observaciones,
+      datos.recomendaciones,
+      "",
+      undefined,
+      undefined,
+      undefined,
+      user?.nameuser,
+      undefined,
+      0,
+      urlpaciente ? urlpaciente : null,
+      datos.message ? datos.message : true,
+      datos.whatsapp ? datos.whatsapp : false,
+      datos.email ? datos.email : false,
+      false,
+      formatData?.channel
+    );
 
-    try {    
+    try {
 
       const result = await SaveAdvice(DataToUpdate);
       if (result.status === 200) {
@@ -389,7 +389,7 @@ const UpdateMedicalAdvice = () => {
   return (
     <ValidateActionSkeleton
       idAccion={AccionMenu.actualizar}
-      idModulo={Modulo.asesoria_medica}
+      idModulo={Modulo.Asesoriamedica}
     >
       <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
       <MessageError

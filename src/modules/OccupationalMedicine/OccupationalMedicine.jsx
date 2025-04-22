@@ -1,48 +1,53 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
+    Tooltip,
     Typography,
-    Tooltip
+    useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
-import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import { NumeroDias } from 'components/helpers/Format';
-import ViewEmployee from 'components/views/ViewEmployee';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import InputText from 'components/input/InputText';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, AccionMenu, Modulo } from 'components/helpers/Enums';
 import UploadIcon from '@mui/icons-material/Upload';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import { NumeroDias } from 'components/helpers/Format';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import ViewEmployee from 'components/views/ViewEmployee';
 
+import ClearIcon from '@mui/icons-material/Clear';
+import DownloadIcon from '@mui/icons-material/Download';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { InsertOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
-import InputDatePicker from 'components/input/InputDatePicker';
+import Accordion from 'components/accordion/Accordion';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import ViewPDF from 'components/components/ViewPDF';
+import ControlModal from 'components/controllers/ControlModal';
+import InputDatePick from 'components/input/InputDatePick';
+import InputDatePicker from 'components/input/InputDatePicker';
 import InputOnChange from 'components/input/InputOnChange';
 import useAuth from 'hooks/useAuth';
-import ControlModal from 'components/controllers/ControlModal';
-import ViewPDF from 'components/components/ViewPDF';
-import InputDatePick from 'components/input/InputDatePick';
-import Accordion from 'components/accordion/Accordion';
-import DownloadIcon from '@mui/icons-material/Download';
-import ClearIcon from '@mui/icons-material/Clear';
 
 import {
-    IconUser, IconReportMedical, IconAlertTriangle,
-    IconClipboardText, IconReportSearch,
-    IconReport, IconStatusChange, IconReportAnalytics
+    IconAlertTriangle,
+    IconClipboardText,
+    IconReport,
+    IconReportAnalytics,
+    IconReportMedical,
+    IconReportSearch,
+    IconStatusChange,
+    IconUser
 } from '@tabler/icons';
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const OccupationalMedicine = () => {
     const { user } = useAuth();
@@ -361,7 +366,7 @@ const OccupationalMedicine = () => {
     };
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.medicina_laboral}>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Medicinalaboral}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -1422,7 +1427,7 @@ const OccupationalMedicine = () => {
 
                                     <Grid item xs={4} md={2} lg={1.3}>
                                         <Tooltip title="Descargar">
-                                            <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="info" size={matchesXS ? 'small' : 'large'} fullWidth onClick={downloadFileMin}>
+                                            <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="primary" size={matchesXS ? 'small' : 'large'} fullWidth onClick={downloadFileMin}>
                                                 <DownloadIcon fontSize="medium" />
                                             </Button>
                                         </Tooltip>

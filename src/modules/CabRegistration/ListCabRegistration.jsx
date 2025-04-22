@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
@@ -21,28 +21,29 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
+import { DeleteCabRegistration, GetAllCabRegistration } from 'api/clients/CabRegistrationClient';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-import { GetAllCabRegistration, DeleteCabRegistration } from 'api/clients/CabRegistrationClient';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import SearchIcon from '@mui/icons-material/Search';
 import { IconFileExport } from '@tabler/icons';
 import GenerateExcel from './GenerateExcel';
 
-import config from 'config';
 import Cargando from 'components/loading/Cargando';
+import config from 'config';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -191,11 +192,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Solicituddetaxi}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -359,10 +362,12 @@ const ListCabRegistration = () => {
                             </Grid>
 
                             <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/cabregistration/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Solicituddetaxi}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/cabregistration/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={5}>
@@ -494,12 +499,14 @@ const ListCabRegistration = () => {
                                                 </Typography>
                                             </TableCell>
 
-                                            <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/cabregistration/update/${row.idRegistroTaxi}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                            <TableCell align="center">
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Solicituddetaxi}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/cabregistration/update/${row.idRegistroTaxi}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

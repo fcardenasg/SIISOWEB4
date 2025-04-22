@@ -1,7 +1,5 @@
-import { Typography } from "@mui/material";
 import { GetSharePermission } from "api/clients/UserClient";
 import { AccionMenu } from "components/helpers/Enums";
-import Cargando from "components/loading/Cargando";
 import useAuth from "hooks/useAuth";
 import { useEffect, useState } from "react";
 
@@ -16,7 +14,7 @@ const ValidateActionSkeleton = ({ children, idModulo, idAccion }) => {
             const getAll = async () => {
                 try {
                     const model = {
-                        idUsuario: user.id,
+                        idUsuario: user?.id,
                         idModulo: idModulo
                     };
 
@@ -37,7 +35,7 @@ const ValidateActionSkeleton = ({ children, idModulo, idAccion }) => {
 
             getAll();
         }
-    }, [idModulo, user.id, idAccion]);
+    }, [idModulo, user?.id, idAccion]);
 
     if (loading) return null;
     if (error) return <div>{error}</div>;

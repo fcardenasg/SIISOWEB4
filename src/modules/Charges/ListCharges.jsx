@@ -33,7 +33,7 @@ import { IconFileExport } from '@tabler/icons';
 
 // Import de proyectos
 import { GetAllCharges, DeleteCharges } from 'api/clients/ChargesClient';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -46,6 +46,7 @@ import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import HowToRegSharpIcon from '@mui/icons-material/HowToRegSharp';
 import Cargando from 'components/loading/Cargando';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 // Mesa de Destino
 function descendingComparator(a, b, orderBy) {
@@ -196,11 +197,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Panoramadecargo}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -351,8 +354,6 @@ const ListCharges = () => {
 
     return (
         <MainCard title="Lista de Panorama de Cargos" content={false}>
-
-            {/* Aquí colocamos los iconos del grid... Copiar, Imprimir, Filtrar, Añadir */}
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -393,10 +394,12 @@ const ListCharges = () => {
                         </Tooltip>
 
                         {/* product add & dialog */}
-                        <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                            onClick={() => navigate("/charges/add")}>
-                            {TitleButton.Agregar}
-                        </Button>
+                        <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Panoramadecargo}>
+                            <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                onClick={() => navigate("/charges/add")}>
+                                {TitleButton.Agregar}
+                            </Button>
+                        </ValidateAction>
                     </Grid>
                 </Grid>
             </CardContent>
@@ -490,12 +493,14 @@ const ListCharges = () => {
                                                     {row.nameGES}{' '}
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/charges/update/${row.idCargo}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                            <TableCell align="center">
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Panoramadecargo}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/charges/update/${row.idCargo}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
 
                                                 <Tooltip title="Asignar Panorama de riesgos" onClick={() => navigate(`/panorama/add/${row.idCargo}`)}>
                                                     <IconButton size="large">

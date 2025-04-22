@@ -1,36 +1,35 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { ValidationMessage } from 'components/helpers/Enums';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import useAuth from 'hooks/useAuth';
-import ControlModal from 'components/controllers/ControlModal';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { FormatDate } from 'components/helpers/Format';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetByIdConceptofAptitude, InsertConceptofAptitude } from 'api/clients/ConceptofAptitudeClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import { GetAllByTipoCatalogo, GetAllBySubTipoCatalogo } from 'api/clients/CatalogClient';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { PostConceptofAptitude } from 'formatdata/ConceptofAptitudeForm';
-import SubCard from 'ui-component/cards/SubCard';
-import InputText from 'components/input/InputText';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import ViewEmployee from 'components/views/ViewEmployee';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportConceptofAptitude } from './ReportConceptofAptitude';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
+import ControlModal from 'components/controllers/ControlModal';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
 import SelectOnChange from 'components/input/SelectOnChange';
-
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PostConceptofAptitude } from 'formatdata/ConceptofAptitudeForm';
+import useAuth from 'hooks/useAuth';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
+import { generateReportConceptofAptitude } from './ReportConceptofAptitude';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 const validationSchema = yup.object().shape({
     idConceptoActitud: yup.string().required(`${ValidationMessage.Requerido}`),
 });
@@ -171,7 +170,7 @@ const ConceptofAptitude = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Conceptodeaptitud}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -278,7 +277,7 @@ const ConceptofAptitude = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment>
+        </ValidateActionSkeleton>
     );
 };
 

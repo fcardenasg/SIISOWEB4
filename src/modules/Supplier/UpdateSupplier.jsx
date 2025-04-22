@@ -21,11 +21,12 @@ import { UpdateSuppliers, GetByIdSupplier } from 'api/clients/SupplierClient';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputText from 'components/input/InputText';
 import InputSelect from 'components/input/InputSelect';
-import { TitleButton, CodCatalogo, Message, ValidationMessage } from 'components/helpers/Enums';
+import { TitleButton, CodCatalogo, Message, ValidationMessage, AccionMenu, Modulo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { FormatDate } from 'components/helpers/Format';
 import InputCheckBox from 'components/input/InputCheckBox';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 /* Validamos campos, los que sean necesarios */
 const validationSchema = yup.object().shape({
@@ -110,129 +111,131 @@ const UpdateSupplier = () => {
     };
 
     return (
-        <MainCard title="Actualizar proveedor">
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Proveedor}>
+            <MainCard title="Actualizar proveedor">
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            {supplier.length != 0 ? (
-                <Fragment>
-                    <FormProvider {...methods}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={supplier.codiProv}
-                                    fullWidth
-                                    disabled
-                                    name="codiProv"
-                                    label="Código"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.codiProv}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={supplier.nombProv}
-                                    fullWidth
-                                    name="nombProv"
-                                    label="Nombre"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.nombProv}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={supplier.teleProv}
-                                    fullWidth
-                                    name="teleProv"
-                                    label="Teléfono"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.teleProv}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={supplier.emaiProv}
-                                    fullWidth
-                                    name="emaiProv"
-                                    label="Email"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.emaiProv}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={supplier.contaProv}
-                                    fullWidth
-                                    name="contaProv"
-                                    label="Contacto"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.contaProv}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputSelect
-                                    name="ciudProv"
-                                    label="Ciudad"
-                                    defaultValue={supplier.ciudProv}
-                                    options={lsCiudad}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.ciudProv}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputSelect
-                                    name="idTipoProveedor"
-                                    label="Tipo Proveedor"
-                                    defaultValue={supplier.tipoProv}
-                                    options={lsSupplier}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.idTipoProveedor}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputText
-                                    defaultValue={supplier.direProv}
-                                    fullWidth
-                                    name="direProv"
-                                    label="Dirrección"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.direProv}
-                                />
-                            </Grid>
+                {supplier.length != 0 ? (
+                    <Fragment>
+                        <FormProvider {...methods}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={supplier.codiProv}
+                                        fullWidth
+                                        disabled
+                                        name="codiProv"
+                                        label="Código"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.codiProv}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={supplier.nombProv}
+                                        fullWidth
+                                        name="nombProv"
+                                        label="Nombre"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.nombProv}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={supplier.teleProv}
+                                        fullWidth
+                                        name="teleProv"
+                                        label="Teléfono"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.teleProv}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={supplier.emaiProv}
+                                        fullWidth
+                                        name="emaiProv"
+                                        label="Email"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.emaiProv}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={supplier.contaProv}
+                                        fullWidth
+                                        name="contaProv"
+                                        label="Contacto"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.contaProv}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputSelect
+                                        name="ciudProv"
+                                        label="Ciudad"
+                                        defaultValue={supplier.ciudProv}
+                                        options={lsCiudad}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.ciudProv}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputSelect
+                                        name="idTipoProveedor"
+                                        label="Tipo Proveedor"
+                                        defaultValue={supplier.tipoProv}
+                                        options={lsSupplier}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoProveedor}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={supplier.direProv}
+                                        fullWidth
+                                        name="direProv"
+                                        label="Dirrección"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.direProv}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <InputCheckBox
-                                    label="¿Es un proveedor activo para campaña?"
-                                    name="estadoCampania"
-                                    size={30}
-                                    defaultValue={supplier.estadoCampania}
-                                />
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputCheckBox
+                                        label="¿Es un proveedor activo para campaña?"
+                                        name="estadoCampania"
+                                        size={30}
+                                        defaultValue={supplier.estadoCampania}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </FormProvider>
+
+                        <Grid item xs={12} sx={{ pt: 4 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/supplier/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </FormProvider>
-
-                    <Grid item xs={12} sx={{ pt: 4 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Actualizar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/supplier/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Fragment>
-            ) : <Cargando />}
-        </MainCard>
+                    </Fragment>
+                ) : <Cargando />}
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

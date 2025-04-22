@@ -89,9 +89,9 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                     setLsCiudad(resultCiudad);
                 }
 
-                const lsServerProveedor = await GetAllSupplier(0, 0);
+                const lsServerProveedor = await GetAllSupplier();
                 if (lsServerProveedor.status === 200) {
-                    setLsProveedor(lsServerProveedor.data.entities);
+                    setLsProveedor(lsServerProveedor.data);
                 }
 
                 const lsServerEstudioParaclinico2 = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTUDIO_EXAMEN_PARACLINICOS);
@@ -228,7 +228,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                                             <TableCell>{new Date(row.fechaRegistro).toLocaleString()}</TableCell>
 
                                             <TableCell>
-                                                <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.detalle_ordenes}>
+                                                <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Detalleordenes}>
                                                     <Tooltip title="Eliminar" onClick={() => handleDelete(row.id)}>
                                                         <IconButton color="error" size="small">
                                                             <HighlightOffIcon sx={{ fontSize: '2rem' }} />
@@ -346,7 +346,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                         </Transitions>
 
                         {!addItemClickedEmpresa &&
-                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.detalle_ordenes}>
+                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Detalleordenes}>
                                 <Grid item sx={{ pl: 2, pt: 3 }}>
                                     <Button disabled={lsEmployee.length === 0 ? true : false} variant="text" onClick={() => setAddItemClickedEmpresa(true)}>
                                         + Agregar Paraclinico

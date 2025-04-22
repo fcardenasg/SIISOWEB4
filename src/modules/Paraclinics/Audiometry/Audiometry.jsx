@@ -1,44 +1,44 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import ViewEmployee from 'components/views/ViewEmployee';
-import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import InputCheckBox from 'components/input/InputCheckBox';
-import InputDatePicker from 'components/input/InputDatePicker';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
+import InputCheckBox from 'components/input/InputCheckBox';
+import InputDatePicker from 'components/input/InputDatePicker';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
-import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { FormatDate } from 'components/helpers/Format'
-import InputText from 'components/input/InputText';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue, ValidationMessage } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { PostParaclinics } from 'formatdata/ParaclinicsForm';
-import { InsertParaclinics, GetByIdParaclinics } from 'api/clients/ParaclinicsClient';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
-import Cargando from 'components/loading/Cargando';
-import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
-import InputOnChange from 'components/input/InputOnChange';
-import { generateReport } from './ReporteAudiometry';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetByIdParaclinics, InsertParaclinics } from 'api/clients/ParaclinicsClient';
+import { GetAllSupplier } from 'api/clients/SupplierClient';
 import { GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import { PostParaclinics } from 'formatdata/ParaclinicsForm';
+import useAuth from 'hooks/useAuth';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { generateReport } from './ReporteAudiometry';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idMotivo: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -203,8 +203,8 @@ const Audiometry = () => {
             }));
             setLsConducta(resultConducta);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -267,8 +267,8 @@ const Audiometry = () => {
     };
 
     return (
-        <MainCard title="Registrar Audiometría">
-            <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Audiometria}>
+            <MainCard title="Registrar Audiometría">
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -768,8 +768,8 @@ const Audiometry = () => {
                         </SubCard>
                     </Grid>
                 </Grid>
-            </Fragment>
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

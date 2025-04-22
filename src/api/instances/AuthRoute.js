@@ -248,6 +248,10 @@ export const Url = {
     Plantilla: 'api/Plantilla',
     PlantillaId: 'api/Plantilla/id',
 
+    ParametrizacionProveedor: 'api/ParametrizacionProveedor',
+    ParametrizacionProveedorId: 'api/ParametrizacionProveedor/id',
+    ParametrizacionProveedorCiudad: 'api/ParametrizacionProveedor/combo-ciudad',
+
     Items: 'api/Item',
     ItemsId: 'api/Item/id',
     ItemsGetAllByAtencion: 'api/Item/GetAllByAtencion',

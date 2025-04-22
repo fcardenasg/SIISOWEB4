@@ -80,7 +80,7 @@ export const SubRow = ({ title, getAll, diferen, getSumaRiesgo, onClickDelete, r
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <Tooltip title="Agregar" onClick={() => handleClick(historyRow.id)}>
-                                                    <IconButton color="info" size="small">
+                                                    <IconButton color="primary" size="small">
                                                         <AddCircleOutlineIcon sx={{ fontSize: '2rem' }} />
                                                     </IconButton>
                                                 </Tooltip>

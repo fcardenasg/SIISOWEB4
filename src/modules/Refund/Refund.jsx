@@ -278,7 +278,7 @@ const Refund = () => {
     };
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.reintegro}>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Reintegro}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

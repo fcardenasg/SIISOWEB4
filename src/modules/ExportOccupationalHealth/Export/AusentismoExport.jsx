@@ -56,7 +56,7 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

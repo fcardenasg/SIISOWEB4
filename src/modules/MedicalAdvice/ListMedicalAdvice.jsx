@@ -191,7 +191,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
 
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.asesoria_medica}>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Asesoriamedica}>
                 <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                     <IconButton size="large">
                         <DeleteIcon fontSize="small" />
@@ -350,7 +350,7 @@ const ListMedicalAdvice = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.asesoria_medica}>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Asesoriamedica}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                         onClick={() => navigate("/medicaladvice/add")}>
                                         {TitleButton.Agregar}
@@ -502,8 +502,8 @@ const ListMedicalAdvice = () => {
                                                 </Typography>
                                             </TableCell>
 
-                                            <TableCell align="center" /* sx={{ pr: 3 }} */>
-                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.asesoria_medica}>
+                                            <TableCell align="center">
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Asesoriamedica}>
                                                     <Tooltip title="Actualizar" onClick={() => navigate(`/medicaladvice/update/${row.id}`)}>
                                                         <IconButton size="large">
                                                             <EditTwoToneIcon sx={{ fontSize: '1rem' }} />

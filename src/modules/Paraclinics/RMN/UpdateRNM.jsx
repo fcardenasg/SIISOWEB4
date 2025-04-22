@@ -18,7 +18,7 @@ import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -31,6 +31,7 @@ import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateRNM = () => {
     const { id } = useParams();
@@ -132,8 +133,8 @@ const UpdateRNM = () => {
             }));
             setLsConclusion(resultConclusion);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -179,11 +180,11 @@ const UpdateRNM = () => {
     setTimeout(() => {
         if (lsRnm.length !== 0)
             setTimeWait(true);
-    }, 2500);
+    }, 500);
 
     return (
-        <MainCard title="Actualizar RNM">
-            <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.RNM}>
+            <MainCard title={<>Actualizar RNM</>}>
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -336,8 +337,8 @@ const UpdateRNM = () => {
                         </Grid>
                     </Grid> : <Cargando />
                 }
-            </Fragment>
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

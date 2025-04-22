@@ -23,7 +23,7 @@ const ViewPDF = ({ id }) => {
         if (lsData.length != 0) {
             setTimeWait(true);
         }
-    }, 1000);
+    }, 500);
 
     return (
         <Grid container spacing={3}>

@@ -113,7 +113,7 @@ const ListReplay = ({ idVentanilla, getAllList, options = 0, monitoreo = false }
                                                             <AnimateButton>
                                                                 <Tooltip title="Responder" onClick={() => { setIdVentanillaDetalle(row.id); setOpenModalReplay(true); }}>
                                                                     <IconButton size="small">
-                                                                        <ReplyIcon color="info" sx={{ fontSize: '1.6rem' }} />
+                                                                        <ReplyIcon color="primary" sx={{ fontSize: '1.6rem' }} />
                                                                     </IconButton>
                                                                 </Tooltip>
                                                             </AnimateButton>

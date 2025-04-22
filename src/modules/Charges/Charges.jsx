@@ -1,30 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
-import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import useAuth from 'hooks/useAuth';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from "yup";
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import { PostCargo } from 'formatdata/CargoForm';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { CodCatalogo } from 'components/helpers/Enums';
-import InputSelect from 'components/input/InputSelect';
-import { SNACKBAR_OPEN } from 'store/actions';
 import { InsertCharges } from 'api/clients/ChargesClient';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
-import { Message, TitleButton } from 'components/helpers/Enums';
+import { PostCargo } from 'formatdata/CargoForm';
+import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const Charges = () => {
     const { user } = useAuth();
@@ -122,104 +120,106 @@ const Charges = () => {
     };
 
     return (
-        <MainCard title="Registrar Cargos">
-            <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="sede"
-                            label="Sede"
-                            defaultValue=""
-                            options={lsSede}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="rosterPosition"
-                            label="Cargo"
-                            defaultValue=""
-                            options={lsCargo}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="area"
-                            label="Área"
-                            defaultValue=""
-                            options={lsArea}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="subArea"
-                            label="Subarea"
-                            defaultValue=""
-                            options={lsSubarea}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="idGES"
-                            label="GES"
-                            defaultValue=""
-                            options={lsGes}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            name="descripcionCargo"
-                            label="Descripción"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors}
-                        />
-                    </FormProvider>
-                </Grid>
-            </Grid>
-
-            <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
-                <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                        <AnimateButton>
-                            <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                {TitleButton.Guardar}
-                            </Button>
-                        </AnimateButton>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Panoramadecargo}>
+            <MainCard title="Registrar Cargos">
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="sede"
+                                label="Sede"
+                                defaultValue=""
+                                options={lsSede}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
-                    <Grid item xs={6}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="rosterPosition"
+                                label="Cargo"
+                                defaultValue=""
+                                options={lsCargo}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="area"
+                                label="Área"
+                                defaultValue=""
+                                options={lsArea}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="subArea"
+                                label="Subarea"
+                                defaultValue=""
+                                options={lsSubarea}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="idGES"
+                                label="GES"
+                                defaultValue=""
+                                options={lsGes}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                name="descripcionCargo"
+                                label="Descripción"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors}
+                            />
+                        </FormProvider>
                     </Grid>
                 </Grid>
-            </Grid>
-        </MainCard>
+
+                <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <AnimateButton>
+                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                    {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

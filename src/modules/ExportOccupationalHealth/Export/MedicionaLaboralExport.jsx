@@ -56,7 +56,7 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

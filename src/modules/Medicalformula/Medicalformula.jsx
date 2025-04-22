@@ -26,7 +26,7 @@ import useAuth from 'hooks/useAuth';
 import { generateReport } from '../Programming/Attention/OccupationalExamination/MedicalOrder/Report';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
 import SubCard from 'ui-component/cards/SubCard';
@@ -42,6 +42,7 @@ import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import { FormatDate } from 'components/helpers/Format';
 import InputOnChange from 'components/input/InputOnChange';
 import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -194,7 +195,7 @@ const MedicalFormula = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Recetario}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -368,7 +369,7 @@ const MedicalFormula = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

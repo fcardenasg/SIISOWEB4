@@ -170,7 +170,7 @@ const UpdatePsychologicalCounseling = () => {
     }, 1500);
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.asesoria_psicologica}>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Asesoriapsicologica}>
             <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

@@ -1,21 +1,22 @@
-import { Button, Grid, Typography, useMediaQuery } from "@mui/material";
-import SubCard from "ui-component/cards/SubCard";
+import { Button, Grid, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from "react-router-dom";
+import InputText from "components/input/InputText";
 import useAuth from "hooks/useAuth";
 import { FormProvider, useForm } from "react-hook-form";
-import InputText from "components/input/InputText";
+import { useNavigate } from "react-router-dom";
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Message, TitleButton, ValidationMessage } from "components/helpers/Enums";
-import AnimateButton from "ui-component/extended/AnimateButton";
-import { useState } from "react";
-import { MessageError, MessageSuccess } from "components/alert/AlertAll";
-import InputSelect from "components/input/InputSelect";
-import { ArrayMeses } from "components/Arrays";
-import ListAnio from "./ListAnio";
 import { GetAllHeadcountByAnio, InsertHeadcount } from "api/clients/HeadcountClient";
+import { MessageError, MessageSuccess } from "components/alert/AlertAll";
+import { ArrayMeses } from "components/Arrays";
+import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from "components/helpers/Enums";
+import InputSelect from "components/input/InputSelect";
+import { useState } from "react";
+import MainCard from "ui-component/cards/MainCard";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import * as yup from 'yup';
+import ListAnio from "./ListAnio";
+import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
 
 const validationSchema = yup.object().shape({
     mes: yup.string().required(ValidationMessage.Requerido),
@@ -76,71 +77,73 @@ const Headcount = () => {
     };
 
     return (
-        <SubCard title={<Typography variant="h4">Registrar Headcount</Typography>}>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.HeadCount}>
+            <MainCard title="Registrar Headcount">
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6} lg={3}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            type="number"
-                            name="anio"
-                            label="Año"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.anio}
-                        />
-                    </FormProvider>
-                </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} lg={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                type="number"
+                                name="anio"
+                                label="Año"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.anio}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={3}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="mes"
-                            label="Mes"
-                            defaultValue=""
-                            options={ArrayMeses}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.mes}
-                        />
-                    </FormProvider>
-                </Grid>
+                    <Grid item xs={12} md={6} lg={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="mes"
+                                label="Mes"
+                                defaultValue=""
+                                options={ArrayMeses}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.mes}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={3}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            type="number"
-                            name="cantidad"
-                            label="Cantidad"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.cantidad}
-                        />
-                    </FormProvider>
-                </Grid>
+                    <Grid item xs={12} md={6} lg={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                type="number"
+                                name="cantidad"
+                                label="Cantidad"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.cantidad}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                <Grid item xs={6} md={4} lg={1.5}>
-                    <AnimateButton>
-                        <Button size={matchesXS ? 'small' : 'large'} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                            {TitleButton.Guardar}
-                        </Button>
-                    </AnimateButton>
-                </Grid>
+                    <Grid item xs={6} md={4} lg={1.5}>
+                        <AnimateButton>
+                            <Button size={matchesXS ? 'small' : 'large'} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                {TitleButton.Guardar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
 
-                <Grid item xs={6} md={4} lg={1.5}>
-                    <AnimateButton>
-                        <Button size={matchesXS ? 'small' : 'large'} variant="outlined" fullWidth onClick={() => navigate("/headcount/list")}>
-                            {TitleButton.Cancelar}
-                        </Button>
-                    </AnimateButton>
-                </Grid>
+                    <Grid item xs={6} md={4} lg={1.5}>
+                        <AnimateButton>
+                            <Button size={matchesXS ? 'small' : 'large'} variant="outlined" fullWidth onClick={() => navigate("/headcount/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
 
-                <Grid item xs={12}>
-                    {idHeadcount === 0 ? null : <ListAnio idAnio={idHeadcount} getAll={getAll} setLsHeadcount={setLsHeadcount} lsHeadcount={lsHeadcount} rows={rows} />}
+                    <Grid item xs={12}>
+                        {idHeadcount === 0 ? null : <ListAnio idAnio={idHeadcount} getAll={getAll} setLsHeadcount={setLsHeadcount} lsHeadcount={lsHeadcount} rows={rows} />}
+                    </Grid>
                 </Grid>
-            </Grid>
-        </SubCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 }
 

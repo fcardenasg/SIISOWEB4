@@ -121,7 +121,7 @@ const PersonalData = ({ lsEmployee = [], getDataAttention, atencion }) => {
                                 </Typography>
 
                                 <Typography align="left" variant="h6">
-                                    Genero: {lsEmployee.nameGenero}
+                                    Sexo: {lsEmployee.nameGenero}
                                 </Typography>
 
                                 <Typography align="left" variant="h6">

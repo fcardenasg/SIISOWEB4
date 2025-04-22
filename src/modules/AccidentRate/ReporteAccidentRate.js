@@ -81,7 +81,7 @@ function generateReporteAccidentRate(doc = new jsPDF(), lsDataReport = [], lsDat
 
     doc.text('Nro. Documento:', 42, 45);
     doc.text('Cargo:', 42, 50);
-    doc.text('Genero:', 42, 55);
+    doc.text('Sexo:', 42, 55);
     doc.text('EPS:', 42, 60);
     doc.text('Sede:', 42, 65);
     doc.text('Celular:', 42, 70);

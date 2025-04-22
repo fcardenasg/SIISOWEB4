@@ -31,7 +31,7 @@ import { IconFileExport } from '@tabler/icons';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 
-import { TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -39,6 +39,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -175,16 +176,18 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrición
+
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.CIE10}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -352,10 +355,12 @@ const ListCIE11 = () => {
                             </Grid>
 
                             <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/cie11/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.CIE10}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/cie11/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={5}>
@@ -459,12 +464,14 @@ const ListCIE11 = () => {
                                                 </Typography>
                                             </TableCell>
 
-                                            <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/cie11/update/${row.id}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                            <TableCell align="center">
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.CIE10}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/cie11/update/${row.id}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

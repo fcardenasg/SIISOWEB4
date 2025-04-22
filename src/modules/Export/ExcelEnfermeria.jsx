@@ -127,7 +127,7 @@ const ExcelEnfermeria = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaF
                                 <ExcelColumn label="Fecha De Contrato" value={(fe) => new Date(fe.fechaContrato)} />
                                 <ExcelColumn label="Roster Position" value="nameRosterPosition" />
                                 <ExcelColumn label="General Position" value="nameGeneralPosition" />
-                                <ExcelColumn label="Genero" value="nameGenero" />
+                                <ExcelColumn label="Sexo" value="nameGenero" />
                                 <ExcelColumn label="Sede" value="nameSede" />
                                 <ExcelColumn label="Celular" value="celular" />
                                 <ExcelColumn label="Email" value="email" />

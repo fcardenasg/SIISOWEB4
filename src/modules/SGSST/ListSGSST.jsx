@@ -28,7 +28,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import ControlModal from 'components/controllers/ControlModal';
 
@@ -44,6 +44,7 @@ import { DeleteSGSST, GetAllSGSST } from 'api/clients/SGSST';
 import { ViewFormat } from 'components/helpers/Format';
 import ViewPDF from './ViewPDF';
 import Cargando from 'components/loading/Cargando';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -185,11 +186,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.SGSST}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -326,7 +329,7 @@ const ListSGSST = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsSGSST.length) : 0;
 
     return (
-        <MainCard title="Lista de SG-SST" content={false}>
+        <MainCard title={<>Lista de SG-SST</>} content={false}>
             <ControlModal
                 title="DOCUMENTO DE SOPORTE SG-SST"
                 open={openViewPDF}
@@ -377,10 +380,12 @@ const ListSGSST = () => {
                             </Grid>
 
                             <Grid item xs={10}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/sg-sst/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.SGSST}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/sg-sst/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -485,11 +490,13 @@ const ListSGSST = () => {
                                                     </IconButton>
                                                 </Tooltip>
 
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/sg-sst/update/${row.id}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.SGSST}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/sg-sst/update/${row.id}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

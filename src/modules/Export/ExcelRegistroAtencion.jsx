@@ -48,7 +48,7 @@ const ExcelRegistroAtencion = ({ setSede, sede, setFechaInicio, fechaInicio, set
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

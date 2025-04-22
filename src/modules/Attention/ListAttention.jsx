@@ -31,7 +31,7 @@ import swal from 'sweetalert';
 import { visuallyHidden } from '@mui/utils';
 import { MessageDelete, MessageError, ParamDelete } from 'components/alert/AlertAll';
 import { ViewFormat } from 'components/helpers/Format';
-import { TitleButton, Message } from 'components/helpers/Enums';
+import { TitleButton, Message, AccionMenu, Modulo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import { GetAllAttention, DeleteAttention, GetExcelAttention } from 'api/clients/AttentionClient';
 
@@ -45,6 +45,7 @@ import ViewPDF from 'components/components/ViewPDF';
 import config from 'config';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import { ParametrosExcel } from 'formatdata/ParametrosForm';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -194,11 +195,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Atencion}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -341,7 +344,7 @@ const ListAttention = () => {
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {
@@ -404,12 +407,14 @@ const ListAttention = () => {
                                 </Tooltip>
                             </Grid>
 
-                            <Grid item xs={5}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/attention/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
-                            </Grid>
+                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Atencion}>
+                                <Grid item xs={5}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/attention/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </Grid>
+                            </ValidateAction>
 
                             <Grid item xs={5}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
@@ -423,7 +428,6 @@ const ListAttention = () => {
             </CardContent>
 
             <TableContainer>
-                {/* AQUÍ SE HACE PRELOAD */}
                 {lsAttention.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
@@ -541,11 +545,13 @@ const ListAttention = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/attention/update/${row.id}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Atencion}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/attention/update/${row.id}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

@@ -1,46 +1,47 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
+    Divider,
     Grid,
     useMediaQuery,
-    Divider,
 } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import UserCountCard from 'components/components/UserCountCard';
-import ViewEmployee from 'components/views/ViewEmployee';
-import useAuth from 'hooks/useAuth';
-import InputOnChange from 'components/input/InputOnChange';
-import InputText from 'components/input/InputText';
-import InputCheckBox from 'components/input/InputCheckBox';
-import SelectOnChange from 'components/input/SelectOnChange';
-import InputDatePicker from 'components/input/InputDatePicker';
-import DetailedIcon from 'components/controllers/DetailedIcon';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import InputCheckBox from 'components/input/InputCheckBox';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
 import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton'
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetByIdAlcoholAndDrugTesting, UpdateAlcoholAndDrugTestings } from 'api/clients/AlcoholAndDrugTestingClient';
-import { PutAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
-import { FormatDate } from 'components/helpers/Format';
-import ViewPDF from 'components/components/ViewPDF';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetByMail } from 'api/clients/UserClient';
-import { generateReportAlcoholtesting } from '../Programming/Attention/Report/Alcoholtesting';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import ViewPDF from 'components/components/ViewPDF';
+import { FormatDate } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
+import { PutAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
+import { generateReportAlcoholtesting } from '../Programming/Attention/Report/Alcoholtesting';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -239,10 +240,10 @@ const UpdateAlcoholAndDrugTesting = () => {
     setTimeout(() => {
         if (lsAlcoholAndDrugTesting.length !== 0)
             setTimeWait(true);
-    }, 2000);
+    }, 500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Pruebadealcoholydroga}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -692,7 +693,7 @@ const UpdateAlcoholAndDrugTesting = () => {
                 </Grid> : <Cargando />
 
             }
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

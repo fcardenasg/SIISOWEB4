@@ -49,7 +49,7 @@ const OrderEPPExcel = ({ setSede, sede, setFechaInicio, fechaInicio, setFechaFin
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

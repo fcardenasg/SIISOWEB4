@@ -202,7 +202,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick, onClickPrint }) => (
                     </IconButton>
                 </Tooltip>
 
-                <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.ordenes}>
+                <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Ordenesindividuales}>
                     <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                         <IconButton size="large">
                             <DeleteIcon fontSize="small" />
@@ -387,7 +387,7 @@ const ListOrdersIndividual = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.ordenes}>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Ordenesindividuales}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                         onClick={() => navigate("/orders-individual/add")}>
                                         {TitleButton.Agregar}
@@ -529,7 +529,7 @@ const ListOrdersIndividual = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.ordenes}>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Ordenesindividuales}>
                                                     <Tooltip title="Actualizar" onClick={() => navigate(`/orders-individual/update/${row.id}`)}>
                                                         <IconButton size="large">
                                                             <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />

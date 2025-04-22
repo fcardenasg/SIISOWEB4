@@ -28,7 +28,7 @@ import { visuallyHidden } from '@mui/utils';
 import { DeleteParaclinics, GetAllByTypeParaclinics } from 'api/clients/ParaclinicsClient';
 import swal from 'sweetalert';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import { TitleButton, DefaultValue } from 'components/helpers/Enums';
+import { TitleButton, DefaultValue, AccionMenu, Modulo } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -37,6 +37,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import { ViewFormat } from 'components/helpers/Format';
 import Cargando from 'components/loading/Cargando';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -192,11 +193,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                <IconButton size="large">
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.RNM}>
+                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                    <IconButton size="large">
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </ValidateAction>
         )}
     </Toolbar>
 );
@@ -328,8 +331,9 @@ const ListRNM = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rnm.length) : 0;
 
     return (
-        <MainCard title="Lista de RNM" content={false}>
+        <MainCard title={<>Lista de RNM</>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -351,10 +355,12 @@ const ListRNM = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/paraclinics/rnm/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.RNM}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/paraclinics/rnm/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={6}>
@@ -495,12 +501,14 @@ const ListRNM = () => {
                                                 </Typography>
                                             </TableCell>
 
-                                            <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/rnm/update/${row.id}`)}>
-                                                    <IconButton size="large">
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                            <TableCell align="center">
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.RNM}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/paraclinics/rnm/update/${row.id}`)}>
+                                                        <IconButton size="large">
+                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ValidateAction>
                                             </TableCell>
                                         </TableRow>
                                     );

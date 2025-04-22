@@ -223,7 +223,7 @@ const MedicalAdvice = () => {
       }
 
       setLsAtencion([{ id: 0 }]);
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const handleDocumento = async (event) => {
@@ -249,7 +249,7 @@ const MedicalAdvice = () => {
           }
         }
       } else setLsEmployee([]);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -314,7 +314,7 @@ const MedicalAdvice = () => {
         extenderDescripcion
       );
       setDataPDF(dataPDFTwo);
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleCallClick = () => {
@@ -340,7 +340,7 @@ const MedicalAdvice = () => {
 
         setLsSubmotivo(submotivo);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleClickClear = async () => {
@@ -360,7 +360,7 @@ const MedicalAdvice = () => {
     const fechaSeleccionada = new Date(datos?.fecha);
     const fechaAjustada = new Date(
       fechaSeleccionada.getTime() -
-        fechaSeleccionada.getTimezoneOffset() * 60000
+      fechaSeleccionada.getTimezoneOffset() * 60000
     );
 
     try {
@@ -453,7 +453,7 @@ const MedicalAdvice = () => {
   return (
     <ValidateActionSkeleton
       idAccion={AccionMenu.agregar}
-      idModulo={Modulo.asesoria_medica}
+      idModulo={Modulo.Asesoriamedica}
     >
       <MessageSuccess
         open={openSuccess}

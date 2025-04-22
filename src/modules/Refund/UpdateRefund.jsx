@@ -324,10 +324,10 @@ const Refund = () => {
     setTimeout(() => {
         if (lsRefund.length !== 0)
             setTimeWait(true);
-    }, 2000);
+    }, 500);
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.reintegro}>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Reintegro}>
             <MessageUpdate message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

@@ -19,9 +19,10 @@ import Cargando from 'components/loading/Cargando';
 import InputSelect from 'components/input/InputSelect';
 import { UpdateCIE11s, GetByIdCIE11 } from 'api/clients/CIE11Client';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const lsTipoCie = [{ value: 'CIE10', label: 'CIE10' }, { value: 'CIE11', label: 'CIE11' }];
 
@@ -80,74 +81,76 @@ const UpdateCIE11 = () => {
     };
 
     return (
-        <MainCard title="Actualizar CIE10 / CIE11">
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.CIE10}>
+            <MainCard title="Actualizar CIE10 / CIE11">
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            {datamodel !== null ?
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={4} lg={2}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={datamodel?.id}
-                                fullWidth
-                                name="id"
-                                label="ID"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                {datamodel !== null ?
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={4} lg={2}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={datamodel?.id}
+                                    fullWidth
+                                    name="id"
+                                    label="ID"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
 
-                    <Grid item xs={12} md={4} lg={8}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={datamodel?.dx}
-                                fullWidth
-                                name="dx"
-                                label="Nombre"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                        <Grid item xs={12} md={4} lg={8}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={datamodel?.dx}
+                                    fullWidth
+                                    name="dx"
+                                    label="Nombre"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
 
-                    <Grid item xs={12} md={4} lg={2}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="tipoCie"
-                                label="Tipo CIE"
-                                defaultValue={datamodel?.tipoCie}
-                                options={lsTipoCie}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                        <Grid item xs={12} md={4} lg={2}>
+                            <FormProvider {...methods}>
+                                <InputSelect
+                                    name="tipoCie"
+                                    label="Tipo CIE"
+                                    defaultValue={datamodel?.tipoCie}
+                                    options={lsTipoCie}
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
 
-                    <Grid item xs={12} sx={{ mt: 2 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/cie11/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/cie11/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-                : <Cargando />
-            }
-        </MainCard>
+                    : <Cargando />
+                }
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

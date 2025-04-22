@@ -1,43 +1,44 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
+    Divider,
     Grid,
     useMediaQuery,
-    Divider,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import { GetByIdAlcoholAndDrugTesting, InsertAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetByMail } from 'api/clients/UserClient';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import UserCountCard from 'components/components/UserCountCard';
-import ViewEmployee from 'components/views/ViewEmployee';
-import useAuth from 'hooks/useAuth';
-import InputOnChange from 'components/input/InputOnChange';
-import InputText from 'components/input/InputText';
-import InputCheckBox from 'components/input/InputCheckBox';
-import SelectOnChange from 'components/input/SelectOnChange';
-import InputDatePicker from 'components/input/InputDatePicker';
-import DetailedIcon from 'components/controllers/DetailedIcon';
+import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import InputSelect from 'components/input/InputSelect';
-import { CodCatalogo, Message, TitleButton, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton'
-import SubCard from 'ui-component/cards/SubCard';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { GetByIdAlcoholAndDrugTesting, InsertAlcoholAndDrugTesting } from 'api/clients/AlcoholAndDrugTestingClient';
-import { PostAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import { FormatDate } from 'components/helpers/Format';
-import ViewPDF from 'components/components/ViewPDF';
-import { GetByMail } from 'api/clients/UserClient';
+import InputCheckBox from 'components/input/InputCheckBox';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { PostAlcoholAndDrugTesting } from 'formatdata/AlcoholAndDrugTestingForm';
+import useAuth from 'hooks/useAuth';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReportAlcoholtesting } from '../Programming/Attention/Report/Alcoholtesting';
 
 const DetailIcons = [
@@ -234,7 +235,7 @@ const AlcoholAndDrugTesting = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Pruebadealcoholydroga}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -680,7 +681,7 @@ const AlcoholAndDrugTesting = () => {
                     </SubCard>
                 </Grid>
             </Grid>
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

@@ -21,7 +21,7 @@ import InputText from 'components/input/InputText';
 
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, Modulo, AccionMenu } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import useAuth from 'hooks/useAuth';
@@ -35,6 +35,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import InputOnChange from 'components/input/InputOnChange';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const Visiometrics = () => {
     const { user } = useAuth();
@@ -191,8 +192,8 @@ const Visiometrics = () => {
             }));
             setLsControl(resultControl);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -241,8 +242,8 @@ const Visiometrics = () => {
     };
 
     return (
-        <MainCard title="Registrar Visiometria">
-            <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Visiometria}>
+            <MainCard title="Registrar Visiometria">
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -526,8 +527,8 @@ const Visiometrics = () => {
                         </SubCard>
                     </Grid>
                 </Grid>
-            </Fragment>
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

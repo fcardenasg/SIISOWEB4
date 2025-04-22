@@ -8,7 +8,7 @@ import InputText from "components/input/InputText";
 
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Message, TitleButton, ValidationMessage } from "components/helpers/Enums";
+import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from "components/helpers/Enums";
 import AnimateButton from "ui-component/extended/AnimateButton";
 import { Fragment, useState } from "react";
 import { MessageError, MessageSuccess } from "components/alert/AlertAll";
@@ -17,6 +17,7 @@ import { ArrayMeses } from "components/Arrays";
 import ListAnio from "./ListAnio";
 import { GetAllHeadcountByAnio, InsertHeadcount } from "api/clients/HeadcountClient";
 import { useEffect } from "react";
+import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
 
 const validationSchema = yup.object().shape({
     mes: yup.string().required(ValidationMessage.Requerido),
@@ -79,71 +80,73 @@ const UpdateHeadcount = () => {
     };
 
     return (
-        <SubCard title={<Typography variant="h4">Actualizar Headcount - Año {id}</Typography>}>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.HeadCount}>
+            <SubCard title={<Typography variant="h4">Actualizar headcount - año {id}</Typography>}>
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6} lg={3}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue={id}
-                            type="number"
-                            name="anio"
-                            label="Año"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.anio}
-                        />
-                    </FormProvider>
-                </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} lg={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue={id}
+                                type="number"
+                                name="anio"
+                                label="Año"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.anio}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={3}>
-                    <FormProvider {...methods}>
-                        <InputSelect
-                            name="mes"
-                            label="Mes"
-                            defaultValue=""
-                            options={ArrayMeses}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.mes}
-                        />
-                    </FormProvider>
-                </Grid>
+                    <Grid item xs={12} md={6} lg={3}>
+                        <FormProvider {...methods}>
+                            <InputSelect
+                                name="mes"
+                                label="Mes"
+                                defaultValue=""
+                                options={ArrayMeses}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.mes}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                <Grid item xs={12} md={6} lg={3}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            defaultValue=""
-                            type="number"
-                            name="cantidad"
-                            label="Cantidad"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.cantidad}
-                        />
-                    </FormProvider>
-                </Grid>
+                    <Grid item xs={12} md={6} lg={3}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                defaultValue=""
+                                type="number"
+                                name="cantidad"
+                                label="Cantidad"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.cantidad}
+                            />
+                        </FormProvider>
+                    </Grid>
 
-                <Grid item xs={6} md={4} lg={1.5}>
-                    <AnimateButton>
-                        <Button size={matchesXS ? 'small' : 'large'} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                            {TitleButton.AgregarOrden}
-                        </Button>
-                    </AnimateButton>
-                </Grid>
+                    <Grid item xs={6} md={4} lg={1.5}>
+                        <AnimateButton>
+                            <Button size={matchesXS ? 'small' : 'large'} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                {TitleButton.AgregarOrden}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
 
-                <Grid item xs={6} md={4} lg={1.5}>
-                    <AnimateButton>
-                        <Button size={matchesXS ? 'small' : 'large'} variant="outlined" fullWidth onClick={() => navigate("/headcount/list")}>
-                            {TitleButton.Cancelar}
-                        </Button>
-                    </AnimateButton>
-                </Grid>
+                    <Grid item xs={6} md={4} lg={1.5}>
+                        <AnimateButton>
+                            <Button size={matchesXS ? 'small' : 'large'} variant="outlined" fullWidth onClick={() => navigate("/headcount/list")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <ListAnio idAnio={id} getAll={getAll} setLsHeadcount={setLsHeadcount} lsHeadcount={lsHeadcount} rows={rows} />
+                    <Grid item xs={12}>
+                        <ListAnio idAnio={id} getAll={getAll} setLsHeadcount={setLsHeadcount} lsHeadcount={lsHeadcount} rows={rows} />
+                    </Grid>
                 </Grid>
-            </Grid>
-        </SubCard>
+            </SubCard>
+        </ValidateActionSkeleton>
     );
 }
 

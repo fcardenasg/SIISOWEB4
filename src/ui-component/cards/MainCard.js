@@ -4,6 +4,15 @@ import { forwardRef } from 'react';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { Card, CardContent, CardHeader, Divider, Typography } from '@mui/material';
+import { UpperFirstChar } from 'components/helpers/Format';
+
+function validarTitulo(title) {
+    if (typeof title === 'string') {
+        return UpperFirstChar(title);
+    } else {
+        return title;
+    }
+}
 
 // constant
 const headerSX = {
@@ -49,10 +58,8 @@ const MainCard = forwardRef(
                 }}
             >
                 {/* card header and action */}
-                {!darkTitle && title && <CardHeader sx={headerSX} title={<Typography variant="h4">{title}</Typography>} action={secondary} />}
-                {darkTitle && title && (
-                    <CardHeader sx={headerSX} title={<Typography variant="h4">{title}</Typography>} action={secondary} />
-                )}
+                {!darkTitle && title && <CardHeader sx={headerSX} title={<Typography variant="h4">{validarTitulo(title)}</Typography>} action={secondary} />}
+                {darkTitle && title && (<CardHeader sx={headerSX} title={<Typography variant="h4">{validarTitulo(title)}</Typography>} action={secondary} />)}
 
                 {/* content & header divider */}
                 {title && <Divider />}

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
@@ -21,25 +21,25 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
-import { FormatDate, ViewFormat } from 'components/helpers/Format';
 import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
+import { ViewFormat } from 'components/helpers/Format';
 import MainCard from 'ui-component/cards/MainCard';
 
-import { DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import SearchIcon from '@mui/icons-material/Search';
+import { DeleteAdvice, GetAllByTipoAtencion } from 'api/clients/AdviceClient';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
-import swal from 'sweetalert';
 import Cargando from 'components/loading/Cargando';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import swal from 'sweetalert';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -185,7 +185,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         }
 
         {numSelected > 0 && (
-            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.otras_asesorias}>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Otrasasesorias}>
                 <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                     <IconButton size="large">
                         <DeleteIcon fontSize="small" />
@@ -348,7 +348,7 @@ const ListOtherAdvice = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.otras_asesorias}>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Otrasasesorias}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
                                         onClick={() => navigate("/otheradvice/add")}>
                                         {TitleButton.Agregar}
@@ -486,7 +486,7 @@ const ListOtherAdvice = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.otras_asesorias}>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Otrasasesorias}>
                                                     <Tooltip title="Actualizar" onClick={() => navigate(`/otheradvice/update/${row.id}`)}>
                                                         <IconButton size="large">
                                                             <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />

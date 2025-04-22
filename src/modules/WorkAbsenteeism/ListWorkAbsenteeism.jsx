@@ -200,7 +200,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         }
 
         {numSelected > 0 && (
-            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.ausentismo_laboral}>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Ausentismolaboral}>
                 <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                     <IconButton size="large">
                         <DeleteIcon fontSize="small" />
@@ -337,7 +337,7 @@ const ListWorkAbsenteeism = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsWorkAbsenteeism.length) : 0;
 
     return (
-        <MainCard title={<Typography variant='h4'>Lista de ausentismo laboral</Typography>} content={false}>
+        <MainCard title="Lista de ausentismo laboral" content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <CardContent>
@@ -361,19 +361,19 @@ const ListWorkAbsenteeism = () => {
                     <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
-                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.ausentismo_laboral}>
-                                    <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
-                                        onClick={() => navigate("/work-absenteeism/history")}>
-                                        {TitleButton.Historico}
-                                    </Button>
-                                </ValidateAction>
+                                <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
+                                    onClick={() => navigate("/work-absenteeism/history")}>
+                                    {TitleButton.Historico}
+                                </Button>
                             </Grid>
 
                             <Grid item xs={4}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                    onClick={() => navigate("/work-absenteeism/add")}>
-                                    {TitleButton.Agregar}
-                                </Button>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Ausentismolaboral}>
+                                    <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/work-absenteeism/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
                             </Grid>
 
                             <Grid item xs={4}>
@@ -546,7 +546,7 @@ const ListWorkAbsenteeism = () => {
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.ausentismo_laboral}>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Ausentismolaboral}>
                                                     <Tooltip title="Actualizar" onClick={() => navigate(`/work-absenteeism/update/${row.id_Inc}`)}>
                                                         <IconButton size="large">
                                                             <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />

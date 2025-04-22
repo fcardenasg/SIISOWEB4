@@ -1,22 +1,22 @@
-import { Button, Grid, Typography, useMediaQuery } from "@mui/material";
-import SubCard from "ui-component/cards/SubCard";
+import { Button, Grid, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from "react-router-dom";
+import InputText from "components/input/InputText";
 import useAuth from "hooks/useAuth";
 import { FormProvider, useForm } from "react-hook-form";
-import InputText from "components/input/InputText";
+import { useNavigate } from "react-router-dom";
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Message, TitleButton, ValidationMessage } from "components/helpers/Enums";
-import AnimateButton from "ui-component/extended/AnimateButton";
-import ListaRol from "./ListaRol";
-import { useEffect } from "react";
-import { useState } from "react";
-import InputMultiSelectCheck from "components/input/InputMultiSelectCheck";
 import { GetByListMenuRol, GetComboCardItem, GetComboComponente, GetComboItemMenu, InsertRol } from "api/clients/RolClient";
-import InputCheck from "components/input/InputCheck";
 import { MessageError, MessageSuccess } from "components/alert/AlertAll";
+import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from "components/helpers/Enums";
+import InputCheck from "components/input/InputCheck";
+import InputMultiSelectCheck from "components/input/InputMultiSelectCheck";
+import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
+import { useEffect, useState } from "react";
+import MainCard from "ui-component/cards/MainCard";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import * as yup from 'yup';
+import ListaRol from "./ListaRol";
 
 const validationSchema = yup.object().shape({
     nombreRol: yup.string().required(ValidationMessage.Requerido),
@@ -170,90 +170,92 @@ const Rol = () => {
     };
 
     return (
-        <SubCard title={<Typography variant="h4">Registrar Rol</Typography>}>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Rol}>
+            <MainCard title="Registrar Rol">
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <Grid container spacing={2}>
-                <Grid item xs={7} lg={10}>
-                    <FormProvider {...methods}>
-                        <InputText
-                            fullWidth
-                            name="nombreRol"
-                            label="Nombre Del Rol"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.nombreRol}
+                <Grid container spacing={2}>
+                    <Grid item xs={7} lg={10}>
+                        <FormProvider {...methods}>
+                            <InputText
+                                fullWidth
+                                name="nombreRol"
+                                label="Nombre Del Rol"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.nombreRol}
+                            />
+                        </FormProvider>
+                    </Grid>
+
+                    <Grid item xs={5} lg={2}>
+                        <InputCheck
+                            label="¿Será Admin?"
+                            onChange={handleChangeIsAdmin}
+                            checked={isAdmin}
+                            size={matchesXS ? 25 : 30}
                         />
-                    </FormProvider>
-                </Grid>
+                    </Grid>
 
-                <Grid item xs={5} lg={2}>
-                    <InputCheck
-                        label="¿Será Admin?"
-                        onChange={handleChangeIsAdmin}
-                        checked={isAdmin}
-                        size={matchesXS ? 25 : 30}
-                    />
-                </Grid>
+                    <Grid item xs={12} md={6}>
+                        <InputMultiSelectCheck
+                            onChange={handleChangeCompo}
+                            value={valueCompo.labelComponente}
+                            label="Componente"
+                            options={lsComponente}
+                            size={matchesXS ? 'small' : 'medium'}
+                            disabled={isAdmin}
+                        />
+                    </Grid>
 
-                <Grid item xs={12} md={6}>
-                    <InputMultiSelectCheck
-                        onChange={handleChangeCompo}
-                        value={valueCompo.labelComponente}
-                        label="Componente"
-                        options={lsComponente}
-                        size={matchesXS ? 'small' : 'medium'}
-                        disabled={isAdmin}
-                    />
-                </Grid>
+                    <Grid item xs={12} md={6}>
+                        <InputMultiSelectCheck
+                            onChange={handleChangeItem}
+                            value={valueItem.labelItemMenu}
+                            label="Ìtem"
+                            options={lsItemMenu}
+                            size={matchesXS ? 'small' : 'medium'}
+                            disabled={isAdmin}
+                        />
+                    </Grid>
 
-                <Grid item xs={12} md={6}>
-                    <InputMultiSelectCheck
-                        onChange={handleChangeItem}
-                        value={valueItem.labelItemMenu}
-                        label="Ìtem"
-                        options={lsItemMenu}
-                        size={matchesXS ? 'small' : 'medium'}
-                        disabled={isAdmin}
-                    />
-                </Grid>
+                    <Grid item xs={12}>
+                        <InputMultiSelectCheck
+                            onChange={handleChangeCard}
+                            value={valueCard.labelCardItem}
+                            label="Card"
+                            options={lsCardItem}
+                            size={matchesXS ? 'small' : 'medium'}
+                            disabled={isAdmin}
+                        />
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <InputMultiSelectCheck
-                        onChange={handleChangeCard}
-                        value={valueCard.labelCardItem}
-                        label="Card"
-                        options={lsCardItem}
-                        size={matchesXS ? 'small' : 'medium'}
-                        disabled={isAdmin}
-                    />
-                </Grid>
+                    <Grid item xs={12}>
+                        {idRol === 0 ? null : <ListaRol getAll={getAll} setLsPermisos={setLsPermisos} lsPermisos={lsPermisos} rows={rows} />}
+                    </Grid>
 
-                <Grid item xs={12}>
-                    {idRol === 0 ? null : <ListaRol getAll={getAll} setLsPermisos={setLsPermisos} lsPermisos={lsPermisos} rows={rows} />}
-                </Grid>
+                    <Grid item xs={12} sx={{ mt: 4 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6} md={4} lg={2}>
+                                <AnimateButton>
+                                    <Button disabled={idRol === 0 ? false : true} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                        {TitleButton.Guardar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
 
-                <Grid item xs={12} sx={{ mt: 4 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6} md={4} lg={2}>
-                            <AnimateButton>
-                                <Button disabled={idRol === 0 ? false : true} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    {TitleButton.Guardar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={6} md={4} lg={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/rol/list")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
+                            <Grid item xs={6} md={4} lg={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" fullWidth onClick={() => navigate("/rol/list")}>
+                                        {TitleButton.Cancelar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </SubCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 }
 

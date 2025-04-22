@@ -399,7 +399,7 @@ const UpdateWorkAbsenteeism = () => {
     }, 1500);
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.ausentismo_laboral}>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Ausentismolaboral}>
             <MessageUpdate onClose={() => setOpenSuccess(false)} open={openSuccess} />
             <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
 

@@ -154,7 +154,7 @@ const UpdateOrdersIndividual = () => {
                                     setOpenSuccess(true);
                                     setLoading(false);
                                 }
-                            }, 1000);
+                            }, 500);
                         } else {
                             setLoading(false);
                             setOpenError(true);
@@ -193,7 +193,7 @@ const UpdateOrdersIndividual = () => {
     };
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.ordenes}>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Ordenesindividuales}>
             <MessageUpdate open={openSuccess} message={errorMessage} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

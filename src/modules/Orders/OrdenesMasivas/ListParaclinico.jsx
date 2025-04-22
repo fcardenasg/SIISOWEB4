@@ -65,14 +65,14 @@ const ListParaclinico = ({ setLsOrdenesParaclinicos, lsOrdenesParaclinicos }) =>
                     GetAllByTipoCatalogo(0, 0, CodCatalogo.LABORATORIO_ORDENES_PARACLINICOS),
                     GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPORNM_ORDENES_PARACLINICOS),
                     GetAllByTipoCatalogo(0, 0, CodCatalogo.CIUDADES),
-                    GetAllSupplier(0, 0),
+                    GetAllSupplier(),
                     GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTUDIO_EXAMEN_PARACLINICOS)
                 ]);
 
                 setLsLaboratorio(laboratorio.data.entities.map(item => ({ value: item.idCatalogo, label: item.nombre })));
                 setLsTipoRNM(tipoRNM.data.entities.map(item => ({ value: item.idCatalogo, label: item.nombre })));
                 setLsCiudad(ciudad.data.entities.map(item => ({ value: item.idCatalogo, label: item.nombre })));
-                setLsProveedor(proveedor.data.entities);
+                setLsProveedor(proveedor.data);
                 setLsEstudioParaclinico(estudioParaclinico.data.entities.map(item => ({ value: item.idCatalogo, label: item.nombre })));
             } catch (error) {
                 console.error("Error fetching data:", error);

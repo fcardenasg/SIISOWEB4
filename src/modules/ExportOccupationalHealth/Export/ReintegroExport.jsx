@@ -56,7 +56,7 @@ const ReintegroExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, set
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

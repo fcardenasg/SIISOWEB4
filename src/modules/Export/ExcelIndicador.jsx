@@ -41,7 +41,7 @@ const ExcelIndicador = ({ setSede, sede }) => {
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             }
 
         } catch (error) {

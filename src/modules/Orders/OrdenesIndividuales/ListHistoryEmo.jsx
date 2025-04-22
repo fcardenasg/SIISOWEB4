@@ -1,22 +1,19 @@
-import { useState, useEffect, Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
-import { useTheme } from '@mui/material/styles';
 import {
     Grid,
-    Typography,
-    TableCell,
-    TableRow,
-    TableContainer,
     Table,
-    TableHead,
     TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from '@mui/material';
 
-import { ViewFormat } from 'components/helpers/Format';
 import { GetLastRegister } from 'api/clients/OccupationalExaminationClient';
+import { ViewFormat } from 'components/helpers/Format';
 
 const ListHistoryEmo = ({ documento }) => {
-    const theme = useTheme();
     const [lsOrdenesParaclinicos, setLsOrdenesParaclinicos] = useState([]);
 
     async function getAllListParaclinicos() {

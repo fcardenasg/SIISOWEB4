@@ -83,7 +83,7 @@ const ListActionMenu = () => {
         resolver: yupResolver(validationSchema),
     });
 
-    const { handleSubmit, reset, setValue, watch, formState: { errors } } = methods;
+    const { handleSubmit, reset, formState: { errors } } = methods;
 
     useEffect(() => {
         async function getAll() {
@@ -187,7 +187,7 @@ const ListActionMenu = () => {
 
     return (
         <SubCard
-            title={<Typography variant='h4'>Acciones permita para el usuario</Typography>}
+            title={<Typography variant='h4'>Acciones permitidas para el usuario</Typography>}
             secondary={
                 <>
                     {lsPermisos.length === 0 ?

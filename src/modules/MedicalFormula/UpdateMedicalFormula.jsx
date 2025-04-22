@@ -21,7 +21,7 @@ import ViewEmployee from 'components/views/ViewEmployee';
 import useAuth from 'hooks/useAuth';
 
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
 import SubCard from 'ui-component/cards/SubCard';
@@ -40,6 +40,7 @@ import InputOnChange from 'components/input/InputOnChange';
 import Cargando from 'components/loading/Cargando';
 import { PutMedicalFormula } from 'formatdata/MedicalFormulaForm';
 import { generateReport } from 'modules/Programming/Attention/OccupationalExamination/MedicalOrder/Report';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -196,7 +197,7 @@ const UpdateMedicalFormula = () => {
     }, 1500);
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Recetario}>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -373,7 +374,7 @@ const UpdateMedicalFormula = () => {
                     </Grid>
                 </Grid> : <Cargando />
             }
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

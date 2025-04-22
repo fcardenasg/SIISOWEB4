@@ -119,7 +119,7 @@ const OrdersIndividual = () => {
                                 setOpenSuccess(true);
                                 setLoading(false);
                             }
-                        }, 2000);
+                        }, 500);
                     } else {
                         setOpenError(true);
                         setErrorMessage(Message.CorreoNoEnviado);
@@ -173,7 +173,7 @@ const OrdersIndividual = () => {
     };
 
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.ordenes}>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Ordenesindividuales}>
             <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 

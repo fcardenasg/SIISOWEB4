@@ -721,7 +721,7 @@ const OccupationalExamination = () => {
     setTimeout(() => {
         if (lsAtencion.length !== 0)
             setTimeWait(true);
-    }, 2500);
+    }, 500);
 
     const onCloseModal = () => {
         setOpenForm(false);

@@ -142,7 +142,7 @@ const ModalAnsweredView = ({ lsCardRequests }) => {
     setTimeout(() => {
         if (lsRequests.length !== 0)
             setTimeWait(true);
-    }, 1000);
+    }, 500);
 
     return (
         <Fragment>

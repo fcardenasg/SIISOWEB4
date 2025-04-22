@@ -14,13 +14,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { GetByIdCompany, UpdateCompanys } from 'api/clients/CompanyClient';
 import InputText from 'components/input/InputText';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Cargando from 'components/loading/Cargando';
 import { PutCompany } from 'formatdata/CompanyForm';
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     descripcionSpa: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -78,95 +79,97 @@ const UpdateCompany = () => {
     };
 
     return (
-        <MainCard title="Actualizar Empresas">
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-            {lsCompany.length !== 0 ?
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={lsCompany.codigo}
-                                fullWidth
-                                disabled
-                                name="codigo"
-                                label="Código"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={lsCompany.descripcionSpa}
-                                fullWidth
-                                name="descripcionSpa"
-                                label="Nombre"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={lsCompany.email}
-                                fullWidth
-                                name="email"
-                                label="Correo electronico"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={lsCompany.celular}
-                                fullWidth
-                                name="celular"
-                                label="Celular"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4} sx={{ pb: 2 }}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue={lsCompany.gerente}
-                                fullWidth
-                                name="gerente"
-                                label="Contacto"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Empresa}>
+            <MainCard title="Actualizar Empresas">
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+                {lsCompany.length !== 0 ?
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={lsCompany.codigo}
+                                    fullWidth
+                                    disabled
+                                    name="codigo"
+                                    label="Código"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={lsCompany.descripcionSpa}
+                                    fullWidth
+                                    name="descripcionSpa"
+                                    label="Nombre"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={lsCompany.email}
+                                    fullWidth
+                                    name="email"
+                                    label="Correo electronico"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={lsCompany.celular}
+                                    fullWidth
+                                    name="celular"
+                                    label="Celular"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4} sx={{ pb: 2 }}>
+                            <FormProvider {...methods}>
+                                <InputText
+                                    defaultValue={lsCompany.gerente}
+                                    fullWidth
+                                    name="gerente"
+                                    label="Contacto"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors}
+                                />
+                            </FormProvider>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Actualizar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                        <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                                <Grid item xs={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </Grid> : <Cargando />
-            }
-        </MainCard >
+                    </Grid> : <Cargando />
+                }
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

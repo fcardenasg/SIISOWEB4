@@ -19,7 +19,7 @@ import { FormatDate } from 'components/helpers/Format'
 import InputText from 'components/input/InputText';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
+import { Message, TitleButton, CodCatalogo, DefaultValue, AccionMenu, Modulo } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import SubCard from 'ui-component/cards/SubCard';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -31,6 +31,7 @@ import { MessageUpdate, MessageError } from 'components/alert/AlertAll';
 import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
 import ViewPDF from 'components/components/ViewPDF';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const UpdateSpirometry = () => {
     const { user } = useAuth();
@@ -134,8 +135,8 @@ const UpdateSpirometry = () => {
             }));
             setLsResultado(resultResultado);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -181,11 +182,11 @@ const UpdateSpirometry = () => {
     setTimeout(() => {
         if (lsSpirometry.length !== 0)
             setTimeWait(true);
-    }, 2500);
+    }, 500);
 
     return (
-        <MainCard title="Actualizar Espirometría">
-            <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Espirometria}>
+            <MainCard title="Actualizar Espirometría">
                 <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -410,8 +411,8 @@ const UpdateSpirometry = () => {
                         </Grid>
                     </Grid> : <Cargando />
                 }
-            </Fragment >
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

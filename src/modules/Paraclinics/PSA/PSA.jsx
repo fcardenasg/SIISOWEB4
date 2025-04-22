@@ -1,36 +1,36 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
-import InputDatePicker from 'components/input/InputDatePicker';
-import ControlModal from 'components/controllers/ControlModal';
 import ControllerListen from 'components/controllers/ControllerListen';
-import { FormatDate } from 'components/helpers/Format'
+import ControlModal from 'components/controllers/ControlModal';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
 import InputText from 'components/input/InputText';
 
+import UploadIcon from '@mui/icons-material/Upload';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { PostParaclinics } from 'formatdata/ParaclinicsForm';
 import { InsertParaclinics } from 'api/clients/ParaclinicsClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
-import Cargando from 'components/loading/Cargando';
-import MainCard from 'ui-component/cards/MainCard';
-import UploadIcon from '@mui/icons-material/Upload';
 import ViewPDF from 'components/components/ViewPDF';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import InputSelect from 'components/input/InputSelect';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import { PostParaclinics } from 'formatdata/ParaclinicsForm';
+import useAuth from 'hooks/useAuth';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const PSA = () => {
     const { user } = useAuth();
@@ -125,8 +125,8 @@ const PSA = () => {
             }));
             setLsConclusion(resultConclusion);
 
-            const lsServerProveedor = await GetAllSupplier(0, 0);
-            var resultProveedor = lsServerProveedor.data.entities.map((item) => ({
+            const lsServerProveedor = await GetAllSupplier();
+            var resultProveedor = lsServerProveedor.data.map((item) => ({
                 value: item.codiProv,
                 label: item.nombProv
             }));
@@ -174,8 +174,8 @@ const PSA = () => {
     };
 
     return (
-        <MainCard title="Registrar PSA">
-            <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.PSA}>
+            <MainCard title={<>Registrar PSA</>}>
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -315,8 +315,8 @@ const PSA = () => {
                         </SubCard>
                     </Grid>
                 </Grid>
-            </Fragment>
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

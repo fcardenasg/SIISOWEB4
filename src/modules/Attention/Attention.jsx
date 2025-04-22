@@ -9,9 +9,9 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 
+import { motion } from 'framer-motion';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ControllerListen from 'components/controllers/ControllerListen';
@@ -28,9 +28,10 @@ import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllComboByIdRol, GetByMail } from 'api/clients/UserClient';
 import ViewPDF from 'components/components/ViewPDF';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import InputSelect from 'components/input/InputSelect';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { PostAttention } from 'formatdata/AttentionForm';
 import SubCard from 'ui-component/cards/SubCard';
@@ -363,7 +364,7 @@ const Attention = () => {
     };
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Atencion}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -691,8 +692,8 @@ const Attention = () => {
                         </Grid>
                     </SubCard>
                 </Grid>
-            </Grid >
-        </Fragment >
+            </Grid>
+        </ValidateActionSkeleton>
     );
 };
 

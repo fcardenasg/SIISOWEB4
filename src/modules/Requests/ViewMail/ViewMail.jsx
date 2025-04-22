@@ -67,7 +67,7 @@ const ViewMail = ({ lsData }) => {
                 setTimeout(() => {
                     setOpenSuccess(true);
                     setErrorMessage("Correo enviado con éxito");
-                }, 1000);
+                }, 500);
             }
         } catch (error) {
             setOpenError(true);

@@ -65,6 +65,24 @@ function GetEdad(dateString) {
     } catch (error) { }
 }
 
+function GetAnioMeses(fechaParametro) {
+    const fechaActual = new Date();
+    const fechaObjetivo = new Date(fechaParametro);
+
+    let anios = fechaActual.getFullYear() - fechaObjetivo.getFullYear();
+    let meses = fechaActual.getMonth() - fechaObjetivo.getMonth();
+
+    if (meses < 0) {
+        anios--;
+        meses += 12;
+    }
+
+    if (anios === 0)
+        return `${meses} MESES`;
+
+    return `${anios} AÑOS, ${meses} MESES`;
+}
+
 function EdadFramigan(edad = 0, genero = '') {
     try {
         if (edad > 0 && edad <= 34) {
@@ -1447,5 +1465,6 @@ export {
     PuntajeFr,
     FrFuma,
     FrLdl_FrRelacion,
-    NumeroDias
+    NumeroDias,
+    GetAnioMeses
 }

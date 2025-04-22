@@ -362,7 +362,7 @@ export default function AddMedicinesOrders({ idPedido }) {
 
                                                             <Grid item>
                                                                 <Tooltip title="Registrar" onClick={() => handleClickRecibida(row.id)}>
-                                                                    <IconButton color="info" size="small">
+                                                                    <IconButton color="primary" size="small">
                                                                         <SaveIcon sx={{ fontSize: '1.5rem' }} />
                                                                     </IconButton>
                                                                 </Tooltip>
@@ -390,7 +390,7 @@ export default function AddMedicinesOrders({ idPedido }) {
                                                                     title="Editar: Esta opción es para colocar la cantidad que recibió, esta misma es diferente a la solicitada"
                                                                     onClick={() => setEditingRowId(row.id)}
                                                                 >
-                                                                    <IconButton color="info" size="small">
+                                                                    <IconButton color="primary" size="small">
                                                                         <EditIcon sx={{ fontSize: '1.3rem' }} />
                                                                     </IconButton>
                                                                 </Tooltip>

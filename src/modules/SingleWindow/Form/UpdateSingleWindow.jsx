@@ -22,7 +22,7 @@ import { FormatDate } from 'components/helpers/Format';
 import DownloadIcon from '@mui/icons-material/Download';
 import { GetAllDocumentoVentanilla, GetByIdVentanillaUnica, NotificarUsuarios, UpdateVentanillaUnicas } from 'api/clients/VentanillaUnicaClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import ListAddSingleWindow from './ListAddSingleWindow';
 
 import InputOnChange from 'components/input/InputOnChange';
@@ -39,6 +39,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Cargando from 'components/loading/Cargando';
 import InputDatePicker from 'components/input/InputDatePicker';
 import { useBoolean } from 'hooks/use-boolean';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idCondicion: yup.string().required(ValidationMessage.Requerido),
@@ -296,7 +297,7 @@ const UpdateSingleWindow = () => {
     }
 
     return (
-        <Fragment>
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Indexacion}>
             <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
@@ -708,7 +709,7 @@ const UpdateSingleWindow = () => {
                     </Grid> : <Cargando />
                 }
             </SubCard>
-        </Fragment >
+        </ValidateActionSkeleton>
     );
 };
 

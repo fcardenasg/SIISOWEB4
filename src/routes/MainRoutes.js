@@ -242,12 +242,8 @@ const HelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/H
 const ViewHelpManagement = Loadable(lazy(() => import('modules/Help/HelpManagement/ViewHelpManagement')));
 const Indicators = Loadable(lazy(() => import('modules/Help/Indicators/Indicators')));
 
-const MenuProgramming = Loadable(lazy(() => import('modules/Menu/MenuProgramming')));
-const ListSupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/ListSupplierParameterization')));
-const SupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/SupplierParameterization')));
-const UpdateSupplierParameterization = Loadable(lazy(() => import('modules/OrderScheduling/Parameterization/UpdateSupplierParameterization')));
-
-const Programming = Loadable(lazy(() => import('modules/OrderScheduling/Programming/Programming')));
+const ListMessageScheduling = Loadable(lazy(() => import('modules/OrderScheduling/ListMessageScheduling')));
+const MessageScheduling = Loadable(lazy(() => import('modules/OrderScheduling/MessageScheduling')));
 
 const MainRoutes = {
     path: '/',
@@ -265,7 +261,7 @@ const MainRoutes = {
         {
             path: '/typecatalog/add',
             element: <TypeCatalog />
-        }, 
+        },
         {
             path: '/typecatalog/update/:id',
             element: <UpdateTypeCatalog />
@@ -1043,24 +1039,16 @@ const MainRoutes = {
         },
         /* Programación */
         {
-            path: '/programming/menu',
-            element: <MenuProgramming />
+            path: '/programming/view',
+            element: <ListMessageScheduling />
         },
         {
-            path: '/supplier-parameterization/list',
-            element: <ListSupplierParameterization />
+            path: '/programming/add',
+            element: <MessageScheduling />
         },
         {
-            path: '/supplier-parameterization/add',
-            element: <SupplierParameterization />
-        },
-        {
-            path: '/supplier-parameterization/update/:id',
-            element: <UpdateSupplierParameterization />
-        },
-        {
-            path: '/schedule-orders/list',
-            element: <Programming />
+            path: '/schedule-orders/monitoring',
+            element: <ListMessageScheduling />
         },
     ]
 };

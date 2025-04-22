@@ -14,13 +14,14 @@ import * as yup from 'yup';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { InsertMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { CodCatalogo, Message, TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import useAuth from 'hooks/useAuth';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     nombre: yup.string().required(ValidationMessage.Requerido),
@@ -78,105 +79,107 @@ const Warehouse = () => {
     };
 
     return (
-        <MainCard title="Registrar producto de medicamento">
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Productos}>
+            <MainCard title="Registrar producto de medicamento">
+                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <FormProvider {...methods}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="nombre"
-                            label="Nombre"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.nombre}
-                        />
+                <FormProvider {...methods}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <InputText
+                                defaultValue=""
+                                name="nombre"
+                                label="Nombre"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.nombre}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <InputSelect
+                                name="idLaboratorio"
+                                label="Laboratorio"
+                                defaultValue=""
+                                options={lsLaboratorio}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.idLaboratorio}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <InputSelect
+                                name="formaFarmaceutica"
+                                label="Forma farmacéutica"
+                                defaultValue=""
+                                options={lsUnidad}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.formaFarmaceutica}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <InputText
+                                defaultValue=""
+                                name="codInvima"
+                                label="Código invima"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.codInvima}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <InputText
+                                defaultValue=""
+                                name="concentracion"
+                                label="Concentración"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.concentracion}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
+                            <InputText
+                                defaultValue=""
+                                name="presentacionComercial"
+                                label="Presentación comercial"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.presentacionComercial}
+                            />
+                        </Grid>
+
+                        <Grid item alignItems="center" xs={12} md={6} lg={4}>
+                            <InputCheckBox
+                                label="Estado"
+                                name="estado"
+                                size={30}
+                                defaultValue={true}
+                            />
+                        </Grid>
                     </Grid>
+                </FormProvider>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputSelect
-                            name="idLaboratorio"
-                            label="Laboratorio"
-                            defaultValue=""
-                            options={lsLaboratorio}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.idLaboratorio}
-                        />
-                    </Grid>
+                <Grid item xs={12} sx={{ pt: 4 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    {TitleButton.Guardar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputSelect
-                            name="formaFarmaceutica"
-                            label="Forma farmacéutica"
-                            defaultValue=""
-                            options={lsUnidad}
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.formaFarmaceutica}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="codInvima"
-                            label="Código invima"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.codInvima}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="concentracion"
-                            label="Concentración"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.concentracion}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            defaultValue=""
-                            name="presentacionComercial"
-                            label="Presentación comercial"
-                            size={matchesXS ? 'small' : 'medium'}
-                            bug={errors.presentacionComercial}
-                        />
-                    </Grid>
-
-                    <Grid item alignItems="center" xs={12} md={6} lg={4}>
-                        <InputCheckBox
-                            label="Estado"
-                            name="estado"
-                            size={30}
-                            defaultValue={true}
-                        />
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/warehouse/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </FormProvider>
-
-            <Grid item xs={12} sx={{ pt: 4 }}>
-                <Grid container spacing={2}>
-                    <Grid item xs={2}>
-                        <AnimateButton>
-                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                {TitleButton.Guardar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
-
-                    <Grid item xs={2}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/warehouse/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
-                </Grid>
-            </Grid>
-        </MainCard>
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 };
 

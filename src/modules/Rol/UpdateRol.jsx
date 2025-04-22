@@ -1,24 +1,24 @@
 import { Button, Grid, Typography, useMediaQuery } from "@mui/material";
-import SubCard from "ui-component/cards/SubCard";
 import { useTheme } from '@mui/material/styles';
-import { useNavigate, useParams } from "react-router-dom";
+import InputText from "components/input/InputText";
 import useAuth from "hooks/useAuth";
 import { FormProvider, useForm } from "react-hook-form";
-import InputText from "components/input/InputText";
+import { useNavigate, useParams } from "react-router-dom";
+import SubCard from "ui-component/cards/SubCard";
 
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Message, TitleButton, ValidationMessage } from "components/helpers/Enums";
-import AnimateButton from "ui-component/extended/AnimateButton";
-import ListaRol from "./ListaRol";
-import { useEffect } from "react";
-import { useState } from "react";
 import { GetByIdRol, GetByListMenuRol, GetComboCardItem, GetComboComponente, GetComboItemMenu, InsertRol } from "api/clients/RolClient";
-import InputCheck from "components/input/InputCheck";
 import { MessageError, MessageUpdate } from "components/alert/AlertAll";
+import { AccionMenu, Message, Modulo, TitleButton, ValidationMessage } from "components/helpers/Enums";
+import InputCheck from "components/input/InputCheck";
 import SelectOnChange from "components/input/SelectOnChange";
-import { Fragment } from "react";
 import Cargando from "components/loading/Cargando";
+import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
+import { Fragment, useEffect, useState } from "react";
+import MainCard from "ui-component/cards/MainCard";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import * as yup from 'yup';
+import ListaRol from "./ListaRol";
 
 const validationSchema = yup.object().shape({
     nombreRol: yup.string().required(ValidationMessage.Requerido),
@@ -161,110 +161,112 @@ const UpdateRol = () => {
     };
 
     return (
-        <SubCard title={<Typography variant="h4">Actualizar rol</Typography>}>
-            {dataRol.length !== 0 ?
-                <Fragment>
-                    <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
-                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+        <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Rol}>
+            <MainCard title="Actualizar rol">
+                {dataRol.length !== 0 ?
+                    <Fragment>
+                        <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                        <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <FormProvider {...methods}>
-                                <InputText
-                                    fullWidth
-                                    defaultValue={dataRol.nombreRol}
-                                    name="nombreRol"
-                                    label="Nombre Del Rol"
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors.nombreRol}
-                                />
-                            </FormProvider>
-                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <FormProvider {...methods}>
+                                    <InputText
+                                        fullWidth
+                                        defaultValue={dataRol.nombreRol}
+                                        name="nombreRol"
+                                        label="Nombre Del Rol"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.nombreRol}
+                                    />
+                                </FormProvider>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <SubCard title={<Typography variant="h4">Gestión de permisos</Typography>}>
+                            <Grid item xs={12}>
+                                <SubCard title={<Typography variant="h4">Gestión de permisos</Typography>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6}>
+                                            <SelectOnChange
+                                                name="idComponentes"
+                                                label="Componente"
+                                                value={valueComponente}
+                                                options={lsComponente}
+                                                onChange={handleChangeComponente}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6}>
+                                            <SelectOnChange
+                                                name="idItem"
+                                                label="Ìtem"
+                                                value={valueItem}
+                                                options={lsItem}
+                                                onChange={handleChangeItem}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6}>
+                                            <SelectOnChange
+                                                disabled={lsCard.length === 0 ? true : false}
+                                                name="idCard"
+                                                label="Card"
+                                                value={valueCard}
+                                                options={lsCard}
+                                                onChange={(e) => setValueCard(e.target.value)}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6} lg={3}>
+                                            <InputCheck
+                                                label={`Estado Del Permiso: ${estadoPermiso ? 'Activo' : 'Inactivo'}`}
+                                                onChange={(e) => setEstadoPermiso(e.target.checked)}
+                                                checked={estadoPermiso}
+                                                size={matchesXS ? 25 : 30}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6} lg={3}>
+                                            <AnimateButton>
+                                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClickPermisos)}>
+                                                    {TitleButton.AgregarOrden}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <ListaRol getAll={getAll} setLsPermisos={setLsPermisos} lsPermisos={lsPermisos} rows={rows} />
+                                        </Grid>
+                                    </Grid>
+                                </SubCard>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ mt: 4 }}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6}>
-                                        <SelectOnChange
-                                            name="idComponentes"
-                                            label="Componente"
-                                            value={valueComponente}
-                                            options={lsComponente}
-                                            onChange={handleChangeComponente}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6}>
-                                        <SelectOnChange
-                                            name="idItem"
-                                            label="Ìtem"
-                                            value={valueItem}
-                                            options={lsItem}
-                                            onChange={handleChangeItem}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6}>
-                                        <SelectOnChange
-                                            disabled={lsCard.length === 0 ? true : false}
-                                            name="idCard"
-                                            label="Card"
-                                            value={valueCard}
-                                            options={lsCard}
-                                            onChange={(e) => setValueCard(e.target.value)}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <InputCheck
-                                            label={`Estado Del Permiso: ${estadoPermiso ? 'Activo' : 'Inactivo'}`}
-                                            onChange={(e) => setEstadoPermiso(e.target.checked)}
-                                            checked={estadoPermiso}
-                                            size={matchesXS ? 25 : 30}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={3}>
+                                    <Grid item xs={6} md={4} lg={2}>
                                         <AnimateButton>
-                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClickPermisos)}>
-                                                {TitleButton.AgregarOrden}
+                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                {TitleButton.Actualizar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={12}>
-                                        <ListaRol getAll={getAll} setLsPermisos={setLsPermisos} lsPermisos={lsPermisos} rows={rows} />
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/rol/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ mt: 4 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={6} md={4} lg={2}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={6} md={4} lg={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/rol/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </Fragment> : <Cargando />
-            }
-        </SubCard>
+                    </Fragment> : <Cargando />
+                }
+            </MainCard>
+        </ValidateActionSkeleton>
     );
 }
 

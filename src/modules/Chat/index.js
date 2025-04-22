@@ -91,7 +91,7 @@ const ChatGPT = () => {
 
                 setData((prevState) => [...prevState, newMessage]);
                 dispatch(insertChat(newMessage));
-            }, 1000);
+            }, 500);
 
 
             setLoading(false);

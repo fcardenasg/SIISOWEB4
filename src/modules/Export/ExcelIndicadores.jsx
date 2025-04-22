@@ -76,7 +76,7 @@ const ExcelIndicadores = ({ setLsMeses, lsMeses, setLsAnios, lsAnios, setAllMes,
 
                     setTimeout(() => {
                         setLoading(false);
-                    }, 1000);
+                    }, 500);
                 }
             } else {
                 setLoading(false);
