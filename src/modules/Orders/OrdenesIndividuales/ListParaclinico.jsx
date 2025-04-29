@@ -258,7 +258,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                                 </Grid>
 
                                 {tipoExamenLabor ?
-                                    <Grid item xs={xsGrid}>
+                                    <Grid item xs={9}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idTipoExamenLaboratorio"

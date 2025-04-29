@@ -13,7 +13,8 @@ import ElevationScroll from './ElevationScroll';
 import { TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
-function StickyActionBar({ children, mainTitle = 'Actualizar o Guardar', titleButtonOne = TitleButton.Guardar, titleButtonTwo = TitleButton.Actualizar, onClickSave, onClickReport, onClickOrderMedical, onClickUpdate,
+function StickyActionBar({ children, mainTitle = 'Actualizar o Guardar', titleButtonOne = TitleButton.Guardar, titleButtonTwo = TitleButton.Actualizar,
+    onClickSave, onClickReport, onClickOrderMedical, onClickUpdate,
     showButton = false, disabledSave, disabledReport, disabledUpdate, ...others }) {
 
     return (

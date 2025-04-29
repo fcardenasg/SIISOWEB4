@@ -341,6 +341,10 @@ const OccupationalMedicine = () => {
             datos.fechaPagoRecalificadoInstaFinal = datos.fechaPagoRecalificadoInstaFinal || null;
             datos.fechaRecibidoInstanciaFinal = datos.fechaRecibidoInstanciaFinal || null;
 
+            datos.fechaCalificaOrigenAFP = datos.fechaCalificaOrigenAFP || null;
+            datos.fechaCalificacionPclAFP = datos.fechaCalificacionPclAFP || null;
+            datos.fechaEstructuraAFP = datos.fechaEstructuraAFP || null;
+
             const result = await InsertOccupationalMedicine(datos);
             if (result.status === 200) {
                 if (result.data === Message.ErrorDocumento) {
@@ -1096,6 +1100,87 @@ const OccupationalMedicine = () => {
                                                 name="medicoCalificadorPCLJNC"
                                                 label="Médico Calificador"
                                                 size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                </Grid>
+                            </Accordion>
+                        </Grid>
+
+                        <Grid sx={{ my: 3 }} item xs={12}>
+                            <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">AFP</Typography></>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación Origen"
+                                                name="fechaCalificaOrigenAFP"
+                                                defaultValue={null}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                fullWidth
+                                                name="noDictamenAFP"
+                                                label="Nro. Dictamen"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="origenAFP"
+                                                label="Origen"
+                                                options={lsOrigenARL}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Calificación PCL"
+                                                name="fechaCalificacionPclAFP"
+                                                defaultValue={null}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                fullWidth
+                                                name="noDictamenPclAFP"
+                                                label="No. Dictamen"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputText
+                                                type="number"
+                                                fullWidth
+                                                name="pclAFP"
+                                                label="% PCL"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputDatePicker
+                                                label="Fecha Estructura"
+                                                name="fechaEstructuraAFP"
+                                                defaultValue={null}
                                             />
                                         </FormProvider>
                                     </Grid>

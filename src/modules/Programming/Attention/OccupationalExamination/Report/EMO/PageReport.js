@@ -977,18 +977,18 @@ export function generateClinicHistoryDLTD(
   doc.line(40, 242, 40, 260); /* LINEA ONE */
   doc.line(70, 236, 70, 260); /* LINEA MEDIA */
   doc.text("MPI:", 7, 97 + 150);
-  doc.text("RUDIO:", 7, 104 + 150);
+  doc.text("RUIDO:", 7, 104 + 150);
 
   doc.line(106, 242, 106, 260); /* LINEA MEDIA */
   doc.line(133, 236, 133, 260); /* LINEA FINAL */
 
   doc.text("MPI:", 72, 97 + 150);
-  doc.text("RUDIO:", 72, 104 + 150);
+  doc.text("RUIDO:", 72, 104 + 150);
   doc.line(180, 242, 180, 260); /* LINEA MEDIA */
 
   doc.line(5, 250, marXR, 250); /* HORI ULTIMA */
   doc.text("MPI:", 135, 97 + 150);
-  doc.text("RUDIO:", 135, 104 + 150);
+  doc.text("RUIDO:", 135, 104 + 150);
 
   doc.line(5, 48 + (8 * longitud), marXR, 48 + (8 * longitud)); /* HORI 5 */
   doc.line(5, 54 + (8 * longitud), marXR, 54 + (8 * longitud)); /* HORI 6 */
