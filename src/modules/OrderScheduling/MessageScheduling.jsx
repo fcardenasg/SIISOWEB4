@@ -11,33 +11,22 @@ import {
 import { useTheme } from '@mui/material/styles';
 import User from 'assets/img/user.png';
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
 
-import { GetByProgramacionOrdenesProveedor, GetComboProgramacionOrdenes, GetEmpleadoProgramacionOrdenes } from 'api/clients/ProgramacionOrdenesClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetByProgramacionOrdenesProveedor, GetComboProgramacionOrdenes, GetEmpleadoProgramacionOrdenes, InsertIndividualProgramacionOrdenes } from 'api/clients/ProgramacionOrdenesClient';
 import SearchEmployee from 'assets/img/searchemployee.json';
-import { MessageError } from 'components/alert/AlertAll';
-import { TitleButton, ValidationMessage } from 'components/helpers/Enums';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import { CodCatalogo, TitleButton } from 'components/helpers/Enums';
 import { GetAnioMeses, GetEdad, validateData, ViewFormat } from 'components/helpers/Format';
 import SelectOnChange from 'components/input/SelectOnChange';
 import AnimateComponent from 'components/loading/AnimateComponent';
 import { useBoolean } from 'hooks/use-boolean';
-import useAuth from 'hooks/useAuth';
 import Lottie from 'lottie-react';
-import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
 import ListDetailParaclinicos from './components/ListDetailParaclinicos';
-
-const validationSchema = yup.object().shape({
-    idTipoAsesoria: yup.string().required(ValidationMessage.Requerido),
-    idCausa: yup.string().required(ValidationMessage.Requerido),
-    idMotivo: yup.string().required(ValidationMessage.Requerido),
-    idEstadoCaso: yup.string().required(ValidationMessage.Requerido),
-});
 
 const BoxTypography = ({ title, data, sx = {} }) => (
     <Box sx={{ display: 'flex', alignItems: 'center', ...sx }}>
@@ -47,27 +36,24 @@ const BoxTypography = ({ title, data, sx = {} }) => (
 );
 
 const MessageScheduling = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const blockSave = useBoolean(true);
     const [documento, setDocumento] = useState('');
-
-    const [dataParaclinico, setLsDataParaclinico] = useState([]);
+    const [lsTipoExamenLaboral, setLsTipoExamenLaboral] = useState([]);
+    const [dataParaclinico, setDataParaclinico] = useState([]);
     const [textError, setTextError] = useState("");
     const validateParaclinico = useBoolean(true);
+    const [tipoExamenLaboral, setTipoExamenLaboral] = useState(null);
 
-    const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
-    const [ciudadExamen, setCiudadExamen] = useState(null);
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [employeeData, setEmployeeData] = useState(null);
     const [lsCiudad, setLsCiudad] = useState([]);
-
-    const methods = useForm({ resolver: yupResolver(validationSchema) });
-    const { handleSubmit, formState: { errors } } = methods;
 
     function agruparCiudades(ciudades) {
         const ciudadesUnicas = Array.from(
@@ -78,9 +64,12 @@ const MessageScheduling = () => {
 
     async function getAll() {
         try {
-            const lsCiudad = await GetComboProgramacionOrdenes();
-            const ciudadesUnicas = agruparCiudades(lsCiudad.data);
+            const lsServerCiudad = await GetComboProgramacionOrdenes();
+            const ciudadesUnicas = agruparCiudades(lsServerCiudad.data);
             setLsCiudad(ciudadesUnicas);
+
+            const lsServerTipoExamen = await GetByTipoCatalogoCombo(CodCatalogo.LABORATORIO_ORDENES_PARACLINICOS);
+            setLsTipoExamenLaboral(lsServerTipoExamen.data);
         } catch (error) {
 
         }
@@ -95,11 +84,11 @@ const MessageScheduling = () => {
             const lsServer = await GetByProgramacionOrdenesProveedor(idCiudad);
             if (lsServer.data.exito) {
                 validateParaclinico.onTrue();
-                setLsDataParaclinico(lsServer.data.datos);
+                setDataParaclinico(lsServer.data.datos);
             } else {
                 validateParaclinico.onFalse();
                 setTextError(lsServer.data.mensaje);
-                setLsDataParaclinico([]);
+                setDataParaclinico([]);
             }
         } catch (error) {
 
@@ -142,23 +131,44 @@ const MessageScheduling = () => {
 
     const handleChangeCity = async (event) => {
         try {
-            setCiudadExamen(event.target.value);
             getAllParaclinico(event.target.value);
         } catch (error) {
 
         }
     };
 
-    const handleClick = async (datos) => {
+    const handleClick = async () => {
         try {
-            alert("Hola");
-        } catch (error) {
+            if (!tipoExamenLaboral) {
+                setErrorMessage("Debe elegir un tipo de examen laboral para el empleado");
+                setOpenError(true);
+                return;
+            }
 
+            const modeldata = {
+                tipoProgramacion: "individual",
+                documento: documento,
+                idGes: employeeData.idGes,
+                proveedores: dataParaclinico.map(pa => pa.id),
+                idTipoExamenLaboral: tipoExamenLaboral
+            }
+
+            const response = await InsertIndividualProgramacionOrdenes(modeldata);
+            if (response.data.exito) {
+                setOpenSuccess(true);
+            } else {
+                setErrorMessage(response.data.mensaje);
+                setOpenError(true);
+            }
+        } catch (error) {
+            setErrorMessage("Error en la petición");
+            setOpenError(true);
         }
     };
 
     return (
         <Grid container spacing={2}>
+            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
             <Grid item xs={12}>
@@ -256,73 +266,83 @@ const MessageScheduling = () => {
             {employeeData !== null && <Grid item xs={12} sx={{ my: 1.5 }}><Divider /></Grid>}
 
             <Grid item xs={12}>
-                <FormProvider {...methods}>
-                    <Grid container spacing={2}>
-                        {employeeData !== null ?
-                            <Grid item xs={12}>
-                                <AnimateComponent>
-                                    <Grid container spacing={2}>
+                <Grid container spacing={2}>
+                    {employeeData !== null &&
+                        <Grid item xs={12}>
+                            <AnimateComponent>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <BoxTypography title="ÚLTIMO TIPO DE ATENCIÓN:" data={validateData(employeeData?.ultimaAtencionEMO)} />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <BoxTypography title="ÚLTIMA FECHA DE EMO:" data={validateData(ViewFormat(employeeData?.fechaUltimoEMO))} />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <BoxTypography title="MESES TRANSCURRIDOS:" data={validateData(employeeData?.mesesUltimoEMO)} />
+                                    </Grid>
+
+                                    {!validateParaclinico.value &&
                                         <Grid item xs={12} md={6} lg={4}>
-                                            <BoxTypography title="ÚLTIMO TIPO DE ATENCIÓN:" data={validateData(employeeData?.ultimaAtencionEMO)} />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={6} lg={4}>
-                                            <BoxTypography title="ÚLTIMA FECHA DE EMO:" data={validateData(ViewFormat(employeeData?.fechaUltimoEMO))} />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={6} lg={4}>
-                                            <BoxTypography title="MESES TRANSCURRIDOS:" data={validateData(employeeData?.mesesUltimoEMO)} />
-                                        </Grid>
-
-                                        {!validateParaclinico.value &&
-                                            <Grid item xs={12} md={6} lg={4}>
-                                                <SelectOnChange
-                                                    name="ciudad"
-                                                    label="Ciudad"
-                                                    value={ciudadExamen}
-                                                    options={lsCiudad}
-                                                    onChange={handleChangeCity}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </Grid>
-                                        }
-
-                                        <Grid item xs={12}>
-                                            <Divider sx={{ my: 1.5 }} />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <ListDetailParaclinicos
-                                                setLsDataParaclinico={setLsDataParaclinico}
-                                                dataParaclinico={dataParaclinico}
-                                                textError={textError}
-                                                validateParaclinico={validateParaclinico}
+                                            <SelectOnChange
+                                                name="ciudad"
+                                                label="Ciudad"
+                                                options={lsCiudad}
+                                                onChange={handleChangeCity}
+                                                size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </Grid>
+                                    }
+
+                                    <Grid item xs={12}>
+                                        <Divider sx={{ my: 1.5 }} />
                                     </Grid>
-                                </AnimateComponent>
-                            </Grid> : null
-                        }
+
+                                    {validateParaclinico.value &&
+                                        <Grid item xs={12}>
+                                            <SelectOnChange
+                                                maxWidth="1100px"
+                                                name="tipoExamenLaboral"
+                                                label="Tipo de examen laboral"
+                                                options={lsTipoExamenLaboral}
+                                                value={tipoExamenLaboral}
+                                                onChange={(e) => setTipoExamenLaboral(e.target.value)}
+                                            />
+                                        </Grid>
+                                    }
+
+                                    <Grid item xs={12}>
+                                        <ListDetailParaclinicos
+                                            setDataParaclinico={setDataParaclinico}
+                                            dataParaclinico={dataParaclinico}
+                                            textError={textError}
+                                            validateParaclinico={validateParaclinico}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </AnimateComponent>
+                        </Grid>
+                    }
+                </Grid>
+
+                <Grid container spacing={2} sx={{ pt: 4 }}>
+                    <Grid item xs={6} md={4} lg={2}>
+                        <AnimateButton>
+                            <Button disabled={blockSave.value} variant="contained" fullWidth onClick={handleClick}>
+                                Programar órdenes
+                            </Button>
+                        </AnimateButton>
                     </Grid>
 
-                    <Grid container spacing={2} sx={{ pt: 4 }}>
-                        <Grid item xs={6} md={4} lg={2}>
-                            <AnimateButton>
-                                <Button disabled={blockSave.value} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                    Programar órdenes
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
-
-                        <Grid item xs={6} md={4} lg={2}>
-                            <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/programming/view")}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </AnimateButton>
-                        </Grid>
+                    <Grid item xs={6} md={4} lg={2}>
+                        <AnimateButton>
+                            <Button variant="outlined" fullWidth onClick={() => navigate("/programming/view")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </AnimateButton>
                     </Grid>
-                </FormProvider>
+                </Grid>
             </Grid>
         </Grid>
     );

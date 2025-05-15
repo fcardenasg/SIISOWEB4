@@ -10,6 +10,7 @@ import {
     Grid,
     IconButton,
     InputAdornment,
+    ListItemText,
     Table,
     TableBody,
     TableCell,
@@ -95,15 +96,9 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'fecha',
+        id: 'fechaRegistro',
         numeric: false,
-        label: 'Fecha',
-        align: 'left'
-    },
-    {
-        id: 'usuarioRegistro',
-        numeric: false,
-        label: 'Usuario Registro',
+        label: 'Bitácora',
         align: 'left'
     },
 ];
@@ -445,7 +440,6 @@ const ListOrdersIndividual = () => {
                                                 }
                                             }}
                                         >
-
                                             <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                                 <Checkbox
                                                     color="primary"
@@ -511,21 +505,16 @@ const ListOrdersIndividual = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography variant="subtitle1">
-                                                    {new Date(row.fechaRegistro).toLocaleString()}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">
-                                                    {row.usuarioRegistro}
-                                                </Typography>
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro?.toUpperCase()}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'caption' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>

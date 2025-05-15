@@ -26,10 +26,10 @@ export const Url = {
     UsuariosId: 'api/Usuarios/id',
     UsuariosEmail: 'api/Usuarios/email',
 
-    default:"api/CalendarioCitas",
+    default: "api/CalendarioCitas",
     getevents: 'api/CalendarioCitas/get-idmedico',
 
-   
+
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
@@ -174,6 +174,7 @@ export const Url = {
     VentaUnicaNotiSolicitante: 'api/VentanillaUnica/notificar-solicitante',
     VentaUnicaNotiUsuarios: 'api/VentanillaUnica/notificar',
     VentanillaUnicaMonitoreo: 'api/VentanillaUnica/list-monitoreo',
+    VentanillaUnicaComboSedeArea: 'api/VentanillaUnica/combo-sede-area',
     VentanillaUnicaDocumento: 'api/VentanillaUnica/documento',
     VentanillaUnicaId: 'api/VentanillaUnica/id',
 
@@ -227,8 +228,10 @@ export const Url = {
     ApuntesIndexacionId: 'api/ApuntesIndexacion/id',
 
     ProgramacionOrdenes: 'api/ProgramacionOrdenes',
+    ProgramacionOrdenesIndividual: 'api/ProgramacionOrdenes/individual',
     PrograOrdenesQueryProgramming: 'api/ProgramacionOrdenes/query-programming',
     ProgramacionOrdenesId: 'api/ProgramacionOrdenes/id',
+    ProgramacionOrdenesIndiOrd: 'api/ProgramacionOrdenes/individual-ordenes',
     ProgramacionOrdenesEmpleado: 'api/ProgramacionOrdenes/empleado',
     ProgramacionOrdenesProveedor: 'api/ProgramacionOrdenes/proveedor',
     ProgramacionOrdenesComboCiudad: 'api/ProgramacionOrdenes/combo-ciudad',

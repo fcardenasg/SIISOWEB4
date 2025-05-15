@@ -91,7 +91,8 @@ const Employee = () => {
         { resolver: yupResolver(validationSchema) }
     );
 
-    const { handleSubmit, setValue, formState: { errors }, reset } = methods;
+    const { handleSubmit, setValue, formState: { errors }, reset, watch } = methods;
+    const values = watch();
 
     const CapturePhoto = useCallback(() => {
         const imageSrc = WebCamRef.current.getScreenshot();
@@ -140,7 +141,7 @@ const Employee = () => {
         setLsMunicipioTrabaja(resultMunicipioNacimiento);
     };
 
-    async function GetAll() {
+    async function getAll() {
         try {
             const lsServerCompany = await GetAllCompany(0, 0);
             var resultCompany = lsServerCompany.data.entities.map((item) => ({
@@ -307,15 +308,28 @@ const Employee = () => {
     }
 
     useEffect(() => {
-        GetAll();
-    }, [])
+        getAll();
+    }, []);
+
+    useEffect(() => {
+        if (values.genero) {
+            if (values.genero != DefaultValue.GeneroPersonalizado)
+                setValue("grupoLGBT", null);
+        }
+    }, [values.genero]);
 
     const CleanCombo = () => {
         setImgSrc(null);
         setIdTipoContrato(null);
-        setDptoResidencia('');
-        setDptoNacido('');
-        setDptoResidenciaTrabaja('');
+        setDptoResidencia("");
+        setDptoNacido("");
+        setDptoResidenciaTrabaja("");
+
+        setValue("fechaNaci", "");
+        setValue("fechaContrato", "");
+        setValue("fechaIngreso", "");
+        setValue("fechaUltimoControl", "");
+        setValue("fechaEgreso", "");
     }
 
     const handleClick = async (datos) => {
@@ -478,6 +492,31 @@ const Employee = () => {
                                             bug={errors.empresa}
                                         />
                                     </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputSelect
+                                            defaultValue=""
+                                            name="genero"
+                                            label="Sexo"
+                                            options={lsGenero}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.genero}
+                                        />
+                                    </Grid>
+
+                                    {values.genero == DefaultValue.GeneroPersonalizado &&
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputSelect
+                                                defaultValue=""
+                                                name="grupoLGBT"
+                                                label="Género"
+                                                options={lsGrupoLGBT}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.grupoLGBT}
+                                            />
+                                        </Grid>
+                                    }
+
                                     <Grid item xs={12} md={6} lg={4}>
                                         <InputSelect
                                             defaultValue=""
@@ -494,28 +533,6 @@ const Employee = () => {
                                             label="Fecha de Nacimiento"
                                             name="fechaNaci"
                                             bug={errors.fechaNaci}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <InputSelect
-                                            defaultValue=""
-                                            name="genero"
-                                            label="Sexo"
-                                            options={lsGenero}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.genero}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <InputSelect
-                                            defaultValue=""
-                                            name="grupoLGBT"
-                                            label="Género"
-                                            options={lsGrupoLGBT}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors.grupoLGBT}
                                         />
                                     </Grid>
 
@@ -566,7 +583,7 @@ const Employee = () => {
                                         setIdTipoContrato(e.target.value);
 
                                         if (e.target.value === 9717) {
-                                            setValue("fechaContrato", null);
+                                            setValue("fechaContrato", "");
                                             setValue("turno", "");
                                             setValue("grupo", "");
                                             setValue("rotation", "");

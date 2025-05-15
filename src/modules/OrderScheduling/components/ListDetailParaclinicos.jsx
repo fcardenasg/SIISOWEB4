@@ -11,18 +11,16 @@ import {
 import { GetComboProgramacionOrdenes, GetSupplierByCityIndividual } from 'api/clients/ProgramacionOrdenesClient';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { useEffect, useState } from 'react';
-
 import MainCard from 'ui-component/cards/MainCard';
 
-const ListDetailParaclinicos = ({ validateParaclinico, textError, setLsDataParaclinico, dataParaclinico }) => {
+const ListDetailParaclinicos = ({ validateParaclinico, textError, setDataParaclinico, dataParaclinico }) => {
     const [lsCiudad, setLsCiudad] = useState([]);
-    const [ciudad, setCiudad] = useState({});
 
     useEffect(() => {
         async function getAll() {
             try {
-                const lsCiudad = await GetComboProgramacionOrdenes();
-                setLsCiudad(lsCiudad.data);
+                const lsServerCiudad = await GetComboProgramacionOrdenes();
+                setLsCiudad(lsServerCiudad.data);
             } catch (error) { }
         }
 
@@ -34,30 +32,24 @@ const ListDetailParaclinicos = ({ validateParaclinico, textError, setLsDataParac
             const dataCity = await GetSupplierByCityIndividual(value, id);
 
             if (dataCity.data) {
-                setLsDataParaclinico((prevState) =>
+                setDataParaclinico((prevState) =>
                     prevState.map((item) =>
                         item.id === id
                             ? {
                                 ...item,
                                 id: dataCity.data.id,
-                                nameTipoExamen: dataCity.data.nameTipoExamen,
                                 nameProveedor: dataCity.data.nameProveedor,
-                                idTipoExamen: dataCity.data.idTipoExamen,
-                                idCiudad: value, // Actualiza el valor de la ciudad
+                                idCiudad: value,
                             }
                             : item
                     )
                 );
-
-                setCiudad((prevState) => ({
-                    ...prevState,
-                    [id]: value, // Asegúrate de que el estado refleje el nuevo valor
-                }));
             }
         } catch (error) {
             console.error("Error al actualizar la ciudad:", error);
         }
     };
+
 
     return (
         <>
@@ -83,7 +75,7 @@ const ListDetailParaclinicos = ({ validateParaclinico, textError, setLsDataParac
                                                 sx={{ width: 200 }}
                                                 name={`ciudad-${row.id}`}
                                                 label="Ciudad"
-                                                value={ciudad[row.id] || row.idCiudad}
+                                                value={row.idCiudad}
                                                 options={lsCiudad.filter((fil) => fil.intcodigo === row.idTipoExamen)}
                                                 onChange={(e) => handleCiudadChange(row.id, e.target.value)}
                                             />

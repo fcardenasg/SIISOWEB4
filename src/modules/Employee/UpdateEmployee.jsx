@@ -93,10 +93,7 @@ const UpdateEmployee = () => {
     const [lsMunicipioTrabaja, setLsMunicipioTrabaja] = useState([]);
     const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState("");
     const [dptoNacido, setDptoNacido] = useState("");
-    const [municipioResidenciaTrabaja, setMunicipioResidenciaTrabaja] = useState("");
     const [dptoResidencia, setDptoResidencia] = useState("");
-    const [municipioNacido, setMunicipioNacido] = useState("");
-    const [municipioResidencia, setMunicipioResidencia] = useState("");
 
     const [idTipoContrato, setIdTipoContrato] = useState(null);
     const [imgSrc, setImgSrc] = useState(null);
@@ -106,35 +103,28 @@ const UpdateEmployee = () => {
 
     async function getAll() {
         try {
-
             const lsServerEmployeeId = await GetByIdEmployee(id);
-            if (lsServerEmployeeId?.data.status === 200) {
-                setDataEmployee(lsServerEmployeeId?.data.data);
-                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === "" ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
+            const employeeData = lsServerEmployeeId?.data.data;
 
-                setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
-                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
-                setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
-                setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
-
-                setLsMunicipioTrabaja(lsServerEmployeeId?.data.data.lsDptoResidenciaTrabaja);
-                setMunicipioN(lsServerEmployeeId?.data.data.lsDptoNacido);
-                setMunicipioR(lsServerEmployeeId?.data.data.lsDptoResidencia);
-            } else {
-                setOpenError(true);
+            setOpenError(lsServerEmployeeId?.data.status !== 200);
+            if (lsServerEmployeeId?.data.status !== 200)
                 setErrorMessage(lsServerEmployeeId?.data.message);
 
-                setDataEmployee(lsServerEmployeeId?.data.data);
-                setImgSrc(lsServerEmployeeId?.data.data.imagenUrl === "" ? userEmpleado : lsServerEmployeeId?.data.data.imagenUrl);
+            if (employeeData) {
+                const { imagenUrl, tipoContrato, dptoNacido, dptoResidenciaTrabaja, dptoResidencia,
+                    lsDptoResidenciaTrabaja, lsDptoNacido, lsDptoResidencia, genero
+                } = employeeData;
 
-                setIdTipoContrato(lsServerEmployeeId?.data.data.tipoContrato);
-                setDptoNacido(lsServerEmployeeId?.data.data.dptoNacido);
-                setDptoResidenciaTrabaja(lsServerEmployeeId?.data.data.dptoResidenciaTrabaja);
-                setDptoResidencia(lsServerEmployeeId?.data.data.dptoResidencia);
-
-                setLsMunicipioTrabaja(lsServerEmployeeId?.data.data.lsDptoResidenciaTrabaja);
-                setMunicipioN(lsServerEmployeeId?.data.data.lsDptoNacido);
-                setMunicipioR(lsServerEmployeeId?.data.data.lsDptoResidencia);
+                setValue("genero", genero);
+                setDataEmployee(employeeData);
+                setImgSrc(imagenUrl || userEmpleado);
+                setIdTipoContrato(tipoContrato);
+                setDptoNacido(dptoNacido);
+                setDptoResidenciaTrabaja(dptoResidenciaTrabaja);
+                setDptoResidencia(dptoResidencia);
+                setLsMunicipioTrabaja(lsDptoResidenciaTrabaja);
+                setMunicipioN(lsDptoNacido);
+                setMunicipioR(lsDptoResidencia);
             }
 
             const lsServerDepartEmpresa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DepartEmpresa);
@@ -319,7 +309,15 @@ const UpdateEmployee = () => {
         { resolver: yupResolver(validationSchema) }
     );
 
-    const { handleSubmit, setValue, formState: { errors } } = methods;
+    const { handleSubmit, watch, setValue, formState: { errors } } = methods;
+    const values = watch();
+
+    useEffect(() => {
+        if (values.genero) {
+            if (values.genero != DefaultValue.GeneroPersonalizado)
+                setValue("grupoLGBT", null);
+        }
+    }, [values.genero]);
 
     async function GetSubString(codigo) {
         try {
@@ -448,7 +446,7 @@ const UpdateEmployee = () => {
         if (dataEmployee !== null) {
             setTimeWait(true);
         }
-    }, 500);
+    }, 1500);
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Empleado}>
@@ -544,6 +542,31 @@ const UpdateEmployee = () => {
                                                 bug={errors.empresa}
                                             />
                                         </Grid>
+
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputSelect
+                                                name="genero"
+                                                label="Sexo"
+                                                defaultValue={dataEmployee.genero}
+                                                options={lsGenero}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors.genero}
+                                            />
+                                        </Grid>
+
+                                        {values.genero == DefaultValue.GeneroPersonalizado &&
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputSelect
+                                                    defaultValue={dataEmployee.grupoLGBT}
+                                                    name="grupoLGBT"
+                                                    label="Género"
+                                                    options={lsGrupoLGBT}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.grupoLGBT}
+                                                />
+                                            </Grid>
+                                        }
+
                                         <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="sede"
@@ -559,27 +582,6 @@ const UpdateEmployee = () => {
                                                 label="Fecha de Nacimiento"
                                                 name="fechaNaci"
                                                 defaultValue={dataEmployee.fechaNaci}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} md={6} lg={4}>
-                                            <InputSelect
-                                                name="genero"
-                                                label="Sexo"
-                                                defaultValue={dataEmployee.genero}
-                                                options={lsGenero}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors.genero}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={6} lg={4}>
-                                            <InputSelect
-                                                defaultValue={dataEmployee.grupoLGBT}
-                                                name="grupoLGBT"
-                                                label="Género"
-                                                options={lsGrupoLGBT}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors.grupoLGBT}
                                             />
                                         </Grid>
 

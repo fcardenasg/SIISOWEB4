@@ -243,6 +243,8 @@ const ViewHelpManagement = Loadable(lazy(() => import('modules/Help/HelpManageme
 const Indicators = Loadable(lazy(() => import('modules/Help/Indicators/Indicators')));
 
 const ListMessageScheduling = Loadable(lazy(() => import('modules/OrderScheduling/ListMessageScheduling')));
+const ViewIndividualOrders = Loadable(lazy(() => import('modules/OrderScheduling/ViewIndividualOrders')));
+const ViewMassiveOrders = Loadable(lazy(() => import('modules/OrderScheduling/ViewMassiveOrders')));
 const OrderScheduling = Loadable(lazy(() => import('modules/OrderScheduling/OrderScheduling')));
 
 const MainRoutes = {
@@ -1047,8 +1049,12 @@ const MainRoutes = {
             element: <OrderScheduling />
         },
         {
-            path: '/schedule-orders/monitoring',
-            element: <ListMessageScheduling />
+            path: '/programming/monitoring-individual/:id',
+            element: <ViewIndividualOrders />
+        },
+        {
+            path: '/programming/monitoring-massive/:id',
+            element: <ViewMassiveOrders />
         },
     ]
 };

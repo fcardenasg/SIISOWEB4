@@ -9,6 +9,7 @@ import {
     Grid,
     IconButton,
     InputAdornment,
+    ListItemText,
     Table,
     TableBody,
     TableCell,
@@ -24,7 +25,6 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
-import { DeleteMedicines } from 'api/clients/MedicinesClient';
 
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { TitleButton } from 'components/helpers/Enums';
@@ -35,8 +35,9 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { ViewFormat } from 'components/helpers/Format';
-import Cargando from 'components/loading/Cargando';
+import { DeleteProgramacionOrdenes, GetAllProgramacionOrdenes } from 'api/clients/ProgramacionOrdenesClient';
+import LoadingList from 'components/loading/LoadingList';
+import { useBoolean } from 'hooks/use-boolean';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 
@@ -65,35 +66,35 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'numPedido',
+        id: 'id',
         numeric: false,
-        label: 'Documento',
+        label: 'Id',
         align: 'left'
     },
     {
-        id: 'nameProveedor',
+        id: 'tipoProgramacion',
         numeric: false,
-        label: 'Nombre',
+        label: 'Tipo de programación',
         align: 'left'
     },
     {
-        id: 'usuarioRegistro',
+        id: 'nameGes',
         numeric: false,
-        label: 'Tipo de examen',
+        label: 'GES',
         align: 'left'
     },
     {
-        id: 'usuarioRegistro',
+        id: 'numRegistro',
         numeric: false,
-        label: 'Último EMO',
+        label: 'NumRegistro',
         align: 'left'
     },
     {
-        id: 'usuarioRegistro',
+        id: 'fechaRegistro',
         numeric: false,
-        label: 'Tiempo transcurrido',
+        label: 'Bitácora',
         align: 'left'
-    },
+    }
 ];
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
@@ -184,13 +185,14 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
 
 const ListMessageScheduling = () => {
     const navigate = useNavigate();
+    const loadingModulo = useBoolean(true);
     const [lsMedicamentos, setLsMedicamentos] = useState([]);
     const [openDelete, setOpenDelete] = useState(false);
     const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('fechaRegistro');
+    const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -199,12 +201,17 @@ const ListMessageScheduling = () => {
 
     async function getAll() {
         try {
-            /* const lsServer = await QueryProgramming();
-            if (lsServer.data.success) {
-                setLsMedicamentos(lsServer.data.data);
-                setRows(lsServer.data.data);
-            } */
-        } catch (error) { }
+            const lsServer = await GetAllProgramacionOrdenes();
+            if (lsServer.status === 200) {
+                setTimeout(() => {
+                    loadingModulo.onFalse();
+                    setLsMedicamentos(lsServer.data);
+                    setRows(lsServer.data);
+                }, 500);
+            }
+        } catch (error) {
+            loadingModulo.onFalse();
+        }
     }
 
     useEffect(() => {
@@ -219,7 +226,7 @@ const ListMessageScheduling = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['codigo', 'descripcion'];
+                const properties = ['id', 'tipoProgramacion', 'nameGes', 'numRegistro', 'usuarioRegistro', 'fechaRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -247,7 +254,7 @@ const ListMessageScheduling = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = lsMedicamentos.map((n) => n.documento);
+            const newSelectedId = lsMedicamentos.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -287,10 +294,9 @@ const ListMessageScheduling = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteMedicines(idCheck);
+                    const result = await DeleteProgramacionOrdenes(idCheck);
                     if (result.status === 200) {
                         setOpenDelete(true);
-
                         setSearch('');
                         setSelected([]);
                         getAll();
@@ -305,6 +311,7 @@ const ListMessageScheduling = () => {
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
+    const notFound = !lsMedicamentos.length;
 
     return (
         <MainCard title="Listado de programación de ordenes" content={false}>
@@ -343,8 +350,8 @@ const ListMessageScheduling = () => {
                 </Grid>
             </CardContent>
 
-            <TableContainer>
-                {lsMedicamentos.length === 0 ? <Cargando size={220} myy={6} /> :
+            <LoadingList loadingModulo={loadingModulo.value} notFound={notFound}>
+                <TableContainer>
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -364,7 +371,7 @@ const ListMessageScheduling = () => {
 
                                     if (typeof row === 'string') return null;
 
-                                    const isItemSelected = isSelected(row.documento);
+                                    const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -376,7 +383,7 @@ const ListMessageScheduling = () => {
                                             key={index}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.documento)}>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
@@ -390,14 +397,14 @@ const ListMessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.documento)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.documento}
+                                                    {row.id}
                                                 </Typography>
                                             </TableCell>
 
@@ -405,14 +412,14 @@ const ListMessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.documento)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nombre}
+                                                    {row.tipoProgramacion}
                                                 </Typography>
                                             </TableCell>
 
@@ -420,14 +427,14 @@ const ListMessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.documento)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.tipoExamen}
+                                                    {row.nameGes}
                                                 </Typography>
                                             </TableCell>
 
@@ -435,14 +442,14 @@ const ListMessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.documento)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {ViewFormat(row.fechaUltimoEMO)}
+                                                    {`${row.numRegistro} REGISTROS`}
                                                 </Typography>
                                             </TableCell>
 
@@ -450,19 +457,26 @@ const ListMessageScheduling = () => {
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
-                                                onClick={(event) => handleClick(event, row.documento)}
+                                                onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {`${row.fechaProximoEMO} meses`}
-                                                </Typography>
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro?.toUpperCase()}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'caption' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
                                             </TableCell>
 
                                             <TableCell align="center" sx={{ pr: 3 }}>
-                                                <Tooltip title="Actualizar" onClick={() => navigate(`/medicines/update/${row.documento}`)}>
+                                                <Tooltip title="Monitorear" onClick={
+                                                    () => navigate(row.tipoProgramacion === "MASIVA" ? `/programming/monitoring-massive/${row.id}`
+                                                        : `/programming/monitoring-individual/${row.id}`)}
+                                                >
                                                     <IconButton size="large">
                                                         <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
@@ -482,8 +496,8 @@ const ListMessageScheduling = () => {
                             )}
                         </TableBody>
                     </Table>
-                }
-            </TableContainer>
+                </TableContainer>
+            </LoadingList>
 
             <TablePagination
                 labelRowsPerPage="Filas por página:"

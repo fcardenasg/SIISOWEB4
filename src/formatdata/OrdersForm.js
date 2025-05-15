@@ -1,16 +1,16 @@
 export function PostOrders(documento, fecha, idTipoExamen, observaciones = "", usuarioRegistro,
-    fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado) {
+    fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado, vih, pruebaEmbarazo) {
     return {
         documento, fecha, idTipoExamen, observaciones, usuarioRegistro,
-        fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado
+        fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado, vih, pruebaEmbarazo
     }
 };
 
 export function PutOrders(id, documento, fecha, idTipoExamen, observaciones, usuarioRegistro,
-    fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado) {
+    fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado, vih, pruebaEmbarazo) {
     return {
         id, documento, fecha, idTipoExamen, observaciones, usuarioRegistro,
-        fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado
+        fechaRegistro, usuarioModifico, fechaModifico, citacion, consentimientoInformado, vih, pruebaEmbarazo
     };
 }
 

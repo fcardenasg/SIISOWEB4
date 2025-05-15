@@ -57,10 +57,12 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
     const [lsEstudioParaclinico, setLsEstudioParaclinico] = useState([]);
     const [lsOrdenesParaclinicos, setLsOrdenesParaclinicos] = useState([]);
 
-    const xsGrid = paraclinicos === DefaultValue.ORDENES_LABORATORIO || paraclinicos === DefaultValue.ORDENES_RNM
-        || paraclinicos === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? 3 : 4;
-    const tipoExamenRNM = paraclinicos === DefaultValue.ORDENES_RNM ? true : false;
+    const xsGrid = paraclinicos === DefaultValue.ORDENES_LABORATORIO ? 4
+        : paraclinicos === DefaultValue.ORDENES_RNM ? 6
+            : paraclinicos === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? 4 : 4;
+
     const tipoExamenLabor = paraclinicos === DefaultValue.ORDENES_LABORATORIO ? true : false;
+    const tipoExamenRNM = paraclinicos === DefaultValue.ORDENES_RNM ? true : false;
     const fechaExmaneFisico = paraclinicos === DefaultValue.ORDENES_FECHA_EXAM_FISICO ? true : false;
 
     useEffect(() => {
@@ -169,28 +171,38 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
 
     const handleClick = async (datos) => {
         try {
+            if (paraclinicos == '') {
+                setOpenError(true);
+                setErrorMessage("Debe seleccionar un paraclínico");
+                return;
+            }
+
+            if (proveedor == '') {
+                setOpenError(true);
+                setErrorMessage("Debe seleccionar un proveedor");
+                return;
+            }
+
             var proveedorMap = fechaExmaneFisico ? '01' : proveedor;
             var ciudadMap = fechaExmaneFisico ? DefaultValue.SINREGISTRO_GLOBAL : ciudad;
 
             const DataToInsert = PostOrdersParaclinico(paraclinicos, idOrdenes, proveedorMap, ciudadMap, datos.idTipoExamenLaboratorio,
                 datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, user?.nameuser, undefined, "", undefined);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertOrdersParaclinicos(DataToInsert);
-                if (result.status === 200) {
-                    if (result.data.message === 'Este paraclinico ya esta registrado') {
-                        setOpenError(true);
-                        setErrorMessage(result.data.message);
-                    } else {
-                        setDisabledButton({ ...disabledButton, disButtonMail: true });
-                        setAddItemClickedEmpresa(false);
-                        getAllListParaclinicos();
-                        setParaclinicos('');
-                        setProveedor('');
-                        setCiudad('');
-                        reset();
-                        setOpenSuccess(true);
-                    }
+            const result = await InsertOrdersParaclinicos(DataToInsert);
+            if (result.status === 200) {
+                if (result.data.message === 'Este paraclinico ya esta registrado') {
+                    setOpenError(true);
+                    setErrorMessage(result.data.message);
+                } else {
+                    setDisabledButton({ ...disabledButton, disButtonMail: true });
+                    setAddItemClickedEmpresa(false);
+                    getAllListParaclinicos();
+                    setParaclinicos('');
+                    setProveedor('');
+                    setCiudad('');
+                    reset();
+                    setOpenSuccess(true);
                 }
             }
         } catch (error) {
@@ -257,8 +269,47 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                                     />
                                 </Grid>
 
-                                {tipoExamenLabor ?
-                                    <Grid item xs={9}>
+                                {tipoExamenRNM &&
+                                    <Grid item xs={xsGrid}>
+                                        <FormProvider {...methods}>
+                                            <InputSelect
+                                                name="idTipoExamenRNM"
+                                                label="Tipo De Examen"
+                                                options={lsTipoRNM}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                bug={errors}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+                                }
+
+                                <Grid item xs={xsGrid}>
+                                    <SelectOnChange
+                                        name="idProveedor"
+                                        label="Proveedor"
+                                        value={proveedor}
+                                        onChange={handleProveedor}
+                                        options={lsProveedorCombo}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={xsGrid}>
+                                    <SelectOnChange
+                                        disabled
+                                        name="idCiudad"
+                                        label="Ciudad"
+                                        value={ciudad}
+                                        onChange={(e) => setCiudad(e.target.value)}
+                                        options={lsCiudad}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors}
+                                    />
+                                </Grid>
+
+                                {tipoExamenLabor &&
+                                    <Grid item xs={12}>
                                         <FormProvider {...methods}>
                                             <InputSelect
                                                 name="idTipoExamenLaboratorio"
@@ -266,33 +317,24 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                                                 options={lsLaboratorio}
                                                 size={matchesXS ? 'small' : 'medium'}
                                                 bug={errors}
+                                                maxWidth="1100px"
                                             />
                                         </FormProvider>
-                                    </Grid> : tipoExamenRNM ?
-                                        <Grid item xs={xsGrid}>
-                                            <FormProvider {...methods}>
-                                                <InputSelect
-                                                    name="idTipoExamenRNM"
-                                                    label="Tipo De Examen"
-                                                    options={lsTipoRNM}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors}
-                                                />
-                                            </FormProvider>
-                                        </Grid> : fechaExmaneFisico ?
-                                            <Grid item xs={xsGrid}>
-                                                <FormProvider {...methods}>
-                                                    <InputDatePicker
-                                                        label="Fecha De Examen Físico"
-                                                        name="fechaExamenFisico"
-                                                        defaultValue={new Date()}
-                                                    />
-                                                </FormProvider>
-                                            </Grid> : null
+                                    </Grid>
                                 }
 
-                                {fechaExmaneFisico ?
-                                    <Fragment>
+                                {fechaExmaneFisico &&
+                                    <>
+                                        <Grid item xs={xsGrid}>
+                                            <FormProvider {...methods}>
+                                                <InputDatePicker
+                                                    label="Fecha De Examen Físico"
+                                                    name="fechaExamenFisico"
+                                                    defaultValue={new Date()}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+
                                         <Grid item xs={xsGrid} sx={{ align: "center" }}>
                                             <FormProvider {...methods}>
                                                 <InputCheckBox
@@ -303,45 +345,20 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                                                 />
                                             </FormProvider>
                                         </Grid>
-                                    </Fragment> :
-                                    <Fragment>
-                                        <Grid item xs={xsGrid}>
-                                            <SelectOnChange
-                                                name="idProveedor"
-                                                label="Proveedor"
-                                                value={proveedor}
-                                                onChange={handleProveedor}
-                                                options={lsProveedorCombo}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </Grid>
+                                    </>
+                                }
 
-                                        <Grid item xs={xsGrid}>
-                                            <SelectOnChange
-                                                disabled
-                                                name="idCiudad"
-                                                label="Ciudad"
-                                                value={ciudad}
-                                                onChange={(e) => setCiudad(e.target.value)}
-                                                options={lsCiudad}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                                bug={errors}
-                                            />
-                                        </Grid>
-                                    </Fragment>}
-                            </Grid>
+                                <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <Button color="error" onClick={() => setAddItemClickedEmpresa(false)}>
+                                            Cancelar
+                                        </Button>
 
-                            <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">
-                                <Stack direction="row" spacing={1} alignItems="center">
-                                    <Button color="error" onClick={() => setAddItemClickedEmpresa(false)}>
-                                        Cancelar
-                                    </Button>
-
-                                    <Button variant="contained" size="small" onClick={handleSubmit(handleClick)}>
-                                        Adicionar
-                                    </Button>
-                                </Stack>
+                                        <Button variant="contained" size="small" onClick={handleSubmit(handleClick)}>
+                                            Adicionar
+                                        </Button>
+                                    </Stack>
+                                </Grid>
                             </Grid>
                         </Transitions>
 

@@ -94,7 +94,7 @@ const ListMedicationOutlet = () => {
                     setLsProgramming(lsData);
                     setRows(lsData);
                     loadingModulo.onFalse();
-                }, 1500);
+                }, 500);
             }
         } catch (error) {
             loadingModulo.onFalse();

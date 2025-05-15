@@ -5,7 +5,7 @@ export const CodCatalogo = {
     Sede: 6,
     Escolaridad: 2,
     Genero: 1,
-    GrupoLGBT: 246,
+    GrupoLGBT: 247,
     EstadoCivil: 3,
     TipoContrato: 7,
     Rol: 21,
@@ -270,6 +270,7 @@ export const Modulo = {
 
 export const DefaultValue = {
     SINREGISTRO_GLOBAL: 1,
+    GeneroPersonalizado: 10193,
     TIPO_TRANSPORTE_OTRO: 10159,
     BANDERA_DRUMMOND: 7116,
     SINREGISTRO_TEXTO: 'REGISTRO NO APLICA',
@@ -299,6 +300,7 @@ export const DefaultValue = {
     TIPO_ORDEN_LABORATORIO: 4024,
 
     TIPO_EXAMEN_CONTROLPERIODICO: 4109,
+    TIPO_EXAMEN_INGRESO: 4112,
 
     /* TIPO ATENCIÓN */
     TIPO_ATENCION_EMO: 3900,

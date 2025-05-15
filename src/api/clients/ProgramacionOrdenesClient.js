@@ -5,8 +5,12 @@ export const QueryProgramming = async (parametro) => await postData(Url.PrograOr
 
 export const GetAllProgramacionOrdenes = async () => await getData(Url.ProgramacionOrdenes);
 export const GetByIdProgramacionOrdenes = async (id) => await getData(Url.ProgramacionOrdenesId, { id });
+
+export const GetAllByProgramacionOrdenes = async (idProgramacion) => await getData(Url.ProgramacionOrdenesIndiOrd, { idProgramacion });
+
 export const GetByProgramacionOrdenesProveedor = async (idCiudad) => await getData(Url.ProgramacionOrdenesProveedor, { idCiudad });
 export const InsertProgramacionOrdenes = async (programacion) => await postData(Url.ProgramacionOrdenes, programacion);
+export const InsertIndividualProgramacionOrdenes = async (programacion) => await postData(Url.ProgramacionOrdenesIndividual, programacion);
 export const UpdateProgramacionOrdenes = async (programacion) => await putData(Url.ProgramacionOrdenes, programacion);
 export const DeleteProgramacionOrdenes = async (idProgramacionOrdenes) => await deleteData(Url.ProgramacionOrdenes, { idProgramacionOrdenes });
 export const GetEmpleadoProgramacionOrdenes = async (documento) => await getData(Url.ProgramacionOrdenesEmpleado, { documento });

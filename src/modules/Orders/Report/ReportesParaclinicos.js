@@ -78,46 +78,54 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], 
 
     var cantidadParaclinico = lsDataReport.lsParaclinicos.length * 6;
 
-    doc.text(`CITACIÓN A EXAMEN FÍSICO PARA:            ${lsDataReport.nameTipoExamen} `, 5, 35);
+    doc.text(`CITACIÓN A EXAMEN FÍSICO PARA:    ${lsDataReport.nameTipoExamen} `, 5, 35);
+
+    if (lsDataReport.idTipoExamen == DefaultValue.TIPO_EXAMEN_INGRESO) {
+        doc.text(`¿Ordenar prueba de VIH?:   ${lsDataReport.vih ? 'SI' : 'NO'}`.toUpperCase(), 5, 43);
+        if (lsDataReport.genero == DefaultValue.GeneroWomen)
+            doc.text(`¿Ordenar prueba de embarazo?:  ${lsDataReport.pruebaEmbarazo ? 'SI' : 'NO'}`.toUpperCase(), 110, 43);
+    }
+
     doc.setFontSize(10);
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
 
     /* TITULOS DE CONTENIDO */
-    doc.text('Nro Orden:', 5, 48);
-    doc.text('Estimado Empleado(a):', 5, 55);
-    doc.text('Fecha Expedición:', 120, 48);
-    doc.text('CC No.', 120, 55);
+    const bajar = 7;
+    doc.text('Nro Orden:', 5, 48 + bajar);
+    doc.text('Estimado Empleado(a):', 5, 55 + bajar);
+    doc.text('Fecha Expedición:', 130, 48 + bajar);
+    doc.text('CC No.', 130, 55 + bajar);
 
-    doc.text(`${lsDataReport.nameTipoExamen === "INGRESO" ? "Cargo al que aspira:" : "Cargo:"}`, 5, 70);
-    doc.text('Departamento:', 5, 77);
-    doc.text('Grupo:', 5, 84);
+    doc.text(`${lsDataReport.idTipoExamen == DefaultValue.TIPO_EXAMEN_INGRESO ? "Cargo al que aspira:" : "Cargo:"}`, 5, 70 + bajar);
+    doc.text('Departamento:', 5, 77 + bajar);
+    doc.text('Grupo:', 5, 84 + bajar);
 
-    doc.text('Area:', 120, 77);
-    doc.text('Sede:', 120, 84);
+    doc.text('Area:', 130, 77 + bajar);
+    doc.text('Sede:', 130, 84 + bajar);
     doc.setFontSize(12);
     doc.text(`${lsDataReportParaclinico.filter(x => x.idParaclinico === DefaultValue.ORDENES_FECHA_EXAM_FISICO)
         .map(x => ViewFormat(x.fechaExamenFisico))
-        } `, 100, 120, null, null, "center");
+        } `, 100, 120 + bajar, null, null, "center");
 
     /* RENDERIZADO DE CONTENIDO */
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text(`${lsDataReport.id} `, 50, 48);
-    doc.text(`${lsDataReport.nameEmpleado} `, 50, 55);
-    doc.text(`${ViewFormat(lsDataReport.fecha)} `, 160, 48);
-    doc.text(`${lsDataReport.documento} `, 160, 55);
+    doc.text(`${lsDataReport.id} `, 48, 48 + bajar);
+    doc.text(`${lsDataReport.nameEmpleado} `, 48, 55 + bajar);
+    doc.text(`${ViewFormat(lsDataReport.fecha)} `, 170, 48 + bajar);
+    doc.text(`${lsDataReport.documento} `, 170, 55 + bajar);
 
-    doc.text(`${lsDataReport.nameCargo} `, 50, 70);
-    doc.text(`${lsDataReport.nameDepartamento} `, 50, 77);
-    doc.text(`${lsDataReport.nameGrupo} `, 50, 84);
-    doc.text(`${lsDataReport.nameArea} `, 160, 77);
-    doc.text(`${lsDataReport.nameSede} `, 160, 84);
+    doc.text(`${lsDataReport.nameCargo} `, 48, 70 + bajar);
+    doc.text(`${lsDataReport.nameDepartamento} `, 48, 77 + bajar);
+    doc.text(`${lsDataReport.nameGrupo} `, 48, 84 + bajar);
+    doc.text(`${lsDataReport.nameArea} `, 170, 77 + bajar);
+    doc.text(`${lsDataReport.nameSede} `, 170, 84 + bajar);
 
-    doc.text(`${config.typeDashboard === 'DLTD' ? citacionParrafoDLTD : citacionParrafoEnergy} ${ViewFormat(lsDataReport.fecha)}`, 5, 100, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
-    doc.text('Adjunto además órdenes de Paraclínicos, cuyos resultados debe traer el día del examen.', 5, 128);
-    doc.text(lsDataReport.lsParaclinicos.map((paracli, index) => { return String(`- ${paracli} `); }), 5, 135, { maxWidth: 200, lineHeightFactor: 2 });
-    doc.text("Agradecemos coordinar lo necesario para que los exámenes asignados sean realizados en las fechas programados y no sobrepasen el tiempo acordado con los proveedores.", 5, (145 + cantidadParaclinico), { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`${config.typeDashboard === 'DLTD' ? citacionParrafoDLTD : citacionParrafoEnergy} ${ViewFormat(lsDataReport.fecha)}`, 5, 100 + bajar, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text('Adjunto además órdenes de Paraclínicos, cuyos resultados debe traer el día del examen.', 5, 128 + bajar);
+    doc.text(lsDataReport.lsParaclinicos.map((paracli, index) => { return String(`- ${paracli} `); }), 5, 135 + bajar, { maxWidth: 200, lineHeightFactor: 2 });
+    doc.text("Agradecemos coordinar lo necesario para que los exámenes asignados sean realizados en las fechas programados y no sobrepasen el tiempo acordado con los proveedores.", 5, (145 + cantidadParaclinico) + bajar, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser, 20);
     getFirmaEmployee(doc, lsDataReport, 20);

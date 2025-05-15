@@ -1,12 +1,15 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Cargando from 'components/loading/Cargando';
+import EmailIcon from '@mui/icons-material/Email';
 import {
     Box,
+    Button,
     CardContent,
+    FormControl,
+    FormControlLabel,
     Grid,
     IconButton,
     InputAdornment,
+    Radio,
+    RadioGroup,
     Table,
     TableBody,
     TableCell,
@@ -16,38 +19,37 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    Typography,
-    Button,
-    FormControl,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
     Tooltip,
+    Typography,
     useMediaQuery
 } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
-import EmailIcon from '@mui/icons-material/Email';
 import { useTheme } from '@mui/material/styles';
+import { visuallyHidden } from '@mui/utils';
+import Cargando from 'components/loading/Cargando';
+import { Fragment, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { Message, TitleButton } from 'components/helpers/Enums';
-import MainCard from 'ui-component/cards/MainCard';
-import SendIcon from '@mui/icons-material/Send';
-import MailIcon from '@mui/icons-material/Mail';
 import PreviewIcon from '@mui/icons-material/Preview';
+import SendIcon from '@mui/icons-material/Send';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import { motion } from "framer-motion";
+import MainCard from 'ui-component/cards/MainCard';
 
-import SearchIcon from '@mui/icons-material/Search';
-import { GetAllVentanillaUnicaComboUsuario, GetAllVentanillaUnicaMonitoreo, NotificarUsuario } from 'api/clients/VentanillaUnicaClient';
-import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import SearchIcon from '@mui/icons-material/Search';
+import { LoadingButton } from '@mui/lab';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetAllVentanillaUnicaComboUsuario, GetAllVentanillaUnicaMonitoreo, GetGetComboVentanillaSedeArea, NotificarUsuario } from 'api/clients/VentanillaUnicaClient';
+import { ArrayTodaSede } from 'components/Arrays';
 import ControlModal from 'components/controllers/ControlModal';
-import ListReplay from './ListReplay';
+import { ViewFormat } from 'components/helpers/Format';
+import SelectOnChange from 'components/input/SelectOnChange';
+import useAuth from 'hooks/useAuth';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
-import useAuth from 'hooks/useAuth';
-import ViewEnviarSolicitud from './ViewEnviarSolicitud';
-import SelectOnChange from 'components/input/SelectOnChange';
-import { LoadingButton } from '@mui/lab';
+import ListReplay from './ListReplay';
+import EmptyContent from 'components/loading/EmptyContent';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -135,7 +137,7 @@ const headCells = [
     }
 ];
 
-function EnhancedTableHead({ order, orderBy, numSelected, rowCount, onRequestSort, theme }) {
+function EnhancedTableHead({ order, orderBy, numSelected, onRequestSort, theme }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -198,6 +200,11 @@ const ViewRespuesta = () => {
     const [idUsuarioNotificacion, setIdUsuarioNotificacion] = useState('');
     const [lsUsuarios, setLsUsuarios] = useState([]);
 
+    const [lsSede, setLsSede] = useState([]);
+    const [lsArea, setLsArea] = useState([]);
+    const [valueSede, setValueSede] = useState(0);
+    const [valueArea, setValueArea] = useState(0);
+
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
@@ -213,7 +220,7 @@ const ViewRespuesta = () => {
             setLsRespuesta([]);
 
             if (user?.idarea === 0) {
-                await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
+                await GetAllVentanillaUnicaMonitoreo(radioSearch, valueSede, valueArea).then(response => {
                     if (response.data.length === 0) {
                         setMessageAtencion(Message.NoRegistro);
                     } else if (response.data.length !== 0) {
@@ -232,7 +239,17 @@ const ViewRespuesta = () => {
 
     useEffect(() => {
         getAll();
-    }, [radioSearch]);
+    }, [radioSearch, valueSede, valueArea]);
+
+    useEffect(() => {
+        async function getCombo() {
+            const lsServerCombo = await GetGetComboVentanillaSedeArea();
+            setLsSede(lsServerCombo.data.sedes.concat(ArrayTodaSede.filter(fil => fil.value !== 1)));
+            setLsArea(lsServerCombo.data.areas.concat([{ value: 0, label: "TODAS LAS ÁREAS" }]));
+        }
+
+        getCombo();
+    }, []);
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -482,9 +499,22 @@ const ViewRespuesta = () => {
                 );
             });
     } else if (messageAtencion !== '') {
-        usersResult = <Typography sx={{ m: 7 }} variant="h3">{messageAtencion}</Typography>;
+        usersResult = (
+            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', padding: 4 }}>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ duration: 0.5 }}
+                    style={{ willChange: 'opacity, transform' }}
+                >
+                    <EmptyContent title={messageAtencion} />
+                </motion.div>
+            </Grid>
+
+        );
     } else {
-        usersResult = <Cargando myy={8} mxx={8} />;
+        usersResult = <Cargando size={200} myy={8} mxx={8} />;
     }
 
     return (
@@ -555,7 +585,7 @@ const ViewRespuesta = () => {
 
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="flex-end" spacing={2}>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={3}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -567,11 +597,36 @@ const ViewRespuesta = () => {
                             onChange={handleSearch}
                             placeholder="Buscar"
                             value={search}
-                            size="small"
+                            fullWidth
                         />
                     </Grid>
 
-                    <Grid item xs={5} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={5} sx={{ textAlign: 'left' }}>
+                        <Grid container spacing={2} direction="row" justifyContent="flex-end" alignItems="center">
+                            <Grid item xs={12} md={6} sx={{ textAlign: 'left' }}>
+                                <SelectOnChange
+                                    name="sede"
+                                    label="Sede"
+                                    value={valueSede}
+                                    options={lsSede}
+                                    onChange={(e) => setValueSede(e.target.value)}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} sx={{ textAlign: 'left' }}>
+                                <SelectOnChange
+                                    name="area"
+                                    label="Área"
+                                    value={valueArea}
+                                    options={lsArea}
+                                    onChange={(e) => setValueArea(e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+
+                    <Grid item xs={4} sx={{ textAlign: 'right' }}>
                         <Grid container direction="row" justifyContent="flex-end" alignItems="center">
                             <Grid item xs={8}>
                                 <FormControl>

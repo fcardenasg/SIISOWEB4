@@ -2,35 +2,23 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import swal from 'sweetalert';
+import { Box, Button, Card, CardContent, CardMedia, Chip, Divider, Grid, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
 import { GetEdad, ViewFormat } from 'components/helpers/Format';
-import { useTheme } from '@mui/material/styles';
-import { Box, Button, Card, CardContent, CardMedia, Chip, Divider, Grid, Tooltip, tooltipClasses, Typography } from '@mui/material';
+import swal from 'sweetalert';
 
+import { IconCircleMinus, IconEye } from '@tabler/icons';
 import { DeleteAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
 import { MessageSuccess } from 'components/alert/AlertAll';
+import { DefaultValue } from 'components/helpers/Enums';
+import useAuth from 'hooks/useAuth';
+import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import Avatar from 'ui-component/extended/Avatar';
-import { gridSpacing } from 'store/constant';
-import { IconEye, IconCircleMinus } from '@tabler/icons';
-import { DefaultValue } from 'components/helpers/Enums';
-import MenuOptions from './MenuOptions';
-import { styled } from '@mui/material/styles';
 import ChipControl from 'ui-component/extended/Chip';
-import useAuth from 'hooks/useAuth';
-
-const HtmlTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-        color: 'rgba(0, 0, 0, 0.87)',
-        maxWidth: 280,
-        fontSize: theme.typography.pxToRem(12),
-        backgroundColor: 'transparent',
-    },
-}));
-
+import MenuOptions from './MenuOptions';
+import { HtmlTooltip } from 'components/label/HtmlTooltip';
 
 const ViewProgramming = ({ programming, getAll }) => {
     const { user } = useAuth();

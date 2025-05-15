@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import Label from 'components/label';
 
-const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others }) => {
+const InputSelect = ({ bug, options, size, defaultValue, label, name, maxWidth, ...others }) => {
     return (
         <>
             <Controller
@@ -17,7 +17,7 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                 defaultValue={defaultValue}
                 render={({ field }) => (
                     <FormControl fullWidth error={bug ? true : false} required={bug ? true : false}>
-                        <InputLabel htmlFor="my-input" id="demo-simple-select-label">
+                        <InputLabel htmlFor="my-input" id="demo-simple-select-label" sx={{ fontSize: 14, whiteSpace: 'normal', maxWidth: maxWidth }}>
                             {label}
                         </InputLabel>
 
@@ -31,7 +31,7 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, ...others 
                             {...others}
                         >
                             {options?.map((option) => (
-                                <MenuItem key={option?.value} value={option?.value}>
+                                <MenuItem key={option?.value} value={option?.value} sx={{ whiteSpace: 'normal', maxWidth: maxWidth }}>
                                     <Grid container direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
                                         <Grid item>{option?.label}</Grid>
 

@@ -1,51 +1,46 @@
-import PropTypes from 'prop-types';
 import {
-    Select,
     FormControl,
     InputLabel,
-    MenuItem
+    MenuItem,
+    Select
 } from '@mui/material';
-import { Fragment } from 'react';
 
-const SelectOnChange = ({ disabled, defaultValue, options, value, onChange, size, label, name, ...others }) => {
+const SelectOnChange = ({ disabled, defaultValue, options, value, onChange, size, label, name, maxWidth, ...others }) => {
 
     return (
-        <Fragment>
-            <FormControl fullWidth>
-                <InputLabel htmlFor="my-input" id="demo-simple-select-label" sx={{ fontSize: 14 }}>
-                    {label}
-                </InputLabel>
-                <Select
-                    defaultValue={defaultValue}
-                    labelId="demo-simple-select-label"
-                    id={`${name}-demo-simple-select`}
-                    label={label}
-                    onChange={onChange}
-                    value={value}
-                    fullWidth
-                    size={size}
-                    disabled={disabled}
-                    {...others}
-                >
-                    {options.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-        </Fragment>
+        <FormControl fullWidth>
+            <InputLabel
+                htmlFor="my-input"
+                id="demo-simple-select-label"
+                sx={{ fontSize: 14, whiteSpace: 'normal', maxWidth: maxWidth }}
+            >
+                {label}
+            </InputLabel>
+            <Select
+                defaultValue={defaultValue}
+                labelId="demo-simple-select-label"
+                id={`${name}-demo-simple-select`}
+                label={label}
+                onChange={onChange}
+                value={value}
+                fullWidth
+                size={size}
+                disabled={disabled}
+                {...others}
+            >
+                {options.map((option) => (
+                    <MenuItem
+                        key={option.value}
+                        value={option.value}
+                        sx={{ whiteSpace: 'normal', maxWidth: maxWidth }}
+                    >
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+
     );
 }
 
 export default SelectOnChange;
-
-SelectOnChange.propTypes = {
-    onChange: PropTypes.func,
-    name: PropTypes.string,
-    disabled: PropTypes.bool,
-    label: PropTypes.string,
-    value: PropTypes.any,
-    options: PropTypes.any,
-    size: PropTypes.any
-};

@@ -12,7 +12,8 @@ export const GetAllVentanillaUnica = async () => await getData(Url.VentanillaUni
 export const GetAllVentanillaUnicaComboUsuario = async (id) => await getData(Url.VentanillaUnicaComboUsuario, { id });
 export const NotificarUsuario = async (id, idUsuario) => await getData(Url.VentanillaUnicaNotificarUsuario, { id, idUsuario });
 
-export const GetAllVentanillaUnicaMonitoreo = async (options) => await getData(Url.VentanillaUnicaMonitoreo, { options });
+export const GetGetComboVentanillaSedeArea = async () => await getData(Url.VentanillaUnicaComboSedeArea);
+export const GetAllVentanillaUnicaMonitoreo = async (options, idSede, idArea) => await getData(Url.VentanillaUnicaMonitoreo, { options, idSede, idArea });
 export const GetAllDocumentoVentanilla = async (documento) => await getData(Url.VentanillaUnicaDocumento, { documento });
 export const InsertVentanillaUnica = async (ventanillaUnica) => await postData(Url.VentanillaUnica, ventanillaUnica);
 export const UpdateVentanillaUnicas = async (ventanillaUnica) => await putData(Url.VentanillaUnica, ventanillaUnica);

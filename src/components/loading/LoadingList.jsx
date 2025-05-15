@@ -19,33 +19,15 @@ const LoadingList = ({ loadingModulo, notFound, children }) => {
     return (
         <>
             {loadingModulo && (
-                <TableBody
-                    sx={{
-                        display: 'flex',
-                        width: '100%',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <TableRow>
-                        <TableCell
-                            align="center"
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                height: '250px',
-                            }}
-                        >
-                            <CircularProgress size={150} />
-                            <Typography sx={{ mt: 2.5 }} variant="h4">
-                                Cargando registro...
-                            </Typography>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
+                <Grid container spacing={2} sx={{ my: 3 }} justifyContent="center" alignItems="center">
+                    <Grid item xs={12} textAlign="center">
+                        <CircularProgress size={170} />
+                        <Typography sx={{ mt: 2.5 }} variant="h3">
+                            Cargando registro...
+                        </Typography>
+                    </Grid>
+                </Grid>
+
             )}
 
             {notFound ? (

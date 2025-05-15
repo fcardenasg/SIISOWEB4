@@ -61,8 +61,12 @@ const OrdersIndividual = () => {
     const [lsTipoExamen, setLsTipoExamen] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
+    const isValid = (documento === '' && lsEmployee.length === 0) || resultData !== '';
+    const isValidTipoExamen = DefaultValue.TIPO_EXAMEN_CONTROLPERIODICO === tipoExamen ? true : false;
+    const isValidSeeOrdenes = DefaultValue.TIPO_EXAMEN_INGRESO === tipoExamen ? true : false;
+
     const methods = useForm();
-    const { handleSubmit } = methods;
+    const { handleSubmit, setValue } = methods;
 
     const handleDocumento = async (event) => {
         try {
@@ -111,19 +115,16 @@ const OrdersIndividual = () => {
 
                 const result = await SendParaclinicalExams(Correo);
                 if (result.status === 200) {
-                    if (result.data === 'Correo enviado') {
-
-                        setTimeout(() => {
-                            if (result.status === 200) {
-                                setErrorMessage(result.data);
-                                setOpenSuccess(true);
-                                setLoading(false);
-                            }
-                        }, 500);
-                    } else {
-                        setOpenError(true);
-                        setErrorMessage(Message.CorreoNoEnviado);
-                    }
+                    setTimeout(() => {
+                        if (result.status === 200) {
+                            setErrorMessage(result.data);
+                            setOpenSuccess(true);
+                            setLoading(false);
+                        }
+                    }, 500);
+                } else {
+                    setOpenError(true);
+                    setErrorMessage(Message.CorreoNoEnviado);
                 }
             } else {
                 setOpenReport(true);
@@ -141,7 +142,6 @@ const OrdersIndividual = () => {
                     label: item.nombre
                 }));
                 setLsTipoExamen(resultTipoExamen);
-                setTipoExamen(resultTipoExamen[0].value);
             } catch (error) { }
         }
 
@@ -150,25 +150,40 @@ const OrdersIndividual = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostOrders(documento, datos.fecha, tipoExamen, datos.observaciones,
-                user?.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado);
+            if (tipoExamen == '') {
+                setOpenError(true);
+                setErrorMessage("Debe elegir un tipo de examen");
+                return;
+            }
 
-            if (Object.keys(datos.length !== 0)) {
-                if (documento !== '' && lsEmployee.length !== 0) {
-                    const result = await InsertOrders(DataToInsert);
-                    if (result.status === 200) {
-                        setResultData(result.data);
-                        setErrorMessage(Message.Guardar);
-                        setOpenSuccess(true);
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(Message.ErrorNoHayDatos);
+            const DataToInsert = PostOrders(documento, datos.fecha, tipoExamen, datos.observaciones,
+                user?.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado,
+                datos.vih, datos.pruebaEmbarazo);
+
+            if (documento !== '' && lsEmployee.length !== 0) {
+                const result = await InsertOrders(DataToInsert);
+                if (result.status === 200) {
+                    setResultData(result.data);
+                    setErrorMessage(Message.Guardar);
+                    setOpenSuccess(true);
                 }
+            } else {
+                setOpenError(true);
+                setErrorMessage(Message.ErrorNoHayDatos);
             }
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);
+        }
+    };
+
+    const handleChangeTipoExamen = async (event) => {
+        const { value } = event.target;
+        setTipoExamen(value);
+
+        if (value != DefaultValue.TIPO_EXAMEN_INGRESO) {
+            setValue("vih", false);
+            setValue("pruebaEmbarazo", false);
         }
     };
 
@@ -210,7 +225,7 @@ const OrdersIndividual = () => {
                 <Grid item xs={12}>
                     <SubCard>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
                                 <FormProvider {...methods}>
                                     <InputDatePicker
                                         label="Fecha"
@@ -220,29 +235,30 @@ const OrdersIndividual = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={DefaultValue.TIPO_EXAMEN_CONTROLPERIODICO === tipoExamen ? 5.2 : 6}>
+                            <Grid item xs={12} md={6} lg={isValidTipoExamen ? 2.4 : !isValidSeeOrdenes ? 3 : 4}>
                                 <SelectOnChange
                                     name="idTipoExamen"
                                     label="Tipo Examen"
                                     value={tipoExamen}
-                                    onChange={(e) => setTipoExamen(e.target.value)}
+                                    onChange={handleChangeTipoExamen}
                                     options={lsTipoExamen}
                                     size={matchesXS ? 'small' : 'medium'}
                                 />
                             </Grid>
 
-                            {DefaultValue.TIPO_EXAMEN_CONTROLPERIODICO === tipoExamen ?
-                                <Grid item xs={0.8}>
+                            {isValidTipoExamen &&
+                                <Grid item xs={0.6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                     <AnimateButton>
-                                        <Tooltip disabled={lsEmployee.length === 0 ? true : false} title="Ver Historico De HCO" onClick={() => setVerHistoricoEmo(true)}>
+                                        <Tooltip disabled={lsEmployee.length === 0} title="Ver Histórico De HCO" onClick={() => setVerHistoricoEmo(true)}>
                                             <IconButton aria-label="delete" size="large" color="primary">
                                                 <VisibilityIcon fontSize="inherit" />
                                             </IconButton>
                                         </Tooltip>
                                     </AnimateButton>
-                                </Grid> : null}
+                                </Grid>
+                            }
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
                                 <FormProvider {...methods}>
                                     <InputCheckBox
                                         label="Consentimiento Informado"
@@ -253,7 +269,7 @@ const OrdersIndividual = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
                                 <FormProvider {...methods}>
                                     <InputCheckBox
                                         label="Citación"
@@ -264,22 +280,51 @@ const OrdersIndividual = () => {
                                 </FormProvider>
                             </Grid>
 
-                            {resultData !== '' ?
+                            {isValidSeeOrdenes &&
+                                <>
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <FormProvider {...methods}>
+                                            <InputCheckBox
+                                                label="¿Ordenar prueba de VIH?"
+                                                name="vih"
+                                                size={30}
+                                                defaultValue={false}
+                                            />
+                                        </FormProvider>
+                                    </Grid>
+
+                                    {lsEmployee.genero == DefaultValue.GeneroWomen &&
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <FormProvider {...methods}>
+                                                <InputCheckBox
+                                                    label="¿Ordenar prueba de embarazo?"
+                                                    name="pruebaEmbarazo"
+                                                    size={30}
+                                                    defaultValue={false}
+                                                />
+                                            </FormProvider>
+                                        </Grid>
+                                    }
+                                </>
+                            }
+
+                            {resultData &&
                                 <Grid item xs={12}>
                                     <ListParaclinico setDisabledButton={setDisabledButton} lsEmployee={lsEmployee} idOrdenes={resultData} />
-                                </Grid> : null}
+                                </Grid>
+                            }
 
                             <Grid item xs={12}>
                                 <Grid container spacing={2} sx={{ pt: 4 }}>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={6} md={4} lg={2}>
                                         <AnimateButton>
-                                            <Button disabled={resultData !== '' ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            <Button disabled={isValid} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={2}>
+                                    <Grid item xs={6} md={4} lg={2}>
                                         <AnimateButton>
                                             <Button disabled={!disabledButton} variant="outlined" fullWidth onClick={() => generateReport('imprimir')}>
                                                 {TitleButton.Imprimir}
@@ -287,7 +332,7 @@ const OrdersIndividual = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={2}>
+                                    <Grid item xs={6} md={4} lg={2}>
                                         <AnimateButton>
                                             <LoadingButton
                                                 fullWidth
@@ -303,7 +348,7 @@ const OrdersIndividual = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={2}>
+                                    <Grid item xs={6} md={4} lg={2}>
                                         <AnimateButton>
                                             <Button variant="outlined" fullWidth onClick={() => navigate("/orders-individual/list")}>
                                                 {TitleButton.Cancelar}

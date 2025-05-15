@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Grid, CardMedia, FormGroup, FormControlLabel, useMediaQuery } from '@mui/material';
+import { Grid, CardMedia, FormGroup, FormControlLabel, useMediaQuery, IconButton, Tooltip } from '@mui/material';
 import user from 'assets/img/user.png';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -40,6 +40,7 @@ import Accordion from 'components/accordion/Accordion';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import EpidemiologicalView from 'modules/EpidemiologicalView';
+import { ColorDrummondltd } from "themes/colors";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -94,7 +95,7 @@ const ViewEmployeeDetails = [
     { icons: <IconSchool stroke={2} size="1.3rem" />, label: 'Escolaridad' },
     { icons: <IconBuildingFactory2 stroke={2} size="1.3rem" />, label: 'Empresa' },
     { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de Nacimiento' },
-    { icons: <IconGenderBigender stroke={2} size="1.3rem" />, label: 'Sexo' },
+    { icons: <IconGenderBigender stroke={2} size="1.3rem" />, label: 'Sexo / Genero' },
     { icons: <IconHierarchy stroke={2} size="1.3rem" />, label: 'Estado Civil' },
     { icons: <IconUser stroke={2} size="1.3rem" />, label: 'Contacto' },
     { icons: <IconPhone stroke={2} size="1.3rem" />, label: 'Telefono de Contacto' },
@@ -160,6 +161,15 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
     return (
         <Fragment>
+            <ControlModal
+                title="Actualizar Empleado"
+                open={openUpdate}
+                onClose={() => setOpenUpdate(false)}
+                maxWidth="xl"
+            >
+                <UpdateEmployee idEmpleado={documento} getDataAttention={handleDocumento} setOpenUpdateTwo={setOpenUpdate} />
+            </ControlModal>
+
             <SubCard title={title !== '' ? <Typography variant="h4">{UpperFirstChar(title)}</Typography> : null}
                 secondary={
                     <Fragment>
@@ -183,13 +193,8 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                     </Fragment>
                 }
             >
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    <Grid item xs={12} md={3.2}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={3.2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <CardMedia
                             component="img"
                             image={lsEmployee?.imagenUrl ? lsEmployee?.imagenUrl : user}
@@ -198,68 +203,58 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                     </Grid>
 
                     <Grid item xs={12} md={8.8}>
-                        {/* <EmployeeInfo
-                            disabled={disabled}
-                            lsEmployee={lsEmployee}
-                            onChange={onChange}
-                            documento={documento}
-                            handleDocumento={handleDocumento}
-                        /> */}
-
                         <Grid container spacing={1}>
-                            <ControlModal
-                                title="Actualizar Empleado"
-                                open={openUpdate}
-                                onClose={() => setOpenUpdate(false)}
-                                maxWidth="xl"
-                            >
-                                <UpdateEmployee idEmpleado={documento} getDataAttention={handleDocumento} setOpenUpdateTwo={setOpenUpdate} />
-                            </ControlModal>
-
                             <Grid item xs={12} sx={{ pb: 4 }}>
                                 <Stack direction="row" alignItems="center" alignContent="center" justifyContent="space-between">
-                                    <TextField
-                                        type="number"
-                                        disabled={disabled}
-                                        value={documento}
-                                        onChange={onChange}
-                                        onKeyDown={handleDocumento}
-                                        id="standard-basic"
-                                        label="Documento"
-                                        variant="standard"
-                                    />
-
-                                    <Grid container alignItems="left" alignContent="center" spacing={1}>
-                                        <Grid item xs={12} md={5.5}>
-                                            <Stack alignItems="center" spacing={1}>
-                                                <Typography variant="h3">
-                                                    {lsEmployee?.nombres == null ? 'Digite Documento...' : lsEmployee?.nombres}
-                                                </Typography>
-                                            </Stack>
+                                    <Grid container alignItems="center" alignContent="center" spacing={3}>
+                                        <Grid item xs={1.6}>
+                                            <TextField
+                                                type="number"
+                                                disabled={disabled}
+                                                value={documento}
+                                                onChange={onChange}
+                                                onKeyDown={handleDocumento}
+                                                id="standard-basic"
+                                                label="Documento"
+                                                variant="standard"
+                                            />
                                         </Grid>
 
-                                        <Grid item xs={12} md={2.5}>
-                                            {lsEmployee?.namePayStatus != null ?
-                                                <Chip
-                                                    size="small"
-                                                    label={lsEmployee?.namePayStatus}
-                                                    chipcolor={lsEmployee?.namePayStatus === 'ACTIVO (A)'
-                                                        ? 'success' : 'error'}
-                                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
-                                                /> : null}
+                                        <Grid item xs={12} md={6.4}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={9}>
+                                                    <Typography variant="h3">
+                                                        {lsEmployee?.nombres == null ? 'Digite Documento...' : lsEmployee?.nombres}
+                                                    </Typography>
+                                                </Grid>
+
+                                                <Grid item xs={3}>
+                                                    {lsEmployee?.namePayStatus &&
+                                                        <Chip
+                                                            size="small"
+                                                            label={lsEmployee?.namePayStatus}
+                                                            chipcolor={lsEmployee?.namePayStatus === 'ACTIVO (A)'
+                                                                ? 'success' : 'error'}
+                                                            sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                                        />
+                                                    }
+                                                </Grid>
+                                            </Grid>
                                         </Grid>
 
                                         <Grid item xs={12} md={4}>
                                             <Typography variant="h4">
-                                                <b>Profesión:</b> {lsEmployee?.nameOficio}
+                                                <b>PROFESIÓN:</b> {lsEmployee?.nameOficio}
                                             </Typography>
                                         </Grid>
                                     </Grid>
 
                                     <AnimateButton>
-                                        <Button disabled={documento === '' && lsEmployee?.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
-                                            <IconEdit stroke={2} size="1.3rem" />
-                                        </Button>
+                                        <Tooltip title="Actualizar Empleado" placement="top" disabled={documento === '' && lsEmployee?.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
+                                            <IconButton sx={{ color: ColorDrummondltd.RedDrummond }}>
+                                                <IconEdit stroke={2} size="1.5rem" />
+                                            </IconButton>
+                                        </Tooltip>
                                     </AnimateButton>
                                 </Stack>
                             </Grid>
@@ -333,7 +328,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[5].icons}
-                                        nameData={lsEmployee?.nameGenero}
+                                        nameData={`${lsEmployee?.nameGenero} ${lsEmployee?.nameGrupoLGBT != null ? `- ${lsEmployee?.nameGrupoLGBT}` : ''}`}
                                         label={ViewEmployeeDetails[5].label}
                                     />
 
