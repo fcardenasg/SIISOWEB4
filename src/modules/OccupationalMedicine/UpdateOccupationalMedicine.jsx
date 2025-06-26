@@ -1458,6 +1458,30 @@ const OccupationalMedicine = () => {
                                                 </FormProvider>
                                             </Grid>
 
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <FormProvider {...methods}>
+                                                    <InputDatePicker
+                                                        label="Fecha de la entrega de la investigación"
+                                                        name="fechaEntregaInvestigacion"
+                                                        defaultValue={lsOccupationalMedicine.fechaEntregaInvestigacion}
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <FormProvider {...methods}>
+                                                    <InputText
+                                                        fullWidth
+                                                        defaultValue={lsOccupationalMedicine.conclusionInvestigacion}
+                                                        name="conclusionInvestigacion"
+                                                        label="Conclusión de la investigación"
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        rows={4}
+                                                        multiline
+                                                    />
+                                                </FormProvider>
+                                            </Grid>
+
                                             <Grid item xs={12}>
                                                 <FormProvider {...methods}>
                                                     <InputText

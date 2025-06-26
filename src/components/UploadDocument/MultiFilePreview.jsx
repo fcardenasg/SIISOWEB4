@@ -10,7 +10,7 @@ import { fData } from 'components/helpers/ConvertToBytes';
 import Iconify from 'components/iconify/iconify';
 import { Box, Tooltip } from '@mui/material';
 
-export default function MultiFilePreview({ files, onRemove, disabledControl, onClickDownload, sx }) {
+export default function MultiFilePreview({ files, onRemove, disabledControl, onClickDownload, sx, isPdf = true, iconFile }) {
     return (
         <AnimatePresence initial={false}>
             {files?.map((file) => {
@@ -33,7 +33,7 @@ export default function MultiFilePreview({ files, onRemove, disabledControl, onC
                     >
                         <Box
                             component="img"
-                            src={ic_pdf}
+                            src={isPdf ? ic_pdf : iconFile}
                             sx={{
                                 width: 32,
                                 height: 32,
@@ -43,7 +43,7 @@ export default function MultiFilePreview({ files, onRemove, disabledControl, onC
                         />
 
                         <ListItemText
-                            primary={nombre}
+                            primary={`${id} - ${nombre}`}
                             secondary={fData(size)}
                             secondaryTypographyProps={{
                                 component: 'span',
@@ -51,17 +51,21 @@ export default function MultiFilePreview({ files, onRemove, disabledControl, onC
                             }}
                         />
 
-                        <Tooltip title="Descargar">
-                            <IconButton size="small" onClick={() => onClickDownload(id)}>
-                                <Iconify icon="material-symbols-light:download" width={25} />
-                            </IconButton>
-                        </Tooltip>
+                        {onClickDownload &&
+                            <Tooltip title="Descargar">
+                                <IconButton size="small" onClick={() => onClickDownload(id)}>
+                                    <Iconify icon="material-symbols-light:download" width={25} />
+                                </IconButton>
+                            </Tooltip>
+                        }
 
-                        <Tooltip title="Eliminar">
-                            <IconButton disabled={disabledControl} size="small" onClick={() => onRemove(id)}>
-                                <Iconify icon="mingcute:close-line" width={20} />
-                            </IconButton>
-                        </Tooltip>
+                        {onRemove &&
+                            <Tooltip title="Eliminar">
+                                <IconButton disabled={disabledControl} size="small" onClick={() => onRemove(id)}>
+                                    <Iconify icon="mingcute:close-line" width={20} />
+                                </IconButton>
+                            </Tooltip>
+                        }
                     </Stack>
                 );
             })}

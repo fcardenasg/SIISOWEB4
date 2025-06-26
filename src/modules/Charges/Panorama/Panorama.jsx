@@ -16,7 +16,7 @@ import InputMultiSelects from 'components/input/InputMultiSelects';
 import useAuth from 'hooks/useAuth';
 import { FormatDate } from 'components/helpers/Format';
 import { PostPanorama } from 'formatdata/PanoramaForm';
-import { GetAllBySubTipoCatalogo,  GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
@@ -178,13 +178,13 @@ const Panorama = () => {
         <MainCard title="Registrar Panoramas de Riesgos ">
             <Grid container spacing={2}>
                 {cargo.length != 0 ?
-                   <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <Typography>
                             ID: {cargo.rosterPosition}
                             Cargo: {cargo.nameRosterPosition}
                         </Typography> </Grid> : <></>}
 
-                        <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6} lg={4}>
                     <SelectOnChange
                         name="idRiesgo"
                         label="Riesgo"

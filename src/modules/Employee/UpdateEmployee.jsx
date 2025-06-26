@@ -89,6 +89,7 @@ const UpdateEmployee = () => {
     const [lsEps, setEps] = useState([]);
     const [lsAfp, setAfp] = useState([]);
     const [lsArl, setArl] = useState([]);
+    const [lsDescripcionRosterPosition, setLsDescripcionRosterPosition] = useState([]);
     const [lsCesantias, setCesantias] = useState([]);
     const [lsMunicipioTrabaja, setLsMunicipioTrabaja] = useState([]);
     const [dptoResidenciaTrabaja, setDptoResidenciaTrabaja] = useState("");
@@ -105,6 +106,8 @@ const UpdateEmployee = () => {
         try {
             const lsServerEmployeeId = await GetByIdEmployee(id);
             const employeeData = lsServerEmployeeId?.data.data;
+
+            console.log(lsServerEmployeeId.data);
 
             setOpenError(lsServerEmployeeId?.data.status !== 200);
             if (lsServerEmployeeId?.data.status !== 200)
@@ -218,6 +221,13 @@ const UpdateEmployee = () => {
                 label: item.nombre
             }));
             setRosterPosition(resultRosterPosition);
+
+            const lsDesServerRosterPosition = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DescripcionRosterPosition);
+            var resultDesRosterPosition = lsDesServerRosterPosition.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsDescripcionRosterPosition(resultDesRosterPosition);
 
             const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
             var resultArea = lsServerArea.data.entities.map((item) => ({
@@ -408,6 +418,7 @@ const UpdateEmployee = () => {
                 municipioResidencia: datos.municipioResidencia || null,
                 dptoResidencia: dptoResidencia,
                 celular: datos.celular || null,
+                descripcionRosterPosition: datos.descripcionRosterPosition || null,
                 eps: datos.eps || null,
                 afp: datos.afp || null,
                 turno: datos.turno || null,
@@ -421,7 +432,7 @@ const UpdateEmployee = () => {
                 cesantias: datos.cesantias || null,
                 rotation: datos.rotation || null,
                 payStatus: datos.payStatus || null,
-                termDate: null,
+                termDate: datos.termDate || null,
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
                 ges: datos.ges || null,
@@ -662,16 +673,29 @@ const UpdateEmployee = () => {
                                         bug={errors.type}
                                     />
                                 </Grid>
+
                                 <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="rosterPosition"
                                         label="Roster Position"
                                         defaultValue={dataEmployee.rosterPosition}
-                                        options={lsRosterPosition}
+                                        options={lsDescripcionRosterPosition}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.rosterPosition}
                                     />
                                 </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputText
+                                        defaultValue={dataEmployee.descripcionRosterPosition}
+                                        fullWidth
+                                        name="descripcionRosterPosition"
+                                        label="Descripción de Roster Position"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.descripcionRosterPosition}
+                                    />
+                                </Grid>
+
                                 <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="generalPosition"
@@ -942,6 +966,15 @@ const UpdateEmployee = () => {
                                         label="Fecha de egreso"
                                         name="fechaEgreso"
                                         bug={errors.fechaEgreso}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputDatePicker
+                                        defaultValue={dataEmployee?.termDate}
+                                        label="Fecha de terminación"
+                                        name="termDate"
+                                        bug={errors.termDate}
                                     />
                                 </Grid>
                             </Grid>

@@ -10,6 +10,7 @@ export const CodCatalogo = {
     TipoContrato: 7,
     Rol: 21,
     RosterPosition: 14,
+    DescripcionRosterPosition: 248,
     GeneralPosition: 15,
     DepartEmpresa: 13,
     Area: 16,
@@ -25,7 +26,8 @@ export const CodCatalogo = {
     Oficio: 173,
     TIPO_SOLICITUD_DEREPETICION: 28,
     RESPONSABLE_RESPUESTA_DEREPETICION: 112,
-
+    GRUPO_RIESGO: 3246, /* CAMBIAR */
+ 
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
     VentanillaEmpresaMensajeria: 226,
@@ -467,3 +469,12 @@ export const CodRegistroAtencion = {
     NotaEvolucion: 'NEVO',
     PruebaAlcoholDroga: 'PAD'
 }
+
+export const ArrayRisk = [
+    { value: 1, label: "Químicos".toUpperCase() },
+    { value: 2, label: "Físicos".toUpperCase() },
+    { value: 3, label: "Biológicos".toUpperCase() },
+    { value: 4, label: "Psicosocial".toUpperCase() },
+    { value: 5, label: "Carga física dinámica".toUpperCase() },
+    { value: 6, label: "Carga física estática".toUpperCase() }
+]

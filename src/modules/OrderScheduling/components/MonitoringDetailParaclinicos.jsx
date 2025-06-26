@@ -1,4 +1,7 @@
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import {
+    Grid,
+    IconButton,
     Table,
     TableBody,
     TableCell,
@@ -6,18 +9,39 @@ import {
     TableHead,
     TableRow
 } from '@mui/material';
+import SelectOnChange from 'components/input/SelectOnChange';
+import { useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
 
+const ArrayNotificacion = [
+    { id: 1, name: 'Correo' },
+    { id: 2, name: 'Mensaje de texto' },
+    { id: 3, name: 'Whatsapp' }
+]
+
 const MonitoringDetailParaclinicos = ({ dataParaclinico }) => {
+    const [valueNotificarPor, setValueNotificarPor] = useState(null);
+
+    const hanledChangeNotificarPor = (e) => {
+        setValueNotificarPor(e.target.value);
+    }
+
     return (
-        <MainCard title="Proveedores asignados">
+        <MainCard
+            title="Proveedores asignados"
+            secondary={
+                <IconButton size="large">
+                    <NotificationsIcon sx={{ fontSize: '1.5rem' }} />
+                </IconButton>
+            }
+        >
             <TableContainer>
                 <Table aria-label="collapsible table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Paraclínicos</TableCell>
                             <TableCell>Proveedor</TableCell>
-                            <TableCell align="left">Ciudad</TableCell>
+                            <TableCell>Ciudad</TableCell>
                         </TableRow>
                     </TableHead>
 

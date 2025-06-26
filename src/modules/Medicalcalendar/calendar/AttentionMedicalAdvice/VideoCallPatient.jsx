@@ -1,24 +1,20 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Button, Grid, Typography, useScrollTrigger, Box } from "@mui/material";
 
-import PerfectScrollbar from "react-perfect-scrollbar";
 import SubCard from "ui-component/cards/SubCard";
-import { Fragment } from "react";
 
-import MicOffIcon from "@mui/icons-material/MicOff";
-import ClearIcon from "@mui/icons-material/Clear";
 
 import PhoneCallbackIcon from "@mui/icons-material/PhoneCallback";
 
-import { useSearchParams } from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
+import { MessageError } from "components/alert/AlertAll";
 import CryptoJS from "crypto-js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { MessageError } from "components/alert/AlertAll";
+import { useSearchParams } from "react-router-dom";
 
 const ViewCall = () => {
   const theme = useTheme();

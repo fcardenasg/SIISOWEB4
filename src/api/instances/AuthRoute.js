@@ -77,6 +77,7 @@ export const Url = {
     Panorama: 'api/Panoramariesgo',
     PanoramaGetAllByCharge: 'api/Panoramariesgo/GetAllByCharge',
     PanoramaId: 'api/Panoramariesgo/id',
+    PanoramaExcel: 'api/Panoramariesgo/get-files',
 
     Recetario: 'api/Recetario',
     RecetarioByDocAndOrder: 'api/Recetario/GetAllByDocumentAndTypeOrder',
@@ -158,6 +159,10 @@ export const Url = {
     OrdenesParaclinicosMasiva: 'api/OrdenesParaclinicos/masiva',
 
     Antecedente: 'api/Antecedente',
+
+    GrupoRiesgo: 'api/GrupoRiesgo',
+    GrupoRiesgoTodo: 'api/GrupoRiesgo/list',
+    GrupoRiesgoId: 'api/GrupoRiesgo/id',
 
     Indicadores: 'api/Indicadores',
     IndicadoresExcel: 'api/Headcount/indicadores',

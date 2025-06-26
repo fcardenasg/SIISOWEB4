@@ -32,24 +32,23 @@ import { useNavigate } from 'react-router-dom';
 import PreviewIcon from '@mui/icons-material/Preview';
 import SendIcon from '@mui/icons-material/Send';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
-import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import { Message, TitleButton } from 'components/helpers/Enums';
 import { motion } from "framer-motion";
 import MainCard from 'ui-component/cards/MainCard';
 
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import SearchIcon from '@mui/icons-material/Search';
 import { LoadingButton } from '@mui/lab';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllVentanillaUnicaComboUsuario, GetAllVentanillaUnicaMonitoreo, GetGetComboVentanillaSedeArea, NotificarUsuario } from 'api/clients/VentanillaUnicaClient';
 import { ArrayTodaSede } from 'components/Arrays';
 import ControlModal from 'components/controllers/ControlModal';
 import { ViewFormat } from 'components/helpers/Format';
 import SelectOnChange from 'components/input/SelectOnChange';
+import EmptyContent from 'components/loading/EmptyContent';
 import useAuth from 'hooks/useAuth';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
 import ListReplay from './ListReplay';
-import EmptyContent from 'components/loading/EmptyContent';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {

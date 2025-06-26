@@ -30,7 +30,6 @@ export function Base64ToFile(base64, filename, mimeType) {
 
 export const DownloadFile = (filename, bytesBase64) => {
     if (navigator.msSaveBlob) {
-        //Download document in Edge browser
         var data = window.atob(bytesBase64);
         var bytes = new Uint8Array(data.length);
         for (var i = 0; i < data.length; i++) {
@@ -43,7 +42,7 @@ export const DownloadFile = (filename, bytesBase64) => {
         var link = document.createElement('a');
         link.download = filename;
         link.href = "data:application/octet-stream;base64," + bytesBase64;
-        document.body.appendChild(link); // Needed for Firefox
+        document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }

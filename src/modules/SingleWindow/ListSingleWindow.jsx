@@ -199,7 +199,7 @@ const ViewRespuesta = () => {
             setLsRespuesta([]);
 
             if (user?.idarea === 0) {
-                await GetAllVentanillaUnicaMonitoreo(radioSearch).then(response => {
+                await GetAllVentanillaUnicaMonitoreo(radioSearch, 0, 0).then(response => {
                     if (response.data.length === 0) {
                         setMessageAtencion(Message.NoRegistro);
                     } else if (response.data.length !== 0) {

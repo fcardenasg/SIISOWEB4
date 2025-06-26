@@ -1,0 +1,449 @@
+import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useTheme } from '@mui/material/styles';
+import {
+    Box,
+    CardContent,
+    Checkbox,
+    Grid,
+    IconButton,
+    InputAdornment,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TableSortLabel,
+    TextField,
+    Toolbar,
+    Tooltip,
+    Typography,
+    Button,
+    ListItemText
+} from '@mui/material';
+import { GetAllMedicines, DeleteMedicines } from 'api/clients/MedicinesClient';
+import { visuallyHidden } from '@mui/utils';
+import { IconFileExport } from '@tabler/icons';
+
+import swal from 'sweetalert';
+import Chip from 'ui-component/extended/Chip';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
+import MainCard from 'ui-component/cards/MainCard';
+
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SearchIcon from '@mui/icons-material/Search';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import ReactExport from "react-export-excel";
+import Cargando from 'components/loading/Cargando';
+import { ViewFormat } from 'components/helpers/Format';
+import ViewTrafficLight from 'components/components/ViewTrafficLight';
+import { DeleteMedicamentosProductos, GetAllMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
+import { GetAllRiskAll } from 'api/clients/RiskClient';
+
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
+
+const getComparator = (order, orderBy) =>
+    order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
+
+const headCells = [
+    {
+        id: 'grupo',
+        label: 'Grupo',
+        align: 'left'
+    },
+    {
+        id: 'nameGrupo',
+        label: 'Grupo',
+        align: 'left'
+    },
+    {
+        id: 'usuarioRegistro',
+        label: 'Bitácora',
+        align: 'left'
+    }
+];
+
+function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
+    };
+
+    return (
+        <TableHead>
+            <TableRow>
+                <TableCell padding="checkbox" sx={{ pl: 3 }}>
+                    <Checkbox
+                        color="primary"
+                        indeterminate={numSelected > 0 && numSelected < rowCount}
+                        checked={rowCount > 0 && numSelected === rowCount}
+                        onChange={onSelectAllClick}
+                        inputProps={{
+                            'aria-label': 'select all desserts'
+                        }}
+                    />
+                </TableCell>
+                {numSelected > 0 && (
+                    <TableCell padding="none" colSpan={8}>
+                        <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
+                    </TableCell>
+                )}
+                {numSelected <= 0 &&
+                    headCells.map((headCell) => (
+                        <TableCell
+                            key={headCell.id}
+                            align={headCell.align}
+                            padding={headCell.disablePadding ? 'none' : 'normal'}
+                            sortDirection={orderBy === headCell.id ? order : false}
+                        >
+                            <TableSortLabel
+                                active={orderBy === headCell.id}
+                                direction={orderBy === headCell.id ? order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}
+                            >
+                                {headCell.label}
+                                {orderBy === headCell.id ? (
+                                    <Box component="span" sx={visuallyHidden}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        </TableCell>
+                    ))}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+const EnhancedTableToolbar = ({ numSelected, onClick }) => (
+    <Toolbar
+        sx={{
+            p: 0,
+            pl: 1,
+            pr: 1,
+            ...(numSelected > 0 && {
+                color: (theme) => theme.palette.secondary.main
+            })
+        }}
+    >
+        {numSelected > 0 &&
+            <Typography color="inherit" variant="h4">
+                {numSelected} {TitleButton.Seleccionadas}
+            </Typography>
+        }
+    </Toolbar>
+);
+
+EnhancedTableToolbar.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    onClick: PropTypes.func
+};
+
+const ListRisk = () => {
+    const navigate = useNavigate();
+    const [lsData, setLsData] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [idCheck, setIdCheck] = useState('');
+
+    const theme = useTheme();
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('grupo');
+    const [selected, setSelected] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [search, setSearch] = useState('');
+    const [rows, setRows] = useState([]);
+
+    async function getAll() {
+        try {
+            const lsServer = await GetAllRiskAll();
+            if (lsServer.status === 200) {
+                setLsData(lsServer.data);
+                setRows(lsServer.data);
+            }
+        } catch (error) { }
+    }
+
+    useEffect(() => {
+        getAll();
+    }, []);
+
+    const handleSearch = (event) => {
+        const newString = event?.target.value.trim();
+        setSearch(newString || '');
+
+        const lowerCaseQuery = newString.toLowerCase();
+
+        const newRows = newString
+            ? rows.filter((row) =>
+                ['nameGrupo'].some((property) =>
+                    row[property]?.toString().toLowerCase().includes(lowerCaseQuery)
+                )
+            )
+            : rows;
+
+        setLsData(newRows);
+    };
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelectedId = lsData.map((n) => n.grupo);
+            setSelected(newSelectedId);
+            return;
+        }
+
+        setSelected([]);
+    };
+
+    const handleClick = (event, id) => {
+        setIdCheck(id);
+
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+        }
+
+        setSelected(newSelected);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        if (event?.target.value) setRowsPerPage(parseInt(event?.target.value, 10));
+        setPage(0);
+    };
+
+    const handleDelete = async () => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteMedicamentosProductos(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+
+                        setSearch('');
+                        setSelected([]);
+                        getAll();
+                    }
+                } else
+                    setSelected([]);
+            });
+        } catch (error) {
+
+        }
+    }
+
+    const isSelected = (id) => selected.indexOf(id) !== -1;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsData.length) : 0;
+
+    return (
+        <MainCard title="Lista de riesgo" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
+            <CardContent>
+                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon fontSize="small" />
+                                    </InputAdornment>
+                                )
+                            }}
+                            onChange={handleSearch}
+                            placeholder="Buscar"
+                            value={search}
+                            size="small"
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Productos}>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/risk/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </ValidateAction>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                    onClick={() => navigate("/parameterization/menu")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </CardContent>
+
+            <TableContainer>
+                {lsData.length === 0 ? <Cargando size={220} myy={6} /> :
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={lsData.length}
+                            theme={theme}
+                            selected={selected}
+                            onClick={handleDelete}
+                        />
+                        <TableBody>
+                            {stableSort(lsData, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+
+                                    if (typeof row === 'string') return null;
+
+                                    const isItemSelected = isSelected(row.grupo);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={isItemSelected}
+                                        >
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.grupo)}>
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId
+                                                    }}
+                                                />
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.grupo)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.grupo}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.grupo)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.nameGrupo}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.grupo)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <ListItemText
+                                                    primary={row?.usuarios.join(', ')}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'h5' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: 53 * emptyRows
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                }
+            </TableContainer>
+
+            <TablePagination
+                labelRowsPerPage="Filas por página:"
+                labelDisplayedRows={({ from, to, count }) => (
+                    `${from} - ${to} de ${count !== -1 ? count : `más de ${lsData.length}`}`
+                )}
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={lsData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+        </MainCard>
+    );
+};
+
+export default ListRisk;

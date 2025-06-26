@@ -38,7 +38,7 @@ import { FormatDate, NumeroDias } from 'components/helpers/Format';
 import CheckListRefund from './CheckListRefund';
 import { PutRefund } from 'formatdata/RefundForm';
 import { GetByIdRefund, InsertListaChekeo, UpdateRefunds } from 'api/clients/RefundClient';
-import { GetAllUser, GetByMail } from 'api/clients/UserClient';
+import { GetAllComboUser, GetAllUser, GetByMail } from 'api/clients/UserClient';
 import Cargando from 'components/loading/Cargando';
 import SelectOnChange from 'components/input/SelectOnChange';
 import { generateReportRefund } from './ReportRefund';
@@ -213,12 +213,8 @@ const Refund = () => {
             }));
             setLsOrigenReintegro(resultOrigenReintegro);
 
-            const lsServerUsuario = await GetAllUser(0, 0);
-            var resultUsuario = lsServerUsuario.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsUsuarios(resultUsuario);
+            const lsServerUsuario = await GetAllComboUser();
+            setLsUsuarios(lsServerUsuario.data);
         } catch (error) { }
     }
 

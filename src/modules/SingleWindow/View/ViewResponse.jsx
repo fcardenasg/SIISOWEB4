@@ -1,8 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Cargando from 'components/loading/Cargando';
 import {
     Box,
+    Button,
     CardContent,
     Grid,
     IconButton,
@@ -16,38 +14,29 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    Typography,
-    Button,
-    FormControl,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
     Tooltip,
-    useMediaQuery
+    Typography
 } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
-import EmailIcon from '@mui/icons-material/Email';
 import { useTheme } from '@mui/material/styles';
+import { visuallyHidden } from '@mui/utils';
+import Cargando from 'components/loading/Cargando';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import MailIcon from '@mui/icons-material/Mail';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
-import SendIcon from '@mui/icons-material/Send';
-import MailIcon from '@mui/icons-material/Mail';
-import PreviewIcon from '@mui/icons-material/Preview';
 
-import SearchIcon from '@mui/icons-material/Search';
-import { GetAllVentanillaUnicaComboUsuario, GetAllVentanillaUnicaMonitoreo, NotificarUsuario } from 'api/clients/VentanillaUnicaClient';
-import { ViewFormat } from 'components/helpers/Format';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import SearchIcon from '@mui/icons-material/Search';
+import { GetAllVentanillaUnicaMonitoreo } from 'api/clients/VentanillaUnicaClient';
 import ControlModal from 'components/controllers/ControlModal';
-import ListReplay from './ListReplay';
+import { ViewFormat } from 'components/helpers/Format';
+import useAuth from 'hooks/useAuth';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Chip from 'ui-component/extended/Chip';
-import useAuth from 'hooks/useAuth';
 import ViewEnviarSolicitud from './ViewEnviarSolicitud';
-import SelectOnChange from 'components/input/SelectOnChange';
-import { LoadingButton } from '@mui/lab';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -208,7 +197,7 @@ const ViewResponse = () => {
                 setLsRespuesta([]);
 
                 if (user?.idarea === 0) {
-                    await GetAllVentanillaUnicaMonitoreo(2).then(response => {
+                    await GetAllVentanillaUnicaMonitoreo(2, 0, 0).then(response => {
                         if (response.data.length === 0) {
                             setMessageAtencion(Message.NoRegistro);
                         } else if (response.data.length !== 0) {

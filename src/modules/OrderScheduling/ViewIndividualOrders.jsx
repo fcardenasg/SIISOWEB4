@@ -41,23 +41,13 @@ const BoxTypography = ({ title, data, sx = {} }) => (
 const ViewIndividualOrders = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const theme = useTheme();
-
 
     const loadingModulo = useBoolean(true);
     const [dataParaclinico, setDataParaclinico] = useState([]);
     const [openError, setOpenError] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-
     const [employeeData, setEmployeeData] = useState(null);
-
-    function agruparCiudades(ciudades) {
-        const ciudadesUnicas = Array.from(
-            new Map(ciudades.map(ciudad => [`${ciudad.value}-${ciudad.label}`, ciudad])).values()
-        );
-        return ciudadesUnicas;
-    }
 
     useEffect(() => {
         async function getData() {
@@ -66,23 +56,27 @@ const ViewIndividualOrders = () => {
                 const dataEmployee = await GetEmpleadoProgramacionOrdenes(serverData.data.documento);
                 const serverDataDetalle = await GetAllByProgramacionOrdenes(id);
 
-                setTimeout(() => {
-                    setEmployeeData(dataEmployee.data.data);
-                    setDataParaclinico(serverDataDetalle.data.datos);
+                if (serverData.status === 200 && dataEmployee.status === 200 && serverDataDetalle.status === 200) {
+                    setTimeout(() => {
+                        setEmployeeData(dataEmployee.data.data);
+                        setDataParaclinico(serverDataDetalle.data.datos);
 
-                    loadingModulo.onFalse();
-                }, 500);
+                        loadingModulo.onFalse();
+                    }, 500);
+                }
             } catch (error) {
-
+                loadingModulo.onFalse();
             }
         }
 
         getData();
     }, []);
 
+    const notFound = !dataParaclinico.length;
+
     return (
         <MainCard title="Monitoreo de órdenes individuales">
-            <LoadingMassive>
+            <LoadingMassive loadingModulo={loadingModulo.value} notFound={notFound}>
                 <Grid container spacing={2}>
                     <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                     <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
@@ -106,7 +100,7 @@ const ViewIndividualOrders = () => {
 
                                     <Grid item xs={12} md={8}>
                                         <Typography variant="h2" sx={{ mb: 1 }}>
-                                            {employeeData.nombres}
+                                            {employeeData.documento} - {employeeData.nombres}
                                             <Chip
                                                 size="small"
                                                 label={employeeData.namePayStatus}
@@ -165,11 +159,9 @@ const ViewIndividualOrders = () => {
                                                 <Divider sx={{ my: 1.5 }} />
                                             </Grid>
 
-                                            {dataParaclinico.length != 0 &&
-                                                <Grid item xs={12}>
-                                                    <MonitoringDetailParaclinicos dataParaclinico={dataParaclinico} />
-                                                </Grid>
-                                            }
+                                            <Grid item xs={12}>
+                                                <MonitoringDetailParaclinicos dataParaclinico={dataParaclinico} />
+                                            </Grid>
                                         </Grid>
                                     </AnimateComponent>
                                 </Grid>

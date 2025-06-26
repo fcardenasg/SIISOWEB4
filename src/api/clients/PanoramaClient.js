@@ -7,3 +7,5 @@ export const GetByIdPanorama = async (id) => await getData(Url.PanoramaId, { id 
 export const InsertPanorama = async (panorama) => await postData(Url.Panorama, panorama);
 export const UpdatePanoramas = async (panorama) => await putData(Url.Panorama, panorama);
 export const DeletePanorama = async (idPanorama) => await deleteData(Url.Panorama, { idPanorama });
+
+export const ExtractInformationFromExcel = async (base64Strings) => await postData(Url.PanoramaExcel, base64Strings);

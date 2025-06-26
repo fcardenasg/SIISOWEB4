@@ -210,6 +210,9 @@ const ListHeadcount = Loadable(lazy(() => import('modules/Headcount/ListHeadcoun
 const Headcount = Loadable(lazy(() => import('modules/Headcount/Headcount')));
 const UpdateHeadcount = Loadable(lazy(() => import('modules/Headcount/UpdateHeadcount')));
 
+const ListRisk = Loadable(lazy(() => import('modules/Risk/ListRisk')));
+const Risk = Loadable(lazy(() => import('modules/Risk/Risk')));
+
 const ListIndexNote = Loadable(lazy(() => import('modules/IndexNote/ListIndexNote')));
 const IndexNote = Loadable(lazy(() => import('modules/IndexNote/IndexNote')));
 const UpdateIndexNote = Loadable(lazy(() => import('modules/IndexNote/UpdateIndexNote')));
@@ -1055,6 +1058,15 @@ const MainRoutes = {
         {
             path: '/programming/monitoring-massive/:id',
             element: <ViewMassiveOrders />
+        },
+        /* Riesgo */
+        {
+            path: '/risk/add',
+            element: <Risk />
+        },
+        {
+            path: '/risk/list',
+            element: <ListRisk />
         },
     ]
 };

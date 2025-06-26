@@ -1,97 +1,56 @@
-import { useEffect, useState } from 'react';
-
+import SearchIcon from '@mui/icons-material/Search';
 import {
     Button,
     Grid,
+    InputAdornment,
+    TextField,
+    Typography,
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-
+import { InsertCharges } from 'api/clients/ChargesClient';
+import { ExtractInformationFromExcel } from 'api/clients/PanoramaClient';
+import ic_excel from 'assets/icons/files/ic_excel.svg';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import { FormatDate } from 'components/helpers/Format';
+import MultiFilePreview from 'components/UploadDocument/MultiFilePreview';
+import Upload from 'components/UploadDocument/Upload';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import { PostCargo } from 'formatdata/CargoForm';
 import useAuth from 'hooks/useAuth';
+import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import { InsertCharges } from 'api/clients/ChargesClient';
-import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton } from 'components/helpers/Enums';
-import InputSelect from 'components/input/InputSelect';
-import InputText from 'components/input/InputText';
-import { PostCargo } from 'formatdata/CargoForm';
 import { SNACKBAR_OPEN } from 'store/actions';
 import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import DetailsCharges from './DetailsCharges';
+import toast from 'react-hot-toast';
+import AnimateComponent from 'components/loading/AnimateComponent';
 
 const Charges = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate = useNavigate();
-    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const [filesData, setFilesData] = useState([]);
 
-    const [lsSede, setLsSede] = useState([]);
-    const [lsGes, setLsGes] = useState([]);
-    const [lsCargo, setLsCargo] = useState([]);
-
-    const [lsArea, setLsArea] = useState([]);
-    const [lsSubarea, setLsSubarea] = useState([]);
+    const [rows, setRows] = useState([]);
+    const [lsData, setLsData] = useState([]);
+    const [search, setSearch] = useState('');
 
     const methods = useForm();
-    // resolver: yupResolver(validationSchema),
-    const { handleSubmit, errors, reset } = methods;
-
-    async function GetAll() {
-        try {
-            const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
-            var resultArea = lsServerArea.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsArea(resultArea);
-
-            const lsServerSede = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Sede);
-            var resultSede = lsServerSede.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSede(resultSede);
-
-            const lsServerSubArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SubArea);
-            var resultSubArea = lsServerSubArea.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSubarea(resultSubArea);
-
-            const lsServerGes = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Ges);
-            var resultGes = lsServerGes.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsGes(resultGes);
-
-            const lsServerCargo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.RosterPosition);
-            var resultCargo = lsServerCargo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCargo(resultCargo);
-        } catch (error) {
-        }
-    }
-
-    useEffect(() => {
-        GetAll();
-    }, []);
+    const { handleSubmit, formState: { errors }, reset } = methods;
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostCargo(datos.sede, datos.rosterPosition, datos.area, datos.subArea,
                 datos.descripcionCargo, datos.idGES, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (Object.keys(datos.length !== 0)) {
+            if (Object.keys(datos).length !== 0) {
                 const result = await InsertCharges(DataToInsert);
                 if (result.status === 200) {
                     dispatch({
@@ -102,7 +61,7 @@ const Charges = () => {
                         alertSeverity: 'success',
                         close: false,
                         transition: 'SlideUp'
-                    })
+                    });
                     reset();
                 }
             }
@@ -115,101 +74,163 @@ const Charges = () => {
                 alertSeverity: 'error',
                 close: false,
                 transition: 'SlideUp'
-            })
+            });
         }
+    };
+
+    const allowedFiles = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    const handleDrop = useCallback((acceptedFiles) => {
+        try {
+            acceptedFiles.forEach((archivoExtraido) => {
+                if (archivoExtraido && allowedFiles.includes(archivoExtraido.type)) {
+                    let reader = new FileReader();
+                    reader.readAsDataURL(archivoExtraido);
+
+                    reader.onloadend = async (e) => {
+                        const base64Content = e.target.result;
+                        setFilesData((prevFilesData) => [
+                            ...prevFilesData,
+                            {
+                                id: prevFilesData.length > 0 ? prevFilesData[prevFilesData.length - 1].id + 1 : 1,
+                                base64: base64Content,
+                                tamanio: archivoExtraido.size.toString(),
+                                nombre: archivoExtraido.name
+                            }
+                        ]);
+                    };
+                } else {
+                    toast.error(`El archivo "${archivoExtraido.name}" no es válido o no está permitido.`);
+                }
+            });
+        } catch (error) {
+            toast.error('No se pudo cargar el archivo');
+        }
+    }, []);
+
+    const handleClickDelete = (id) => {
+        setFilesData((prevFilesData) => {
+            return prevFilesData.filter((archivo) => archivo.id !== id);
+        });
+    };
+
+    const numArchivos = filesData.length ? `${filesData.length} ` : "";
+
+    const handleClickExtraer = async () => {
+        try {
+            const bases64Excel = filesData.map(excel => excel.base64);
+            const result = await ExtractInformationFromExcel(bases64Excel);
+            if (result.data.response) {
+                const { datos } = result.data;
+                setLsData(datos);
+                setRows(datos);
+                toast.success("Información extraída correctamente");
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error("Error al extraer información del archivo");
+        }
+    }
+
+    const handleSearch = (event) => {
+        const newString = event?.target.value.trim();
+        setSearch(newString || '');
+
+        const lowerCaseQuery = newString.toLowerCase();
+
+        const newRows = newString
+            ? rows.filter((row) =>
+                ['nameGrupo', 'clase'].some((property) =>
+                    row[property]?.toString().toLowerCase().includes(lowerCaseQuery)
+                )
+            ) : rows;
+
+        setLsData(newRows);
     };
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Panoramadecargo}>
-            <MainCard title="Registrar Cargos">
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="sede"
-                                label="Sede"
-                                defaultValue=""
-                                options={lsSede}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+            <FormProvider {...methods}>
+                <MainCard title="Registrar panorama de cargos">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <SubCard
+                                daskTitle
+                                title="Cargar archivo"
+                                secondary={
+                                    <AnimateButton>
+                                        <Button
+                                            disabled={filesData.length === 0}
+                                            variant="outlined"
+                                            fullWidth
+                                            onClick={handleClickExtraer}
+                                        >
+                                            Extraer información
+                                        </Button>
+                                    </AnimateButton>
+                                }
+                            >
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} md={6}>
+                                        <Upload files={null} onDrop={handleDrop} multiple={true} />
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <SubCard content title={`${numArchivos} Archivos cargados`}>
+                                            <PerfectScrollbar style={{ height: 180, padding: '0px 15px 0px 0px' }}>
+                                                {filesData && (
+                                                    <MultiFilePreview
+                                                        files={filesData}
+                                                        isPdf={false}
+                                                        iconFile={ic_excel}
+                                                        onRemove={handleClickDelete}
+                                                    />
+                                                )}
+                                            </PerfectScrollbar>
+                                        </SubCard>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="rosterPosition"
-                                label="Cargo"
-                                defaultValue=""
-                                options={lsCargo}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="area"
-                                label="Área"
-                                defaultValue=""
-                                options={lsArea}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                        {lsData.length > 0 &&
+                            <Grid item xs={12} sx={{ mb: 2 }}>
+                                <AnimateComponent>
+                                    <SubCard daskTitle title="Información de la exposición ocupacional">
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
+                                                <TextField
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <SearchIcon fontSize="small" />
+                                                            </InputAdornment>
+                                                        )
+                                                    }}
+                                                    onChange={handleSearch}
+                                                    placeholder="Buscar"
+                                                    value={search}
+                                                    size="small"
+                                                />
+                                            </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="subArea"
-                                label="Subarea"
-                                defaultValue=""
-                                options={lsSubarea}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
+                                            <Grid item xs={12}>
+                                                <DetailsCharges lsData={lsData} />
+                                            </Grid>
+                                        </Grid>
+                                    </SubCard>
+                                </AnimateComponent>
+                            </Grid>
+                        }
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputSelect
-                                name="idGES"
-                                label="GES"
-                                defaultValue=""
-                                options={lsGes}
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
-                            <InputText
-                                defaultValue=""
-                                name="descripcionCargo"
-                                label="Descripción"
-                                size={matchesXS ? 'small' : 'medium'}
-                                bug={errors}
-                            />
-                        </FormProvider>
-                    </Grid>
-                </Grid>
-
-                <Grid sx={{ pb: 2, pt: 3 }} item xs={12}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} md={4} lg={2}>
                             <AnimateButton>
-                                <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                <Button disabled={lsData.length === 0} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                     {TitleButton.Guardar}
                                 </Button>
                             </AnimateButton>
                         </Grid>
-                        <Grid item xs={6}>
+
+                        <Grid item xs={6} md={4} lg={2}>
                             <AnimateButton>
                                 <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
                                     {TitleButton.Cancelar}
@@ -217,8 +238,8 @@ const Charges = () => {
                             </AnimateButton>
                         </Grid>
                     </Grid>
-                </Grid>
-            </MainCard>
+                </MainCard>
+            </FormProvider>
         </ValidateActionSkeleton>
     );
 };

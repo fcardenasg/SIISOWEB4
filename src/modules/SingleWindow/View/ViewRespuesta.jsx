@@ -435,7 +435,7 @@ const ViewRespuesta = () => {
     }
 
     return (
-        <MainCard title="Responder PQRSD" content={false}>
+        <MainCard title={<>Responder PQRSD</>} content={false}>
             <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
 
             <ControlModal

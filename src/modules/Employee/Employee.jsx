@@ -67,6 +67,7 @@ const Employee = () => {
     const [lsTipoContrato, setTipoContrato] = useState([]);
     const [lsRol, setRol] = useState([]);
     const [lsRosterPosition, setRosterPosition] = useState([]);
+    const [lsDescripcionRosterPosition, setLsDescripcionRosterPosition] = useState([]);
     const [lsGeneralPosition, setGeneralPosition] = useState([]);
     const [lsDepartEmpresa, setDepartEmpresa] = useState([]);
     const [lsArea, setArea] = useState([]);
@@ -298,6 +299,13 @@ const Employee = () => {
             }));
             setRosterPosition(resultRosterPosition);
 
+            const lsDesServerRosterPosition = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DescripcionRosterPosition);
+            var resultDesRosterPosition = lsDesServerRosterPosition.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsDescripcionRosterPosition(resultDesRosterPosition);
+
             const lsServerGeneralPosition = await GetAllByTipoCatalogo(0, 0, CodCatalogo.GeneralPosition);
             var resultGeneralPosition = lsServerGeneralPosition.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -351,6 +359,7 @@ const Employee = () => {
                 tipoContrato: idTipoContrato,
                 generalPosition: datos.generalPosition || null,
                 genero: datos.genero || null,
+                descripcionRosterPosition: datos.descripcionRosterPosition || null,
                 sede: datos.sede || null,
                 direccionResidencia: datos.direccionResidencia || null,
                 direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja || null,
@@ -372,7 +381,7 @@ const Employee = () => {
                 cesantias: datos.cesantias || null,
                 rotation: datos.rotation || null,
                 payStatus: datos.payStatus || null,
-                termDate: null,
+                termDate: datos.termDate || null,
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
                 ges: datos.ges || null,
@@ -615,16 +624,29 @@ const Employee = () => {
                                     bug={errors.type}
                                 />
                             </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <InputSelect
                                     defaultValue=""
                                     name="rosterPosition"
                                     label="Roster Position"
-                                    options={lsRosterPosition}
+                                    options={lsDescripcionRosterPosition}
                                     size={matchesXS ? 'small' : 'medium'}
                                     bug={errors.rosterPosition}
                                 />
                             </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputText
+                                    defaultValue=""
+                                    fullWidth
+                                    name="descripcionRosterPosition"
+                                    label="Descripción de Roster Position"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.descripcionRosterPosition}
+                                />
+                            </Grid>
+
                             <Grid item xs={12} md={6} lg={4}>
                                 <InputSelect
                                     defaultValue=""
@@ -894,6 +916,15 @@ const Employee = () => {
                                     label="Fecha de egreso"
                                     name="fechaEgreso"
                                     bug={errors.fechaEgreso}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
+                                <InputDatePicker
+                                    defaultValue={null}
+                                    label="Fecha de terminación"
+                                    name="termDate"
+                                    bug={errors.termDate}
                                 />
                             </Grid>
                         </Grid>

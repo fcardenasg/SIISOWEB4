@@ -67,6 +67,7 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
     const [lsRol, setRol] = useState([]);
     const [lsGeneralPosition, setGeneralPosition] = useState([]);
     const [lsRosterPosition, setRosterPosition] = useState([]);
+    const [lsDescripcionRosterPosition, setLsDescripcionRosterPosition] = useState([]);
     const [lsArea, setArea] = useState([]);
     const [lsSubArea, setLsSubArea] = useState([]);
     const [lsDepartEmpresa, setDepartEmpresa] = useState([]);
@@ -219,6 +220,13 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
             }));
             setRosterPosition(resultRosterPosition);
 
+            const lsDesServerRosterPosition = await GetAllByTipoCatalogo(0, 0, CodCatalogo.DescripcionRosterPosition);
+            var resultDesRosterPosition = lsDesServerRosterPosition.data.entities.map((item) => ({
+                value: item.idCatalogo,
+                label: item.nombre
+            }));
+            setLsDescripcionRosterPosition(resultDesRosterPosition);
+
             const lsServerArea = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Area);
             var resultArea = lsServerArea.data.entities.map((item) => ({
                 value: item.idCatalogo,
@@ -363,6 +371,7 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 grupoLGBT: datos.grupoLGBT || null,
                 genero: datos.genero || null,
                 sede: datos.sede || null,
+                descripcionRosterPosition: datos.descripcionRosterPosition || null,
                 direccionResidencia: datos.direccionResidencia || null,
                 direccionResidenciaTrabaja: datos.direccionResidenciaTrabaja || null,
                 dptoResidenciaTrabaja: dptoResidenciaTrabaja || null,
@@ -383,7 +392,7 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                 cesantias: datos.cesantias || null,
                 rotation: datos.rotation || null,
                 payStatus: datos.payStatus || null,
-                termDate: null,
+                termDate: datos.termDate || null,
                 imagenUrl: imgSrc,
                 bandera: DefaultValue.BANDERA_DRUMMOND,
                 ges: datos.ges || null,
@@ -629,16 +638,29 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                             bug={errors.type}
                                         />
                                     </Grid>
+
                                     <Grid item xs={12} md={6} lg={4}>
                                         <InputSelect
                                             name="rosterPosition"
                                             label="Roster Position"
                                             defaultValue={employee.rosterPosition}
-                                            options={lsRosterPosition}
+                                            options={lsDescripcionRosterPosition}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.rosterPosition}
                                         />
                                     </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputText
+                                            defaultValue={employee.descripcionRosterPosition}
+                                            fullWidth
+                                            name="descripcionRosterPosition"
+                                            label="Descripción de Roster Position"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.descripcionRosterPosition}
+                                        />
+                                    </Grid>
+
                                     <Grid item xs={12} md={6} lg={4}>
                                         <InputSelect
                                             name="generalPosition"
@@ -906,6 +928,15 @@ const UpdateEmployee = ({ idEmpleado = "", setOpenUpdateTwo, getDataAttention })
                                             label="Fecha de egreso"
                                             name="fechaEgreso"
                                             bug={errors.fechaEgreso}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputDatePicker
+                                            defaultValue={employee?.termDate}
+                                            label="Fecha de terminación"
+                                            name="termDate"
+                                            bug={errors.termDate}
                                         />
                                     </Grid>
                                 </Grid>

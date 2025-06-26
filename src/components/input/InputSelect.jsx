@@ -16,7 +16,7 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, maxWidth, 
                 name={name}
                 defaultValue={defaultValue}
                 render={({ field }) => (
-                    <FormControl fullWidth error={bug ? true : false} required={bug ? true : false}>
+                    <FormControl fullWidth error={!!bug} required={!!bug}>
                         <InputLabel htmlFor="my-input" id="demo-simple-select-label" sx={{ fontSize: 14, whiteSpace: 'normal', maxWidth: maxWidth }}>
                             {label}
                         </InputLabel>
@@ -28,12 +28,19 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, maxWidth, 
                             label={label}
                             fullWidth
                             size={size}
+                            sx={{
+                                '& .MuiSelect-select': {
+                                    fontSize: size === 'small' && '0.65rem',
+                                },
+                            }}
                             {...others}
                         >
                             {options?.map((option) => (
                                 <MenuItem key={option?.value} value={option?.value} sx={{ whiteSpace: 'normal', maxWidth: maxWidth }}>
                                     <Grid container direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                                        <Grid item>{option?.label}</Grid>
+                                        <Grid item sx={{ fontSize: size === 'small' && '0.65rem' }}>
+                                            {option?.label}
+                                        </Grid>
 
                                         {option?.codigo === 'CIE10' || option?.codigo === 'CIE11' ?
                                             (<Grid item><Label sx={{ mr: 1.5 }} variant="soft" color={option?.codigo === 'CIE10' ? "error" : "success"}>{option?.codigo}</Label></Grid>) : null
@@ -50,7 +57,6 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, maxWidth, 
                     <FormHelperText error>{bug.message}</FormHelperText>
                 </Grid>
             )}
-
         </>
     );
 };

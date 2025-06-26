@@ -92,7 +92,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const ViewEmployeeDetails = [
     { icons: <IconMail stroke={2} size="1.3rem" />, label: 'Email' },
     { icons: <IconDeviceMobile stroke={2} size="1.3rem" />, label: 'Celular' },
-    { icons: <IconSchool stroke={2} size="1.3rem" />, label: 'Escolaridad' },
+    { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de terminación' },
     { icons: <IconBuildingFactory2 stroke={2} size="1.3rem" />, label: 'Empresa' },
     { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de Nacimiento' },
     { icons: <IconGenderBigender stroke={2} size="1.3rem" />, label: 'Sexo / Genero' },
@@ -310,7 +310,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[2].icons}
-                                        nameData={lsEmployee?.nameEscolaridad}
+                                        nameData={lsEmployee?.termDate && ViewFormat(lsEmployee?.termDate)}
                                         label={ViewEmployeeDetails[2].label}
                                     />
 
