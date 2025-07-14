@@ -1,42 +1,40 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useTheme } from '@mui/material/styles';
-import {
-    Grid, Button,
-    useMediaQuery,
-    IconButton,
-    Tooltip
-} from '@mui/material';
-
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-
-import { useNavigate } from 'react-router-dom';
-import { useForm, FormProvider } from 'react-hook-form';
-import { AccionMenu, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
-import useAuth from 'hooks/useAuth';
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { CodCatalogo } from 'components/helpers/Enums';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import { PostOrders } from 'formatdata/OrdersForm';
+import {
+    Button,
+    Grid,
+    IconButton,
+    Tooltip,
+    useMediaQuery
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllOrdersParaclinicos, GetByIdOrders, InsertOrders } from 'api/clients/OrdersClient';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
+import { PostOrders } from 'formatdata/OrdersForm';
+import useAuth from 'hooks/useAuth';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import SendIcon from '@mui/icons-material/Send';
-import ViewEmployee from 'components/views/ViewEmployee';
-import ListParaclinico from './ListParaclinico';
-import SelectOnChange from 'components/input/SelectOnChange';
-import ControlModal from 'components/controllers/ControlModal';
-import ListHistoryEmo from './ListHistoryEmo';
-import ViewPDF from 'components/components/ViewPDF';
-import { GetByMail } from 'api/clients/UserClient';
-import { generateReporteIndex } from '../Report';
-import InputCheckBox from 'components/input/InputCheckBox';
-import { SendParaclinicalExams } from 'api/clients/MailClient';
 import { LoadingButton } from '@mui/lab';
+import { SendParaclinicalExams } from 'api/clients/MailClient';
+import { GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
+import ControlModal from 'components/controllers/ControlModal';
+import InputCheckBox from 'components/input/InputCheckBox';
+import SelectOnChange from 'components/input/SelectOnChange';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { generateReporteIndex } from '../Report';
+import ListHistoryEmo from './ListHistoryEmo';
+import ListParaclinico from './ListParaclinico';
 
 const OrdersIndividual = () => {
     const { user } = useAuth();
@@ -66,7 +64,8 @@ const OrdersIndividual = () => {
     const isValidSeeOrdenes = DefaultValue.TIPO_EXAMEN_INGRESO === tipoExamen ? true : false;
 
     const methods = useForm();
-    const { handleSubmit, setValue } = methods;
+    const { handleSubmit, setValue, watch } = methods;
+    const valueCitacion = watch('citacion');
 
     const handleDocumento = async (event) => {
         try {
@@ -136,12 +135,8 @@ const OrdersIndividual = () => {
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerTipoExamen = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPO_EXAMEN_PARACLINICOS);
-                var resultTipoExamen = lsServerTipoExamen.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsTipoExamen(resultTipoExamen);
+                const lsServerTipoExamen = await GetByTipoCatalogoCombo(CodCatalogo.TIPO_EXAMEN_PARACLINICOS);
+                setLsTipoExamen(lsServerTipoExamen.data);
             } catch (error) { }
         }
 
@@ -158,7 +153,7 @@ const OrdersIndividual = () => {
 
             const DataToInsert = PostOrders(documento, datos.fecha, tipoExamen, datos.observaciones,
                 user?.nameuser, undefined, '', undefined, datos.citacion, datos.consentimientoInformado,
-                datos.vih, datos.pruebaEmbarazo);
+                datos.vih, datos.pruebaEmbarazo, datos.fechaCitacion);
 
             if (documento !== '' && lsEmployee.length !== 0) {
                 const result = await InsertOrders(DataToInsert);
@@ -189,178 +184,180 @@ const OrdersIndividual = () => {
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Ordenesindividuales}>
-            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+            <FormProvider {...methods}>
+                <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <ControlModal
-                title="Historico De Controles Periódicos"
-                open={verHistoricoEmo}
-                onClose={() => setVerHistoricoEmo(false)}
-                maxWidth="md"
-            >
-                <ListHistoryEmo documento={documento} />
-            </ControlModal>
+                <ControlModal
+                    title="Historico De Controles Periódicos"
+                    open={verHistoricoEmo}
+                    onClose={() => setVerHistoricoEmo(false)}
+                    maxWidth="md"
+                >
+                    <ListHistoryEmo documento={documento} />
+                </ControlModal>
 
-            <ControlModal
-                title={Message.VistaReporte}
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
+                <ControlModal
+                    title={Message.VistaReporte}
+                    open={openReport}
+                    onClose={() => setOpenReport(false)}
+                    maxWidth="xl"
+                >
+                    <ViewPDF dataPDF={dataPDF} />
+                </ControlModal>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <ViewEmployee
-                        title="Registrar Ordenes Individuales"
-                        key={lsEmployee?.documento}
-                        documento={documento}
-                        onChange={(e) => setDocumento(e.target.value)}
-                        lsEmployee={lsEmployee}
-                        handleDocumento={handleDocumento}
-                    />
-                </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            title="Registrar Ordenes Individuales"
+                            key={lsEmployee?.documento}
+                            documento={documento}
+                            onChange={(e) => setDocumento(e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleDocumento}
+                        />
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
-                                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <SubCard>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
                                         defaultValue={new Date()}
                                     />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={12} md={6} lg={isValidTipoExamen ? 2.4 : !isValidSeeOrdenes ? 3 : 4}>
-                                <SelectOnChange
-                                    name="idTipoExamen"
-                                    label="Tipo Examen"
-                                    value={tipoExamen}
-                                    onChange={handleChangeTipoExamen}
-                                    options={lsTipoExamen}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            {isValidTipoExamen &&
-                                <Grid item xs={0.6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <AnimateButton>
-                                        <Tooltip disabled={lsEmployee.length === 0} title="Ver Histórico De HCO" onClick={() => setVerHistoricoEmo(true)}>
-                                            <IconButton aria-label="delete" size="large" color="primary">
-                                                <VisibilityIcon fontSize="inherit" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </AnimateButton>
                                 </Grid>
-                            }
 
-                            <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={isValidTipoExamen ? 2.4 : !isValidSeeOrdenes ? 3 : 4}>
+                                    <SelectOnChange
+                                        name="idTipoExamen"
+                                        label="Tipo Examen"
+                                        value={tipoExamen}
+                                        onChange={handleChangeTipoExamen}
+                                        options={lsTipoExamen}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                {isValidTipoExamen &&
+                                    <Grid item xs={0.6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <AnimateButton>
+                                            <Tooltip disabled={lsEmployee.length === 0} title="Ver Histórico De HCO" onClick={() => setVerHistoricoEmo(true)}>
+                                                <IconButton aria-label="delete" size="large" color="primary">
+                                                    <VisibilityIcon fontSize="inherit" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </AnimateButton>
+                                    </Grid>
+                                }
+
+                                <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
                                     <InputCheckBox
                                         label="Consentimiento Informado"
                                         name="consentimientoInformado"
                                         size={30}
                                         defaultValue={false}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
                                     <InputCheckBox
                                         label="Citación"
                                         name="citacion"
                                         size={30}
                                         defaultValue={false}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            {isValidSeeOrdenes &&
-                                <>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                {valueCitacion == true &&
+                                    <Grid item xs={12} md={6} lg={!isValidSeeOrdenes ? 3 : 4}>
+                                        <InputDatePicker
+                                            label="Fecha de citación examen físico"
+                                            name="fechaCitacion"
+                                            defaultValue={null}
+                                        />
+                                    </Grid>
+                                }
+
+                                {isValidSeeOrdenes &&
+                                    <>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputCheckBox
                                                 label="¿Ordenar prueba de VIH?"
                                                 name="vih"
                                                 size={30}
                                                 defaultValue={false}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    {lsEmployee.genero == DefaultValue.GeneroWomen &&
-                                        <Grid item xs={12} md={6} lg={4}>
-                                            <FormProvider {...methods}>
+                                        {lsEmployee.genero == DefaultValue.GeneroWomen &&
+                                            <Grid item xs={12} md={6} lg={4}>
                                                 <InputCheckBox
                                                     label="¿Ordenar prueba de embarazo?"
                                                     name="pruebaEmbarazo"
                                                     size={30}
                                                     defaultValue={false}
                                                 />
-                                            </FormProvider>
-                                        </Grid>
-                                    }
-                                </>
-                            }
+                                            </Grid>
+                                        }
+                                    </>
+                                }
 
-                            {resultData &&
+                                {resultData &&
+                                    <Grid item xs={12}>
+                                        <ListParaclinico setDisabledButton={setDisabledButton} lsEmployee={lsEmployee} idOrdenes={resultData} />
+                                    </Grid>
+                                }
+
                                 <Grid item xs={12}>
-                                    <ListParaclinico setDisabledButton={setDisabledButton} lsEmployee={lsEmployee} idOrdenes={resultData} />
-                                </Grid>
-                            }
+                                    <Grid container spacing={2} sx={{ pt: 4 }}>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button disabled={isValid} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                    {TitleButton.Guardar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
-                            <Grid item xs={12}>
-                                <Grid container spacing={2} sx={{ pt: 4 }}>
-                                    <Grid item xs={6} md={4} lg={2}>
-                                        <AnimateButton>
-                                            <Button disabled={isValid} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                                {TitleButton.Guardar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button disabled={!disabledButton} variant="outlined" fullWidth onClick={() => generateReport('imprimir')}>
+                                                    {TitleButton.Imprimir}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
-                                    <Grid item xs={6} md={4} lg={2}>
-                                        <AnimateButton>
-                                            <Button disabled={!disabledButton} variant="outlined" fullWidth onClick={() => generateReport('imprimir')}>
-                                                {TitleButton.Imprimir}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <LoadingButton
+                                                    fullWidth
+                                                    disabled={!disabledButton}
+                                                    onClick={() => generateReport('correo')}
+                                                    loading={loading}
+                                                    loadingPosition="end"
+                                                    startIcon={<SendIcon />}
+                                                    variant="outlined"
+                                                >
+                                                    {TitleButton.EnviarCorreo}
+                                                </LoadingButton>
+                                            </AnimateButton>
+                                        </Grid>
 
-                                    <Grid item xs={6} md={4} lg={2}>
-                                        <AnimateButton>
-                                            <LoadingButton
-                                                fullWidth
-                                                disabled={!disabledButton}
-                                                onClick={() => generateReport('correo')}
-                                                loading={loading}
-                                                loadingPosition="end"
-                                                startIcon={<SendIcon />}
-                                                variant="outlined"
-                                            >
-                                                {TitleButton.EnviarCorreo}
-                                            </LoadingButton>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={6} md={4} lg={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/orders-individual/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => navigate("/orders-individual/list")}>
+                                                    {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
+                        </SubCard>
+                    </Grid>
                 </Grid>
-            </Grid >
+            </FormProvider>
         </ValidateActionSkeleton>
     );
 };

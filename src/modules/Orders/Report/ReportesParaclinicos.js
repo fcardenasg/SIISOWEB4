@@ -58,6 +58,7 @@ const concentimientoParrafoTwo = "Considerando lo anterior y atendiendo los requ
 export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser = []) {
 
     doc.text("Consentimiento Informado", 5, 35);
+    doc.text(`Fecha del sistema: ${new Date().toLocaleString()}`, 137, 35);
 
     doc.setFontSize(12);
     doc.text(`Nro. Orden:       ${lsDataReport.id}`, 5, 48);
@@ -65,8 +66,8 @@ export function generateReportConcentimiento(doc, lsDataReport = [], lsDataUser 
     doc.text(`YO ${lsDataReport.nameEmpleado}     IDENTIFICAD${lsDataReport.nameGenero === "MASCULINO" ? "O" : "A"} CON CC NRO. ${lsDataReport.documento}`, 5, 60);
 
     doc.setFont("helvetica", "normal");
-    doc.text(`${config.typeDashboard === 'DLTD' ? concentimientoParrafoDLTD : concentimientoParrafoEnergy} `, 7, 80, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
-    doc.text(`${concentimientoParrafoTwo} `, 7, 130, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`${config.typeDashboard === 'DLTD' ? concentimientoParrafoDLTD : concentimientoParrafoEnergy} `, 5, 80, { maxWidth: 204, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`${concentimientoParrafoTwo}`, 5, 130, { maxWidth: 204, align: 'justify', lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser);
     getFirmaEmployee(doc, lsDataReport);
@@ -104,9 +105,7 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], 
     doc.text('Area:', 130, 77 + bajar);
     doc.text('Sede:', 130, 84 + bajar);
     doc.setFontSize(12);
-    doc.text(`${lsDataReportParaclinico.filter(x => x.idParaclinico === DefaultValue.ORDENES_FECHA_EXAM_FISICO)
-        .map(x => ViewFormat(x.fechaExamenFisico))
-        } `, 100, 120 + bajar, null, null, "center");
+    doc.text(`${ViewFormat(lsDataReport.fechaCitacion)}`, 100, 120 + bajar, null, null, "center");
 
     /* RENDERIZADO DE CONTENIDO */
     doc.setFontSize(10);
@@ -122,7 +121,7 @@ export function generateReportCitacion(doc, lsDataReport = [], lsDataUser = [], 
     doc.text(`${lsDataReport.nameArea} `, 170, 77 + bajar);
     doc.text(`${lsDataReport.nameSede} `, 170, 84 + bajar);
 
-    doc.text(`${config.typeDashboard === 'DLTD' ? citacionParrafoDLTD : citacionParrafoEnergy} ${ViewFormat(lsDataReport.fecha)}`, 5, 100 + bajar, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
+    doc.text(`${config.typeDashboard === 'DLTD' ? citacionParrafoDLTD : citacionParrafoEnergy}`, 5, 100 + bajar, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });
     doc.text('Adjunto además órdenes de Paraclínicos, cuyos resultados debe traer el día del examen.', 5, 128 + bajar);
     doc.text(lsDataReport.lsParaclinicos.map((paracli, index) => { return String(`- ${paracli} `); }), 5, 135 + bajar, { maxWidth: 200, lineHeightFactor: 2 });
     doc.text("Agradecemos coordinar lo necesario para que los exámenes asignados sean realizados en las fechas programados y no sobrepasen el tiempo acordado con los proveedores.", 5, (145 + cantidadParaclinico) + bajar, { maxWidth: 190, align: 'justify', lineHeightFactor: 1.5 });

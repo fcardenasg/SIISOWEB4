@@ -19,6 +19,7 @@ const lsTipoBusqueda = [
 
 const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
     const [sede, setSede] = useState(0);
+    const [payStatus, setPayStatus] = useState(0);
     const [tipoExcelAusentismo, setTipoExcelAusentismo] = useState(0);
     const [documento, setDocumento] = useState('');
     const [opcionBusqueda, setOpcionBusqueda] = useState(0);
@@ -69,7 +70,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                     /> : null
                 }
 
-                {exportBy.codigo === 'AT' ?
+                {exportBy.codigo === 'AT' &&
                     <AccidenteTrabajo
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
@@ -79,7 +80,8 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                        setPayStatus={setPayStatus} payStatus={payStatus}
+                    />
                 }
 
                 {exportBy.codigo === 'AUSENTI' ?

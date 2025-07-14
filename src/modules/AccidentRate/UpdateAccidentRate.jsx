@@ -24,6 +24,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetByIdAccidentRate, UpdateAccidentRates } from 'api/clients/AccidentRateClient';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -49,6 +50,9 @@ import MainCard from 'ui-component/cards/MainCard';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReport } from '../AccidentRate/ReporteAccidentRate';
+import ChipControl from 'ui-component/extended/Chip';
+import RightDrawer from 'components/components/RightDrawer';
+import { useBoolean } from 'hooks/use-boolean';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -67,6 +71,8 @@ const UpdateAccidentRate = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const openModal = useBoolean();
+
     const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
     const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
@@ -78,7 +84,6 @@ const UpdateAccidentRate = () => {
     const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [openViewArchivo, setOpenViewArchivo] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
     const [lsRegion, setLsRegion] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
@@ -210,7 +215,7 @@ const UpdateAccidentRate = () => {
                 }
             }
             else {
-                setUrlFile('');
+                setUrlFile(null);
                 setOpenError(true);
                 setErrorMessage('Este formato no es .PDF');
             }
@@ -317,10 +322,21 @@ const UpdateAccidentRate = () => {
         }
     };
 
+    const isCumple = urlFile === null ? true : false;
+
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Accidentedetrabajo}>
             <MessageUpdate open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <RightDrawer
+                title="Previsualizar archivo"
+                open={openModal.value}
+                onClose={openModal.onFalse}
+                width={600}
+            >
+                <ViewPDF dataPDF={urlFile} height={570} width={550} />
+            </RightDrawer>
 
             <ControlModal
                 maxWidth="md"
@@ -502,7 +518,7 @@ const UpdateAccidentRate = () => {
                     <Grid item xs={12}>
                         <SubCard darkTitle title={<Typography variant="h4">Datos Complementarios</Typography>}>
                             <Grid container spacing={2}>
-                                <Grid item xs={3}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idParaclinicos"
@@ -515,7 +531,7 @@ const UpdateAccidentRate = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idConceptoActitudSFI"
@@ -528,7 +544,7 @@ const UpdateAccidentRate = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputSelect
                                             name="idConceptoActitudSFF"
@@ -541,7 +557,7 @@ const UpdateAccidentRate = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={1.5}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             type="number"
@@ -555,7 +571,7 @@ const UpdateAccidentRate = () => {
                                     </FormProvider>
                                 </Grid>
 
-                                <Grid item xs={1.5}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <FormProvider {...methods}>
                                         <InputText
                                             type="number"
@@ -625,7 +641,14 @@ const UpdateAccidentRate = () => {
                             </Grid>
 
                             <Grid item xs={12} sx={{ pt: 2 }}>
-                                <MainCard title="Registro Fotográfico">
+                                <MainCard title="Registro Fotográfico" secondary={
+                                    <ChipControl
+                                        size="small"
+                                        label={urlFile == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
+                                        chipcolor={urlFile == null ? "error" : "success"}
+                                        sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                    />
+                                }>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={4} lg={2}>
                                             <AnimateButton>
@@ -638,15 +661,23 @@ const UpdateAccidentRate = () => {
 
                                         <Grid item xs={6} md={4} lg={2}>
                                             <AnimateButton>
-                                                <Button variant="outlined" onClick={downloadFileReplay} disabled={urlFile === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                                <Button variant="outlined" onClick={downloadFileReplay} disabled={isCumple} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
                                                     Descargar
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={6} md={6} lg={2.5}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" onClick={openModal.onTrue} disabled={isCumple} startIcon={<VisibilityIcon fontSize="large" />} fullWidth>
+                                                    Previsualizar archivo
                                                 </Button>
                                             </AnimateButton>
                                         </Grid>
 
                                         <Grid item xs={6} md={4} lg={2}>
                                             <AnimateButton>
-                                                <Button variant="outlined" color="error" onClick={() => setUrlFile(null)} disabled={urlFile === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                                <Button variant="outlined" color="error" onClick={() => setUrlFile(null)} disabled={isCumple} startIcon={<ClearIcon fontSize="large" />} fullWidth>
                                                     Eliminar
                                                 </Button>
                                             </AnimateButton>

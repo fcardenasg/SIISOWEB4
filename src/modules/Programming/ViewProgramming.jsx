@@ -131,9 +131,11 @@ const ViewProgramming = ({ programming, getAll }) => {
                 tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA && triage)
                 navigate(`/programming/infirmary/${programming?.id}`);
 
-            if (tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA &&
-                atencion === DefaultValue.ATENCION_PRUEBA_ALCOHOL)
+            if (atencion === DefaultValue.ATENCION_PRUEBA_ALCOHOL)
                 navigate(`/programming/alcoholanddrugtesting/${programming?.id}`);
+
+            if (atencion === DefaultValue.ATENCION_HISTORIA_EMBRIAGUEZ)
+                navigate(`/programming/history-drunkenness/${programming?.id}`);
         } catch (error) { }
     };
 

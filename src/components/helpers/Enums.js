@@ -26,8 +26,8 @@ export const CodCatalogo = {
     Oficio: 173,
     TIPO_SOLICITUD_DEREPETICION: 28,
     RESPONSABLE_RESPUESTA_DEREPETICION: 112,
-    GRUPO_RIESGO: 3246, /* CAMBIAR */
- 
+    GRUPO_RIESGO: 249,
+
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
     VentanillaEmpresaMensajeria: 226,
@@ -307,6 +307,7 @@ export const DefaultValue = {
     /* TIPO ATENCIÓN */
     TIPO_ATENCION_EMO: 3900,
     ATENCION_PRUEBA_ALCOHOL: 3908,
+    ATENCION_HISTORIA_EMBRIAGUEZ: 16896, /* Cambiar */
     ATENCION_ENFERMERIA: 3907,
     TIPO_ATENCION_ASESORIAS: 3899,
     TIPO_ATENCION_ASESORIAS_PSICO: 3909,

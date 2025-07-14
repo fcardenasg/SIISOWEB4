@@ -21,7 +21,6 @@ import { CodCatalogo } from 'components/helpers/Enums';
 import SelectOnChange from 'components/input/SelectOnChange';
 import InputSelect from 'components/input/InputSelect';
 import { SNACKBAR_OPEN } from 'store/actions';
-import { InsertPanorama } from 'api/clients/PanoramaClient';
 import InputText from 'components/input/InputText';
 import { Message, TitleButton } from 'components/helpers/Enums';
 import MainCard from 'ui-component/cards/MainCard';
@@ -144,7 +143,7 @@ const Panorama = () => {
                 JSON.stringify(medicaControl), datos.descripcionCargo, user?.nameuser,
                 FormatDate(new Date()), '', FormatDate(new Date()));
 
-            if (Object.keys(datos.length !== 0)) {
+            /* if (Object.keys(datos.length !== 0)) {
                 const result = await InsertPanorama(DataToInsert);
                 if (result.status === 200) {
                     dispatch({
@@ -160,7 +159,7 @@ const Panorama = () => {
                     setMedicaControl([]);
                     setRiesgo('');
                 }
-            }
+            } */
         } catch (error) {
             dispatch({
                 type: SNACKBAR_OPEN,

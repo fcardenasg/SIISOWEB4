@@ -1,49 +1,49 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
-    useMediaQuery,
     Typography,
+    useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import ControlModal from 'components/controllers/ControlModal';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import ControlModal from 'components/controllers/ControlModal';
 
-import { FormProvider, useForm } from 'react-hook-form';
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
+import { FormProvider, useForm } from 'react-hook-form';
 
-import InputDatePicker from 'components/input/InputDatePicker';
-import ControllerListen from 'components/controllers/ControllerListen';
-import FullScreenDialog from 'components/controllers/FullScreenDialog';
-import ListPlantillaAll from 'components/template/ListPlantillaAll';
-import DetailedIcon from 'components/controllers/DetailedIcon';
-import { FormatDate } from 'components/helpers/Format'
-import InputText from 'components/input/InputText';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
-import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import SelectOnChange from 'components/input/SelectOnChange';
-import { GetByIdAccidentRate, InsertAccidentRate } from 'api/clients/AccidentRateClient';
-import { PostAccidentRate } from 'formatdata/AccidentRateForm';
-import InputOnChange from 'components/input/InputOnChange';
-import ViewPDF from 'components/components/ViewPDF';
-import Cargando from 'components/loading/Cargando';
-import MainCard from 'ui-component/cards/MainCard';
 import UploadIcon from '@mui/icons-material/Upload';
+import { GetByIdAccidentRate, InsertAccidentRate } from 'api/clients/AccidentRateClient';
+import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { GetByMail } from 'api/clients/UserClient';
+import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import DetailedIcon from 'components/controllers/DetailedIcon';
+import FullScreenDialog from 'components/controllers/FullScreenDialog';
+import { CodCatalogo, Message, TitleButton } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
+import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import { PostAccidentRate } from 'formatdata/AccidentRateForm';
+import useAuth from 'hooks/useAuth';
 import { generateReport } from 'modules/AccidentRate/ReporteAccidentRate';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import ChipControl from 'ui-component/extended/Chip';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -562,7 +562,14 @@ const AccidentRate = ({ documentoAT }) => {
                         </Grid>
 
                         <Grid item xs={12} sx={{ pt: 2 }}>
-                            <MainCard title="Registro Fotográfico">
+                            <MainCard title="Registro Fotográfico" secondary={
+                                <ChipControl
+                                    size="small"
+                                    label={urlFile == null ? "SIN ARCHIVO" : "ARCHIVO SUBIDO CORRECTAMENTE"}
+                                    chipcolor={urlFile == null ? "error" : "success"}
+                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                />
+                            }>
                                 <Grid container spacing={12}>
                                     <Grid textAlign="center" item xs={12}>
                                         <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>

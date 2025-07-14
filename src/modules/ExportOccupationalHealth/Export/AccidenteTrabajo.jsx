@@ -14,12 +14,13 @@ import { DownloadFile } from "components/helpers/ConvertToBytes";
 import InputOnChange from "components/input/InputOnChange";
 import { GetExcelAccidentRate } from 'api/clients/AccidentRateClient';
 
-const AccidenteTrabajo = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, setDocumento, documento, parametroConsulta, tipoExcelAusentismo,
+const AccidenteTrabajo = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, setPayStatus, payStatus, setDocumento, documento, parametroConsulta, tipoExcelAusentismo,
     setFechaInicio, fechaInicio, setFechaFin, fechaFin, lsBusqueda, lsTipoExcelAusentismo, setTipoExcelAusentismo }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     const [lsSede, setLsSede] = useState([]);
+    const [lsEstado, setLsEstado] = useState([]);
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -30,6 +31,10 @@ const AccidenteTrabajo = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                 const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
                 const arraySede = lsServerSede.data.concat(ArrayTodaSede);
                 setLsSede(arraySede);
+
+                const lsServerEstado = await GetByTipoCatalogoCombo(CodCatalogo.Estado);
+                const arrayEstado = lsServerEstado.data.concat([{ value: 0, label: "TODOS LOS ESTADOS" }]);
+                setLsEstado(arrayEstado);
             } catch (error) { }
         }
 
@@ -45,6 +50,7 @@ const AccidenteTrabajo = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin,
                 documento: documento,
+                payStatus: payStatus,
                 opcionBusqueda: opcionBusqueda,
                 tipoExcelAusentismo: tipoExcelAusentismo
             }
@@ -61,7 +67,6 @@ const AccidenteTrabajo = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
 
         } catch (error) {
             setLoading(false);
-
             setOpenError(true);
             setErrorMessage(Message.ErrorExcel);
         }
@@ -118,6 +123,19 @@ const AccidenteTrabajo = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                             size={matchesXS ? 'small' : 'medium'}
                         />
                     </Grid> : null}
+
+                {(opcionBusqueda === 1 || opcionBusqueda === 2) &&
+                    <Grid item xs={12}>
+                        <SelectOnChange
+                            name="payStatus"
+                            label="Estado del empleado"
+                            value={payStatus}
+                            options={lsEstado}
+                            onChange={(e) => setPayStatus(e.target.value)}
+                            size={matchesXS ? 'small' : 'medium'}
+                        />
+                    </Grid>
+                }
 
                 {opcionBusqueda === 2 ?
                     <Fragment>

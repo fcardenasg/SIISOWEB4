@@ -1,39 +1,37 @@
-import { useState, useEffect, Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
-import { useTheme } from '@mui/material/styles';
 import {
-    Grid, Button,
-    useMediaQuery,
-    Typography,
-    TableCell,
-    TableRow,
-    TableContainer,
-    Table,
-    TableHead,
-    TableBody,
+    Button,
+    Grid,
+    IconButton,
     Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
     Tooltip,
-    IconButton
+    Typography,
+    useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
-import { GetAllSupplier } from 'api/clients/SupplierClient';
-import { useForm, FormProvider } from 'react-hook-form';
-import Transitions from 'ui-component/extended/Transitions';
-import { AccionMenu, Message, Modulo } from 'components/helpers/Enums';
-import useAuth from 'hooks/useAuth';
-import { MessageSuccess, MessageError, ParamDelete } from 'components/alert/AlertAll';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import SelectOnChange from 'components/input/SelectOnChange';
-import InputDatePicker from 'components/input/InputDatePicker';
-import { CodCatalogo, DefaultValue } from 'components/helpers/Enums';
-import InputSelect from 'components/input/InputSelect';
-import SubCard from 'ui-component/cards/SubCard';
-import InputCheckBox from 'components/input/InputCheckBox';
-import { PostOrdersParaclinico } from 'formatdata/OrdersForm';
-import { DeleteOrdersParaclinicos, GetAllOrdersParaclinicos, InsertOrdersParaclinicos } from 'api/clients/OrdersClient';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import swal from 'sweetalert';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { DeleteOrdersParaclinicos, GetAllOrdersParaclinicos, InsertOrdersParaclinicos } from 'api/clients/OrdersClient';
+import { GetAllSupplier } from 'api/clients/SupplierClient';
+import { MessageError, MessageSuccess, ParamDelete } from 'components/alert/AlertAll';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo } from 'components/helpers/Enums';
+import InputSelect from 'components/input/InputSelect';
+import SelectOnChange from 'components/input/SelectOnChange';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import { PostOrdersParaclinico } from 'formatdata/OrdersForm';
+import useAuth from 'hooks/useAuth';
+import { FormProvider, useForm } from 'react-hook-form';
+import swal from 'sweetalert';
+import SubCard from 'ui-component/cards/SubCard';
+import Transitions from 'ui-component/extended/Transitions';
 
 const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledButton }) => {
     const { user } = useAuth();
@@ -68,40 +66,22 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
     useEffect(() => {
         async function getAll() {
             try {
-                const lsServerLaboratorio = await GetAllByTipoCatalogo(0, 0, CodCatalogo.LABORATORIO_ORDENES_PARACLINICOS);
-                var resultLaboratorio = lsServerLaboratorio.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsLaboratorio(resultLaboratorio);
+                const lsServerLaboratorio = await GetByTipoCatalogoCombo(CodCatalogo.LABORATORIO_ORDENES_PARACLINICOS);
+                setLsLaboratorio(lsServerLaboratorio.data);
 
-                const lsServerTipoRNM = await GetAllByTipoCatalogo(0, 0, CodCatalogo.TIPORNM_ORDENES_PARACLINICOS);
-                var resultTipoRNM = lsServerTipoRNM.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsTipoRNM(resultTipoRNM);
+                const lsServerTipoRNM = await GetByTipoCatalogoCombo(CodCatalogo.TIPORNM_ORDENES_PARACLINICOS);
+                setLsTipoRNM(lsServerTipoRNM.data);
 
-                const lsServerCiudad = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CIUDADES);
-                if (lsServerCiudad.status === 200) {
-                    var resultCiudad = lsServerCiudad.data.entities.map((item) => ({
-                        value: item.idCatalogo,
-                        label: item.nombre
-                    }));
-                    setLsCiudad(resultCiudad);
-                }
+                const lsServerCiudad = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+                setLsCiudad(lsServerCiudad.data);
 
                 const lsServerProveedor = await GetAllSupplier();
                 if (lsServerProveedor.status === 200) {
                     setLsProveedor(lsServerProveedor.data);
                 }
 
-                const lsServerEstudioParaclinico2 = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTUDIO_EXAMEN_PARACLINICOS);
-                var resultEstudioParaclinico = lsServerEstudioParaclinico2.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-                setLsEstudioParaclinico(resultEstudioParaclinico);
+                const lsServerEstudioParaclinico2 = await GetByTipoCatalogoCombo(CodCatalogo.ESTUDIO_EXAMEN_PARACLINICOS);
+                setLsEstudioParaclinico(lsServerEstudioParaclinico2.data);
             } catch (error) { }
         }
 
@@ -187,7 +167,7 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
             var ciudadMap = fechaExmaneFisico ? DefaultValue.SINREGISTRO_GLOBAL : ciudad;
 
             const DataToInsert = PostOrdersParaclinico(paraclinicos, idOrdenes, proveedorMap, ciudadMap, datos.idTipoExamenLaboratorio,
-                datos.idTipoExamenRNM, datos.fechaExamenFisico, datos.asistio, user?.nameuser, undefined, "", undefined);
+                datos.idTipoExamenRNM, undefined, undefined, user?.nameuser, undefined, undefined, undefined);
 
             const result = await InsertOrdersParaclinicos(DataToInsert);
             if (result.status === 200) {
@@ -321,31 +301,6 @@ const ListParaclinico = ({ lsEmployee, idOrdenes, setDisabledButton, disabledBut
                                             />
                                         </FormProvider>
                                     </Grid>
-                                }
-
-                                {fechaExmaneFisico &&
-                                    <>
-                                        <Grid item xs={xsGrid}>
-                                            <FormProvider {...methods}>
-                                                <InputDatePicker
-                                                    label="Fecha De Examen Físico"
-                                                    name="fechaExamenFisico"
-                                                    defaultValue={new Date()}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-
-                                        <Grid item xs={xsGrid} sx={{ align: "center" }}>
-                                            <FormProvider {...methods}>
-                                                <InputCheckBox
-                                                    label="Asistio"
-                                                    name="asistio"
-                                                    size={30}
-                                                    defaultValue={false}
-                                                />
-                                            </FormProvider>
-                                        </Grid>
-                                    </>
                                 }
 
                                 <Grid container sx={{ pr: 0.5, pt: 3 }} justifyContent="flex-end">

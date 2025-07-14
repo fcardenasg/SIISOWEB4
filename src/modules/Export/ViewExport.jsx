@@ -32,6 +32,7 @@ const lsTipoBusqueda = [
 
 const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [sede, setSede] = useState(0);
+    const [payStatus, setPayStatus] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
 
@@ -101,6 +102,7 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
+                        setPayStatus={setPayStatus} payStatus={payStatus}
                     /> : null
                 }
 

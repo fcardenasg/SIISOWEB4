@@ -11,6 +11,7 @@ import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
@@ -36,10 +37,12 @@ import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import SelectOnChange from 'components/input/SelectOnChange';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+
 import { PostAccidentRate } from 'formatdata/AccidentRateForm';
 import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import ChipControl from 'ui-component/extended/Chip';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetByMail } from 'api/clients/UserClient';
@@ -47,6 +50,8 @@ import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import MainCard from 'ui-component/cards/MainCard';
 import { generateReport } from '../AccidentRate/ReporteAccidentRate';
+import RightDrawer from 'components/components/RightDrawer';
+import { useBoolean } from 'hooks/use-boolean';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -60,6 +65,7 @@ const AccidentRate = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const openModal = useBoolean();
 
     const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
@@ -282,10 +288,21 @@ const AccidentRate = () => {
         }
     };
 
+    const isCumple = urlFile === null ? true : false;
+
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Accidentedetrabajo}>
             <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+            <RightDrawer
+                title="Previsualizar archivo"
+                open={openModal.value}
+                onClose={openModal.onFalse}
+                width={600}
+            >
+                <ViewPDF dataPDF={urlFile} height={570} width={550} />
+            </RightDrawer>
 
             <ControlModal
                 maxWidth="md"
@@ -460,7 +477,7 @@ const AccidentRate = () => {
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">Datos Complementarios</Typography>}>
                         <Grid container spacing={2}>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idParaclinicos"
@@ -472,7 +489,7 @@ const AccidentRate = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idConceptoActitudSFI"
@@ -484,7 +501,7 @@ const AccidentRate = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idConceptoActitudSFF"
@@ -496,7 +513,7 @@ const AccidentRate = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={1.5}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"
@@ -509,7 +526,7 @@ const AccidentRate = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={1.5}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputText
                                         type="number"
@@ -550,7 +567,7 @@ const AccidentRate = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idStatus"
@@ -562,7 +579,7 @@ const AccidentRate = () => {
                                 </FormProvider>
                             </Grid>
 
-                            <Grid item xs={4}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <FormProvider {...methods}>
                                     <InputSelect
                                         name="idRemitido"
@@ -575,10 +592,17 @@ const AccidentRate = () => {
                             </Grid>
                         </Grid>
 
-                        <Grid item xs={12} sx={{ pt: 2 }}>
-                            <MainCard title="Registro Fotográfico">
+                        <Grid item xs={12} sx={{ mt: 3 }}>
+                            <MainCard title="Registro Fotográfico" secondary={
+                                <ChipControl
+                                    size="small"
+                                    label={urlFile == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
+                                    chipcolor={urlFile == null ? "error" : "success"}
+                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                />
+                            }>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={6} md={4} lg={2}>
+                                    <Grid item xs={6} md={6} lg={2.5}>
                                         <AnimateButton>
                                             <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
                                                 {TitleButton.SubirArchivo}
@@ -587,17 +611,25 @@ const AccidentRate = () => {
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={6} md={4} lg={2}>
+                                    <Grid item xs={6} md={6} lg={2.5}>
                                         <AnimateButton>
-                                            <Button variant="outlined" onClick={downloadFileReplay} disabled={urlFile === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                            <Button variant="outlined" onClick={downloadFileReplay} disabled={isCumple} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
                                                 Descargar
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
 
-                                    <Grid item xs={6} md={4} lg={2}>
+                                    <Grid item xs={6} md={6} lg={2.5}>
                                         <AnimateButton>
-                                            <Button variant="outlined" color="error" onClick={() => setUrlFile(null)} disabled={urlFile === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                            <Button variant="outlined" onClick={openModal.onTrue} disabled={isCumple} startIcon={<VisibilityIcon fontSize="large" />} fullWidth>
+                                                Previsualizar archivo
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={6} lg={2.5}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" color="error" onClick={() => setUrlFile(null)} disabled={isCumple} startIcon={<ClearIcon fontSize="large" />} fullWidth>
                                                 Eliminar
                                             </Button>
                                         </AnimateButton>

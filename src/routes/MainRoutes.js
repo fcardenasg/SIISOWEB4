@@ -102,7 +102,7 @@ const AccidentRate = Loadable(lazy(() => import('modules/AccidentRate/AccidentRa
 const UpdateAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/UpdateAccidentRate')));
 
 const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
-const Charges = Loadable(lazy(() => import('modules/Charges/Charges')));
+const PositionOverview = Loadable(lazy(() => import('modules/Charges/PositionOverview')));
 const UpdateCharges = Loadable(lazy(() => import('modules/Charges/UpdateCharges')));
 
 const ListPanorama = Loadable(lazy(() => import('modules/Charges/Panorama/ListPanorama')));
@@ -136,6 +136,7 @@ const UpdatePsychological = Loadable(lazy(() => import('modules/Programming/Atte
 const UpdateOthersAdvice = Loadable(lazy(() => import('modules/Programming/Attention/UpdateOtherAdvice')));
 const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateMedicalAdvice')));
 const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
+const UpdateHistoryDrunkenness = Loadable(lazy(() => import('modules/Programming/Attention/UpdateHistoryDrunkenness')));
 const UpdateAlcoholAndDrugTestings = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAlcoholAndDrugTesting')));
 
 const ListMedicines = Loadable(lazy(() => import('modules/Medicines/Product/ListMedicines')));
@@ -599,7 +600,7 @@ const MainRoutes = {
         },
         {
             path: '/charges/add',
-            element: <Charges />
+            element: <PositionOverview />
         },
         {
             path: '/charges/update/:id',
@@ -714,6 +715,10 @@ const MainRoutes = {
         {
             path: '/programming/infirmary/:id',
             element: <UpdateNoteInfirmaryProgra />
+        },
+        {
+            path: '/programming/history-drunkenness/:id',
+            element: <UpdateHistoryDrunkenness />
         },
         {
             path: '/programming/emo/:id',
@@ -882,10 +887,6 @@ const MainRoutes = {
         {
             path: '/forgot-password/view',
             element: <ForgotPassword />
-        },
-        {
-            path: '/charges/list',
-            element: <ListCharges />
         },
         {
             path: '/dashboard/drummond',

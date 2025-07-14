@@ -7,8 +7,11 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { fontSize } from '@mui/system';
+import Iconify from 'components/iconify/iconify';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { ColorDrummondltd } from 'themes/colors';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -61,6 +64,7 @@ export default function DetailsCharges({ lsData = [], onDelete }) {
                 <Table sx={{ minWidth: 700, mb: lsData.length == 0 && 7 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
+                            <TableCell />
                             <TableCell>Cargo</TableCell>
                             <TableCell>GES</TableCell>
                             <TableCell>Clase de riesgo</TableCell>
@@ -73,6 +77,13 @@ export default function DetailsCharges({ lsData = [], onDelete }) {
                         {stableSort(lsData, getComparator('asc', 'cargo'))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                                 <TableRow key={index}>
+                                    <TableCell sx={{ cursor: 'pointer' }}>
+                                        {!row.existecargo &&
+                                            <Tooltip placement="top" title="El cargo en el Excel no coincide con los registrados. Corrígelo manualmente, asegúrate de usar el nombre en inglés y vuelve a cargar el archivo.">
+                                                <Iconify sx={{ color: ColorDrummondltd.RedDrummond }} width={25} icon="clarity:employee-group-line" />
+                                            </Tooltip>
+                                        }
+                                    </TableCell>
                                     <TableCell>{row.cargo}</TableCell>
                                     <TableCell>{row.ges}</TableCell>
                                     <TableCell>{row.claseriesgo}</TableCell>

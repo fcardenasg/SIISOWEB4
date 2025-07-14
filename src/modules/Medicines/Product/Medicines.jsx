@@ -6,10 +6,10 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
 
 import { GetComboMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
 import { InsertMedicines } from 'api/clients/MedicinesClient';
