@@ -4,7 +4,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import { useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
-import Charges from './Charges';
+import BulkLoadingCharges from './BulkLoadingCharges';
 import IndividualCharges from './IndividualCharges';
 
 export default function PositionOverview() {
@@ -23,7 +23,7 @@ export default function PositionOverview() {
                 </TabList>
 
                 <TabPanel value={1}>
-                    <Charges />
+                    <BulkLoadingCharges />
                 </TabPanel>
 
                 <TabPanel value={2}>

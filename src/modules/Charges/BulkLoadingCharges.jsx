@@ -20,7 +20,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import DetailsCharges from './DetailsCharges';
 
-const Charges = () => {
+const BulkLoadingCharges = () => {
     const navigate = useNavigate();
     const [filesData, setFilesData] = useState([]);
 
@@ -208,4 +208,4 @@ const Charges = () => {
     );
 };
 
-export default Charges;
+export default BulkLoadingCharges;

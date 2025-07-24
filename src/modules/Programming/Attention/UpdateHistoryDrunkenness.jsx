@@ -13,7 +13,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 import { GetByIdAttention, UpdateEstadoRegistroAtencion, ValidateIdRegistroAtencion } from 'api/clients/AttentionClient';
-import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetAllByTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdNoteInfirmary, InsertNoteInfirmary, UpdateNoteInfirmarys } from 'api/clients/NoteInfirmaryClient';
 import { GetByMail } from 'api/clients/UserClient';
@@ -104,6 +104,11 @@ const arrayCuandoPositivo = [
     { value: 4, label: "Vertical" }
 ]
 
+const arrayDeterminacion = [
+    { value: 1, label: "No se realiza" },
+    { value: 2, label: "Sí se realiza" }
+]
+
 const UpdateHistoryDrunkenness = () => {
     const theme = useTheme();
     const { user } = useAuth();
@@ -128,8 +133,19 @@ const UpdateHistoryDrunkenness = () => {
     const [procedimiento, setProcedimiento] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
-    const [lsProcedimiento, setLsProcedimiento] = useState([]);
-    const [lsContingencia, setLsContingencia] = useState([]);
+    const [lsCiudad, setLsCiudad] = useState([]);
+    const [lsInstitucion, setLsInstitucion] = useState([]);
+    const [lsAliento, setLsAliento] = useState([]);
+    const [lsEstadoConciencia, setLsEstadoConciencia] = useState([]);
+    const [lsResultAtencion, setLsResultAtencion] = useState([]);
+    const [lsFlujoLen, setLsFlujoLen] = useState([]);
+    const [lsOpcion, setLsOpcion] = useState([]);
+    const [lsPupila, setLsPupila] = useState([]);
+    const [lsReglejoCoordinacion, setLsReglejoCoordinacion] = useState([]);
+    const [lsConvergencia, setLsConvergencia] = useState([]);
+    const [lsReflejoOsteo, setLsReflejoOsteo] = useState([]);
+    const [lsResultEvaluacion, setLsResultEvaluacion] = useState([]);
+    const [lsOpcionRealiza, setLsOpcionRealiza] = useState([]);
 
     const [resultData, setResultData] = useState(0);
     const [dataPDF, setDataPDF] = useState(null);
@@ -190,52 +206,12 @@ const UpdateHistoryDrunkenness = () => {
         }
     }
 
-    const handleAtencion = async (sede, tipoAtencion) => {
-        if (sede === DefaultValue.SEDE_PUERTO && tipoAtencion === DefaultValue.TIPO_ATENCION_ENFERMERIA) {
-
-            var resultMapsTipoAM = [];
-            var resultMapsTipoAE = [];
-            /* AQUÍ SE CARGAN LAS ATENCIONES MÉDICAS */
-            var lsGetTipoAtencionMedica = await GetAllBySubTipoCatalogo(0, 0, 'SER01', 5);
-            if (lsGetTipoAtencionMedica.status === 200) {
-                resultMapsTipoAM = lsGetTipoAtencionMedica.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-            }
-
-            /* AQUÍ SE CARGAN LAS ATENCIONES DE ENFERMERIA */
-            const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION_NOTA_ENFERMERIA);
-            if (lsServerAtencionn.status === 200) {
-                resultMapsTipoAE = lsServerAtencionn.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-            }
-
-            const arrayAtencion = resultMapsTipoAE.concat(resultMapsTipoAM);
-            setLsAtencionn(arrayAtencion);
-
-        } else {
-            const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION_NOTA_ENFERMERIA);
-            if (lsServerAtencionn.status === 200) {
-                var resultAtencionn = lsServerAtencionn.data.entities.map((item) => ({
-                    value: item.idCatalogo,
-                    label: item.nombre
-                }));
-
-                setLsAtencionn(resultAtencionn);
-            }
-        }
-    }
-
     async function getAll() {
         try {
             const lsServerAtencion = await GetByIdAttention(id);
             if (lsServerAtencion.status === 200) {
                 setLsAtencion(lsServerAtencion.data);
                 setDocumento(lsServerAtencion.data.documento);
-                handleAtencion(lsServerAtencion.data.sede, lsServerAtencion.data.tipo);
 
                 const event = {
                     target: { value: lsServerAtencion.data.documento }
@@ -243,27 +219,21 @@ const UpdateHistoryDrunkenness = () => {
                 handleLoadingDocument(event);
             }
 
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsContingencia(resultContingencia);
+            const lsServerInstitucion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerAliento = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerEstadoConciencia = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerResultAtencion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerFlujoLen = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerOpcion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerPupila = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerReglejoCoordinacion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerConvergencia = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerReflejoOsteo = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerResultEvaluacion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServeropcionRealiza = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
 
-            const lsServerProcedimiento = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PROCEDIMIENTO_ENFERMERIA);
-            var resultProcedimiento = lsServerProcedimiento.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsProcedimiento(resultProcedimiento);
-
-            const lsServerData = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.NotaEnfermeria);
-            if (lsServerData.status === 200) {
-                setDataNotaEnfermeria(lsServerData.data.entities);
-                setResultIdRegistroAtencion(lsServerData.data.estado);
-                setResultData(lsServerData.data.entities.id);
-                setProcedimiento(JSON.parse(lsServerData.data.entities.procedimientos));
-            }
+            const lsServerCiudad = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            setLsCiudad(lsServerCiudad.data);
         } catch (error) { }
     }
 
@@ -376,20 +346,20 @@ const UpdateHistoryDrunkenness = () => {
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <InputSelect
-                                                    name="idInstitucionDondeExamen"
+                                                    name="infoGeneIntitutoRealizaExamen"
                                                     label="Institución donde se realiza el examen"
                                                     defaultValue={lsAtencion?.atencion}
-                                                    options={lsAtencionn}
+                                                    options={lsInstitucion}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </Grid>
 
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <InputSelect
-                                                    name="idCiudadExamen"
+                                                    name="infoGeneCiudadExamen"
                                                     label="Ciudad del examen"
                                                     defaultValue={lsAtencion?.atencion}
-                                                    options={lsAtencionn}
+                                                    options={lsCiudad}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </Grid>
@@ -397,7 +367,7 @@ const UpdateHistoryDrunkenness = () => {
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <InputDatePicker
                                                     label="Fecha del examen"
-                                                    name="fechaExamen"
+                                                    name="infoGeneFechaExamen"
                                                     defaultValue={lsAtencion?.fecha}
                                                 />
                                             </Grid>
@@ -406,7 +376,7 @@ const UpdateHistoryDrunkenness = () => {
                                                 <InputText
                                                     fullWidth
                                                     defaultValue=""
-                                                    name="horaExamen"
+                                                    name="infoGeneHoraExamen"
                                                     label="Hora del examen"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -416,7 +386,7 @@ const UpdateHistoryDrunkenness = () => {
                                                 <InputText
                                                     fullWidth
                                                     defaultValue=""
-                                                    name="noRadicacion"
+                                                    name="infoGeneNumRadicacion"
                                                     label="No. de radicación"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -426,7 +396,7 @@ const UpdateHistoryDrunkenness = () => {
                                                 <InputText
                                                     fullWidth
                                                     defaultValue=""
-                                                    name="solicitante"
+                                                    name="infoGenesolicitante"
                                                     label="Solicitante"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -435,7 +405,7 @@ const UpdateHistoryDrunkenness = () => {
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <InputDatePicker
                                                     label="Fecha oficio petitorio"
-                                                    name="fechaOficioPetitorio"
+                                                    name="infoGeneFechaOficioPetitorio"
                                                     defaultValue={lsAtencion?.fecha}
                                                 />
                                             </Grid>
@@ -444,7 +414,7 @@ const UpdateHistoryDrunkenness = () => {
                                                 <InputText
                                                     fullWidth
                                                     defaultValue=""
-                                                    name="noticiaCriminal"
+                                                    name="infoGeneNoticiaCriminal"
                                                     label="NUNC (Noticia criminal)"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -457,7 +427,7 @@ const UpdateHistoryDrunkenness = () => {
                                     <SubCard darkTitle title="Consentimiento informado">
                                         <Grid container spacing={2}>
                                             <Grid item xs={12}>
-                                                <Typography variant="caption" align="justify" fontSize={12}>Explicar brevemente en qué consiste la valoración forense incluyendo todos los procedimientos relacionados, así como su importancia dentro de la investigación. Registre en el espacio de <b>Observaciones</b> la constancia sobre el Consentimiento Informado; también cuando sea el caso, el nombre de cualquier persona diferente al personal forense o de salud presente durante el examen; entre otros.</Typography>
+                                                <Typography variant="caption" align="justify" fontSize={12}>Nota: Explicar brevemente en qué consiste la valoración forense incluyendo todos los procedimientos relacionados, así como su importancia dentro de la investigación. Registre en el espacio de <b>Observaciones</b> la constancia sobre el Consentimiento Informado; también cuando sea el caso, el nombre de cualquier persona diferente al personal forense o de salud presente durante el examen; entre otros.</Typography>
                                             </Grid>
 
                                             <Grid item xs={12}>
@@ -466,7 +436,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={4}
                                                     multiline
                                                     defaultValue=""
-                                                    name="observaciones"
+                                                    name="conseInforObservaciones"
                                                     label="Observaciones"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -476,14 +446,14 @@ const UpdateHistoryDrunkenness = () => {
                                                 <SubCard title="Datos del defensor(a) presente:">
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
-                                                            <Typography variant="caption" align="justify" fontSize={12}>Solo si la persona por examinar es el imputado dentro de una investigación o proceso penal.</Typography>
+                                                            <Typography variant="caption" align="justify" fontSize={12}>Nota: Solo si la persona por examinar es el imputado dentro de una investigación o proceso penal.</Typography>
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="nombreDefensor"
+                                                                name="conseInforNombreDefensor"
                                                                 label="Nombre completo del defensor(a)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -493,7 +463,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="tarjetaProfesional"
+                                                                name="conseInforTarjetaProfesional"
                                                                 label="Tarjeta profesional"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -503,7 +473,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="firmaDefensor"
+                                                                name="conseInforFirmaDefensor"
                                                                 label="Firma del defensor(a)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -521,7 +491,7 @@ const UpdateHistoryDrunkenness = () => {
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <InputDatePicker
                                                     label="Fecha del hecho investigado"
-                                                    name="fechaInvestigado"
+                                                    name="resInfoDispoFechaInvestigado"
                                                     defaultValue={lsAtencion?.fecha}
                                                 />
                                             </Grid>
@@ -530,7 +500,7 @@ const UpdateHistoryDrunkenness = () => {
                                                 <InputText
                                                     fullWidth
                                                     defaultValue=""
-                                                    name="horaExamen"
+                                                    name="resInfoDispoHoraExamen"
                                                     label="Hora del examen"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -548,7 +518,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={4}
                                                     multiline
                                                     defaultValue=""
-                                                    name="relatoHechosCircunstanciaRelacionada"
+                                                    name="resInfoDispoRelatoHechos"
                                                     label="Relato de los hechos y circunstancias relacionadas"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -566,7 +536,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={4}
                                                     multiline
                                                     defaultValue=""
-                                                    name="relatoHechosCircunstanciaRelacionada"
+                                                    name="resInfoDispoInformacionAdicional"
                                                     label="Información adicional al comenzar el examen"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -580,7 +550,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={4}
                                                     multiline
                                                     defaultValue=""
-                                                    name="relatoHechosCircunstanciaRelacionada"
+                                                    name="resInfoDispoRevisionSistemas"
                                                     label="Revisión por sistemas"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -598,7 +568,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={4}
                                                     multiline
                                                     defaultValue=""
-                                                    name="antecedentes"
+                                                    name="resInfoDispoAntecedentes"
                                                     label="Antecedentes"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -616,7 +586,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={2}
                                                     multiline
                                                     defaultValue=""
-                                                    name="conductamotriz"
+                                                    name="exaCliForeConductaMotriz"
                                                     label="Presentación, porte, actitud, conducta motriz"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -627,10 +597,10 @@ const UpdateHistoryDrunkenness = () => {
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
                                                             <InputRadioGroup
-                                                                name="alientoalcoholico"
+                                                                name="exaCliForeOlorAlientoAlcoholico"
                                                                 label="Aliento alcohólico:"
                                                                 defaultValue={null}
-                                                                options={arrayAliento}
+                                                                options={lsAliento}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -641,7 +611,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 rows={2}
                                                                 multiline
                                                                 defaultValue=""
-                                                                name="otrosoleros"
+                                                                name="exaCliForeOlorOtros"
                                                                 label="Otros (describalos)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -655,10 +625,10 @@ const UpdateHistoryDrunkenness = () => {
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
                                                             <InputRadioGroup
-                                                                name="estadoconciencia"
+                                                                name="exaCliForeSensoEstadoConciencia"
                                                                 label="Estado de conciencia:"
                                                                 defaultValue={null}
-                                                                options={arrayEstadoConciencia}
+                                                                options={lsEstadoConciencia}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -667,7 +637,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="orientacion"
+                                                                name="exaCliForeSensoOrientacion"
                                                                 label="Orientación"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -675,8 +645,8 @@ const UpdateHistoryDrunkenness = () => {
 
                                                         <Grid item xs={12}>
                                                             <InputRadioGroup
-                                                                name="orientacion"
-                                                                label="Orientación:"
+                                                                name="exaCliForeSensoAtencion"
+                                                                label="Atención:"
                                                                 defaultValue={null}
                                                                 options={arrayOrientacion}
                                                                 row={true}
@@ -687,7 +657,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="memoria"
+                                                                name="exaCliForeSensoMemoria"
                                                                 label="Memoria"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -708,7 +678,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={2}
                                                     multiline
                                                     defaultValue=""
-                                                    name="afecto"
+                                                    name="exaCliForeAfecto"
                                                     label="Afecto"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -721,20 +691,20 @@ const UpdateHistoryDrunkenness = () => {
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
                                                             <InputRadioGroup
-                                                                name="flujolenguaje"
+                                                                name="exaCliForeLengFlujoLenguaje"
                                                                 label="Flujo del lenguaje:"
                                                                 defaultValue={null}
-                                                                options={arrayFlujoLenguaje}
+                                                                options={lsFlujoLen}
                                                                 row={true}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12}>
                                                             <InputRadioGroup
-                                                                name="disartria"
+                                                                name="exaCliForeLengDisartria"
                                                                 label="Disartria:"
                                                                 defaultValue={null}
-                                                                options={arrayDisartria}
+                                                                options={lsAliento}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -745,7 +715,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 rows={2}
                                                                 multiline
                                                                 defaultValue=""
-                                                                name="otrasalteraciones"
+                                                                name="exaCliForeLengOtrasAlteraciones"
                                                                 label="Otras alteraciones (describalas)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -760,7 +730,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     rows={2}
                                                     multiline
                                                     defaultValue=""
-                                                    name="alteracionespensamiento"
+                                                    name="exaCliForeAlteracionesPensamiento"
                                                     label="Alteraciones del pensamiento, sensopercepción, inteligencia, juicio, racioncinio e introspección (describalas):"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
@@ -773,7 +743,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="frecuenciacardiaca"
+                                                                name="exaCliForeSignoFrecuenciaCardiaca"
                                                                 label="Frecuencia cardíaca (En lpm)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -783,7 +753,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="frecuenciarespiratoria"
+                                                                name="exaCliForeSignoFrecuenciaRespiratoria"
                                                                 label="Frecuencia respiratoria"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -793,7 +763,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="presionarterial"
+                                                                name="exaCliForeSignoPresionArterial"
                                                                 label="Presión arterial"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -803,7 +773,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="temperatura"
+                                                                name="exaCliForeSignoTemperatura"
                                                                 label="Temperatura (En °C)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -815,7 +785,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="talla"
+                                                                name="exaCliForeSignoTalla"
                                                                 label="Talla (En cm)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -825,7 +795,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="peso"
+                                                                name="exaCliForeSignoPeso"
                                                                 label="Peso (En KG)"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -835,7 +805,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputText
                                                                 fullWidth
                                                                 defaultValue=""
-                                                                name="pielmucosas"
+                                                                name="exaCliForeSignoPielMucosas"
                                                                 label="Piel y mucosas"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -849,54 +819,54 @@ const UpdateHistoryDrunkenness = () => {
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputSelect
-                                                                name="congestionconjuntival"
+                                                                name="exaCliForeOjoCongestionConjuntival"
                                                                 label="Congestión conjuntival"
-                                                                options={arrayOpcion}
+                                                                options={lsOpcion}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputSelect
-                                                                name="congestionconjuntival"
+                                                                name="exaCliForeOjoPupilas"
                                                                 label="Pupilas"
-                                                                options={arrayPupila}
+                                                                options={lsPupila}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputSelect
-                                                                name="congestionconjuntival"
+                                                                name="exaCliForeOjoReflejoFomotomor"
                                                                 label="Reflejo fomotomor"
-                                                                options={arrayReflejo}
+                                                                options={lsReglejoCoordinacion}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputSelect
-                                                                name="congestionconjuntival"
+                                                                name="exaCliForeOjoReflejoConsensual"
                                                                 label="Reflejo consensual"
-                                                                options={arrayReflejo}
+                                                                options={lsReglejoCoordinacion}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputSelect
-                                                                name="convergenciaocular"
+                                                                name="exaCliForeOjoConvergenciaOcular"
                                                                 label="Convergencia ocular"
-                                                                options={arrayReflejo}
+                                                                options={lsConvergencia}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputSelect
-                                                                name="convergenciaocular"
+                                                                name="exaCliForeOjoReflejoOsteotendinosos"
                                                                 label="Reflejos osteotendinosos"
-                                                                options={arrayReflejoOsteotendinosos}
+                                                                options={lsReflejoOsteo}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -909,50 +879,50 @@ const UpdateHistoryDrunkenness = () => {
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeCoordinaPruebasMoviento"
                                                                 label="Pruebas de movimiento punto a punto (dedo-nariz, dedo-dedo):"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsReglejoCoordinacion}
                                                                 row={true}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeCoordinaTestMovimiento"
                                                                 label="Test de movimientos rápidos alternos:"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsReglejoCoordinacion}
                                                                 row={true}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeCoordinaPruebaRomberg"
                                                                 label="Prueba de Romberg:"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsReglejoCoordinacion}
                                                                 row={true}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeCoordinaPruebaMarca"
                                                                 label="Prueba de marcha en tandem (punta-talón):"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsReglejoCoordinacion}
                                                                 row={true}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeCoordinaPruebaMarcha"
                                                                 label="Prueba de marcha en las puntas de los pies y en los talones:"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsReglejoCoordinacion}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -963,7 +933,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 rows={2}
                                                                 multiline
                                                                 defaultValue=""
-                                                                name="alteracionespensamiento"
+                                                                name="exaCliForeCoordinaObservaciones"
                                                                 label="Observaciones"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -977,26 +947,26 @@ const UpdateHistoryDrunkenness = () => {
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeEvalNistagmusEspontaneo"
                                                                 label="Nistagmus espontáneo:"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsResultEvaluacion}
                                                                 row={true}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={2}>
                                                             <InputSelect
-                                                                name="convergenciaocular"
+                                                                name="exaCliForeEvalResultadoNistagmusEspontaneo"
                                                                 label="Resultado"
-                                                                options={arrayReflejoOsteotendinosos}
+                                                                options={arrayCuandoPositivo}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeEvalPruebaNistagmusMirada"
                                                                 label="Prueba de nistagmus a mirada extrema:"
                                                                 defaultValue={null}
                                                                 options={arrayReflejo}
@@ -1006,16 +976,16 @@ const UpdateHistoryDrunkenness = () => {
 
                                                         <Grid item xs={12} md={6} lg={2}>
                                                             <InputSelect
-                                                                name="convergenciaocular"
+                                                                name="exaCliForeEvalResultadoPruebaNistagmusMirada"
                                                                 label="Resultado"
-                                                                options={arrayReflejoOsteotendinosos}
+                                                                options={arrayCuandoPositivo}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} md={6} lg={4}>
                                                             <InputRadioGroup
-                                                                name="pruebasmoviento"
+                                                                name="exaCliForeEvalPruebaNistagmusPostRocional"
                                                                 label="Prueba de nistagmus post-rotacional:"
                                                                 defaultValue={null}
                                                                 options={arrayReflejo}
@@ -1025,9 +995,9 @@ const UpdateHistoryDrunkenness = () => {
 
                                                         <Grid item xs={12} md={6} lg={2}>
                                                             <InputSelect
-                                                                name="convergenciaocular"
+                                                                name="exaCliForeEvalResultadoPruebaNistagmusPostRocional"
                                                                 label="Resultado"
-                                                                options={arrayReflejoOsteotendinosos}
+                                                                options={arrayCuandoPositivo}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -1038,7 +1008,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 rows={2}
                                                                 multiline
                                                                 defaultValue=""
-                                                                name="alteracionespensamiento"
+                                                                name="exaCliForeEvalObservaciones"
                                                                 label="Observaciones"
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
@@ -1046,7 +1016,7 @@ const UpdateHistoryDrunkenness = () => {
 
                                                         <Grid item xs={12}>
                                                             <InputRadioGroup
-                                                                name="pruebaromberg"
+                                                                name="exaCliForeEvalPruebaRomberg"
                                                                 label="Prueba de Romberg:"
                                                                 defaultValue={null}
                                                                 options={arrayReflejo}
@@ -1055,6 +1025,172 @@ const UpdateHistoryDrunkenness = () => {
                                                         </Grid>
                                                     </Grid>
                                                 </SubCard>
+                                            </Grid>
+                                        </Grid>
+                                    </SubCard>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <SubCard darkTitle title="Muestras y elementos para estudio">
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <Typography variant="caption" align="justify" fontSize={12}>Nota: Mencione aquí si recolecta muestras para estudio toxicológico. Asegúrese de diligenciar adecuadamente los formatos de cadena de custodia de las muestras recolectadas.</Typography>
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputRadioGroup
+                                                    name="muestraEstudioDeterminacion"
+                                                    label="Determinación de alcoholemia indirecta mediante alcohosensor:"
+                                                    defaultValue={null}
+                                                    options={lsOpcionRealiza}
+                                                    row={true}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioResultado"
+                                                    label="Resultados"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioRegistrosAdjuntos"
+                                                    label="Registros adjuntos"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    fullWidth
+                                                    rows={2}
+                                                    multiline
+                                                    defaultValue=""
+                                                    name="muestraEstudioObservaciones"
+                                                    label="Observaciones"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}><Divider /></Grid>
+
+                                            <Grid item xs={12} md={6} lg={2}>
+                                                <InputRadioGroup
+                                                    name="muestraEstudioSangre"
+                                                    label="Muestra de sangre:"
+                                                    defaultValue={null}
+                                                    options={lsOpcion}
+                                                    row={true}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={5}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioSangreAnalisisSolicitado"
+                                                    label="Análisis solicitado"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={5}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioSangreDestino"
+                                                    label="Destino"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={2}>
+                                                <InputRadioGroup
+                                                    name="muestraEstudioOrina"
+                                                    label="Muestra de orina:"
+                                                    defaultValue={null}
+                                                    options={lsOpcion}
+                                                    row={true}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={5}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioOrinaAnalisisSolicitado"
+                                                    label="Análisis solicitado"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={5}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioOrinaDestino"
+                                                    label="Destino"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={2}>
+                                                <InputRadioGroup
+                                                    name="muestraEstudioSaliva"
+                                                    label="Muestra de saliva:"
+                                                    defaultValue={null}
+                                                    options={lsOpcion}
+                                                    row={true}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={5}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioSalivaAnalisisSolicitado"
+                                                    label="Análisis solicitado"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={5}>
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
+                                                    name="muestraEstudioSalivaDestino"
+                                                    label="Destino"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </SubCard>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <SubCard darkTitle title="Análisis, interpretación y conclusiones">
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <Typography variant="caption" align="justify" fontSize={12}>Nota: Integre la información obtenida, incluyendo los hallazgos relevantes para el caso específico</Typography>
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    fullWidth
+                                                    rows={4}
+                                                    multiline
+                                                    defaultValue="analiInformacionObtenida"
+                                                    name=""
+                                                    label="Información obtenida"
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
                                             </Grid>
                                         </Grid>
                                     </SubCard>

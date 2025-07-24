@@ -1295,7 +1295,7 @@ const OccupationalMedicine = () => {
                                         </FormProvider>
                                     </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
+                                    {/* <Grid item xs={12} md={6} lg={4}>
                                         <FormProvider {...methods}>
                                             <InputDatePicker
                                                 label="Fecha de la entrega de la investigación"
@@ -1303,7 +1303,7 @@ const OccupationalMedicine = () => {
                                                 defaultValue={null}
                                             />
                                         </FormProvider>
-                                    </Grid>
+                                    </Grid> */}
 
                                     <Grid item xs={12}>
                                         <FormProvider {...methods}>

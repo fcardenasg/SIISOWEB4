@@ -20,7 +20,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import LoadingClass from './components/LoadingClass';
 
-const IdRiesgoPsicosocial = 14898;
+const IdRiesgoPsicosocial = 11070;
 
 const IndividualCharges = () => {
     const theme = useTheme();
