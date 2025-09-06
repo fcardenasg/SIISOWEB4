@@ -27,6 +27,7 @@ export const CodCatalogo = {
     TIPO_SOLICITUD_DEREPETICION: 28,
     RESPONSABLE_RESPUESTA_DEREPETICION: 112,
     GRUPO_RIESGO: 249,
+    PARAMETRO_ESPIRO: 2001, /* CAMBIAR */
 
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
@@ -129,6 +130,18 @@ export const CodCatalogo = {
     ROL_USUARIO: 157,
     ESPECIALIDAD_MEDICO: 158,
     CIUDADES: 5,
+
+    ALIENTOALCOHOLICO: 1001,
+    ESTADOCONCIENCIA: 1002,
+    ATENCION: 1003,
+    FLUJOLENGUAJE: 1004,
+    DISARTRIA: 1005,
+    PUPILA: 1006,
+    OTRASOPCIONES: 1007,
+    REFLEJOSOSTEOTENDINOSOS: 1008,
+    OPCIONESAUSENTEPRESENTE: 1009,
+    CUANDOPOSITIVO: 1010,
+    DETERMINACION: 1011,
 
     CLASE_AT: 98,
     CAUSA_AT: 99,
@@ -268,6 +281,10 @@ export const Modulo = {
     Panoramadecargo: 44,
     Usuario: 45,
     Rol: 46
+}
+
+export const IdTipoProveedor = {
+    Espirometria: 3536
 }
 
 export const DefaultValue = {

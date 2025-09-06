@@ -1,8 +1,7 @@
-import jsPDF from "jspdf";
 import { GetEdad, ViewFormat } from "components/helpers/Format";
+import jsPDF from "jspdf";
 
 import config from "config";
-import useAuth from "hooks/useAuth";
 
 /* FIRMAS */
 function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
@@ -186,9 +185,8 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   /* FIRMA */
   getFirma(doc, lsDataUser);
-  getFirmaEmployee(doc, lsDataReport);
 }
-  
+
 function pageNursingPuerto(doc, lsDataReport = [], lsDataUser = []) {
   /* CUADRO DATOS */
 
@@ -287,7 +285,6 @@ function pageNursingPuerto(doc, lsDataReport = [], lsDataUser = []) {
 
   /* FIRMA */
   getFirma(doc, lsDataUser, 20);
-  getFirmaEmployee(doc, lsDataReport, 20);
 }
 
 /* Renderizado Principal INDEX  */

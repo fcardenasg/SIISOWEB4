@@ -5,6 +5,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { UpperFirstChar } from 'components/helpers/Format';
 
 export default function InputRadioGroup({ row, disabled, name, label, defaultValue, options, spacing, helperText, ...other }) {
     const { control } = useFormContext();
@@ -29,7 +30,7 @@ export default function InputRadioGroup({ row, disabled, name, label, defaultVal
                                 key={option.value}
                                 value={option.value}
                                 control={<Radio />}
-                                label={option.label}
+                                label={UpperFirstChar(option.label)}
                                 sx={{
                                     '&:not(:last-of-type)': {
                                         mb: spacing || 0,

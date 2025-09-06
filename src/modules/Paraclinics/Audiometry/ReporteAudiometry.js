@@ -48,17 +48,19 @@ function getFirma(doc, lsDataUser, my = 0) {
     doc.text(`${lsDataUser.licencia} - ${lsDataUser.registroMedico}`, 7, doc.internal.pageSize.height - (36 - my));
 }
 
-function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataUser) {
+function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataUser, extenderDescripcion) {
     var marXR = doc.internal.pageSize.width - 5;
+
+    const ajuste = 29;
+    const ajusteExtender = extenderDescripcion ? 40 : 0;
 
     doc.text(`${lsDataReport.nameMotivo}`, 110, 20, { align: 'center' });
 
-
-    doc.text('1.Registro de Ingreso', 7, 37);
-    doc.text('2.Antecedentes Médicos:', 7, 85);
-    doc.text('3.Antecedentes Ocupacionales:', 7, 177);
-    doc.text('4.Otoscopia:', 7, 197);
-    doc.text('5.Observaciones:', 7, 220);
+    doc.text('1. Registro de Ingreso', 7, 37);
+    doc.text('2. Antecedentes Médicos:', 7, 85);
+    doc.text('3. Antecedentes Ocupacionales:', 7, (177 - ajuste) + ajusteExtender);
+    doc.text('Observaciones:', 7, 116);
+    doc.text('4. Otoscopia:', 7, (197 - ajuste) + ajusteExtender);
 
     doc.text(`Fecha:`, 120, 37);
     doc.text(`${ViewFormat(lsDataReport.fecha)}`, 150, 37);
@@ -67,23 +69,23 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.setLineWidth(0.2);
     doc.setDrawColor(128, 128, 128);
 
+    if (!extenderDescripcion) {
+        doc.text('5. Observaciones:', 7, (220 - ajuste));
+        doc.line(5, (216 - ajuste), marXR, (216 - ajuste)); /* HORI 7 */
+        doc.line(5, (223 - ajuste), marXR, (223 - ajuste)); /* HORI 7 */
+    }
+
     /* CUADRO DATOS */
     doc.line(5, 32, 5, 230); /* IZQUIERDA */
     doc.line(5, 32, marXR, 32); /* HORI ONE */
     doc.line(5, 39, marXR, 39); /* HORI TWO  */
-
     doc.line(5, 80, marXR, 80); /* HORI THREE */
     doc.line(5, 88, marXR, 88); /* HORI FOUR */
-
     doc.line(5, 300, marXR, 300); /* HORI FIVE */
-
-
-
     doc.line(5, 230, marXR, 230); /* HORI OCHO */
-
-
     doc.line(40, 39, 40, 80); /* LINEA VERTI ONE */
     doc.line(marXR, 32, marXR, 230); /* DERECHA */
+    doc.line(5, (180 - ajuste) + ajusteExtender, marXR, (180 - ajuste) + ajusteExtender);
 
     /* TITULOS DE CONTENIDO */
     doc.setFontSize(8);
@@ -106,6 +108,10 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
 
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
+
+    if (!extenderDescripcion)
+        doc.text(`${lsDataReport.observacionAUDIO}`, 7, (227 - ajuste));
+
     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
     doc.text(`${lsDataReport.documento}`, 70, 45);
     doc.text(`${lsDataReport.nameCargo}`, 70, 50);
@@ -126,10 +132,6 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
     doc.text(`${lsDataReport.nameEmpresa}`, 150, 75);
 
-
-    // /*    doc.text(`Nro. Furat:`, 60, 95); */
-    // /* Antecedentes Medicos */
-
     doc.setFontSize(8);
     doc.text('Otalgia:', 7, 93);
     doc.text(`${lsDataReport.nameOtalgiaAOP}`, 36, 93);
@@ -142,8 +144,6 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.text('Familiares:', 173, 93);
     doc.text(`${lsDataReport.nameFamiliaresAOP}`, 198, 93);
 
-
-
     doc.text('Prurito:', 7, 100);
     doc.text(`${lsDataReport.nameLuritoAOP}`, 36, 100);
     doc.text('Acufenos:', 47, 100);
@@ -154,7 +154,6 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.text(`${lsDataReport.nameDiabetesAOP}`, 161, 100);
     doc.text('Otitis:', 173, 100);
     doc.text(`${lsDataReport.nameOtitisAOP}`, 198, 100);
-
 
     doc.text('Cirugía de Oídos:', 7, 107);
     doc.text(`${lsDataReport.nameCirugiaAOP}`, 36, 107);
@@ -168,96 +167,96 @@ function generateReporteAudiometry(doc = new jsPDF(), lsDataReport = [], lsDataU
     doc.text(`${lsDataReport.nameParalisisAOP}`, 198, 107);
 
     doc.line(5, 110, marXR, 110);
+    doc.line(5, 118, marXR, 118);
+    doc.line(5, 135 + ajusteExtender, marXR, 135 + ajusteExtender);
+    doc.line(5, 142 + ajusteExtender, marXR, 142 + ajusteExtender);
 
+    ///////////////////
+    doc.text(`${lsDataReport.observacionAOP}`, 7, 122);
+    doc.text('Conducta:', 7, (169 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameConducta}`, 25, (169 - ajuste) + ajusteExtender);
 
-    /*    "nameIdReposoAUDIO": "string", */
+    doc.text('Cambio EPP:', 90, (169 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameIdCambioEPP}`, 115, (169 - ajuste) + ajusteExtender);
 
+    ///////////////////
+    doc.text('Empresa:', 7, (185 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameEmpresaAO}`, 35, (185 - ajuste) + ajusteExtender);
 
+    doc.text('Cargo:', 70, (185 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameCargoAO}`, 95, (185 - ajuste) + ajusteExtender);
 
-    doc.text('Observaciones:', 7, 115);
-    doc.line(5, 120, marXR, 120);
+    doc.text('Tiempo Exp.:', 170, (185 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.tiempoExpoAO}`, 190, (185 - ajuste) + ajusteExtender);
 
-    doc.text(`${lsDataReport.observacionAOP}`, 7, 125);
+    doc.text('Protección Auditiva:', 7, (190 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameProteccionAudi}`, 35, (190 - ajuste) + ajusteExtender);
 
-    doc.line(5, 135, marXR, 135);
+    doc.text('Suminstrada Por:', 70, (190 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameSuministradoPor}`, 95, (190 - ajuste) + ajusteExtender);
 
-    doc.text('Conducta:', 7, 140);
-    doc.text(`${lsDataReport.nameConducta}`, 25, 140);
+    doc.text('Uso:', 170, (190 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameUso}`, 190, (190 - ajuste) + ajusteExtender);
 
+    doc.line(5, (193 - ajuste) + ajusteExtender, marXR, (193 - ajuste) + ajusteExtender); /* HORI 7 */
+    doc.line(5, (200 - ajuste) + ajusteExtender, marXR, (200 - ajuste) + ajusteExtender); /* HORI 7 */
 
-    doc.text('Cambio EPP:', 90, 140);
-    doc.text(`${lsDataReport.nameIdCambioEPP}`, 115, 140);
+    doc.text('OID CAE:', 7, (205 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameOdCae}`, 30, (205 - ajuste) + ajusteExtender);
 
-    doc.line(5, 142, marXR, 142);
+    doc.text('OID MT:', 70, (205 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameOdMt}`, 90, (205 - ajuste) + ajusteExtender);
 
+    doc.text('OI CAE:', 7, (209 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameOiCae}`, 30, (209 - ajuste) + ajusteExtender);
 
-    doc.text('Observaciones:', 7, 147);
-    doc.line(5, 149, marXR, 149);
+    doc.text('OI MT:', 70, (209 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameOiMt}`, 90, (209 - ajuste) + ajusteExtender);
 
-    doc.text(`${lsDataReport.observacionAUDIO}`, 7, 155);
+    doc.text('Reposo Auditivo:', 7, (214 - ajuste) + ajusteExtender);
+    doc.text(`${lsDataReport.nameIdReposoAUDIO}`, 30, (214 - ajuste) + ajusteExtender);
 
-    doc.line(5, 170, marXR, 170); /* HORI SIX */
-
-    doc.line(5, 180, marXR, 180); /* HORI SIX */
-
-
-    doc.text('Empresa:', 7, 185);
-    doc.text(`${lsDataReport.nameEmpresaAO}`, 35, 185);
-
-    doc.text('Cargo:', 70, 185);
-    doc.text(`${lsDataReport.nameCargoAO}`, 95, 185);
-
-    doc.text('Tiempo Exp.:', 170, 185);
-    doc.text(`${lsDataReport.tiempoExpoAO}`, 185, 185);
-
-
-
-    doc.text('Protección Auditiva:', 7, 190);
-    doc.text(`${lsDataReport.nameProteccionAudi}`, 35, 190);
-
-    doc.text('Suminstrada Por:', 70, 190);
-    doc.text(`${lsDataReport.nameSuministradoPor}`, 95, 190);
-
-    doc.text('Uso:', 170, 190);
-    doc.text(`${lsDataReport.nameUso}`, 185, 190);
-
-    doc.line(5, 193, marXR, 193); /* HORI 7 */
-    doc.line(5, 200, marXR, 200); /* HORI 7 */
-
-    doc.text('OID CAE:', 7, 205);
-    doc.text(`${lsDataReport.nameOdCae}`, 30, 205);
-
-    doc.text('OID MT:', 70, 205);
-    doc.text(`${lsDataReport.nameOdMt}`, 90, 205);
-
-
-    doc.text('OI CAE:', 7, 209);
-    doc.text(`${lsDataReport.nameOiCae}`, 30, 209);
-
-    doc.text('OI MT:', 70, 209);
-    doc.text(`${lsDataReport.nameOiMt}`, 90, 209);
-
-
-    doc.text('Reposo Auditivo:', 7, 214);
-    doc.text(`${lsDataReport.nameIdReposoAUDIO}`, 30, 214);
-
-
-    doc.line(5, 216, marXR, 216); /* HORI 7 */
-    doc.line(5, 223, marXR, 223); /* HORI 7 */
-
-    doc.text(`${lsDataReport.observacionAUDIO}`, 7, 226);
-
-
-    getFirma(doc, lsDataUser, 24)
+    if (!extenderDescripcion)
+        getFirma(doc, lsDataUser, 24)
 }
 
-export function generateReport(lsDataReport = [], lsDataUser) {
+function generateReporteAudiometry2(doc = new jsPDF(), lsDataReport = [], lsDataUser) {
+    var marXR = doc.internal.pageSize.width - 5;
+
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(128, 128, 128);
+
+    doc.text('5. Observaciones:', 7, 37);
+
+    doc.setFont("helvetica", "normal");
+    /* CUADRO DATOS */
+    doc.line(5, 32, 5, 100); /* IZQUIERDA */
+    doc.line(5, 32, marXR, 32); /* HORI ONE */
+    doc.line(5, 39, marXR, 39); /* HORI TWO  */
+    doc.line(5, 100, marXR, 100); /* HORI THREE */
+    doc.line(marXR, 32, marXR, 100); /* DERECHA */
+
+    doc.text(`${lsDataReport.observacionAUDIO}`, 7, 45);
+
+    getFirma(doc, lsDataUser)
+}
+
+export function generateReport(lsDataReport = [], lsDataUser, extenderDescripcion) {
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");
     getHeader(doc);
-    generateReporteAudiometry(doc, lsDataReport, lsDataUser);
-    getPiePage(doc, lsDataUser, 1, 1);
+    generateReporteAudiometry(doc, lsDataReport, lsDataUser, extenderDescripcion);
+    getPiePage(doc, lsDataUser, 1, 2);
+
+    if (extenderDescripcion) {
+        doc.addPage();
+
+        doc.setFont("helvetica", "bold");
+        getHeader(doc);
+        generateReporteAudiometry2(doc, lsDataReport, lsDataUser);
+        getPiePage(doc, lsDataUser, 2, 2);
+    }
 
     var dataPDF = doc.output("bloburl");
     return dataPDF;

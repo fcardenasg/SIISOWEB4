@@ -39,6 +39,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReport } from './ReporteAudiometry';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import InputCheck from 'components/input/InputCheck';
 
 const validationSchema = yup.object().shape({
     idMotivo: yup.string().required(`${ValidationMessage.Requerido}`),
@@ -51,6 +52,7 @@ const Audiometry = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [openError, setOpenError] = useState(false);
@@ -69,7 +71,7 @@ const Audiometry = () => {
     const [lsAudiograma, setLsAudiograma] = useState([]);
     const [openReport, setOpenReport] = useState(false);
     const [lsConducta, setLsConducta] = useState([]);
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState(null);
     const [textDx1, setTextDx1] = useState('');
     const [lsDx1, setLsDx1] = useState([]);
 
@@ -221,7 +223,7 @@ const Audiometry = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdParaclinics(resultData);
             const lsDataUser = await GetByMail(user?.nameuser);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -248,8 +250,6 @@ const Audiometry = () => {
 
 
             if (Object.keys(datos.length !== 0)) {
-
-
                 const result = await InsertParaclinics(DataToInsert);
                 if (result.status === 200) {
                     setOpenSuccess(true);
@@ -714,6 +714,19 @@ const Audiometry = () => {
                                         />
                                     </FormProvider>
                                 </Grid>
+
+                                <Grid item xs={12}>
+                                    <InputCheck
+                                        onChange={(e) =>
+                                            setExtenderDescripcion(e.target.checked)
+                                        }
+                                        checked={extenderDescripcion}
+                                        label="Extender Reporte"
+                                        name="extenderDescripcion"
+                                        size={30}
+                                        defaultValue={false}
+                                    />
+                                </Grid>
                             </Grid>
                         </SubCard>
                     </Grid>
@@ -742,7 +755,7 @@ const Audiometry = () => {
                                 <Grid container spacing={2} >
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button disabled={resultData === "" ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            <Button disabled={resultData} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Guardar}
                                             </Button>
                                         </AnimateButton>
@@ -750,7 +763,7 @@ const Audiometry = () => {
 
                                     <Grid item xs={2}>
                                         <AnimateButton>
-                                            <Button disabled={resultData !== "" ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                            <Button disabled={!resultData} variant="outlined" fullWidth onClick={handleClickReport}>
                                                 {TitleButton.Imprimir}
                                             </Button>
                                         </AnimateButton>

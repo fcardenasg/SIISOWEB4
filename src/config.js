@@ -5,7 +5,6 @@ import LogoWhiteEnergy from 'assets/img/LogoWhiteEnergy.png';
 
 const rutaLocal = 'https://localhost:44347/';
 const rutaLtd = 'https://siiso.drummondltd.com:44347/';
-const rutaEnergy = 'https://siiso.drummondenergy.com:44447/';
 
 const config = {
     typeDashboard: 'DLTD', //ENERGY - DLTD

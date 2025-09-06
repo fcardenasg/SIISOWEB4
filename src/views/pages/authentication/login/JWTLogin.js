@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-// material-ui
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
@@ -18,21 +16,15 @@ import {
     OutlinedInput,
     Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
-// third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-
-// project imports
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import useAuth from 'hooks/useAuth';
-import useScriptRef from 'hooks/useScriptRef';
-
-// assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-// ===============================|| JWT LOGIN ||=============================== //
+import { Formik } from 'formik';
+import useAuth from 'hooks/useAuth';
+import useScriptRef from 'hooks/useScriptRef';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as Yup from 'yup';
 
 const JWTLogin = ({ loginProp, ...others }) => {
     const theme = useTheme();
@@ -54,8 +46,8 @@ const JWTLogin = ({ loginProp, ...others }) => {
     return (
         <Formik
             initialValues={{
-                email: 'info@codedthemes.com',
-                password: '123456',
+                email: '',
+                password: '',
                 submit: null
             }}
             validationSchema={Yup.object().shape({

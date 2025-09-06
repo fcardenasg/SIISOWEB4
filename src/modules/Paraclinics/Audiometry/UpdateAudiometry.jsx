@@ -38,6 +38,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReport } from './ReporteAudiometry';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import InputCheck from 'components/input/InputCheck';
 
 const UpdateAudiometry = () => {
     const { id } = useParams();
@@ -46,6 +47,7 @@ const UpdateAudiometry = () => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [extenderDescripcion, setExtenderDescripcion] = useState(false);
     const [dataPDF, setDataPDF] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [timeWait, setTimeWait] = useState(false);
@@ -229,7 +231,7 @@ const UpdateAudiometry = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdParaclinics(id);
             const lsDataUser = await GetByMail(user?.nameuser);
-            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data);
+            const dataPDFTwo = generateReport(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
         } catch (err) { }
     };
@@ -275,56 +277,54 @@ const UpdateAudiometry = () => {
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Audiometria}>
-            <MainCard title="Actualizar Audiometría">
-                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+            <FormProvider {...methods}>
+                <MainCard title="Actualizar Audiometría">
+                    <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                <ControlModal
-                    maxWidth="md"
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    title="DICTADO POR VOZ"
-                >
-                    <ControllerListen />
-                </ControlModal>
+                    <ControlModal
+                        maxWidth="md"
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        title="DICTADO POR VOZ"
+                    >
+                        <ControllerListen />
+                    </ControlModal>
 
-                <ControlModal
-                    title={Message.VistaReporte}
-                    open={openReport}
-                    onClose={() => setOpenReport(false)}
-                    maxWidth="xl"
-                >
-                    <ViewPDF dataPDF={dataPDF} />
-                </ControlModal>
+                    <ControlModal
+                        title={Message.VistaReporte}
+                        open={openReport}
+                        onClose={() => setOpenReport(false)}
+                        maxWidth="xl"
+                    >
+                        <ViewPDF dataPDF={dataPDF} />
+                    </ControlModal>
 
-                {timeWait ?
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <ViewEmployee
-                                disabled={true}
-                                key={lsEmployee.documento}
-                                documento={documento}
-                                onChange={(e) => setDocumento(e.target.value)}
-                                lsEmployee={lsEmployee}
-                                handleDocumento={handleLoadingDocument}
-                            />
-                        </Grid>
+                    {timeWait ?
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <ViewEmployee
+                                    disabled={true}
+                                    key={lsEmployee.documento}
+                                    documento={documento}
+                                    onChange={(e) => setDocumento(e.target.value)}
+                                    lsEmployee={lsEmployee}
+                                    handleDocumento={handleLoadingDocument}
+                                />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <SubCard darkTitle>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={3.3}>
-                                        <FormProvider {...methods}>
+                            <Grid item xs={12}>
+                                <SubCard darkTitle>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={3.3}>
                                             <InputDatePicker
                                                 label="Fecha"
                                                 name="fecha"
                                                 defaultValue={lsAudiometrics.fecha}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={4.3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={4.3}>
                                             <InputSelect
                                                 name="idMotivo"
                                                 label="Motivo"
@@ -332,11 +332,9 @@ const UpdateAudiometry = () => {
                                                 options={lsMotivo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={4.3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={4.3}>
                                             <InputSelect
                                                 name="idProveedor"
                                                 label="Proveedor"
@@ -344,182 +342,150 @@ const UpdateAudiometry = () => {
                                                 options={lsProveedor}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Grid>
+                                </SubCard>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OTOLÓGICOS Y PERSONALES</Typography>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                            <Grid item xs={12}>
+                                <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OTOLÓGICOS Y PERSONALES</Typography>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Otalgia"
                                                 name="otalgiaAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.otalgiaAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Otorrea"
                                                 name="otorreaAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.otorreaAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Otitis"
                                                 name="otitisAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.otitisAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Acufenos"
                                                 name="acufenosAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.acufenosAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Cirugía de Oídos"
                                                 name="cirugiaAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.cirugiaAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Vértigo"
                                                 name="vertigoAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.vertigoAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Farmacológicos"
                                                 name="farmacologicosAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.farmacologicosAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Prurito"
                                                 name="luritoAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.luritoAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Familiares"
                                                 name="familiaresAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.familiaresAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Parálisis Facial"
                                                 name="paralisisAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.paralisisAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="H.T.A."
                                                 name="htaaop"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.htaaop}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Hipoacusia"
                                                 name="tipoAcusiaAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.tipoAcusiaAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Diabetes"
                                                 name="diabetesAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.diabetesAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Exp. A Ruido No Ind."
                                                 name="expoRuidoAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.expoRuidoAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={6}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={6}>
                                             <InputCheckBox
                                                 label="Antecedentes Traumáticos"
                                                 name="anteceTraumaticosAOP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.anteceTraumaticosAOP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 defaultValue={lsAudiometrics.observacionAOP}
                                                 fullWidth
@@ -529,17 +495,15 @@ const UpdateAudiometry = () => {
                                                 multiline
                                                 rows={6}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Grid>
+                                </SubCard>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OCUPACIONALES</Typography>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid item xs={12}>
+                                <SubCard darkTitle title={<Typography variant="h4">ANTECEDENTES OCUPACIONALES</Typography>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 defaultValue={lsAudiometrics.idEmpresaAO}
                                                 name="idEmpresaAO"
@@ -547,11 +511,9 @@ const UpdateAudiometry = () => {
                                                 options={lsEmpresaParacli}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="idCargoAO"
                                                 label="Cargo"
@@ -559,11 +521,9 @@ const UpdateAudiometry = () => {
                                                 options={lsCargo}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 defaultValue={lsAudiometrics.tiempoExpoAO}
                                                 fullWidth
@@ -571,11 +531,9 @@ const UpdateAudiometry = () => {
                                                 label="Tiempo Exp."
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 defaultValue={lsAudiometrics.idProteccionAuditivaAO}
                                                 name="idProteccionAuditivaAO"
@@ -583,11 +541,9 @@ const UpdateAudiometry = () => {
                                                 options={lsProteccionAuditiva1}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="idSuministradaPorAO"
                                                 label="Suministrada Por"
@@ -595,11 +551,9 @@ const UpdateAudiometry = () => {
                                                 options={lsSuministradopor}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="idUsoAO"
                                                 label="Uso"
@@ -607,17 +561,15 @@ const UpdateAudiometry = () => {
                                                 options={lsUso1}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Grid>
+                                </SubCard>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <SubCard darkTitle title={<Typography variant="h4">AUDIOGRAMA</Typography>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid item xs={12}>
+                                <SubCard darkTitle title={<Typography variant="h4">AUDIOGRAMA</Typography>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="idOdcaeAUDIO"
                                                 label="OD CAE"
@@ -625,11 +577,9 @@ const UpdateAudiometry = () => {
                                                 options={lsAudiograma}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="idOdmtAUDIO"
                                                 label="OD MT"
@@ -637,11 +587,9 @@ const UpdateAudiometry = () => {
                                                 options={lsAudiograma}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="idOicaeAUDIO"
                                                 label="OI CAE"
@@ -649,11 +597,9 @@ const UpdateAudiometry = () => {
                                                 options={lsAudiograma}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="idOimtAUDIO"
                                                 label="OI MT"
@@ -661,31 +607,27 @@ const UpdateAudiometry = () => {
                                                 options={lsAudiograma}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={8}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={8}>
                                             <InputCheckBox
                                                 label="Reposo Auditivo"
                                                 name="idReposoAUDIO"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.idReposoAUDIO}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <InputOnChange
-                                            label="Dx "
-                                            onKeyDown={handleDx1}
-                                            onChange={(e) => setTextDx1(e?.target.value)}
-                                            value={textDx1}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={6}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
+                                            <InputOnChange
+                                                label="Dx "
+                                                onKeyDown={handleDx1}
+                                                onChange={(e) => setTextDx1(e?.target.value)}
+                                                value={textDx1}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={6}>
                                             <InputSelect
                                                 defaultValue={lsAudiometrics.dxAUDIO}
                                                 name="dxAUDIO"
@@ -693,11 +635,9 @@ const UpdateAudiometry = () => {
                                                 options={lsDx1}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputSelect
                                                 defaultValue={lsAudiometrics.idConductaAUDIO}
                                                 name="idConductaAUDIO"
@@ -705,22 +645,18 @@ const UpdateAudiometry = () => {
                                                 options={lsConducta}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={2}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={2}>
                                             <InputCheckBox
                                                 label="Cambio EPP"
                                                 name="idCambioEPP"
                                                 size={25}
                                                 defaultValue={lsAudiometrics.idCambioEPP}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 defaultValue={lsAudiometrics.observacionAUDIO}
                                                 fullWidth
@@ -730,59 +666,72 @@ const UpdateAudiometry = () => {
                                                 multiline
                                                 rows={6}
                                             />
-                                        </FormProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputCheck
+                                                onChange={(e) =>
+                                                    setExtenderDescripcion(e.target.checked)
+                                                }
+                                                checked={extenderDescripcion}
+                                                label="Extender Reporte"
+                                                name="extenderDescripcion"
+                                                size={30}
+                                                defaultValue={false}
+                                            />
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </SubCard>
-                        </Grid>
+                                </SubCard>
+                            </Grid>
 
-                        <Grid item xs={12} sx={{ pt: 2 }}>
-                            <MainCard title="Resultados">
-                                <Grid container spacing={12}>
-                                    <Grid textAlign="center" item xs={12}>
-                                        <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                            ACTUALIZAR RESULTADO EN PDF
-                                            <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                        </Button>
+                            <Grid item xs={12} sx={{ pt: 2 }}>
+                                <MainCard title="Resultados">
+                                    <Grid container spacing={12}>
+                                        <Grid textAlign="center" item xs={12}>
+                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                ACTUALIZAR RESULTADO EN PDF
+                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                            </Button>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
 
-                                <Grid item xs={12} sx={{ pt: 4 }}>
-                                    <ViewPDF dataPDF={filePdf} width="1000" height="500" />
-                                </Grid>
-                            </MainCard>
-                        </Grid>
+                                    <Grid item xs={12} sx={{ pt: 4 }}>
+                                        <ViewPDF dataPDF={filePdf} width="1000" height="500" />
+                                    </Grid>
+                                </MainCard>
+                            </Grid>
 
-                        <Grid item xs={12} sx={{ pt: 4 }}>
-                            <Grid container spacing={2} >
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                            <Grid item xs={12} sx={{ pt: 4 }}>
+                                <Grid container spacing={2} >
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
-                                            {TitleButton.Imprimir}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/audiometry/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/audiometry/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid> : <Cargando />
-                }
-            </MainCard>
+                        </Grid> : <Cargando />
+                    }
+                </MainCard>
+            </FormProvider>
         </ValidateActionSkeleton >
 
     );

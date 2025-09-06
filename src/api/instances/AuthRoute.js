@@ -130,6 +130,7 @@ export const Url = {
     Proveedor: 'api/Proveedor',
     ProveedorExcel: 'api/Proveedor/excel',
     ProveedorId: 'api/Proveedor/id',
+    ProveedorCombo: 'api/Proveedor/combo-proveedor',
 
     RegistroAtencion: 'api/RegistroAtencion',
     RegistroAtencionGetTriage: 'api/RegistroAtencion/gettriage/id',
@@ -142,6 +143,7 @@ export const Url = {
     RegistroAtencionEpide: 'api/RegistroAtencion/consulta-epidemiologica',
     RegistroAtencionEpideResumen: 'api/RegistroAtencion/consulta-epidemiologica-resumen',
 
+    ParaclinicosEspirometria: 'api/Paraclinicos/spirometry',
     Paraclinicos: 'api/Paraclinicos',
     Paraclinicos_GetAllByDocumento: 'api/Paraclinicos/GetAllByDocumento',
     Paraclinicos_GetAllByDocumentoParacli: 'api/Paraclinicos/GetAllByDocumentoParacli',
@@ -283,7 +285,7 @@ export const Url = {
     HistoriaClinicaExcel: 'api/HistoriaClinica/excel',
     HistoriaClinicaId: 'api/HistoriaClinica/id',
     HistoriaClinicaAntecendete: 'api/HistoriaClinica/antecedente',
-    HistoriaClinica_GetIdRegistroAtencion: 'api/HistoriaClinica/GetIdRegistroAtencion',
+    HistoriaClinica_GetIdRegistroAtencion: 'api/HistoriaClinica/data',
     HistoriaClinica_ValidateIdRegistroAtencion: 'api/HistoriaClinica/ValidateIdRegistroAtencion',
 
     NotaEvolucion: 'api/NotaEvolucion',

@@ -101,32 +101,32 @@ function generateReportMedicalAdvice(doc = new jsPDF(), lsDataReport = [], lsCon
     doc.text('CELULAR:', 42, 70);
     doc.text('TIPO CONTRATO:', 42, 75);
 
-    doc.text('NOMBRES:', 120, 45);
-    doc.text('DEPARTAMENTO:', 120, 50);
-    doc.text('GRUPO:', 120, 55);
-    doc.text('AREA:', 120, 60);
-    doc.text('ESTADO CIVIL:', 120, 65);
-    doc.text('EMAIL:', 120, 70);
-    doc.text('EMPRESA:', 120, 75);
+    doc.text('NOMBRES:', 110, 45);
+    doc.text('DEPARTAMENTO:', 110, 50);
+    doc.text('GRUPO:', 110, 55);
+    doc.text('AREA:', 110, 60);
+    doc.text('ESTADO CIVIL:', 110, 65);
+    doc.text('EMAIL:', 110, 70);
+    doc.text('EMPRESA:', 110, 75);
 
     /* DATOS DEL REGISTRO */
     doc.setFont("helvetica", "normal");
     doc.addImage(`${lsDataReport.urlImg}`, "JPEG", 7.5, 45, 30, 30);
-    doc.text(`${lsDataReport.documento}`, 70, 45);
-    doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 70, 50);
-    doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 70, 55);
-    doc.text(`${lsDataReport.nameCargo}`, 70, 60);
-    doc.text(`${lsDataReport.nameSede}`, 70, 65);
-    doc.text(`${lsDataReport.nameTelefono}`, 70, 70);
-    doc.text(`${lsDataReport.nameTipoContrato}`, 70, 75);
+    doc.text(`${lsDataReport.documento}`, 68, 45);
+    doc.text(`${GetEdad(lsDataReport.fechaNacimi)}`, 68, 50);
+    doc.text(`${GetEdad(lsDataReport.fechaContrato)}`, 68, 55);
+    doc.text(`${lsDataReport.nameCargo}`, 68, 60);
+    doc.text(`${lsDataReport.nameSede}`, 68, 65);
+    doc.text(`${lsDataReport.nameTelefono}`, 68, 70);
+    doc.text(`${lsDataReport.nameTipoContrato}`, 68, 75);
 
-    doc.text(`${lsDataReport.nameEmpleado}`, 150, 45);
-    doc.text(`${lsDataReport.nameDepartamento}`, 150, 50);
-    doc.text(`${lsDataReport.nameGrupo}`, 150, 55);
-    doc.text(`${lsDataReport.nameArea}`, 150, 60);
-    doc.text(`${lsDataReport.nameEstadoCivil}`, 150, 65);
-    doc.text(`${lsDataReport.nameCorreo}`, 150, 70);
-    doc.text(`${lsDataReport.nameEmpresa}`, 150, 75);
+    doc.text(`${lsDataReport.nameEmpleado}`, 137, 45);
+    doc.text(`${lsDataReport.nameDepartamento}`, 137, 50);
+    doc.text(`${lsDataReport.nameGrupo}`, 137, 55);
+    doc.text(`${lsDataReport.nameArea}`, 137, 60);
+    doc.text(`${lsDataReport.nameEstadoCivil}`, 137, 65);
+    doc.text(`${lsDataReport.nameCorreo}`, 137, 70);
+    doc.text(`${lsDataReport.nameEmpresa}`, 137, 75);
 
     /* DESCRIPCIONES DE TEXTO */
     doc.setFontSize(7);
@@ -177,15 +177,14 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
 
-
     if (lsDataReport.dx1 !== "")
-        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 115, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 113, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx2 !== "")
-        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 120, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 122, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     if (lsDataReport.dx3 !== "")
-        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 125, { maxWidth: 200, lineHeightFactor: 1.5 });
+        doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 127, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     doc.setFontSize(7);
 

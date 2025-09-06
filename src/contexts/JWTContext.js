@@ -1,18 +1,11 @@
 import PropTypes from 'prop-types';
 import { createContext, useEffect, useReducer } from 'react';
-
-// third-party
 import { Chance } from 'chance';
 import jwtDecode from 'jwt-decode';
-
-// reducer - state management
 import { LOGIN, LOGOUT } from 'store/actions';
 import accountReducer from 'store/accountReducer';
-
-// project imports
 import Loader from 'ui-component/Loader';
 import axios from 'axios';
-//import axios from 'utils/axios';
 import { Url } from 'api/instances/AuthRoute';
 import { getData } from 'api/UtilInstance';
 

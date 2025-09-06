@@ -1,81 +1,74 @@
-import { useState, useEffect, Fragment } from 'react';
+import { Button, Grid, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import {
-    Button,
-    Grid,
-    useMediaQuery
-} from '@mui/material';
+import { useEffect, useState } from 'react';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
-import ViewEmployee from 'components/views/ViewEmployee';
-import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import InputDatePicker from 'components/input/InputDatePicker';
-import ControlModal from 'components/controllers/ControlModal';
-import ControllerListen from 'components/controllers/ControllerListen';
-import { FormatDate } from 'components/helpers/Format'
-import InputText from 'components/input/InputText';
-
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue, AccionMenu, Modulo } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
+import { yupResolver } from '@hookform/resolvers/yup';
+import CloseIcon from '@mui/icons-material/Close';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { PostParaclinics } from 'formatdata/ParaclinicsForm';
-import { InsertParaclinics } from 'api/clients/ParaclinicsClient';
-import { GetAllSupplier } from 'api/clients/SupplierClient';
-import Cargando from 'components/loading/Cargando';
-import MainCard from 'ui-component/cards/MainCard';
-import UploadIcon from '@mui/icons-material/Upload';
-import ViewPDF from 'components/components/ViewPDF';
+import { InsertSpirometry } from 'api/clients/ParaclinicsClient';
+import { GetSupplierByTipo } from 'api/clients/SupplierClient';
+import { AccionMenu, CodCatalogo, IdTipoProveedor, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import UploadPdfFile from 'components/input/UploadPdfFile';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { FormProvider, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
+import TableResult from './TableResult';
+
+const validationSchema = yup.object().shape({
+    documento: yup.string().required("Por favor debe registrar el documento del paciente"),
+    idMotivo: yup.string().required("Por favor debe registrar el motivo"),
+    idProveedor: yup.string().required("Por favor debe registrar el proveedor"),
+    idTipoEPP: yup.string().required("Por favor debe registrar el tipo de EPP"),
+    resultado: yup.string().required("Por favor debe registrar el resultado"),
+});
 
 const Spirometry = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [openError, setOpenError] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [filePdf, setFilePdf] = useState(null);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [documento, setDocumento] = useState('');
     const [lsMotivo, setLsMotivo] = useState([]);
     const [lsProveedor, setLsProveedor] = useState([]);
     const [lsTipoEPP, setLsTipoEPP] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
 
-    const methods = useForm();
-    const { handleSubmit, errors, reset } = methods;
+    const methods = useForm({ resolver: yupResolver(validationSchema) });
+    const { handleSubmit, formState: { errors }, setValue, reset, watch } = methods;
+    const values = watch();
 
-    const allowedFiles = ['application/pdf'];
-    const handleFile = (event) => {
-        let selectedFile = event.target.files[0];
+    const [lsParametro, setLsParametro] = useState([]);
 
-        if (selectedFile) {
-            if (selectedFile && allowedFiles.includes(selectedFile.type)) {
-                let reader = new FileReader();
-                reader.readAsDataURL(selectedFile);
-                reader.onloadend = (e) => {
-                    setFilePdf(e.target.result);
-                }
-            }
-            else {
-                setFilePdf('');
-                setOpenError(true);
-                setErrorMessage('Este forma no es un PDF');
-            }
+    const fetchData = async () => {
+        try {
+            const lsServerParametro = await GetByTipoCatalogoCombo(CodCatalogo.PARAMETRO_ESPIRO);
+            const sortedParametros = lsServerParametro.data.sort((a, b) => a.value - b.value);
+            setLsParametro(sortedParametros);
+
+            sortedParametros.forEach((param, index) => {
+                setValue(`detalle[${index}].idParametro`, param.value);
+            });
+        } catch (error) {
+
         }
-    }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const handleDocumento = async (event) => {
         try {
-            setDocumento(event?.target.value);
+            setValue('documento', event?.target.value, { shouldValidate: true });
 
             if (event?.target.value !== '') {
                 if (event.key === 'Enter') {
@@ -85,8 +78,7 @@ const Spirometry = () => {
                         setLsEmployee(lsServerEmployee.data.data);
                     } else {
                         setLsEmployee(lsServerEmployee?.data.data);
-                        setOpenError(true);
-                        setErrorMessage(lsServerEmployee?.data.message);
+                        toast.error(lsServerEmployee?.data.message);
                     }
 
                 } else {
@@ -100,291 +92,179 @@ const Spirometry = () => {
         } catch (error) { }
     }
 
-    async function getAll() {
-        try {
-            const lsServerMotivo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Atencion_PARACLINICO);
-            var resultMotivo = lsServerMotivo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsMotivo(resultMotivo);
-
-            const lsServerTipoEPP = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_TIPOEPP);
-            var resultTipoEPP = lsServerTipoEPP.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsTipoEPP(resultTipoEPP);
-
-            const lsServerResultado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.PARACLINICO_RESULTADO);
-            var resultResultado = lsServerResultado.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsResultado(resultResultado);
-
-            const lsServerProveedor = await GetAllSupplier();
-            var resultProveedor = lsServerProveedor.data.map((item) => ({
-                value: item.codiProv,
-                label: item.nombProv
-            }));
-            setLsProveedor(resultProveedor);
-        } catch (error) { }
-    }
-
     useEffect(() => {
+        async function getAll() {
+            try {
+                const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.Atencion_PARACLINICO);
+                setLsMotivo(lsServerMotivo.data);
+
+                const lsServerTipoEPP = await GetByTipoCatalogoCombo(CodCatalogo.PARACLINICO_TIPOEPP);
+                setLsTipoEPP(lsServerTipoEPP.data);
+
+                const lsServerResultado = await GetByTipoCatalogoCombo(CodCatalogo.PARACLINICO_RESULTADO);
+                setLsResultado(lsServerResultado.data);
+
+                const lsServerProveedor = await GetSupplierByTipo(IdTipoProveedor.Espirometria);
+                setLsProveedor(lsServerProveedor.data);
+            } catch (error) { }
+        }
+
         getAll();
     }, []);
 
     const handleClick = async (datos) => {
         try {
-            var savePdf = filePdf === null ? "" : filePdf;
+            const result = await InsertSpirometry(datos);
+            if (result.data.exito) {
+                toast.success(result.data.mensaje);
 
-            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_ESPIROMETRIA, documento,
-                datos.fecha, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
-                false, '', datos.idTipoEPP, datos.fvc, datos.feV1, datos.fevfvc, datos.feV2575, datos.pef, datos.resultado, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
-                false, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
-
-            if (Object.keys(datos.length !== 0)) {
-
-                const result = await InsertParaclinics(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    reset();
-                    setFilePdf(null);
-                }
-
-            }
+                setLsEmployee([]);
+                setValue('documento', "");
+                fetchData();
+                reset();
+            } else
+                toast.error(result.data.mensaje);
         } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            toast.error(Message.RegistroNoGuardado);
         }
     };
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Espirometria}>
-            <MainCard title="Registrar Espirometría">
-                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
-                <ControlModal
-                    maxWidth="md"
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    title="DICTADO POR VOZ"
-                >
-                    <ControllerListen />
-                </ControlModal>
-
+            <FormProvider {...methods}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <ViewEmployee
+                            title="Registrar espirometría"
                             key={lsEmployee?.documento}
-                            documento={documento}
-                            onChange={(e) => setDocumento(e.target.value)}
+                            documento={values.documento}
+                            onChange={(e) => setValue('documento', e.target.value)}
                             lsEmployee={lsEmployee}
                             handleDocumento={handleDocumento}
+                            errors={errors}
                         />
                     </Grid>
 
                     <Grid item xs={12}>
                         <SubCard darkTitle>
-                            <Grid container spacing={1}>
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputDatePicker
-                                            label="Fecha"
-                                            name="fecha"
-                                            defaultValue={new Date()}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idMotivo"
-                                            label="Motivo"
-                                            options={lsMotivo}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idProveedor"
-                                            label="Proveedor"
-                                            options={lsProveedor}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="idTipoEPP"
-                                            label="Tipo EPP"
-                                            options={lsTipoEPP}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <SubCard darkTitle>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} md={6} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            name="fvc"
-                                            label="FVC"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputDatePicker
+                                        label="Fecha"
+                                        name="fecha"
+                                        defaultValue={new Date()}
+                                    />
                                 </Grid>
 
-                                <Grid item xs={12} md={6} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            name="feV1"
-                                            label="FEV1"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idMotivo"
+                                        label="Motivo"
+                                        options={lsMotivo}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idMotivo}
+                                    />
                                 </Grid>
 
-                                <Grid item xs={12} md={6} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            name="fevfvc"
-                                            label="FEV1/FVC"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idProveedor"
+                                        label="Proveedor"
+                                        options={lsProveedor}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idProveedor}
+                                    />
                                 </Grid>
 
-                                <Grid item xs={12} md={6} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            name="feV2575"
-                                            label="FEV25/75"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idTipoEPP"
+                                        label="Tipo EPP"
+                                        options={lsTipoEPP}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idTipoEPP}
+                                    />
                                 </Grid>
 
-                                <Grid item xs={12} md={6} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            name="pef"
-                                            label="PEF"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
+                                <Grid item xs={12} sx={{ mt: 2 }}>
+                                    <SubCard title="Resultados de la prueba" secondary={
+                                        <>
+                                            {values.urlFile && (
+                                                <Tooltip title="Remover archivo PDF" placement="top">
+                                                    <IconButton
+                                                        onClick={(e) => { e.stopPropagation(); setValue('urlFile', null); }}
+                                                        sx={{ backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.main' } }}
+                                                    >
+                                                        <CloseIcon sx={{ color: 'white', fontSize: '14px' }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
+                                        </>
+                                    }>
 
-                                <Grid item xs={12} md={6} lg={2}>
-                                    <FormProvider {...methods}>
-                                        <InputSelect
-                                            name="resultado"
-                                            label="Resultado"
-                                            options={lsResultado}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12} md={6} textAlign="left">
+                                                <TableResult methods={methods} lsParametro={lsParametro} />
+                                            </Grid>
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
-                                        <InputText
-                                            fullWidth
-                                            name="observacion"
-                                            label="Observaciones"
-                                            size={matchesXS ? 'small' : 'medium'}
-                                            multiline
-                                            rows={6}
-                                            bug={errors}
-                                        />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={12} sx={{ pt: 2 }}>
-                                <MainCard title="Resultados">
-                                    <Grid container spacing={12}>
-                                        <Grid textAlign="center" item xs={12}>
-                                            <Button size="large" variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                SUBIR RESULTADO EN PDF
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            </Button>
+                                            <Grid item xs={12} md={6}>
+                                                <UploadPdfFile name="urlFile" defaultValue={null} />
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
+                                    </SubCard>
+                                </Grid>
 
-                                    <Grid item xs={12} sx={{ pt: 4 }}>
-                                        <ViewPDF dataPDF={filePdf} width="1180" height="500" />
-                                    </Grid>
-                                </MainCard>
-                            </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputSelect
+                                        name="resultado"
+                                        label="Resultado"
+                                        defaultValue=""
+                                        options={lsResultado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.resultado}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={12} sx={{ pt: 4 }}>
-                                <Grid container spacing={2} >
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                                {TitleButton.Guardar}
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                <Grid item xs={12} sx={{ mt: 2 }}>
+                                    <InputText
+                                        fullWidth
+                                        defaultValue=""
+                                        name="observacion"
+                                        label="Observaciones"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        multiline
+                                        rows={6}
+                                        bug={errors.observacion}
+                                    />
+                                </Grid>
 
-                                    <Grid item xs={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/spirometry/list")}>
-                                                {TitleButton.Cancelar}
-                                            </Button>
-                                        </AnimateButton>
+                                <Grid item xs={12} sx={{ mt: 4 }}>
+                                    <Grid container spacing={2} >
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                    {TitleButton.Guardar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" fullWidth onClick={() => navigate("/paraclinics/spirometry/list")}>
+                                                    {TitleButton.Cancelar}
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
                         </SubCard>
                     </Grid>
                 </Grid>
-            </MainCard>
+            </FormProvider>
         </ValidateActionSkeleton>
     );
 };

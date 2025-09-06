@@ -8,3 +8,4 @@ export const UpdateSuppliers = async (proveedor) => await putData(Url.Proveedor,
 export const DeleteSupplier = async (idProveedor) => await deleteData(Url.Proveedor, { idProveedor });
 
 export const GetExcelSupplier = async () => await postData(Url.ProveedorExcel);
+export const GetSupplierByTipo = async (tipoProveedor) => await getData(Url.ProveedorCombo, { tipoProveedor });

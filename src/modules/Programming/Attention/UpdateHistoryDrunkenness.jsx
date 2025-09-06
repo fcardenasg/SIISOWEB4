@@ -37,6 +37,11 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReportNursing } from './Report/Nursing';
 import InputRadioGroup from 'components/input/InputRadioGroup';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
+
+const lsReglejoCoordinacion = [];
+const lsConvergencia = [];
+const lsOpcionRealiza = [];
 
 const arrayAliento = [
     { value: 1, label: "Negativo" },
@@ -115,9 +120,7 @@ const UpdateHistoryDrunkenness = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-    const [lsAtencion, setLsAtencion] = useState([]);
-    const [lsAtencionn, setLsAtencionn] = useState([]);
-    const [dataNotaEnfermeria, setDataNotaEnfermeria] = useState([]);
+    const [lsAtencion, setLsAtencion] = useState(null);
     const [resultIdRegistroAtencion, setResultIdRegistroAtencion] = useState(false);
 
     const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
@@ -130,22 +133,22 @@ const UpdateHistoryDrunkenness = () => {
     const [open, setOpen] = useState(false);
     const [documento, setDocumento] = useState('');
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [procedimiento, setProcedimiento] = useState([]);
     const [lsEmployee, setLsEmployee] = useState([]);
 
     const [lsCiudad, setLsCiudad] = useState([]);
-    const [lsInstitucion, setLsInstitucion] = useState([]);
     const [lsAliento, setLsAliento] = useState([]);
     const [lsEstadoConciencia, setLsEstadoConciencia] = useState([]);
     const [lsResultAtencion, setLsResultAtencion] = useState([]);
     const [lsFlujoLen, setLsFlujoLen] = useState([]);
     const [lsOpcion, setLsOpcion] = useState([]);
+    const [lsDisatria, setLsDisatria] = useState([]);
     const [lsPupila, setLsPupila] = useState([]);
-    const [lsReglejoCoordinacion, setLsReglejoCoordinacion] = useState([]);
-    const [lsConvergencia, setLsConvergencia] = useState([]);
+    const [lsOtrasOpciones, setLsOtrasOpciones] = useState([]);
+    const [lsOpcionesAusenPrese, setLsOpcionesAusenPrese] = useState([]);
     const [lsReflejoOsteo, setLsReflejoOsteo] = useState([]);
     const [lsResultEvaluacion, setLsResultEvaluacion] = useState([]);
-    const [lsOpcionRealiza, setLsOpcionRealiza] = useState([]);
+    const [lsDeterminacion, setLsDeterminacion] = useState([]);
+    const [lsResultPosNeg, setLsResultPosNeg] = useState([]);
 
     const [resultData, setResultData] = useState(0);
     const [dataPDF, setDataPDF] = useState(null);
@@ -219,18 +222,44 @@ const UpdateHistoryDrunkenness = () => {
                 handleLoadingDocument(event);
             }
 
-            const lsServerInstitucion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerAliento = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerEstadoConciencia = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerResultAtencion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerFlujoLen = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerOpcion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerPupila = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerReglejoCoordinacion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerConvergencia = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerReflejoOsteo = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServerResultEvaluacion = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
-            const lsServeropcionRealiza = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
+            const lsServerAliento = await GetByTipoCatalogoCombo(CodCatalogo.ALIENTOALCOHOLICO);
+            setLsAliento(lsServerAliento.data);
+
+            const lsServerResultPosNeg = await GetByTipoCatalogoCombo(CodCatalogo.PAD_RESULTADO);
+            setLsResultPosNeg(lsServerResultPosNeg.data.sort((a, b) => b.value - a.value));
+
+            const lsServerEstadoConciencia = await GetByTipoCatalogoCombo(CodCatalogo.ESTADOCONCIENCIA);
+            setLsEstadoConciencia(lsServerEstadoConciencia.data);
+
+            const lsServerResultAtencion = await GetByTipoCatalogoCombo(CodCatalogo.ATENCION);
+            setLsResultAtencion(lsServerResultAtencion.data);
+
+            const lsServerFlujoLen = await GetByTipoCatalogoCombo(CodCatalogo.FLUJOLENGUAJE);
+            setLsFlujoLen(lsServerFlujoLen.data);
+
+            const lsServerDisatria = await GetByTipoCatalogoCombo(CodCatalogo.DISARTRIA);
+            setLsDisatria(lsServerDisatria.data);
+
+            const lsServerOpcion = await GetByTipoCatalogoCombo(CodCatalogo.Opciones_SINO);
+            setLsOpcion(lsServerOpcion.data);
+
+            const lsServerPupila = await GetByTipoCatalogoCombo(CodCatalogo.PUPILA);
+            setLsPupila(lsServerPupila.data);
+
+            const lsServerOtrasOpciones = await GetByTipoCatalogoCombo(CodCatalogo.OTRASOPCIONES);
+            setLsOtrasOpciones(lsServerOtrasOpciones.data.sort((a, b) => a.value - b.value));
+
+            const lsServerReflejoOsteo = await GetByTipoCatalogoCombo(CodCatalogo.REFLEJOSOSTEOTENDINOSOS);
+            setLsReflejoOsteo(lsServerReflejoOsteo.data);
+
+            const lsServerOpcionesAusenPrese = await GetByTipoCatalogoCombo(CodCatalogo.OPCIONESAUSENTEPRESENTE);
+            setLsOpcionesAusenPrese(lsServerOpcionesAusenPrese.data);
+
+            const lsServerResultEvaluacion = await GetByTipoCatalogoCombo(CodCatalogo.CUANDOPOSITIVO);
+            setLsResultEvaluacion(lsServerResultEvaluacion.data);
+
+            const lsServerDeterminacion = await GetByTipoCatalogoCombo(CodCatalogo.DETERMINACION);
+            setLsDeterminacion(lsServerDeterminacion.data);
 
             const lsServerCiudad = await GetByTipoCatalogoCombo(CodCatalogo.CIUDADES);
             setLsCiudad(lsServerCiudad.data);
@@ -243,38 +272,14 @@ const UpdateHistoryDrunkenness = () => {
 
     const handleClick = async (datos) => {
         try {
-            const UpdateToInsert = PutNoteInfirmary(resultData, id, documento, datos.fecha, datos.idAtencion, datos.idContingencia, datos.dx1,
-                datos.dx2, datos.dx3, JSON.stringify(procedimiento), datos.notaEnfermedad, user?.nameuser, undefined, user?.nameuser, undefined, procedimiento);
 
-            if (resultIdRegistroAtencion) {
-                const result1 = await UpdateNoteInfirmarys(UpdateToInsert);
-                if (result1.status === 200) {
-                    setOpenUpdate(true);
-                    const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.NotaEnfermeria)
-                    if (lsServerValidate.status === 200) {
-                        setResultIdRegistroAtencion(lsServerValidate.data.estado);
-                    }
-                }
-            } else {
-                const result2 = await InsertNoteInfirmary(UpdateToInsert);
-                if (result2.status === 200) {
-                    setResultData(result2.data);
-                    setOpenUpdate(true);
-
-                    const lsServerValidate = await ValidateIdRegistroAtencion(id, CodRegistroAtencion.NotaEnfermeria)
-                    if (lsServerValidate.status === 200) {
-                        setResultIdRegistroAtencion(lsServerValidate.data.estado);
-                    }
-                }
-            }
         } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+
         }
     };
 
     setTimeout(() => {
-        if (lsAtencion.length !== 0)
+        if (lsAtencion !== null)
             setTimeWait(true);
     }, 1500);
 
@@ -345,22 +350,21 @@ const UpdateHistoryDrunkenness = () => {
                                     <SubCard darkTitle title="Información general">
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
-                                                <InputSelect
+                                                <InputText
+                                                    fullWidth
+                                                    defaultValue=""
                                                     name="infoGeneIntitutoRealizaExamen"
                                                     label="Institución donde se realiza el examen"
-                                                    defaultValue={lsAtencion?.atencion}
-                                                    options={lsInstitucion}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </Grid>
 
                                             <Grid item xs={12} md={6} lg={4}>
-                                                <InputSelect
+                                                <InputSelectAutocomplete
                                                     name="infoGeneCiudadExamen"
                                                     label="Ciudad del examen"
-                                                    defaultValue={lsAtencion?.atencion}
                                                     options={lsCiudad}
-                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    defaultValue={null}
                                                 />
                                             </Grid>
 
@@ -648,7 +652,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeSensoAtencion"
                                                                 label="Atención:"
                                                                 defaultValue={null}
-                                                                options={arrayOrientacion}
+                                                                options={lsResultAtencion}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -704,7 +708,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeLengDisartria"
                                                                 label="Disartria:"
                                                                 defaultValue={null}
-                                                                options={lsAliento}
+                                                                options={lsDisatria}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -839,7 +843,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputSelect
                                                                 name="exaCliForeOjoReflejoFomotomor"
                                                                 label="Reflejo fomotomor"
-                                                                options={lsReglejoCoordinacion}
+                                                                options={lsOtrasOpciones}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -848,7 +852,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputSelect
                                                                 name="exaCliForeOjoReflejoConsensual"
                                                                 label="Reflejo consensual"
-                                                                options={lsReglejoCoordinacion}
+                                                                options={lsOtrasOpciones}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -857,7 +861,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputSelect
                                                                 name="exaCliForeOjoConvergenciaOcular"
                                                                 label="Convergencia ocular"
-                                                                options={lsConvergencia}
+                                                                options={lsOtrasOpciones}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -882,7 +886,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeCoordinaPruebasMoviento"
                                                                 label="Pruebas de movimiento punto a punto (dedo-nariz, dedo-dedo):"
                                                                 defaultValue={null}
-                                                                options={lsReglejoCoordinacion}
+                                                                options={lsOtrasOpciones}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -892,7 +896,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeCoordinaTestMovimiento"
                                                                 label="Test de movimientos rápidos alternos:"
                                                                 defaultValue={null}
-                                                                options={lsReglejoCoordinacion}
+                                                                options={lsOtrasOpciones}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -902,7 +906,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeCoordinaPruebaRomberg"
                                                                 label="Prueba de Romberg:"
                                                                 defaultValue={null}
-                                                                options={lsReglejoCoordinacion}
+                                                                options={lsOtrasOpciones}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -912,7 +916,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeCoordinaPruebaMarca"
                                                                 label="Prueba de marcha en tandem (punta-talón):"
                                                                 defaultValue={null}
-                                                                options={lsReglejoCoordinacion}
+                                                                options={lsOtrasOpciones}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -922,7 +926,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeCoordinaPruebaMarcha"
                                                                 label="Prueba de marcha en las puntas de los pies y en los talones:"
                                                                 defaultValue={null}
-                                                                options={lsReglejoCoordinacion}
+                                                                options={lsOtrasOpciones}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -950,7 +954,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeEvalNistagmusEspontaneo"
                                                                 label="Nistagmus espontáneo:"
                                                                 defaultValue={null}
-                                                                options={lsResultEvaluacion}
+                                                                options={lsOpcionesAusenPrese}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -959,7 +963,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputSelect
                                                                 name="exaCliForeEvalResultadoNistagmusEspontaneo"
                                                                 label="Resultado"
-                                                                options={arrayCuandoPositivo}
+                                                                options={lsResultEvaluacion}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -969,7 +973,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeEvalPruebaNistagmusMirada"
                                                                 label="Prueba de nistagmus a mirada extrema:"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsResultPosNeg}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -978,7 +982,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputSelect
                                                                 name="exaCliForeEvalResultadoPruebaNistagmusMirada"
                                                                 label="Resultado"
-                                                                options={arrayCuandoPositivo}
+                                                                options={lsResultEvaluacion}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -988,7 +992,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeEvalPruebaNistagmusPostRocional"
                                                                 label="Prueba de nistagmus post-rotacional:"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsResultPosNeg}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -997,7 +1001,7 @@ const UpdateHistoryDrunkenness = () => {
                                                             <InputSelect
                                                                 name="exaCliForeEvalResultadoPruebaNistagmusPostRocional"
                                                                 label="Resultado"
-                                                                options={arrayCuandoPositivo}
+                                                                options={lsResultEvaluacion}
                                                                 size={matchesXS ? 'small' : 'medium'}
                                                             />
                                                         </Grid>
@@ -1019,7 +1023,7 @@ const UpdateHistoryDrunkenness = () => {
                                                                 name="exaCliForeEvalPruebaRomberg"
                                                                 label="Prueba de Romberg:"
                                                                 defaultValue={null}
-                                                                options={arrayReflejo}
+                                                                options={lsOtrasOpciones}
                                                                 row={true}
                                                             />
                                                         </Grid>
@@ -1042,7 +1046,7 @@ const UpdateHistoryDrunkenness = () => {
                                                     name="muestraEstudioDeterminacion"
                                                     label="Determinación de alcoholemia indirecta mediante alcohosensor:"
                                                     defaultValue={null}
-                                                    options={lsOpcionRealiza}
+                                                    options={lsDeterminacion}
                                                     row={true}
                                                 />
                                             </Grid>
@@ -1186,8 +1190,8 @@ const UpdateHistoryDrunkenness = () => {
                                                     fullWidth
                                                     rows={4}
                                                     multiline
-                                                    defaultValue="analiInformacionObtenida"
-                                                    name=""
+                                                    defaultValue=""
+                                                    name="analiInformacionObtenida"
                                                     label="Información obtenida"
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />

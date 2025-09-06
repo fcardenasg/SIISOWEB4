@@ -15,7 +15,6 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton } from 'components/helpers/Enums';
-import { NumeroDias } from 'components/helpers/Format';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import ViewEmployee from 'components/views/ViewEmployee';
@@ -29,7 +28,6 @@ import Accordion from 'components/accordion/Accordion';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewPDF from 'components/components/ViewPDF';
 import ControlModal from 'components/controllers/ControlModal';
-import InputDatePick from 'components/input/InputDatePick';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputOnChange from 'components/input/InputOnChange';
 import useAuth from 'hooks/useAuth';
@@ -47,13 +45,16 @@ import {
 import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
+import { useBoolean } from 'hooks/use-boolean';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 
 const OccupationalMedicine = () => {
     const { user } = useAuth();
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const disabledInvestigacionEL = useBoolean(false);
 
     const [disabledButttons, setDisabledButttons] = useState(false);
     const [openViewArchivo, setOpenViewArchivo] = useState(false);
@@ -63,10 +64,6 @@ const OccupationalMedicine = () => {
 
     const [filePdf, setFilePdf] = useState(null);
     const [filePdfMin, setFilePdfMin] = useState(null);
-
-    const [fechaCaliUltimaInstancia, setFechaCaliUltimaInstancia] = useState(null);
-    const [fechaInvestigacion, setFechaInvestigacion] = useState(null);
-    const [diasDiferencia, setDiasDiferencia] = useState(0);
 
     const [lsEmployee, setLsEmployee] = useState([]);
     const [lsResumenCaso, setLsResumenCaso] = useState([]);
@@ -83,7 +80,6 @@ const OccupationalMedicine = () => {
     const [lsInstanciaOrigen, setLsInstanciaOrigen] = useState([]);
 
     const [lsInvestigacionEL, setLsInvestigacionEL] = useState([]);
-    const [lsEstadoEnfermedadLaboral, setLsEstadoEnfermedadLaboral] = useState([]);
     const [lsPeligroAsociado, setLsPeligroAsociado] = useState([]);
     const [lsResultadoOrigen, setLsResultadoOrigen] = useState([]);
     const [lsAsesorEL, setLsAsesorEL] = useState([]);
@@ -96,37 +92,13 @@ const OccupationalMedicine = () => {
     const [documento, setDocumento] = useState('');
     const [textDiagnistico, setTextDiagnostico] = useState('');
     const [lsDiagnistico, setLsDiagnistico] = useState([]);
-    const [lsVistoBueno, setLsVistoBueno] = useState([]);
 
     const methods = useForm();
-    const { handleSubmit, reset } = methods;
+    const { handleSubmit, reset, setValue, resetField, watch } = methods;
+    const valueAplica = watch('aplica');
 
     async function downloadFile() { DownloadFile(`${documento}medicinallaboral${new Date().getTime()}.pdf`, filePdf.replace("data:application/pdf;base64,", "")); }
     async function downloadFileMin() { DownloadFile(`${documento}medicinallaboral${new Date().getTime()}.pdf`, filePdfMin.replace("data:application/pdf;base64,", "")); }
-
-    const handleFechaInicio = async (event) => {
-        try {
-            setFechaCaliUltimaInstancia(event.target.value);
-            var result = NumeroDias(event.target.value, fechaInvestigacion);
-            setDiasDiferencia(result);
-        } catch (error) {
-            setDiasDiferencia(0);
-            setOpenError(true);
-            setErrorMessage(error.message);
-        }
-    }
-
-    const handleFechaFin = async (event) => {
-        try {
-            setFechaInvestigacion(event.target.value);
-            var result = NumeroDias(fechaCaliUltimaInstancia, event.target.value);
-            setDiasDiferencia(result);
-        } catch (error) {
-            setDiasDiferencia(0);
-            setOpenError(true);
-            setErrorMessage(error.message);
-        }
-    }
 
     const handleDocumento = async (event) => {
         try {
@@ -255,9 +227,6 @@ const OccupationalMedicine = () => {
                 const lsServerEntidadMotiEnvio = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_ENMO_EN);
                 setLsEntidadMotiEnvio(lsServerEntidadMotiEnvio.data);
 
-                const lsServerEstadoEnfermedadLaboral = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_ESTADO_ENFERMEDAD_LABORAL);
-                setLsEstadoEnfermedadLaboral(lsServerEstadoEnfermedadLaboral.data);
-
                 const lsServerPeligroAsociado = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_PELIGRO_ASOCIADO);
                 setLsPeligroAsociado(lsServerPeligroAsociado.data);
 
@@ -272,9 +241,6 @@ const OccupationalMedicine = () => {
 
                 const lsServerSituacionEmpleado = await GetByTipoCatalogoCombo(CodCatalogo.SITUACION_EMPLEADO);
                 setLsSituacionEmpleado(lsServerSituacionEmpleado.data);
-
-                const lsServerVistoBueno = await GetByTipoCatalogoCombo(CodCatalogo.VISTO_BUENO);
-                setLsVistoBueno(lsServerVistoBueno.data);
 
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -305,45 +271,36 @@ const OccupationalMedicine = () => {
     const handleClick = async (datos) => {
         try {
             datos.cedula = documento;
-            datos.usuarioRegistro = user?.nameuser;
+            datos.usuarioModifico = user?.nameuser;
             datos.sede = lsEmployee.sede;
+            // Archivos y campos base
             datos.urlDocumento = filePdf || null;
-            datos.fechaCalificacionUltimaInstancia = fechaCaliUltimaInstancia || null;
-            datos.fechaInvestigacion = fechaInvestigacion || null;
-            datos.diferenciaDia = diasDiferencia || null;
             datos.pdfMinisterio = filePdfMin || null;
+            datos.diferenciaDia = null;
 
-            datos.fechaRetiro = datos.fechaRetiro || null;
-            datos.fechaEstimadaInicioCaso = datos.fechaEstimadaInicioCaso || null;
-            datos.fechaEntrega = datos.fechaEntrega || null;
-            datos.fechaEnvio = datos.fechaEnvio || null;
-            datos.fechaCalificacionEps = datos.fechaCalificacionEps || null;
-            datos.fechaCalifiOrigenARL = datos.fechaCalifiOrigenARL || null;
-            datos.fechaCalificacionPclARL = datos.fechaCalificacionPclARL || null;
-            datos.fechaEstructuraARL = datos.fechaEstructuraARL || null;
-            datos.fechaRecalificacionPclARL = datos.fechaRecalificacionPclARL || null;
-            datos.fechaEstructuraRecalificadaARL = datos.fechaEstructuraRecalificadaARL || null;
-            datos.fechaCalificaOrigenJRC = datos.fechaCalificaOrigenJRC || null;
-            datos.fechaCalificacionPclJRC = datos.fechaCalificacionPclJRC || null;
-            datos.fechaEstructuraPclJRC = datos.fechaEstructuraPclJRC || null;
-            datos.fechaRecalificacionPclJRC = datos.fechaRecalificacionPclJRC || null;
-            datos.fechaRecalificacionEstJRC = datos.fechaRecalificacionEstJRC || null;
-            datos.fechaEstructuracionJRC = datos.fechaEstructuracionJRC || null;
-            datos.fechaCalificaOrigenJNC = datos.fechaCalificaOrigenJNC || null;
-            datos.fechaCalificacionPclJNC = datos.fechaCalificacionPclJNC || null;
-            datos.fechaEstructuraJNC = datos.fechaEstructuraJNC || null;
-            datos.fechaRecalificacionPclJNC = datos.fechaRecalificacionPclJNC || null;
-            datos.fechaEstructuracionOrigenInstaFinal = datos.fechaEstructuracionOrigenInstaFinal || null;
-            datos.fechaCalificacionPclInstFinal = datos.fechaCalificacionPclInstFinal || null;
-            datos.fechaEstructuracionPclInstFinal = datos.fechaEstructuracionPclInstFinal || null;
-            datos.fechaPagoInstaFinal = datos.fechaPagoInstaFinal || null;
-            datos.fechaEntregaMin = datos.fechaEntregaMin || null;
-            datos.fechaPagoRecalificadoInstaFinal = datos.fechaPagoRecalificadoInstaFinal || null;
-            datos.fechaRecibidoInstanciaFinal = datos.fechaRecibidoInstanciaFinal || null;
+            // Fechas principales
+            const fechas = [
+                "fechaCalificacionUltimaInstancia", "fechaInvestigacion", "fechaRetiro", "fechaEstimadaInicioCaso",
+                "fechaEntrega", "fechaEnvio", "fechaCalificacionEps", "fechaCalifiOrigenARL", "fechaCalificacionPclARL",
+                "fechaEstructuraARL", "fechaRecalificacionPclARL", "fechaEstructuraRecalificadaARL", "fechaCalificaOrigenJRC",
+                "fechaCalificacionPclJRC", "fechaEstructuraPclJRC", "fechaRecalificacionPclJRC", "fechaRecalificacionEstJRC",
+                "fechaEstructuracionJRC", "fechaCalificaOrigenJNC", "fechaCalificacionPclJNC", "fechaEstructuraJNC",
+                "fechaRecalificacionPclJNC", "fechaEstructuracionOrigenInstaFinal", "fechaCalificacionPclInstFinal",
+                "fechaEstructuracionPclInstFinal", "fechaPagoInstaFinal", "fechaEntregaMin", "fechaPagoRecalificadoInstaFinal",
+                "fechaRecibidoInstanciaFinal", "fechaCalificaOrigenAFP", "fechaCalificacionPclAFP", "fechaEstructuraAFP"
+            ];
+            fechas.forEach(f => { datos[f] = datos[f] || null; });
 
-            datos.fechaCalificaOrigenAFP = datos.fechaCalificaOrigenAFP || null;
-            datos.fechaCalificacionPclAFP = datos.fechaCalificacionPclAFP || null;
-            datos.fechaEstructuraAFP = datos.fechaEstructuraAFP || null;
+            // Investigación de origen de enfermedad laboral
+            const investigacion = [
+                "idInvestigadoPor", "origenInvestigacion", "motivoIE", "resultadoOrigen",
+                "invesOrigenExamenesEstudiosAdicionales", "invesOrigenRemisionEspecificar",
+                "invesOrigenNecesidadesFormacion", "invesOrigenRevisionEpp", "invesOrigenNormasTrabajo",
+                "invesOrigenEvaluacionMedicionRiesgo", "invesOrigenControlesAdministrativos",
+                "invesOrigenControlesAdicionales", "invesOrigenModificacionActividades",
+                "invesOrigenReubicacion", "invesOrigenOtras", "peligroAsociadoEnfermedad", "aplica"
+            ];
+            investigacion.forEach(f => { datos[f] = datos[f] || null; });
 
             const result = await InsertOccupationalMedicine(datos);
             if (result.status === 200) {
@@ -358,6 +315,8 @@ const OccupationalMedicine = () => {
                     setDisabledButttons(true);
                     reset();
                     setFilePdf(null);
+                    setValue("fechaCalificacionUltimaInstancia", "");
+                    setValue("fechaInvestigacion", "");
                 } else {
                     setOpenError(true);
                     setErrorMessage(result.data);
@@ -368,6 +327,34 @@ const OccupationalMedicine = () => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
+
+    useEffect(() => {
+        if (valueAplica == 4006) {
+            resetField("idInvestigadoPor");
+            resetField("origenInvestigacion");
+            resetField("motivoIE");
+            resetField("resultadoOrigen");
+            setValue("fechaCalificacionUltimaInstancia", "");
+            setValue("fechaInvestigacion", "");
+            setValue("peligroAsociadoEnfermedad", "");
+
+            resetField("invesOrigenExamenesEstudiosAdicionales");
+            resetField("invesOrigenRemisionEspecificar");
+            resetField("invesOrigenNecesidadesFormacion");
+            resetField("invesOrigenRevisionEpp");
+            resetField("invesOrigenNormasTrabajo");
+            resetField("invesOrigenEvaluacionMedicionRiesgo");
+            resetField("invesOrigenControlesAdministrativos");
+            resetField("invesOrigenControlesAdicionales");
+            resetField("invesOrigenModificacionActividades");
+            resetField("invesOrigenReubicacion");
+            resetField("invesOrigenOtras");
+
+            disabledInvestigacionEL.onTrue();
+        } else {
+            disabledInvestigacionEL.onFalse();
+        }
+    }, [valueAplica]);
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Medicinalaboral}>
@@ -384,215 +371,183 @@ const OccupationalMedicine = () => {
             </ControlModal>
 
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <ViewEmployee
-                        title="Registrar medicina laboral"
-                        key={lsEmployee?.documento}
-                        documento={documento}
-                        onChange={(e) => setDocumento(e.target.value)}
-                        lsEmployee={lsEmployee}
-                        handleDocumento={handleDocumento}
-                    />
-                </Grid>
+                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            title="Registrar medicina laboral"
+                            key={lsEmployee?.documento}
+                            documento={documento}
+                            onChange={(e) => setDocumento(e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleDocumento}
+                        />
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <StickyActionBar
-                        mainTitle="Acciones"
-                        titleButtonOne={TitleButton.Guardar}
-                        titleButtonTwo={TitleButton.Cancelar}
-                        onClickSave={handleSubmit(handleClick)}
-                        onClickUpdate={() => navigate('/occupationalmedicine/list')}
-                        disabledUpdate={false}
-                        disabledSave={disabledButttons}
-                        showButton={false}
-                        threshold={lsEmployee?.length !== 0 ? 550 : 480}
-                    >
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <StickyActionBar
+                            mainTitle="Acciones"
+                            titleButtonOne={TitleButton.Guardar}
+                            titleButtonTwo={TitleButton.Cancelar}
+                            onClickSave={handleSubmit(handleClick)}
+                            onClickUpdate={() => navigate('/occupationalmedicine/list')}
+                            disabledUpdate={false}
+                            disabledSave={disabledButttons}
+                            showButton={false}
+                            threshold={lsEmployee?.length !== 0 ? 550 : 480}
+                        >
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha De Registro"
                                                 name="fechaRetiro"
                                                 defaultValue={new Date()}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="resumenCaso"
                                                 label="Resumen Caso"
                                                 options={lsResumenCaso}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="situacionEmpleado"
                                                 label="Situación Del Empleado"
                                                 options={lsSituacionEmpleado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Estimada Inicio Caso"
                                                 name="fechaEstimadaInicioCaso"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <InputOnChange
-                                            label="DX"
-                                            onKeyDown={handleDiagnostico}
-                                            onChange={(e) => setTextDiagnostico(e?.target.value)}
-                                            value={textDiagnistico}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
+                                        <Grid item xs={12} md={6} lg={3}>
+                                            <InputOnChange
+                                                label="DX"
+                                                onKeyDown={handleDiagnostico}
+                                                onChange={(e) => setTextDiagnostico(e?.target.value)}
+                                                value={textDiagnistico}
+                                                size={matchesXS ? 'small' : 'medium'}
+                                            />
+                                        </Grid>
 
-                                    <Grid item xs={12} md={9}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={9}>
                                             <InputSelect
                                                 name="codDx"
                                                 label="Diagnóstico"
                                                 options={lsDiagnistico}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="nroFurel"
                                                 label="No. FUREL"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="segmentoAgrupado"
                                                 label="Segmento Agrupado"
                                                 options={lsSegmentoAgrupado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="segmentoAfectado"
                                                 label="Segmento Afectado"
                                                 options={lsSegmentoAfectado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="subsegmento"
                                                 label="Subsegmento"
                                                 options={lsSubsegmento}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="regionInfoLaboral"
                                                 label="Región"
                                                 options={lsRegion}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="lateralidad"
                                                 label="Lateralidad"
                                                 options={lsLateralidad}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="entidadQueMotivaEnvio"
                                                 label="Entidad que motiva el envio"
                                                 options={lsEntidadMotiEnvio}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="entidadDondeEnvia"
                                                 label="Entidad Donde Envía"
                                                 options={lsEntidadDondeEnvia}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha de Entrega"
                                                 name="fechaEntrega"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        </Grid>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha de Envío"
                                                 name="fechaEnvio"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="investigado"
                                                 label="Investigado"
                                                 options={lsInvestigado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
                                                 multiline
@@ -601,98 +556,82 @@ const OccupationalMedicine = () => {
                                                 label="Observaciones"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconReportMedical /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación EPS</Typography></>}>
-                                <Grid container spacing={2} sx={{ my: 1 }}>
-                                    <Grid item xs={12} md={6}>
-                                        <FormProvider {...methods}>
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconReportMedical /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación EPS</Typography></>}>
+                                    <Grid container spacing={2} sx={{ my: 1 }}>
+                                        <Grid item xs={12} md={6}>
                                             <InputDatePicker
                                                 label="Fecha de Calificación"
                                                 name="fechaCalificacionEps"
                                                 defaultValue={null}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6}>
                                             <InputSelect
                                                 name="origenEps"
                                                 label="Orígenes"
                                                 options={lsOrigenEPS}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconAlertTriangle /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación ARL</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconAlertTriangle /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación ARL</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 fullWidth
                                                 name="noSolicitudARL1"
                                                 label="Nro. Solicitud 1"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 fullWidth
                                                 name="noSolicitudARL2"
                                                 label="Nro. Solicitud 2"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Calificación Origen"
                                                 name="fechaCalifiOrigenARL"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="origenARL"
                                                 label="Origen"
                                                 options={lsOrigenARL}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Calificación PCL"
                                                 name="fechaCalificacionPclARL"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -700,31 +639,25 @@ const OccupationalMedicine = () => {
                                                 label="% PCL"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Estructura"
                                                 name="fechaEstructuraARL"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha ReCalificación PCL"
                                                 name="fechaRecalificacionPclARL"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -732,155 +665,127 @@ const OccupationalMedicine = () => {
                                                 label="% PCL Recalificada"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Estructura"
                                                 name="fechaEstructuraRecalificadaARL"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JRC</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JRC</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Calificación Origen"
                                                 name="fechaCalificaOrigenJRC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="juntaCalifica"
                                                 label="Junta Califica"
                                                 options={lsJuntaCalificadaJRC}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="noDictamenJRC"
                                                 label="Nro. Dictamen"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="origenJRC"
                                                 label="Origen"
                                                 options={lsOrigenARL}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="controversia"
                                                 label="Controversia"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="conclusion"
                                                 label="Conclusión"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Calificación PCL"
                                                 name="fechaCalificacionPclJRC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="noDictamenPclJRC"
                                                 label="Nro. Dictamen PCL"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="pclJRC"
                                                 label="PCL"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Estructura"
                                                 name="fechaEstructuraPclJRC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="noActaRecursoJRC"
                                                 label="Nro. Acta Recurso"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha ReCalificación PCL"
                                                 name="fechaRecalificacionPclJRC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -888,22 +793,18 @@ const OccupationalMedicine = () => {
                                                 label="No Dictamen Recalificación"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputSelect
                                                 name="juntaReCalificacionJRC"
                                                 label="Junta Recalificación"
                                                 options={lsJuntaCalificadaJRC}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -911,90 +812,74 @@ const OccupationalMedicine = () => {
                                                 label="% PCL Recalificada"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Recalificación Est."
                                                 name="fechaRecalificacionEstJRC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Estructuración JRC"
                                                 name="fechaEstructuracionJRC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JNC</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JNC</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Calificación Origen"
                                                 name="fechaCalificaOrigenJNC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 fullWidth
                                                 name="noDictamenJNC"
                                                 label="Nro. Dictamen"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="origenJNC"
                                                 label="Origen"
                                                 options={lsOrigenARL}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Calificación PCL"
                                                 name="fechaCalificacionPclJNC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="noDictamenPclJNC"
                                                 label="No. Dictamen"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -1002,42 +887,34 @@ const OccupationalMedicine = () => {
                                                 label="% PCL"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Estructura"
                                                 name="fechaEstructuraJNC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputDatePicker
                                                 label="Fecha Recalificación PCL"
                                                 name="fechaRecalificacionPclJNC"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 fullWidth
                                                 name="noDictamenRecalificacionJNC"
                                                 label="No. Dictamen"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -1045,11 +922,9 @@ const OccupationalMedicine = () => {
                                                 label="% PCL"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={3}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -1057,114 +932,94 @@ const OccupationalMedicine = () => {
                                                 label="Pcl Instancia Final"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={3}>
                                             <InputSelect
                                                 name="salaCalificadoraJNC"
                                                 label="Sala Calificadora Origen"
                                                 options={lsSalaCalificadora}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={9}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={9}>
                                             <InputText
                                                 fullWidth
                                                 name="medicoCalificadorJNC"
                                                 label="Médico Calificador"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={3}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={3}>
                                             <InputSelect
                                                 name="salaCalificadoraPCLJNC"
                                                 label="Sala Calificadora PCL"
                                                 options={lsSalaCalificadora}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={9}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={9}>
                                             <InputText
                                                 fullWidth
                                                 name="medicoCalificadorPCLJNC"
                                                 label="Médico Calificador"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">AFP</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">AFP</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Calificación Origen"
                                                 name="fechaCalificaOrigenAFP"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 fullWidth
                                                 name="noDictamenAFP"
                                                 label="Nro. Dictamen"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="origenAFP"
                                                 label="Origen"
                                                 options={lsOrigenARL}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Calificación PCL"
                                                 name="fechaCalificacionPclAFP"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 fullWidth
                                                 name="noDictamenPclAFP"
                                                 label="No. Dictamen"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 type="number"
                                                 fullWidth
@@ -1172,412 +1027,413 @@ const OccupationalMedicine = () => {
                                                 label="% PCL"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Estructura"
                                                 name="fechaEstructuraAFP"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconReportSearch /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Investigación Enfermedad Laboral</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconReportSearch /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Investigación de origen de enfermedad laboral</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
+                                                defaultValue=""
                                                 name="aplica"
                                                 label="Aplica"
                                                 options={lsInvestigado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
+                                                defaultValue=""
+                                                disabled={disabledInvestigacionEL.value}
                                                 name="idInvestigadoPor"
-                                                label="Investigado Por"
+                                                label="Investigador"
                                                 options={lsInvestigadoPor}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputMultiselectTwo
+                                                disabled={disabledInvestigacionEL.value}
+                                                checkbox
+                                                name="origenInvestigacion"
+                                                label="Asesor ARL"
+                                                options={lsAsesorEL}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
+                                                defaultValue=""
+                                                disabled={disabledInvestigacionEL.value}
                                                 name="motivoIE"
-                                                label="Investigación EL"
+                                                label="Tipo de investigación"
                                                 options={lsInvestigacionEL}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="estadoEnfermedadLaboral"
-                                                label="Estado"
-                                                options={lsEstadoEnfermedadLaboral}
-                                                size={matchesXS ? 'small' : 'medium'}
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputDatePicker
+                                                disabled={disabledInvestigacionEL.value}
+                                                label="Fecha dictamen última instancia"
+                                                name="fechaCalificacionUltimaInstancia"
+                                                defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
-                                                name="origenInvestigacion"
-                                                label="Asesor EL"
-                                                options={lsAsesorEL}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
+                                                defaultValue=""
+                                                disabled={disabledInvestigacionEL.value}
                                                 name="resultadoOrigen"
-                                                label="Resultado Origen"
+                                                label="Resultado origen última instancia"
                                                 options={lsResultadoOrigen}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <InputDatePick
-                                            label="Fecha Calificación Última Instancia"
-                                            value={fechaCaliUltimaInstancia}
-                                            onChange={handleFechaInicio}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <InputDatePick
-                                            label="Fecha Investigación"
-                                            value={fechaInvestigacion}
-                                            onChange={handleFechaFin}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <InputOnChange
-                                            fullWidth
-                                            disabled
-                                            label="Diferencia De Día"
-                                            onChange={(e) => setDiasDiferencia(e.target.event)}
-                                            value={diasDiferencia}
-                                            size={matchesXS ? 'small' : 'medium'}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
-                                            <InputSelect
-                                                name="vistoBueno"
-                                                label="Visto Bueno"
-                                                options={lsVistoBueno}
-                                                size={matchesXS ? 'small' : 'medium'}
-                                            />
-                                        </FormProvider>
-                                    </Grid>
-
-                                    {/* <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
-                                                label="Fecha de la entrega de la investigación"
-                                                name="fechaEntregaInvestigacion"
+                                                disabled={disabledInvestigacionEL.value}
+                                                label="Fecha de investigación"
+                                                name="fechaInvestigacion"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid> */}
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
-                                                name="conclusionInvestigacion"
-                                                label="Conclusión de la investigación"
+                                                name="invesOrigenExamenesEstudiosAdicionales"
+                                                label="Exámenes o estudios adicionales"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                rows={4}
+                                                rows={2}
+                                                defaultValue=""
                                                 multiline
+                                                disabled={disabledInvestigacionEL.value}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
-                                                name="resumenWR"
-                                                label="Resumen WR"
+                                                name="invesOrigenRemisionEspecificar"
+                                                label="Remisión (especificar)"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                rows={4}
+                                                rows={2}
+                                                defaultValue=""
                                                 multiline
+                                                disabled={disabledInvestigacionEL.value}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
-                                                name="accTrabajador"
-                                                label="ACC Trabajador"
+                                                name="invesOrigenNecesidadesFormacion"
+                                                label="Necesidades de formación"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                rows={4}
+                                                rows={2}
+                                                defaultValue=""
                                                 multiline
+                                                disabled={disabledInvestigacionEL.value}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
-                                                name="resumenSG"
-                                                label="Resumen SG"
+                                                name="invesOrigenRevisionEpp"
+                                                label="Revisión de EPP"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                rows={4}
+                                                rows={2}
+                                                defaultValue=""
                                                 multiline
+                                                disabled={disabledInvestigacionEL.value}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
-                                                name="accSistema"
-                                                label="ACC Sistema"
+                                                name="invesOrigenNormasTrabajo"
+                                                label="Normas de trabajo"
                                                 size={matchesXS ? 'small' : 'medium'}
-                                                rows={4}
+                                                rows={2}
+                                                defaultValue=""
                                                 multiline
+                                                disabled={disabledInvestigacionEL.value}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={6}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
+                                            <InputText
+                                                fullWidth
+                                                name="invesOrigenEvaluacionMedicionRiesgo"
+                                                label="Evaluación o medición del riesgo"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={2}
+                                                defaultValue=""
+                                                multiline
+                                                disabled={disabledInvestigacionEL.value}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputText
+                                                fullWidth
+                                                name="invesOrigenControlesAdministrativos"
+                                                label="Controles administrativos"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={2}
+                                                defaultValue=""
+                                                multiline
+                                                disabled={disabledInvestigacionEL.value}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputText
+                                                fullWidth
+                                                name="invesOrigenControlesAdicionales"
+                                                label="Controles adicionales"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={2}
+                                                defaultValue=""
+                                                multiline
+                                                disabled={disabledInvestigacionEL.value}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputText
+                                                fullWidth
+                                                name="invesOrigenModificacionActividades"
+                                                label="Modificación de actividades"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={2}
+                                                defaultValue=""
+                                                multiline
+                                                disabled={disabledInvestigacionEL.value}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputText
+                                                fullWidth
+                                                name="invesOrigenReubicacion"
+                                                label="Reubicación"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={2}
+                                                defaultValue=""
+                                                multiline
+                                                disabled={disabledInvestigacionEL.value}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <InputText
+                                                fullWidth
+                                                name="invesOrigenOtras"
+                                                label="Otras"
+                                                size={matchesXS ? 'small' : 'medium'}
+                                                rows={2}
+                                                defaultValue=""
+                                                multiline
+                                                disabled={disabledInvestigacionEL.value}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
+                                                disabled={disabledInvestigacionEL.value}
+                                                defaultValue=""
                                                 name="peligroAsociadoEnfermedad"
-                                                label="Peligro Asociado A La Enfermedad"
+                                                label="Peligro asociado a la enfermedad"
                                                 options={lsPeligroAsociado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid sx={{ my: 3 }} item xs={12}>
-                            <Accordion title={<><IconReport /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Instancia Final</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                            <Grid sx={{ my: 3 }} item xs={12}>
+                                <Accordion title={<><IconReport /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Instancia Final</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="origenInstaFinal"
                                                 label="Origen"
                                                 options={lsOrigenARL}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Estructuración Origen"
                                                 name="fechaEstructuracionOrigenInstaFinal"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="instanciaOrigenInstaFinal"
                                                 label="Instancia Origen"
                                                 options={lsInstanciaOrigen}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputText
                                                 fullWidth
                                                 name="pclFinalInstaFinal"
                                                 label="% PCL Final"
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="instanciaFinal"
                                                 label="Instancia Final"
                                                 options={lsInstanciaOrigen}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Calificación PCL"
                                                 name="fechaCalificacionPclInstFinal"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Estructuracion PCL"
                                                 name="fechaEstructuracionPclInstFinal"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="indemnizado"
                                                 label="Indemnizado"
                                                 options={lsInvestigado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Pago"
                                                 name="fechaPagoInstaFinal"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="entregadoMin"
                                                 label="Entregado al MIN"
                                                 options={lsInvestigado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha informe origen en firme"
                                                 name="fechaRecibidoInstanciaFinal"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Entrega MIN"
                                                 name="fechaEntregaMin"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="IdEntidadInformaInstanciaFinal"
                                                 label="Entidad que informe a DLTD"
                                                 options={lsEntidadInformaInstanciaFinal}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={4} md={2} lg={1.3}>
-                                        <Tooltip title={TitleButton.SubirArchivo}>
-                                            <Button fullWidth size={matchesXS ? 'small' : 'large'} variant="outlined" component="label">
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFileMin} />
-                                                <UploadIcon fontSize="medium" />
-                                            </Button>
-                                        </Tooltip>
-                                    </Grid>
+                                        <Grid item xs={4} md={2} lg={1.3}>
+                                            <Tooltip title={TitleButton.SubirArchivo}>
+                                                <Button fullWidth size={matchesXS ? 'small' : 'large'} variant="outlined" component="label">
+                                                    <input hidden accept="application/pdf" type="file" onChange={handleFileMin} />
+                                                    <UploadIcon fontSize="medium" />
+                                                </Button>
+                                            </Tooltip>
+                                        </Grid>
 
-                                    <Grid item xs={4} md={2} lg={1.3}>
-                                        <Tooltip title="Descargar">
-                                            <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="primary" size={matchesXS ? 'small' : 'large'} fullWidth onClick={downloadFileMin}>
-                                                <DownloadIcon fontSize="medium" />
-                                            </Button>
-                                        </Tooltip>
-                                    </Grid>
+                                        <Grid item xs={4} md={2} lg={1.3}>
+                                            <Tooltip title="Descargar">
+                                                <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="primary" size={matchesXS ? 'small' : 'large'} fullWidth onClick={downloadFileMin}>
+                                                    <DownloadIcon fontSize="medium" />
+                                                </Button>
+                                            </Tooltip>
+                                        </Grid>
 
-                                    <Grid item xs={4} md={2} lg={1.3}>
-                                        <Tooltip title={TitleButton.Eliminar}>
-                                            <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="error" size={matchesXS ? 'small' : 'large'} fullWidth onClick={() => setFilePdfMin(null)}>
-                                                <ClearIcon fontSize="medium" />
-                                            </Button>
-                                        </Tooltip>
-                                    </Grid>
+                                        <Grid item xs={4} md={2} lg={1.3}>
+                                            <Tooltip title={TitleButton.Eliminar}>
+                                                <Button disabled={filePdfMin === null ? true : false} variant="outlined" color="error" size={matchesXS ? 'small' : 'large'} fullWidth onClick={() => setFilePdfMin(null)}>
+                                                    <ClearIcon fontSize="medium" />
+                                                </Button>
+                                            </Tooltip>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputSelect
                                                 name="indemnizadoRecalificado"
                                                 label="Indemnizado Recalificado"
                                                 options={lsInvestigado}
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12} md={6} lg={4}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12} md={6} lg={4}>
                                             <InputDatePicker
                                                 label="Fecha Pago"
                                                 name="fechaPagoRecalificadoInstaFinal"
                                                 defaultValue={null}
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Accordion title={<><IconStatusChange /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Estado ARL</Typography></>}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                            <Grid item xs={12}>
+                                <Accordion title={<><IconStatusChange /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Estado ARL</Typography></>}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
                                                 name="estadoRHT"
@@ -1586,11 +1442,9 @@ const OccupationalMedicine = () => {
                                                 rows={4}
                                                 multiline
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
                                                 name="reintegro"
@@ -1599,11 +1453,9 @@ const OccupationalMedicine = () => {
                                                 rows={4}
                                                 multiline
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
                                                 name="reubicado"
@@ -1612,11 +1464,9 @@ const OccupationalMedicine = () => {
                                                 rows={4}
                                                 multiline
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
                                                 name="restringido"
@@ -1625,11 +1475,9 @@ const OccupationalMedicine = () => {
                                                 rows={4}
                                                 multiline
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
                                                 name="jornadaLaboral"
@@ -1638,11 +1486,9 @@ const OccupationalMedicine = () => {
                                                 rows={4}
                                                 multiline
                                             />
-                                        </FormProvider>
-                                    </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={12}>
-                                        <FormProvider {...methods}>
+                                        <Grid item xs={12}>
                                             <InputText
                                                 fullWidth
                                                 name="indemnizacion"
@@ -1651,44 +1497,44 @@ const OccupationalMedicine = () => {
                                                 rows={4}
                                                 multiline
                                             />
-                                        </FormProvider>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
+                                </Accordion>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Accordion title={<><IconReportAnalytics /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Resultado Investigación Laboral</Typography></>}>
-                                <Grid container spacing={2} sx={{ pb: 3 }}>
-                                    <Grid item xs={6} md={4} lg={2}>
-                                        <AnimateButton>
-                                            <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                {TitleButton.SubirArchivo}
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                            <Grid item xs={12}>
+                                <Accordion title={<><IconReportAnalytics /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Resultado Investigación Laboral</Typography></>}>
+                                    <Grid container spacing={2} sx={{ pb: 3 }}>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                    {TitleButton.SubirArchivo}
+                                                    <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
-                                    <Grid item xs={6} md={4} lg={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" onClick={downloadFile} disabled={filePdf === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
-                                                Descargar
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" onClick={downloadFile} disabled={filePdf === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                                    Descargar
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
 
-                                    <Grid item xs={6} md={4} lg={2}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" color="error" onClick={() => setFilePdf(null)} disabled={filePdf === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
-                                                Eliminar
-                                            </Button>
-                                        </AnimateButton>
+                                        <Grid item xs={6} md={4} lg={2}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" color="error" onClick={() => setFilePdf(null)} disabled={filePdf === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                                    Eliminar
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Accordion>
-                        </Grid>
-                    </StickyActionBar>
-                </Grid>
+                                </Accordion>
+                            </Grid>
+                        </StickyActionBar>
+                    </Grid>
+                </FormProvider>
             </Grid>
         </ValidateActionSkeleton>
     );

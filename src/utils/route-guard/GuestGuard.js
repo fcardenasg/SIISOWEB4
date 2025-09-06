@@ -1,15 +1,6 @@
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-
-// project imports
 import useAuth from 'hooks/useAuth';
 import { useEffect } from 'react';
-import config from 'config';
-
-/**
- * Guest guard for routes having no auth required
- * @param {PropTypes.node} children children element/node
- */
+import { useNavigate } from 'react-router-dom';
 
 const GuestGuard = ({ children }) => {
     const { isLoggedIn } = useAuth();
@@ -29,10 +20,6 @@ const GuestGuard = ({ children }) => {
     }, [isLoggedIn, navigate]);
 
     return children;
-};
-
-GuestGuard.propTypes = {
-    children: PropTypes.node
 };
 
 export default GuestGuard;

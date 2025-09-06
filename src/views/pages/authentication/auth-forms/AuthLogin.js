@@ -31,14 +31,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ColorDrummondltd } from 'themes/colors';
 
-const RedDrummond = createTheme({
-    palette: {
-        primary: {
-            main: ColorDrummondltd.RedDrummond,
-        },
-    },
-});
-
 const JWTLogin = ({ loginProp, ...others }) => {
     const theme = useTheme();
 

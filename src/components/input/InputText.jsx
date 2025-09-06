@@ -26,6 +26,7 @@ const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, ...
                     />
                 )}
             />
+
             {bug && (
                 <Grid item xs={12}>
                     <FormHelperText error>{bug.message}</FormHelperText>

@@ -327,15 +327,3 @@ const MedicalFormula = ({ setListMedicalFormula, contingencia, setNewMedicalForm
 };
 
 export default MedicalFormula;
-
-MedicalFormula.propTypes = {
-    setListMedicalFormula: PropTypes.func,
-    setNewMedicalFormula: PropTypes.func,
-    setUpdateMedicalFormula: PropTypes.func,
-    tipoOrden: PropTypes.any,
-    lsEmployee: PropTypes.any,
-    setDocumento: PropTypes.any,
-    documento: PropTypes.any,
-    lsAtencion: PropTypes.any,
-    contingencia: PropTypes.any,
-};

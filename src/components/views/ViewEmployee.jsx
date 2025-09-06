@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Grid, CardMedia, FormGroup, FormControlLabel, useMediaQuery, IconButton, Tooltip } from '@mui/material';
+import { Grid, CardMedia, FormGroup, FormControlLabel, useMediaQuery, IconButton, Tooltip, FormHelperText } from '@mui/material';
 import user from 'assets/img/user.png';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -138,7 +138,7 @@ const ViewDataDetails = ({ title, nameData }) => {
     );
 }
 
-const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onChange, handleDocumento, children = null }) => {
+const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onChange, handleDocumento, children = null, errors }) => {
     const theme = useTheme();
     const [openUpdate, setOpenUpdate] = useState(false);
     const [periodoDelDia, setPeriodoDelDia] = useState(false);
@@ -170,7 +170,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                 <UpdateEmployee idEmpleado={documento} getDataAttention={handleDocumento} setOpenUpdateTwo={setOpenUpdate} />
             </ControlModal>
 
-            <SubCard title={title !== '' ? <Typography variant="h4">{UpperFirstChar(title)}</Typography> : null}
+            <SubCard darkTitle title={title && UpperFirstChar(title)}
                 secondary={
                     <Fragment>
                         <Grid container spacing={2}>
@@ -389,6 +389,12 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                             </Grid>
                         </Accordion>
                     </Grid>
+
+                    {errors?.documento && (
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <FormHelperText error>{errors.documento.message}</FormHelperText>
+                        </Grid>
+                    )}
                 </Grid>
 
                 {children}
