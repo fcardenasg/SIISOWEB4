@@ -36,7 +36,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetByIdEvolutionNote, GetIdRegistroAtencionEvolutionNote, InsertEvolutionNote, UpdateEvolutionNotes, ValidateIdRegistroAtencionEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
@@ -226,8 +226,8 @@ const UpdateEvolutionNote = () => {
         try {
             setOpenReport(true);
             const lsDataReport = await GetByIdEvolutionNote(resultData);
-            const lsDataUser = await GetByMail(lsDataReport.data.usuarioModifico == '' ?
-                lsDataReport.data.usuarioRegistro : lsDataReport.data.usuarioModifico);
+            const usuarioModifico = lsDataReport.data.usuarioModifico || lsDataReport.data.usuarioRegistro;
+            const lsDataUser = await GetByMail(usuarioModifico);
 
             const dataPDFTwo = generateReportEvolutionNote(lsDataReport.data, lsDataUser.data, extenderDescripcion);
             setDataPDF(dataPDFTwo);
@@ -273,32 +273,33 @@ const UpdateEvolutionNote = () => {
         } catch (error) { }
     }
 
+    useEffect(() => {
+        async function getCombo() {
+            try {
+                const lsServerAtencionn = await GetByTipoCatalogoCombo(CodCatalogo.AHC_ATENCION);
+                setLsAtencionn(lsServerAtencionn.data);
+
+                const lsServerContingencia = await GetByTipoCatalogoCombo(CodCatalogo.Contingencia);
+                setLsContingencia(lsServerContingencia.data);
+
+                const lsServerConceptoAptitud = await GetByTipoCatalogoCombo(CodCatalogo.AHC_CONCEP_ACTITUD);
+                setLsConceptoAptitud(lsServerConceptoAptitud.data);
+            } catch (error) {
+
+            }
+        }
+
+        getCombo();
+    }, []);
+
     async function getAll() {
         try {
-            const lsServerAtencionn = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_ATENCION);
-            var resultAtencion = lsServerAtencionn.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsAtencionn(resultAtencion);
+            const [lsServerAtencion, lsServerValidate] = await Promise.all([
+                GetByIdAttention(id),
+                ValidateIdRegistroAtencionEvolutionNote(id)
+            ]);
 
-            const lsServerContingencia = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Contingencia);
-            var resultContingencia = lsServerContingencia.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsContingencia(resultContingencia);
-
-            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_CONCEP_ACTITUD);
-            var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConceptoAptitud(resultConceptoAptitud);
-
-
-            const lsServerAtencion = await GetByIdAttention(id);
-            if (lsServerAtencion.status === 200) {
+            if (lsServerAtencion.status === 200 && lsServerValidate.status === 200) {
                 const event = {
                     target: { value: lsServerAtencion.data.documento }
                 }
@@ -306,16 +307,21 @@ const UpdateEvolutionNote = () => {
                 setDocumento(lsServerAtencion.data.documento);
                 setLsAtencion(lsServerAtencion.data);
                 setDataTriage(lsServerAtencion.data);
-
-                const lsServerValidate = await ValidateIdRegistroAtencionEvolutionNote(id);
-                if (lsServerValidate.status === 200) {
-                    setResultIdRegistroAtencion(lsServerValidate.data);
-                }
+                setResultIdRegistroAtencion(lsServerValidate.data);
 
                 if (lsServerValidate.data) {
                     const lsServerDataUpdate = await GetIdRegistroAtencionEvolutionNote(id);
                     setLsAtencion(lsServerDataUpdate.data);
                     setResultData(lsServerDataUpdate.data.id);
+
+                    setTextDx1(lsServerDataUpdate.data.dx1);
+                    setLsDx1(lsServerDataUpdate.data.listDx1);
+
+                    setTextDx2(lsServerDataUpdate.data.dx2);
+                    setLsDx2(lsServerDataUpdate.data.listDx2);
+
+                    setTextDx3(lsServerDataUpdate.data.dx3);
+                    setLsDx3(lsServerDataUpdate.data.listDx3);
 
                     if (lsServerDataUpdate.data.idContingencia !== DefaultValue.SINREGISTRO_GLOBAL) {
                         setContingencia(lsServerDataUpdate.data.idContingencia);
@@ -379,201 +385,66 @@ const UpdateEvolutionNote = () => {
 
     return (
         <Fragment>
-            <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
-            <ControlModal
-                maxWidth="md"
-                open={open}
-                onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
-            >
-                <ControllerListen />
-            </ControlModal>
-
-            <FullScreenDialog
-                open={openTemplate}
-                title="LISTADO DE PLANTILLA"
-                handleClose={() => setOpenTemplate(false)}
-            >
-                <ListPlantillaAll />
-            </FullScreenDialog>
-
-            <FullScreenDialog
-                open={openApuntesPersonales}
-                title="APUNTES PERSONALES"
-                handleClose={() => setOpenApuntesPersonales(false)}
-            >
-                <ListPersonalNotesAll />
-            </FullScreenDialog>
-
-            <FullScreenDialog
-                open={openExamen}
-                title="VISTA DE EXAMENES PARACLÍNICOS"
-                handleClose={() => setOpenExamen(false)}
-            >
-                <ListExamenesPara documento={documento} />
-            </FullScreenDialog>
-
-            <FullScreenDialog
-                open={openExamenFisico}
-                title="VISTA DE EXAMEN FÍSICO"
-                handleClose={() => setOpenExamenFisico(false)}
-            >
-                <ListExamenesFisico documento={documento} />
-            </FullScreenDialog>
-
-            <FullScreenDialog
-                open={openNotaEvolucion}
-                title="VISTA HISTORICO NOTAS DE EVOLUCIÓN"
-                handleClose={() => setOpenNotaEvolucion(false)}
-            >
-                <ListPlantillaEvolutionNote />
-            </FullScreenDialog>
-
-            <FullScreenDialog
-                open={openHistoriaClinica}
-                title="VISTA HISTORICO DE HISTORIAS CLINICAS"
-                handleClose={() => setOpenHistoriaClinica(false)}
-            >
-                <ListPlantillaClinicHistory />
-            </FullScreenDialog>
-
-            <ControlModal
-                title={Message.VistaReporte}
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
-
-            <ControlModal
-                title={"Orden de " + titleModal}
-                open={openForm}
-                onClose={() => {
-                    setOpenForm(false);
-                    setListMedicalFormula(true);
-                    setNewMedicalFormula(false);
-                    setUpdateMedicalFormula(false);
-                    setNewMedicalFormula(false)
-                }}
-                maxWidth="md"
-            >
-                {newMedicalFormula ?
-                    <MedicalFormula
-                        contingencia={contingencia}
-                        setUpdateMedicalFormula={setUpdateMedicalFormula}
-                        setListMedicalFormula={setListMedicalFormula}
-                        setNewMedicalFormula={setNewMedicalFormula}
-                        tipoOrden={titleModal}
-                        lsEmployee={lsEmployee}
-                        setDocumento={setDocumento}
-                        documento={documento}
-                        lsAtencion={lsAtencion}
-                    />
-                    : listMedicalFormula ?
-                        <ListMedicalFormula
-                            documento={documento}
-                            tipoOrden={titleModal}
-                            setListMedicalFormula={setListMedicalFormula}
-                            setNewMedicalFormula={setNewMedicalFormula}
-                            setUpdateMedicalFormula={setUpdateMedicalFormula}
-                            setNumberId={setNumberId}
-                        />
-                        : updateMedicalFormula ?
-                            <UpdateMedicalFormula
-                                contingencia={contingencia}
-                                setListMedicalFormula={setListMedicalFormula}
-                                setNewMedicalFormula={setNewMedicalFormula}
-                                setUpdateMedicalFormula={setUpdateMedicalFormula}
-                                numberId={numberId}
-                                lsEmployee={lsEmployee}
-                                lsAtencion={lsAtencion}
-                                tipoOrden={titleModal}
-                            /> : ''
-                }
-            </ControlModal>
-
-            <DialogFormula
-                title="TIPO DE ORDEN"
-                open={openFormula}
-                handleCloseDialog={() => setOpenFormula(false)}
-            >
-                {dataMedicalOrders.map(data =>
-                    <Grid item xs={12}>
-                        <HoverSocialCard
-                            onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
-                            secondary={data.subtitle}
-                            iconPrimary={data.iconPrimary}
-                            color={data.color}
-                        />
-                    </Grid>
-                )}
-            </DialogFormula>
-
             {timeWait ?
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <ViewEmployee
-                            title="Nota De Evolución"
-                            disabled={true}
-                            key={lsEmployee.documento}
-                            documento={documento}
-                            onChange={(e) => setDocumento(e.target.value)}
-                            lsEmployee={lsEmployee}
-                            handleDocumento={handleLoadingDocument}
-                        />
-                    </Grid>
+                <FormProvider {...methods}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <ViewEmployee
+                                title="Nota de evolución"
+                                disabled={true}
+                                key={lsEmployee.documento}
+                                documento={documento}
+                                onChange={(e) => setDocumento(e.target.value)}
+                                lsEmployee={lsEmployee}
+                                handleDocumento={handleLoadingDocument}
+                            />
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <StickyActionBar
-                            onClickSave={handleSubmit(handleClick)}
-                            onClickUpdate={handleSubmit(handleClick)}
-                            disabledUpdate={!resultIdRegistroAtencion}
-                            disabledSave={resultIdRegistroAtencion}
-                            showButton={false}
-                            threshold={510}
-                        >
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sx={{ my: 2 }}>
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -30 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 30 }}
-                                        transition={{
-                                            duration: 0.5,
-                                            ease: [0.25, 0.1, 0.25, 1]
-                                        }}
-                                    >
-                                        <Alert
-                                            variant="filled"
-                                            severity={dataTriage?.colorTriage?.codigo}
-                                            sx={{ backgroundColor: dataTriage?.colorTriage?.value, color: dataTriage?.colorTriage?.label }}
+                        <Grid item xs={12}>
+                            <StickyActionBar
+                                onClickSave={handleSubmit(handleClick)}
+                                onClickUpdate={handleSubmit(handleClick)}
+                                disabledUpdate={!resultIdRegistroAtencion}
+                                disabledSave={resultIdRegistroAtencion}
+                                showButton={false}
+                                threshold={510}
+                            >
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sx={{ my: 2 }}>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -30 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 30 }}
+                                            transition={{
+                                                duration: 0.5,
+                                                ease: [0.25, 0.1, 0.25, 1]
+                                            }}
                                         >
-                                            <AlertTitle>{`ATENCIÓN: ${dataTriage.nameAtencion}`}</AlertTitle>
-                                            <Typography variant="body1" sx={{ color: dataTriage?.colorTriage?.label }}>
-                                                {dataTriage.descripcionAtencion}
-                                            </Typography>
-                                        </Alert>
-                                    </motion.div>
-                                </Grid>
+                                            <Alert
+                                                variant="filled"
+                                                severity={dataTriage?.colorTriage?.codigo}
+                                                sx={{ backgroundColor: dataTriage?.colorTriage?.value, color: dataTriage?.colorTriage?.label }}
+                                            >
+                                                <AlertTitle>{`ATENCIÓN: ${dataTriage.nameAtencion}`}</AlertTitle>
+                                                <Typography variant="body1" sx={{ color: dataTriage?.colorTriage?.label }}>
+                                                    {dataTriage.descripcionAtencion}
+                                                </Typography>
+                                            </Alert>
+                                        </motion.div>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <SubCard>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={4}>
-                                                <FormProvider {...methods}>
+                                    <Grid item xs={12}>
+                                        <SubCard>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={4}>
                                                     <InputDatePicker
                                                         label="Fecha"
                                                         name="fecha"
                                                         defaultValue={lsAtencion?.fecha}
                                                     />
-                                                </FormProvider>
-                                            </Grid>
+                                                </Grid>
 
-                                            <Grid item xs={4}>
-                                                <FormProvider {...methods}>
+                                                <Grid item xs={4}>
                                                     <InputSelect
                                                         disabled
                                                         name="atencion"
@@ -582,28 +453,26 @@ const UpdateEvolutionNote = () => {
                                                         options={lsAtencionn}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
-                                                </FormProvider>
-                                            </Grid>
+                                                </Grid>
 
-                                            <Grid item xs={4}>
-                                                <SelectOnChange
-                                                    name="idContingencia"
-                                                    label="Contingencia"
-                                                    onChange={(e) => setContingencia(e?.target.value)}
-                                                    value={contingencia}
-                                                    options={lsContingencia}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
+                                                <Grid item xs={4}>
+                                                    <SelectOnChange
+                                                        name="idContingencia"
+                                                        label="Contingencia"
+                                                        onChange={(e) => setContingencia(e?.target.value)}
+                                                        value={contingencia}
+                                                        options={lsContingencia}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </SubCard>
-                                </Grid>
+                                        </SubCard>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <SubCard>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={12}>
-                                                <FormProvider {...methods}>
+                                    <Grid item xs={12}>
+                                        <SubCard>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
                                                     <InputText
                                                         defaultValue={lsAtencion?.nota}
                                                         fullWidth
@@ -613,143 +482,135 @@ const UpdateEvolutionNote = () => {
                                                         multiline
                                                         rows={6}
                                                     />
-                                                </FormProvider>
-                                            </Grid>
-                                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                                <DetailedIcon
-                                                    xs={1}
-                                                    title={DetailIcons[0].title}
-                                                    onClick={() => setOpenTemplate(true)}
-                                                    icons={DetailIcons[0].icons}
-                                                />
-
-                                                <DetailedIcon
-                                                    xs={1}
-                                                    title={DetailIcons[1].title}
-                                                    onClick={() => setOpenApuntesPersonales(true)}
-                                                    icons={DetailIcons[1].icons}
-                                                />
-
-                                                <DetailedIcon
-                                                    xs={1}
-                                                    title={DetailIcons[2].title}
-                                                    onClick={() => setOpen(true)}
-                                                    icons={DetailIcons[2].icons}
-                                                />
-
-                                                <DetailedIcon
-                                                    xs={1}
-                                                    title={DetailIcons[3].title}
-                                                    onClick={() => setOpenExamenFisico(true)}
-                                                    icons={DetailIcons[3].icons}
-                                                />
-
-                                                <DetailedIcon
-                                                    xs={1}
-                                                    title={DetailIcons[4].title}
-                                                    onClick={() => setOpenExamen(true)}
-                                                    icons={DetailIcons[4].icons}
-                                                />
-
-                                                <DetailedIcon
-                                                    xs={1}
-                                                    title={DetailIcons[5].title}
-                                                    onClick={() => setOpenHistoriaClinica(true)}
-                                                    icons={DetailIcons[5].icons}
-                                                />
-
-                                                <DetailedIcon
-                                                    xs={1}
-                                                    title={DetailIcons[6].title}
-                                                    onClick={() => setOpenNotaEvolucion(true)}
-                                                    icons={DetailIcons[6].icons}
-                                                />
-
-                                                <Grid item xs={2}>
-                                                    <InputCheck
-                                                        onChange={(e) => setExtenderDescripcion(e.target.checked)}
-                                                        checked={extenderDescripcion}
-                                                        label="Extender Reporte"
-                                                        name="extenderDescripcion"
-                                                        size={30}
-                                                        defaultValue={false}
+                                                </Grid>
+                                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                                    <DetailedIcon
+                                                        xs={1}
+                                                        title={DetailIcons[0].title}
+                                                        onClick={() => setOpenTemplate(true)}
+                                                        icons={DetailIcons[0].icons}
                                                     />
+
+                                                    <DetailedIcon
+                                                        xs={1}
+                                                        title={DetailIcons[1].title}
+                                                        onClick={() => setOpenApuntesPersonales(true)}
+                                                        icons={DetailIcons[1].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        xs={1}
+                                                        title={DetailIcons[2].title}
+                                                        onClick={() => setOpen(true)}
+                                                        icons={DetailIcons[2].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        xs={1}
+                                                        title={DetailIcons[3].title}
+                                                        onClick={() => setOpenExamenFisico(true)}
+                                                        icons={DetailIcons[3].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        xs={1}
+                                                        title={DetailIcons[4].title}
+                                                        onClick={() => setOpenExamen(true)}
+                                                        icons={DetailIcons[4].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        xs={1}
+                                                        title={DetailIcons[5].title}
+                                                        onClick={() => setOpenHistoriaClinica(true)}
+                                                        icons={DetailIcons[5].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        xs={1}
+                                                        title={DetailIcons[6].title}
+                                                        onClick={() => setOpenNotaEvolucion(true)}
+                                                        icons={DetailIcons[6].icons}
+                                                    />
+
+                                                    <Grid item xs={2}>
+                                                        <InputCheck
+                                                            onChange={(e) => setExtenderDescripcion(e.target.checked)}
+                                                            checked={extenderDescripcion}
+                                                            label="Extender Reporte"
+                                                            name="extenderDescripcion"
+                                                            size={30}
+                                                            defaultValue={false}
+                                                        />
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </SubCard>
-                                </Grid>
+                                        </SubCard>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <SubCard>
-                                        <Grid container spacing={2}>
-                                            <Fragment>
-                                                <Grid item xs={2}>
-                                                    <InputOnChange
-                                                        label="Dx 1"
-                                                        onKeyDown={handleDx1}
-                                                        onChange={(e) => setTextDx1(e?.target.value)}
-                                                        value={textDx1}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <FormProvider {...methods}>
+                                    <Grid item xs={12}>
+                                        <SubCard>
+                                            <Grid container spacing={2}>
+                                                <Fragment>
+                                                    <Grid item xs={2}>
+                                                        <InputOnChange
+                                                            label="Dx 1"
+                                                            onKeyDown={handleDx1}
+                                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                                            value={textDx1}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
                                                         <InputSelect
                                                             name="dx1"
                                                             label="Dx1"
-                                                            defaultValue=""
+                                                            defaultValue={lsAtencion?.dx1}
                                                             options={lsDx1}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
-                                                    </FormProvider>
-                                                </Grid>
+                                                    </Grid>
 
-                                                <Grid item xs={2}>
-                                                    <InputOnChange
-                                                        label="Dx 2"
-                                                        onKeyDown={handleDx2}
-                                                        onChange={(e) => setTextDx2(e.target.value)}
-                                                        value={textDx2}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <FormProvider {...methods}>
+                                                    <Grid item xs={2}>
+                                                        <InputOnChange
+                                                            label="Dx 2"
+                                                            onKeyDown={handleDx2}
+                                                            onChange={(e) => setTextDx2(e.target.value)}
+                                                            value={textDx2}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
                                                         <InputSelect
                                                             name="dx2"
                                                             label="Dx2"
-                                                            defaultValue=""
+                                                            defaultValue={lsAtencion?.dx2}
                                                             options={lsDx2}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
-                                                    </FormProvider>
-                                                </Grid>
+                                                    </Grid>
 
-                                                <Grid item xs={2}>
-                                                    <InputOnChange
-                                                        label="Dx 3"
-                                                        onKeyDown={handleDx3}
-                                                        onChange={(e) => setTextDx3(e.target.value)}
-                                                        value={textDx3}
-                                                        size={matchesXS ? 'small' : 'medium'}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <FormProvider {...methods}>
+                                                    <Grid item xs={2}>
+                                                        <InputOnChange
+                                                            label="Dx 3"
+                                                            onKeyDown={handleDx3}
+                                                            onChange={(e) => setTextDx3(e.target.value)}
+                                                            value={textDx3}
+                                                            size={matchesXS ? 'small' : 'medium'}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
                                                         <InputSelect
                                                             name="dx3"
                                                             label="Dx3"
-                                                            defaultValue=""
+                                                            defaultValue={lsAtencion?.dx3}
                                                             options={lsDx3}
                                                             size={matchesXS ? 'small' : 'medium'}
                                                         />
-                                                    </FormProvider>
-                                                </Grid>
-                                            </Fragment>
+                                                    </Grid>
+                                                </Fragment>
 
-                                            <Grid item xs={12}>
-                                                <FormProvider {...methods}>
+                                                <Grid item xs={12}>
                                                     <InputText
                                                         defaultValue={lsAtencion.planManejo}
                                                         fullWidth
@@ -759,36 +620,34 @@ const UpdateEvolutionNote = () => {
                                                         multiline
                                                         rows={6}
                                                     />
-                                                </FormProvider>
+                                                </Grid>
+                                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                                    <DetailedIcon
+                                                        title={DetailIcons[0].title}
+                                                        onClick={() => setOpenTemplate(true)}
+                                                        icons={DetailIcons[0].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        title={DetailIcons[1].title}
+                                                        onClick={() => setOpenApuntesPersonales(true)}
+                                                        icons={DetailIcons[1].icons}
+                                                    />
+
+                                                    <DetailedIcon
+                                                        title={DetailIcons[2].title}
+                                                        onClick={() => setOpen(true)}
+                                                        icons={DetailIcons[2].icons}
+                                                    />
+                                                </Grid>
                                             </Grid>
-                                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                                <DetailedIcon
-                                                    title={DetailIcons[0].title}
-                                                    onClick={() => setOpenTemplate(true)}
-                                                    icons={DetailIcons[0].icons}
-                                                />
+                                        </SubCard>
+                                    </Grid>
 
-                                                <DetailedIcon
-                                                    title={DetailIcons[1].title}
-                                                    onClick={() => setOpenApuntesPersonales(true)}
-                                                    icons={DetailIcons[1].icons}
-                                                />
-
-                                                <DetailedIcon
-                                                    title={DetailIcons[2].title}
-                                                    onClick={() => setOpen(true)}
-                                                    icons={DetailIcons[2].icons}
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                    </SubCard>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <SubCard>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={12}>
-                                                <FormProvider {...methods}>
+                                    <Grid item xs={12}>
+                                        <SubCard>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
                                                     <InputSelect
                                                         name="idConceptoActitud"
                                                         label="Concepto De Aptitud Psicofísica"
@@ -796,51 +655,186 @@ const UpdateEvolutionNote = () => {
                                                         options={lsConceptoAptitud}
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
-                                                </FormProvider>
-                                            </Grid>
-                                        </Grid>
-
-                                        <Grid container spacing={2} sx={{ pt: 4 }}>
-                                            <Grid item xs={2}>
-                                                <AnimateButton>
-                                                    <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={handleClickReport}>
-                                                        {TitleButton.Imprimir}
-                                                    </Button>
-                                                </AnimateButton>
+                                                </Grid>
                                             </Grid>
 
-                                            <Grid item xs={2}>
-                                                <AnimateButton>
-                                                    <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
-                                                        {TitleButton.OrdenesMedicas}
-                                                    </Button>
-                                                </AnimateButton>
-                                            </Grid>
+                                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                                <Grid item xs={2}>
+                                                    <AnimateButton>
+                                                        <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={handleClickReport}>
+                                                            {TitleButton.Imprimir}
+                                                        </Button>
+                                                    </AnimateButton>
+                                                </Grid>
 
-                                            <Grid item xs={2}>
-                                                <AnimateButton>
-                                                    <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
-                                                        {TitleButton.Cancelar}
-                                                    </Button>
-                                                </AnimateButton>
-                                            </Grid>
+                                                <Grid item xs={2}>
+                                                    <AnimateButton>
+                                                        <Button variant="outlined" fullWidth onClick={() => setOpenFormula(true)}>
+                                                            {TitleButton.OrdenesMedicas}
+                                                        </Button>
+                                                    </AnimateButton>
+                                                </Grid>
 
-                                            <Grid item xs={2}>
-                                                <AnimateButton>
-                                                    <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
-                                                        {TitleButton.CerrarCaso}
-                                                    </Button>
-                                                </AnimateButton>
+                                                <Grid item xs={2}>
+                                                    <AnimateButton>
+                                                        <Button variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_PENDIENTE_ATENDIDO)}>
+                                                            {TitleButton.Cancelar}
+                                                        </Button>
+                                                    </AnimateButton>
+                                                </Grid>
+
+                                                <Grid item xs={2}>
+                                                    <AnimateButton>
+                                                        <Button disabled={!resultIdRegistroAtencion} variant="outlined" fullWidth onClick={() => handleUpdateAttentionClose(DefaultValue.ATENCION_ATENDIDO)}>
+                                                            {TitleButton.CerrarCaso}
+                                                        </Button>
+                                                    </AnimateButton>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </SubCard>
+                                        </SubCard>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </StickyActionBar>
+                            </StickyActionBar>
+                        </Grid>
                     </Grid>
-                </Grid> : <Cargando />
+                </FormProvider> : <Cargando />
             }
-        </Fragment >
+
+            <>
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
+                <ControlModal
+                    maxWidth="md"
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    title="DICTADO POR VOZ"
+                >
+                    <ControllerListen />
+                </ControlModal>
+
+                <FullScreenDialog
+                    open={openTemplate}
+                    title="LISTADO DE PLANTILLA"
+                    handleClose={() => setOpenTemplate(false)}
+                >
+                    <ListPlantillaAll />
+                </FullScreenDialog>
+
+                <FullScreenDialog
+                    open={openApuntesPersonales}
+                    title="APUNTES PERSONALES"
+                    handleClose={() => setOpenApuntesPersonales(false)}
+                >
+                    <ListPersonalNotesAll />
+                </FullScreenDialog>
+
+                <FullScreenDialog
+                    open={openExamen}
+                    title="VISTA DE EXAMENES PARACLÍNICOS"
+                    handleClose={() => setOpenExamen(false)}
+                >
+                    <ListExamenesPara documento={documento} />
+                </FullScreenDialog>
+
+                <FullScreenDialog
+                    open={openExamenFisico}
+                    title="VISTA DE EXAMEN FÍSICO"
+                    handleClose={() => setOpenExamenFisico(false)}
+                >
+                    <ListExamenesFisico documento={documento} />
+                </FullScreenDialog>
+
+                <FullScreenDialog
+                    open={openNotaEvolucion}
+                    title="VISTA HISTORICO NOTAS DE EVOLUCIÓN"
+                    handleClose={() => setOpenNotaEvolucion(false)}
+                >
+                    <ListPlantillaEvolutionNote />
+                </FullScreenDialog>
+
+                <FullScreenDialog
+                    open={openHistoriaClinica}
+                    title="VISTA HISTORICO DE HISTORIAS CLINICAS"
+                    handleClose={() => setOpenHistoriaClinica(false)}
+                >
+                    <ListPlantillaClinicHistory />
+                </FullScreenDialog>
+
+                <ControlModal
+                    title={Message.VistaReporte}
+                    open={openReport}
+                    onClose={() => setOpenReport(false)}
+                    maxWidth="xl"
+                >
+                    <ViewPDF dataPDF={dataPDF} />
+                </ControlModal>
+
+                <ControlModal
+                    title={"Orden de " + titleModal}
+                    open={openForm}
+                    onClose={() => {
+                        setOpenForm(false);
+                        setListMedicalFormula(true);
+                        setNewMedicalFormula(false);
+                        setUpdateMedicalFormula(false);
+                        setNewMedicalFormula(false)
+                    }}
+                    maxWidth="md"
+                >
+                    {newMedicalFormula ?
+                        <MedicalFormula
+                            contingencia={contingencia}
+                            setUpdateMedicalFormula={setUpdateMedicalFormula}
+                            setListMedicalFormula={setListMedicalFormula}
+                            setNewMedicalFormula={setNewMedicalFormula}
+                            tipoOrden={titleModal}
+                            lsEmployee={lsEmployee}
+                            setDocumento={setDocumento}
+                            documento={documento}
+                            lsAtencion={lsAtencion}
+                        />
+                        : listMedicalFormula ?
+                            <ListMedicalFormula
+                                documento={documento}
+                                tipoOrden={titleModal}
+                                setListMedicalFormula={setListMedicalFormula}
+                                setNewMedicalFormula={setNewMedicalFormula}
+                                setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                setNumberId={setNumberId}
+                            />
+                            : updateMedicalFormula ?
+                                <UpdateMedicalFormula
+                                    contingencia={contingencia}
+                                    setListMedicalFormula={setListMedicalFormula}
+                                    setNewMedicalFormula={setNewMedicalFormula}
+                                    setUpdateMedicalFormula={setUpdateMedicalFormula}
+                                    numberId={numberId}
+                                    lsEmployee={lsEmployee}
+                                    lsAtencion={lsAtencion}
+                                    tipoOrden={titleModal}
+                                /> : ''
+                    }
+                </ControlModal>
+
+                <DialogFormula
+                    title="TIPO DE ORDEN"
+                    open={openFormula}
+                    handleCloseDialog={() => setOpenFormula(false)}
+                >
+                    {dataMedicalOrders.map(data =>
+                        <Grid item xs={12}>
+                            <HoverSocialCard
+                                onClick={() => { setOpenForm(data.open); setTitleModal(data.title) }}
+                                secondary={data.subtitle}
+                                iconPrimary={data.iconPrimary}
+                                color={data.color}
+                            />
+                        </Grid>
+                    )}
+                </DialogFormula>
+            </>
+        </Fragment>
     );
 };
 

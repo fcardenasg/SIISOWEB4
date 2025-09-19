@@ -125,7 +125,7 @@ const User = () => {
             const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, datos.nombreUsuario, datos.nombre, datos.telefono,
                 datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
                 datos.tarjetaProfesional, datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro,
-                datos.respondeVentanillaUnica, datos.registraTaxi, datos.puedeAdministrarPermisos);
+                datos.respondeVentanillaUnica, datos.registraTaxi, datos.puedeAdministrarPermisos, datos.medicoRegistroAtencion);
 
             const result = await InsertUser(DataToInsert);
             if (result.status === 200) {
@@ -345,6 +345,15 @@ const User = () => {
                                             name="registraTaxi"
                                             defaultValue={false}
                                             label="¿Registra solicitud de taxi?"
+                                            size={30}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4}>
+                                        <InputCheckBox
+                                            name="medicoRegistroAtencion"
+                                            defaultValue={false}
+                                            label="¿Es médico en registro de atención?"
                                             size={30}
                                         />
                                     </Grid>

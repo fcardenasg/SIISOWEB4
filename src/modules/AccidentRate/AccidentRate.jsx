@@ -1,17 +1,15 @@
 import {
     Button,
     Grid,
-    Typography,
-    useMediaQuery,
+    useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 
-import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import ControlModal from 'components/controllers/ControlModal';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { useNavigate } from 'react-router-dom';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
@@ -22,7 +20,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import { GetByIdAccidentRate, InsertAccidentRate } from 'api/clients/AccidentRateClient';
-import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
@@ -35,10 +33,8 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import InputOnChange from 'components/input/InputOnChange';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
-import SelectOnChange from 'components/input/SelectOnChange';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 
-import { PostAccidentRate } from 'formatdata/AccidentRateForm';
 import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -46,12 +42,12 @@ import ChipControl from 'ui-component/extended/Chip';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import { GetByMail } from 'api/clients/UserClient';
+import RightDrawer from 'components/components/RightDrawer';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
-import MainCard from 'ui-component/cards/MainCard';
-import { generateReport } from '../AccidentRate/ReporteAccidentRate';
-import RightDrawer from 'components/components/RightDrawer';
 import { useBoolean } from 'hooks/use-boolean';
+import toast from 'react-hot-toast';
+import { generateReport } from '../AccidentRate/ReporteAccidentRate';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -69,19 +65,14 @@ const AccidentRate = () => {
 
     const [dataPDF, setDataPDF] = useState(null);
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
-    const [segmentoAgrupado, setSegmentoAgrupado] = useState(undefined);
     const [lsRegion, setLsRegion] = useState([]);
-
     const [openReport, setOpenReport] = useState(false);
-    const [urlFile, setUrlFile] = useState(null);
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [openError, setOpenError] = useState(false);
+
     const [open, setOpen] = useState(false);
     const [openTemplate, setOpenTemplate] = useState(false);
-    const [resultData, setResultData] = useState('');
+    const [resultData, setResultData] = useState(null);
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [documento, setDocumento] = useState('');
+
     const [lsClase, setLsClase] = useState([]);
     const [lsCausa, setLsCausa] = useState([]);
     const [lsEstado, setLsEstado] = useState([]);
@@ -89,14 +80,25 @@ const AccidentRate = () => {
     const [lsRemitido, setLsRemitido] = useState([]);
     const [lsConceptoAptitud, setLsConceptoAptitud] = useState([]);
 
-    const [lsDx1, setLsDx1] = useState([]);
-    const [textDx1, setTextDx1] = useState('');
+    /* Dx Iniciales */
+    const [lsDxInicio1, setLsDxInicio1] = useState([]);
+    const [textDxInicio1, setTextDxInicio1] = useState('');
+    const [lsDxInicio2, setLsDxInicio2] = useState([]);
+    const [textDxInicio2, setTextDxInicio2] = useState('');
+    const [lsDxInicio3, setLsDxInicio3] = useState([]);
+    const [textDxInicio3, setTextDxInicio3] = useState('');
 
-    const [lsDx2, setLsDx2] = useState([]);
-    const [textDx2, setTextDx2] = useState('');
+    /* Dx Finales */
+    const [lsDxFinal1, setLsDxFinal1] = useState([]);
+    const [textDxFinal1, setTextDxFinal1] = useState('');
+    const [lsDxFinal2, setLsDxFinal2] = useState([]);
+    const [textDxFinal2, setTextDxFinal2] = useState('');
+    const [lsDxFinal3, setLsDxFinal3] = useState([]);
+    const [textDxFinal3, setTextDxFinal3] = useState('');
 
     const methods = useForm();
-    const { handleSubmit, reset, formState: { errors } } = methods;
+    const { handleSubmit, reset, setValue, watch, formState: { errors } } = methods;
+    const values = watch();
 
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
@@ -107,20 +109,19 @@ const AccidentRate = () => {
                 let reader = new FileReader();
                 reader.readAsDataURL(selectedFile);
                 reader.onloadend = async (e) => {
-                    setUrlFile(e.target.result);
+                    setValue('url', e.target.result);
                 }
             }
             else {
-                setUrlFile(null);
-                setOpenError(true);
-                setErrorMessage('Este forma no es un PDF');
+                setValue('url', null);
+                toast.error('Este forma no es un PDF');
             }
         }
     }
 
     const handleDocumento = async (event) => {
         try {
-            setDocumento(event?.target.value);
+            setValue('documento', event?.target.value);
 
             if (event?.target.value !== '') {
                 if (event.key === 'Enter') {
@@ -130,8 +131,7 @@ const AccidentRate = () => {
                         setLsEmployee(lsServerEmployee.data.data);
                     } else {
                         setLsEmployee(lsServerEmployee?.data.data);
-                        setOpenError(true);
-                        setErrorMessage(lsServerEmployee?.data.message);
+                        toast.error(lsServerEmployee?.data.message);
                     }
 
                 } else {
@@ -145,110 +145,91 @@ const AccidentRate = () => {
         } catch (error) { }
     }
 
-    const handleDx1 = async (event) => {
-        try {
-            setTextDx1(event.target.value);
+    const handleDxInicio = async (event, dxType) => {
+        const value = event.target.value;
 
-            if (event.key === 'Enter') {
-                if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
-                    setLsDx1(lsServerCie11?.data);
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+        if (dxType === 1) setTextDxInicio1(value);
+        else if (dxType === 2) setTextDxInicio2(value);
+        else if (dxType === 3) setTextDxInicio3(value);
+
+        if (event.key === 'Enter' && value.trim()) {
+            try {
+                const { data } = await GetAllByCodeOrName(value.trim());
+                switch (dxType) {
+                    case 1: setLsDxInicio1(data); break;
+                    case 2: setLsDxInicio2(data); break;
+                    case 3: setLsDxInicio3(data); break;
+                    default: break;
                 }
+            } catch {
+                toast.error('Error al buscar el diagnóstico');
             }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        } else if (event.key === 'Enter') {
+            toast.error('Ingrese un código o nombre de diagnóstico');
         }
-    }
+    };
 
-    const handleDx2 = async (event) => {
-        try {
-            setTextDx2(event.target.value);
+    const handleDxFinal = async (event, dxType) => {
+        const value = event.target.value;
 
-            if (event.key === 'Enter') {
-                if (event.target.value !== "") {
-                    var lsServerCie11 = await GetAllByCodeOrName(event.target.value);
-                    setLsDx2(lsServerCie11?.data);
-                } else {
-                    setOpenError(true);
-                    setErrorMessage('Por favor, ingrese un Código o Nombre de Diagnóstico');
+        if (dxType === 1) setTextDxFinal1(value);
+        else if (dxType === 2) setTextDxFinal2(value);
+        else if (dxType === 3) setTextDxFinal3(value);
+
+        if (event.key === 'Enter' && value.trim()) {
+            try {
+                const { data } = await GetAllByCodeOrName(value.trim());
+                switch (dxType) {
+                    case 1: setLsDxFinal1(data); break;
+                    case 2: setLsDxFinal2(data); break;
+                    case 3: setLsDxFinal3(data); break;
+                    default: break;
                 }
+            } catch {
+                toast.error('Error al buscar el diagnóstico');
             }
-        } catch (error) {
-            setOpenError(true);
-            setErrorMessage('Hubo un problema al buscar el Diagnóstico');
+        } else if (event.key === 'Enter') {
+            toast.error('Ingrese un código o nombre de diagnóstico');
         }
-    }
+    };
 
-    async function downloadFileReplay() { DownloadFile(`${documento}accidentetrabajo${new Date().getTime()}.pdf`, urlFile.replace("data:application/pdf;base64,", "")); }
-
-    async function getAll() {
-        try {
-            const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
-            var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
-                value: item.id,
-                label: item.nombre
-            }));
-            setLsSegmentoAgrupado(resultSegAgrupado);
-
-            const lsServerRegion = await GetAllByTipoCatalogo(0, 0, CodCatalogo.MEDLAB_REGION);
-            var resultRegion = lsServerRegion.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRegion(resultRegion);
-
-
-            const lsServerClase = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CLASE_AT);
-            var resultClase = lsServerClase.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsClase(resultClase);
-
-            const lsServerCausa = await GetAllByTipoCatalogo(0, 0, CodCatalogo.CAUSA_AT);
-            var resultCausa = lsServerCausa.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsCausa(resultCausa);
-
-            const lsServerSubTipo = await GetAllByTipoCatalogo(0, 0, CodCatalogo.SUBTIPO_AT);
-            var resultSubTipo = lsServerSubTipo.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsSubTipo(resultSubTipo);
-
-            const lsServerEstado = await GetAllByTipoCatalogo(0, 0, CodCatalogo.ESTADO_AT);
-            var resultEstado = lsServerEstado.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsEstado(resultEstado);
-
-            const lsServerRemitido = await GetAllByTipoCatalogo(0, 0, CodCatalogo.Opciones_SINO);
-            var resultRemitido = lsServerRemitido.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsRemitido(resultRemitido);
-
-            const lsServerConceptoAptitud = await GetAllByTipoCatalogo(0, 0, CodCatalogo.AHC_CONCEP_ACTITUD);
-            var resultConceptoAptitud = lsServerConceptoAptitud.data.entities.map((item) => ({
-                value: item.idCatalogo,
-                label: item.nombre
-            }));
-            setLsConceptoAptitud(resultConceptoAptitud);
-        } catch (error) { }
-    }
+    async function downloadFileReplay() { DownloadFile(`${values.documento}accidentetrabajo${new Date().getTime()}.pdf`, values.url.replace("data:application/pdf;base64,", "")); }
 
     useEffect(() => {
-        getAll();
-    }, [])
+        async function getCombo() {
+            try {
+                const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
+                var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setLsSegmentoAgrupado(resultSegAgrupado);
+
+                const lsServerRegion = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_REGION);
+                setLsRegion(lsServerRegion.data);
+
+                const lsServerClase = await GetByTipoCatalogoCombo(CodCatalogo.CLASE_AT);
+                setLsClase(lsServerClase.data);
+
+                const lsServerCausa = await GetByTipoCatalogoCombo(CodCatalogo.CAUSA_AT);
+                setLsCausa(lsServerCausa.data);
+
+                const lsServerSubTipo = await GetByTipoCatalogoCombo(CodCatalogo.SUBTIPO_AT);
+                setLsSubTipo(lsServerSubTipo.data);
+
+                const lsServerEstado = await GetByTipoCatalogoCombo(CodCatalogo.ESTADO_AT);
+                setLsEstado(lsServerEstado.data);
+
+                const lsServerRemitido = await GetByTipoCatalogoCombo(CodCatalogo.Opciones_SINO);
+                setLsRemitido(lsServerRemitido.data);
+
+                const lsServerConceptoAptitud = await GetByTipoCatalogoCombo(CodCatalogo.AHC_CONCEP_ACTITUD);
+                setLsConceptoAptitud(lsServerConceptoAptitud.data);
+            } catch (error) { }
+        }
+
+        getCombo();
+    }, []);
 
     const handleClickReport = async () => {
         try {
@@ -263,100 +244,47 @@ const AccidentRate = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostAccidentRate(datos.fecha, documento, datos.idClaseAT, datos.idCausaAT, segmentoAgrupado,
-                1, datos.idSubsegmento, datos.idSubTipoConsecuencia, datos.diagnosticoInicial,
-                datos.diagnosticoFinal, datos.idParaclinicos, datos.idConceptoActitudSFI, datos.idConceptoActitudSFF,
-                datos.diasTw, datos.diasIncapacidad, datos.idStatus, urlFile, datos.seguimiento, datos.idRemitido,
-                user?.nameuser, undefined, '', undefined);
-
-            if (Object.keys(datos.length !== 0)) {
-                if (lsEmployee.length !== 0) {
-                    const result = await InsertAccidentRate(DataToInsert);
-                    if (result.status === 200) {
-                        setOpenSuccess(true);
-                        setResultData(result.data);
-                        reset();
-                    }
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(Message.ErrorNoHayDatos);
-                }
-            }
+            const result = await InsertAccidentRate(datos);
+            if (result.data.exito) {
+                toast.success(result.data.mensaje);
+                setResultData(result.data);
+                reset();
+            } else
+                toast.error(result.data.mensaje);
         } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            toast.error(Message.RegistroNoGuardado);
         }
     };
 
-    const isCumple = urlFile === null ? true : false;
+    const isCumple = values.url ? false : true;
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Accidentedetrabajo}>
-            <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+            <FormProvider {...methods}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            title="Registrar accidente de trabajo"
+                            key={lsEmployee?.documento}
+                            documento={values.documento}
+                            onChange={(e) => setValue('documento', e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleDocumento}
+                        />
+                    </Grid>
 
-            <RightDrawer
-                title="Previsualizar archivo"
-                open={openModal.value}
-                onClose={openModal.onFalse}
-                width={600}
-            >
-                <ViewPDF dataPDF={urlFile} height={570} width={550} />
-            </RightDrawer>
-
-            <ControlModal
-                maxWidth="md"
-                open={open}
-                onClose={() => setOpen(false)}
-                title="DICTADO POR VOZ"
-            >
-                <ControllerListen />
-            </ControlModal>
-
-            <FullScreenDialog
-                open={openTemplate}
-                title="LISTADO DE PLANTILLA"
-                handleClose={() => setOpenTemplate(false)}
-            >
-                <ListPlantillaAll />
-            </FullScreenDialog>
-
-            <ControlModal
-                title={Message.VistaReporte}
-                open={openReport}
-                onClose={() => setOpenReport(false)}
-                maxWidth="xl"
-            >
-                <ViewPDF dataPDF={dataPDF} />
-            </ControlModal>
-
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <ViewEmployee
-                        title="Registrar accidente de trabajo"
-                        key={lsEmployee?.documento}
-                        documento={documento}
-                        onChange={(e) => setDocumento(e.target.value)}
-                        lsEmployee={lsEmployee}
-                        handleDocumento={handleDocumento}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <SubCard>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title="Información general">
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputDatePicker
                                         label="Fecha"
                                         name="fecha"
                                         defaultValue={new Date()}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idClaseAT"
                                         label="Clase AT"
@@ -364,11 +292,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idClaseAT}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idCausaAT"
                                         label="Causa AT"
@@ -376,22 +302,19 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idCausaAT}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="segmentoAgrupado"
-                                    label="Segmento Agrupado"
-                                    options={lsSegmentoAgrupado}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={segmentoAgrupado}
-                                    onChange={(e) => setSegmentoAgrupado(e.target.value)}
-                                />
-                            </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <InputSelect
+                                        name="idSegmentoAgrupado"
+                                        label="Segmento Agrupado"
+                                        options={lsSegmentoAgrupado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idSegmentoAgrupado}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idSubsegmento"
                                         label="Región"
@@ -399,11 +322,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
 
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idSubTipoConsecuencia"
                                         label="SubTipo Consecuencia"
@@ -411,74 +332,147 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idSubTipoConsecuencia}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                        </SubCard>
+                    </Grid>
 
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title="Diagnóstico inicial">
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={4} lg={2}>
+                                    <InputOnChange
+                                        label="Dx 1"
+                                        onKeyDown={(e) => handleDxInicio(e, 1)}
+                                        onChange={(e) => setTextDxInicio1(e?.target.value)}
+                                        value={textDxInicio1}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Inicial</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <InputOnChange
-                                    label="Dx 1"
-                                    onKeyDown={handleDx1}
-                                    onChange={(e) => setTextDx1(e?.target.value)}
-                                    value={textDx1}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
-
-                            <Grid item xs={10}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={8} lg={10}>
                                     <InputSelect
                                         name="diagnosticoInicial"
                                         label="Diagnostico 1"
-                                        options={lsDx1}
+                                        options={lsDxInicio1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoInicial}
                                     />
-                                </FormProvider>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                                </Grid>
 
+                                <Grid item xs={12} md={4} lg={2}>
+                                    <InputOnChange
+                                        label="Dx 2"
+                                        onKeyDown={(e) => handleDxInicio(e, 2)}
+                                        onChange={(e) => setTextDxInicio2(e?.target.value)}
+                                        value={textDxInicio2}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Final</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <InputOnChange
-                                    label="Dx 2"
-                                    onKeyDown={handleDx2}
-                                    onChange={(e) => setTextDx2(e?.target.value)}
-                                    value={textDx2}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
+                                <Grid item xs={12} md={8} lg={10}>
+                                    <InputSelect
+                                        name="diagnosticoInicial2"
+                                        label="Diagnostico 2"
+                                        options={lsDxInicio2}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.diagnosticoInicial2}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={4} lg={2}>
+                                    <InputOnChange
+                                        label="Dx 3"
+                                        onKeyDown={(e) => handleDxInicio(e, 3)}
+                                        onChange={(e) => setTextDxInicio3(e?.target.value)}
+                                        value={textDxInicio3}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={8} lg={10}>
+                                    <InputSelect
+                                        name="diagnosticoInicial3"
+                                        label="Diagnostico 3"
+                                        options={lsDxInicio3}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.diagnosticoInicial3}
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={10}>
-                                <FormProvider {...methods}>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title="Diagnóstico final">
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={4} lg={2}>
+                                    <InputOnChange
+                                        label="Dx 1"
+                                        onKeyDown={(e) => handleDxFinal(e, 1)}
+                                        onChange={(e) => setTextDxFinal1(e?.target.value)}
+                                        value={textDxFinal1}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={8} lg={10}>
                                     <InputSelect
                                         name="diagnosticoFinal"
-                                        label="Diagnostico 2"
-                                        options={lsDx2}
+                                        label="Diagnostico 1"
+                                        options={lsDxFinal1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoFinal}
                                     />
-                                </FormProvider>
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                                </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos Complementarios</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={4} lg={2}>
+                                    <InputOnChange
+                                        label="Dx 2"
+                                        onKeyDown={(e) => handleDxFinal(e, 2)}
+                                        onChange={(e) => setTextDxFinal2(e?.target.value)}
+                                        value={textDxFinal2}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={8} lg={10}>
+                                    <InputSelect
+                                        name="diagnosticoFinal2"
+                                        label="Diagnostico 2"
+                                        options={lsDxFinal2}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.diagnosticoFinal2}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={4} lg={2}>
+                                    <InputOnChange
+                                        label="Dx 3"
+                                        onKeyDown={(e) => handleDxFinal(e, 3)}
+                                        onChange={(e) => setTextDxFinal3(e?.target.value)}
+                                        value={textDxFinal3}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={8} lg={10}>
+                                    <InputSelect
+                                        name="diagnosticoFinal3"
+                                        label="Diagnostico 3"
+                                        options={lsDxFinal3}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.diagnosticoFinal3}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title="Datos complementarios">
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idParaclinicos"
                                         label="Paraclinicos"
@@ -486,11 +480,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idParaclinicos}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idConceptoActitudSFI"
                                         label="Concepto De Aptitud Psicofisica Inicial"
@@ -498,11 +490,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idConceptoActitudSFI}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idConceptoActitudSFF"
                                         label="Concepto De Aptitud Psicofisica Final"
@@ -510,11 +500,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idConceptoActitudSFF}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputText
                                         type="number"
                                         fullWidth
@@ -523,11 +511,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diasTw}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputText
                                         type="number"
                                         fullWidth
@@ -536,11 +522,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diasIncapacidad}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12}>
                                     <InputText
                                         fullWidth
                                         name="seguimiento"
@@ -551,24 +535,22 @@ const AccidentRate = () => {
                                         multiline
                                         rows={6}
                                     />
-                                </FormProvider>
-                            </Grid>
-                            <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                <DetailedIcon
-                                    title={DetailIcons[0].title}
-                                    onClick={() => setOpenTemplate(true)}
-                                    icons={DetailIcons[0].icons}
-                                />
+                                </Grid>
+                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                    <DetailedIcon
+                                        title={DetailIcons[0].title}
+                                        onClick={() => setOpenTemplate(true)}
+                                        icons={DetailIcons[0].icons}
+                                    />
 
-                                <DetailedIcon
-                                    title={DetailIcons[1].title}
-                                    onClick={() => setOpen(true)}
-                                    icons={DetailIcons[1].icons}
-                                />
-                            </Grid>
+                                    <DetailedIcon
+                                        title={DetailIcons[1].title}
+                                        onClick={() => setOpen(true)}
+                                        icons={DetailIcons[1].icons}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idStatus"
                                         label="Estado"
@@ -576,11 +558,9 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idStatus}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <InputSelect
                                         name="idRemitido"
                                         label="Remitido"
@@ -588,84 +568,121 @@ const AccidentRate = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idRemitido}
                                     />
-                                </FormProvider>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ mt: 3 }}>
-                            <MainCard title="Registro Fotográfico" secondary={
-                                <ChipControl
-                                    size="small"
-                                    label={urlFile == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
-                                    chipcolor={urlFile == null ? "error" : "success"}
-                                    sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
-                                />
-                            }>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6} md={6} lg={2.5}>
-                                        <AnimateButton>
-                                            <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
-                                                {TitleButton.SubirArchivo}
-                                                <input hidden accept="application/pdf" type="file" onChange={handleFile} />
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={6} md={6} lg={2.5}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" onClick={downloadFileReplay} disabled={isCumple} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
-                                                Descargar
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={6} md={6} lg={2.5}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" onClick={openModal.onTrue} disabled={isCumple} startIcon={<VisibilityIcon fontSize="large" />} fullWidth>
-                                                Previsualizar archivo
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
-
-                                    <Grid item xs={6} md={6} lg={2.5}>
-                                        <AnimateButton>
-                                            <Button variant="outlined" color="error" onClick={() => setUrlFile(null)} disabled={isCumple} startIcon={<ClearIcon fontSize="large" />} fullWidth>
-                                                Eliminar
-                                            </Button>
-                                        </AnimateButton>
-                                    </Grid>
                                 </Grid>
-                            </MainCard>
-                        </Grid>
-
-                        <Grid container spacing={2} sx={{ pt: 4 }}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button disabled={resultData === '' ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
-                                        {TitleButton.Imprimir}
-                                    </Button>
-                                </AnimateButton>
+                            <Grid item xs={12} sx={{ mt: 3 }}>
+                                <SubCard darkTitle title="Registro fotográfico" secondary={
+                                    <ChipControl
+                                        size="small"
+                                        label={values.url == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
+                                        chipcolor={values.url == null ? "error" : "success"}
+                                        sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                    />
+                                }>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={6} md={6} lg={3}>
+                                            <AnimateButton>
+                                                <Button fullWidth variant="contained" component="label" startIcon={<UploadIcon fontSize="large" />}>
+                                                    {TitleButton.SubirArchivo}
+                                                    <input hidden accept="application/pdf" type="file" onChange={handleFile} />
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={6} md={6} lg={3}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" onClick={downloadFileReplay} disabled={isCumple} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                                    Descargar
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={6} md={6} lg={3}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" onClick={openModal.onTrue} disabled={isCumple} startIcon={<VisibilityIcon fontSize="large" />} fullWidth>
+                                                    Previsualizar archivo
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+
+                                        <Grid item xs={6} md={6} lg={3}>
+                                            <AnimateButton>
+                                                <Button variant="outlined" color="error" onClick={() => setValue('url', null)} disabled={isCumple} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                                    Eliminar
+                                                </Button>
+                                            </AnimateButton>
+                                        </Grid>
+                                    </Grid>
+                                </SubCard>
                             </Grid>
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/accident-rate/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                            <Grid container spacing={2} sx={{ pt: 4 }}>
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button disabled={resultData ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button disabled={resultData ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
+                                            {TitleButton.Imprimir}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/accident-rate/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-            </Grid >
+                        </SubCard>
+                    </Grid>
+                </Grid >
+            </FormProvider>
+
+            <>
+                <RightDrawer
+                    title="Previsualizar archivo"
+                    open={openModal.value}
+                    onClose={openModal.onFalse}
+                    width={600}
+                >
+                    <ViewPDF dataPDF={values.url} height={570} width={550} />
+                </RightDrawer>
+
+                <ControlModal
+                    maxWidth="md"
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    title="DICTADO POR VOZ"
+                >
+                    <ControllerListen />
+                </ControlModal>
+
+                <FullScreenDialog
+                    open={openTemplate}
+                    title="LISTADO DE PLANTILLA"
+                    handleClose={() => setOpenTemplate(false)}
+                >
+                    <ListPlantillaAll />
+                </FullScreenDialog>
+
+                <ControlModal
+                    title={Message.VistaReporte}
+                    open={openReport}
+                    onClose={() => setOpenReport(false)}
+                    maxWidth="xl"
+                >
+                    <ViewPDF dataPDF={dataPDF} />
+                </ControlModal>
+            </>
         </ValidateActionSkeleton>
     );
 };

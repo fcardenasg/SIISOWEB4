@@ -44,12 +44,16 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [documento, setDocumento] = useState('');
     const [opcionBusqueda, setOpcionBusqueda] = useState(0);
     const [atencion, setAtencion] = useState(0);
+    const [tipoParaclinico, setTipoParaclinico] = useState("ALL");
+    const [fechaExportacion, setFechaExportacion] = useState(0);
 
     const handleClose = () => {
         setAtencion(0);
         setSede(0);
+        setFechaExportacion(0);
         setTipoExcelAusentismo(0);
         setOpcionBusqueda(0);
+        setTipoParaclinico("ALL");
         setDocumento('');
         setOpenModal(false);
         setFechaInicio(null);
@@ -150,6 +154,10 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
+                        setDocumento={setDocumento} documento={documento}
+                        setOpcionBusqueda={setOpcionBusqueda} opcionBusqueda={opcionBusqueda}
+                        setTipoParaclinico={setTipoParaclinico} tipoParaclinico={tipoParaclinico}
+                        setFechaExportacion={setFechaExportacion} fechaExportacion={fechaExportacion}
                     /> : null
                 }
 

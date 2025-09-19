@@ -8,7 +8,7 @@ const rutaLtd = 'https://siiso.drummondltd.com:44347/';
 
 const config = {
     typeDashboard: 'DLTD', //ENERGY - DLTD
-    rutaApi: rutaLocal,
+    rutaApi: rutaLtd,
     logotipo: LogoReportLtd,
     logotipoblanco: LogoWhiteLtd,
 

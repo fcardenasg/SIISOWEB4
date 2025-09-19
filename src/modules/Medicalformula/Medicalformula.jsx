@@ -5,7 +5,7 @@ import {
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -37,12 +37,12 @@ import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { InsertMedicalFormula } from 'api/clients/MedicalFormulaClient';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewPDF from 'components/components/ViewPDF';
 import { DownloadFile } from 'components/helpers/ConvertToBytes';
 import { FormatDate } from 'components/helpers/Format';
 import InputOnChange from 'components/input/InputOnChange';
 import { PostMedicalFormula } from 'formatdata/MedicalFormulaForm';
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idContingencia: yup.string().required(`${ValidationMessage.Requerido}`),

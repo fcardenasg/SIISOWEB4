@@ -237,13 +237,7 @@ const UpdateClinicHistory = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [atencionRes, asistenciaRes, contingenciaRes, conceptoAptitudRes] = await Promise.all([
-                    GetByIdAttention(id),
-                    GetByTipoCatalogoCombo(CodCatalogo.AHC_ATENCION),
-                    GetByTipoCatalogoCombo(CodCatalogo.Contingencia),
-                    GetByTipoCatalogoCombo(CodCatalogo.AHC_CONCEP_ACTITUD)
-                ]);
-
+                const atencionRes = await GetByIdAttention(id);
                 if (atencionRes.status === 200) {
                     const atencionData = atencionRes.data;
                     setDataTriage(atencionData);
@@ -282,16 +276,12 @@ const UpdateClinicHistory = () => {
                         setLsAtencion(atencionData);
                     }
 
-                    setTimeout(timeWait.onTrue, 700);
+                    setTimeout(timeWait.onTrue, 500);
 
                     if (ultimoRegistroRes.status === 200) {
                         setTextAntecedente(ultimoRegistroRes.data.especifiqueAP);
                     }
                 }
-
-                setLsAssistance(asistenciaRes.data);
-                setLsContingencia(contingenciaRes.data);
-                setLsConceptoAptitud(conceptoAptitudRes.data);
             } catch (error) {
 
             }
@@ -333,7 +323,7 @@ const UpdateClinicHistory = () => {
                     <Grid item xs={12}>
                         <ViewEmployee
                             disabled
-                            title="Historia Clínica"
+                            title="Historia clínica"
                             key={lsEmployee.documento}
                             documento={values.documento}
                             onChange={(e) => setValue('documento', e.target.value)}
