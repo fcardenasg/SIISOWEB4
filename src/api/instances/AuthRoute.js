@@ -281,6 +281,8 @@ export const Url = {
     SegAfectado: 'api/SegmentoAfectado',
     Subsegment: 'api/Subsegmento',
 
+    HistoriaEmbriaguez: 'api/HistoriaEmbriaguez',
+
     HistoriaClinica: 'api/HistoriaClinica',
     HistoriaClinicaExcel: 'api/HistoriaClinica/excel',
     HistoriaClinicaId: 'api/HistoriaClinica/id',

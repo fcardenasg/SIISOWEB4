@@ -16,7 +16,7 @@ import swal from 'sweetalert';
 import * as yup from 'yup';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetAllBySubTipoCatalogo, GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { DeleteRisk, GetAllRisk, InsertRisk } from 'api/clients/RiskClient';
 import { ParamDelete } from 'components/alert/AlertAll';
 import { AccionMenu, CodCatalogo, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
@@ -30,6 +30,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import DetailsRisk from './DetailsRisk';
 
 const validationSchema = yup.object().shape({
+    tipoRiesgo: yup.string().required(ValidationMessage.Requerido),
     grupo: yup.string().required(ValidationMessage.Requerido),
     clase: yup.string().required(ValidationMessage.Requerido),
 });
@@ -42,10 +43,12 @@ const Risk = () => {
     const [rows, setRows] = useState([]);
     const [lsData, setLsData] = useState([]);
     const [search, setSearch] = useState('');
+    const [lsGrupoRiesgoFilter, setLsGrupoRiesgoFilter] = useState([]);
+    const [lsTipoRiesgo, setLsTipoRiesgo] = useState([]);
     const [lsGrupoRiesgo, setLsGrupoRiesgo] = useState([]);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
-    const { handleSubmit, watch, formState: { errors }, reset, } = methods;
+    const { handleSubmit, watch, formState: { errors }, reset } = methods;
     const values = watch();
 
     async function getAll() {
@@ -63,11 +66,31 @@ const Risk = () => {
     }, [values.idGrupoRiesgoFiltro]);
 
     useEffect(() => {
+        if (values.tipoRiesgo) {
+            const valueTipoRiesgo = lsTipoRiesgo.find((item) => item.value === values.tipoRiesgo);
+
+            async function getTipoRiesgo() {
+                var lsGrupos = await GetAllBySubTipoCatalogo(0, 0, valueTipoRiesgo.codigo, 6);
+                if (lsGrupos.status === 200) {
+                    const sortedDataGrupoRiesgo = lsGrupos.data.entities.sort((a, b) => a.idCatalogo - b.idCatalogo);
+                    setLsGrupoRiesgo(sortedDataGrupoRiesgo.map((item) => ({ value: item.idCatalogo, label: item.nombre })));
+                }
+            }
+
+            getTipoRiesgo();
+        }
+    }, [values.tipoRiesgo]);
+
+    useEffect(() => {
         async function getCombo() {
             try {
-                const lsServer = await GetByTipoCatalogoCombo(CodCatalogo.GRUPO_RIESGO);
-                const sortedData = lsServer.data.sort((a, b) => a.value - b.value);
-                setLsGrupoRiesgo(sortedData);
+                const lsServerTipoRiesgo = await GetByTipoCatalogoCombo(CodCatalogo.TIPO_RIESGO);
+                const sortedDataTipoRiesgo = lsServerTipoRiesgo.data.sort((a, b) => a.value - b.value);
+                setLsTipoRiesgo(sortedDataTipoRiesgo);
+
+                const lsServerGrupoRiesgo = await GetByTipoCatalogoCombo(CodCatalogo.GRUPO_RIESGO);
+                const sortedDataGrupoRiesgo = lsServerGrupoRiesgo.data.sort((a, b) => a.value - b.value);
+                setLsGrupoRiesgoFilter(sortedDataGrupoRiesgo);
             } catch (error) {
 
             }
@@ -81,6 +104,7 @@ const Risk = () => {
             const result = await InsertRisk(datos);
             if (result.data.exito) {
                 toast.success(result.data.mensaje);
+                setLsGrupoRiesgo([]);
                 reset();
                 getAll();
             } else {
@@ -98,6 +122,7 @@ const Risk = () => {
                     const result = await DeleteRisk(idRiesgo);
                     if (result.status === 200) {
                         toast.success(Message.Eliminar);
+                        setSearch('');
                         getAll();
                     }
                 }
@@ -128,10 +153,21 @@ const Risk = () => {
             <MainCard title="Registrar riesgo">
                 <FormProvider {...methods}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={3}>
+                        <Grid item xs={12} md={6} lg={5}>
+                            <InputSelect
+                                name="tipoRiesgo"
+                                label="Tipo de riesgo"
+                                defaultValue=""
+                                options={lsTipoRiesgo}
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.tipoRiesgo}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={5}>
                             <InputSelect
                                 name="grupo"
-                                label="Riesgo"
+                                label="Grupo o dominio"
                                 defaultValue=""
                                 options={lsGrupoRiesgo}
                                 size={matchesXS ? 'small' : 'medium'}
@@ -139,7 +175,15 @@ const Risk = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6} lg={7.5}>
+                        <Grid item xs={6} md={4} lg={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" size="large" fullWidth onClick={handleSubmit(handleClick)}>
+                                    Agregar
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+
+                        <Grid item xs={12}>
                             <InputText
                                 defaultValue=""
                                 name="clase"
@@ -147,14 +191,6 @@ const Risk = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.clase}
                             />
-                        </Grid>
-
-                        <Grid item xs={6} md={4} lg={1.5}>
-                            <AnimateButton>
-                                <Button variant="outlined" size="large" fullWidth onClick={handleSubmit(handleClick)}>
-                                    Agregar
-                                </Button>
-                            </AnimateButton>
                         </Grid>
 
                         <Grid item xs={12} sx={{ mt: 2 }}>
@@ -167,8 +203,8 @@ const Risk = () => {
                                         sx={{
                                             display: 'flex',
                                             alignItems: 'center',
-                                            maxWidth: '300px',
-                                            minWidth: '300px',
+                                            maxWidth: '330px',
+                                            minWidth: '330px',
                                             flexShrink: 0,
                                         }}
                                     >
@@ -176,10 +212,10 @@ const Risk = () => {
                                             name="idGrupoRiesgoFiltro"
                                             label="Filtrar por riesgo"
                                             defaultValue="0"
-                                            options={[{ value: 0, label: 'TODOS LOS RIESGOS' }, ...(lsGrupoRiesgo || [])]}
+                                            options={[{ value: 0, label: 'TODOS LOS RIESGOS' }, ...(lsGrupoRiesgoFilter || [])]}
                                             size="small"
                                             bug={errors.idGrupoRiesgoFiltro}
-                                            maxWidth="300px"
+                                            maxWidth="330px"
                                         />
                                     </Box>
                                 }

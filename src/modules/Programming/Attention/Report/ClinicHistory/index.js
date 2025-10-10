@@ -177,13 +177,13 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
 
-    if (lsDataReport.dx1 !== "")
+    if (lsDataReport.dx1)
         doc.text(`Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`, 7, 113, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    if (lsDataReport.dx2 !== "")
+    if (lsDataReport.dx2)
         doc.text(`Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`, 7, 122, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    if (lsDataReport.dx3 !== "")
+    if (lsDataReport.dx3)
         doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 127, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     doc.setFontSize(7);
@@ -193,7 +193,9 @@ function generateReportMedicalAdvicPageTwo(doc = new jsPDF(), lsDataReport = [],
 
     doc.text(`${lsDataReport.examenParaclinico}`, 7, 202, { maxWidth: 200, lineHeightFactor: 1.5 });
     doc.setFontSize(9);
-    doc.text(`${lsDataReport.nameConceptoActitud}`, 7, 228, { maxWidth: 200, lineHeightFactor: 1.5 });
+
+    if (lsDataReport.nameConceptoActitud)
+        doc.text(`${lsDataReport.nameConceptoActitud}`, 7, 228, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser, 23);
 }

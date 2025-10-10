@@ -11,7 +11,6 @@ import { FormatDate } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
 
 const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) => {
-
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -34,9 +33,6 @@ const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) =>
                         }}
                         error={bug ? true : false}
                         fullWidth
-                        InputProps={{
-                            inputFormat: 'dd/MM/yyyy', // Formato de visualización
-                        }}
                         {...others}
                     />
                 )}

@@ -40,6 +40,8 @@ import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateReportAlcoholtesting } from '../Programming/Attention/Report/Alcoholtesting';
+import { InsertAttention } from 'api/clients/AttentionClient';
+import toast from 'react-hot-toast';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -78,7 +80,8 @@ const AlcoholAndDrugTesting = () => {
     const [lsMuestraAD, setLsMuestraAD] = useState([]);
     const [lsMuestraA, setLsMuestraA] = useState([]);
     const [lsResultado, setLsResultado] = useState([]);
-    const [resultData, setResultData] = useState([]);
+    const [resultData, setResultData] = useState(null);
+    const [idRegistroAtencion, setIdRegistroAtencion] = useState(null);
     const [dataPDF, setDataPDF] = useState(null);
 
     const handleDocumento = async (event) => {
@@ -116,10 +119,29 @@ const AlcoholAndDrugTesting = () => {
             setOpenReport(true);
             const lsDataReport = await GetByIdAlcoholAndDrugTesting(resultData.idPruebasAlcoholDroga);
             const lsDataUser = await GetByMail(user?.nameuser);
-
             const dataPDFTwo = generateReportAlcoholtesting(lsDataReport.data, lsDataUser.data);
-
             setDataPDF(dataPDFTwo);
+        } catch (err) { }
+    };
+
+    const handleClickCreateHE = async () => {
+        try {
+            const modelData = {
+                documento: documento,
+                fecha: FormatDate(new Date()),
+                sede: user?.idsede,
+                tipo: 3898,
+                atencion: 11128,
+                estadoPac: "PENDIENTE POR ATENCIÓN"
+            };
+
+            const result = await InsertAttention(modelData);
+            if (result.status === 200) {
+                toast.success("Registro de atención creada exitosamente");
+                setIdRegistroAtencion(result.data);
+            } else {
+                toast.error("No se pudo crear el registro de atención");
+            }
         } catch (err) { }
     };
 
@@ -654,23 +676,43 @@ const AlcoholAndDrugTesting = () => {
                         </Grid>
 
                         <Grid container spacing={2} sx={{ pt: 4 }}>
-                            <Grid item xs={2}>
+                            <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
-                                    <Button disabled={resultData.length !== 0 ? true : false} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                    <Button disabled={resultData} variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                         {TitleButton.Guardar}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
-                                    <Button disabled={resultData.length === 0 ? true : false} variant="outlined" fullWidth onClick={handleClickReport}>
+                                    <Button disabled={!resultData} variant="outlined" fullWidth onClick={handleClickReport}>
                                         {TitleButton.Imprimir}
                                     </Button>
                                 </AnimateButton>
                             </Grid>
 
-                            <Grid item xs={2}>
+                            {(resultData && conceptoAptitud === DefaultValue.CONCEPTO_PAD_NOAPTO && !idRegistroAtencion) &&
+                                <Grid item xs={6} md={3}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleClickCreateHE}>
+                                            Crear historia de embriaguez
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            }
+
+                            {idRegistroAtencion &&
+                                <Grid item xs={6} md={3}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={() => navigate(`/programming/history-drunkenness/${idRegistroAtencion}`)}>
+                                            Atender historia de embriaguez
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+                            }
+
+                            <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>
                                     <Button variant="outlined" fullWidth onClick={() => navigate("/alcoholanddrugtesting/list")}>
                                         {TitleButton.Cancelar}

@@ -13,7 +13,7 @@ function ElevationScroll({ children, window, threshold = 450 }) {
 
     const fullStickyLeft = leftDrawerOpened ? 281 : 42;
 
-    const responsiveTop = matchDown ? 80 : 83;
+    const responsiveTop = 80;
     const responsiveRight = matchDown ? 38 : 41;
     const responsiveLeft = matchDown ? 38 : fullStickyLeft;
 

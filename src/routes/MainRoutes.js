@@ -101,11 +101,10 @@ const ListAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/ListAc
 const AccidentRate = Loadable(lazy(() => import('modules/AccidentRate/AccidentRate')));
 const UpdateAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/UpdateAccidentRate')));
 
-const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
-const PositionOverview = Loadable(lazy(() => import('modules/Charges/PositionOverview')));
-const UpdateCharges = Loadable(lazy(() => import('modules/Charges/UpdateCharges')));
+const BulkLoadingCharges = Loadable(lazy(() => import('modules/Charges/Massive/BulkLoadingCharges')));
 
 const ListPanorama = Loadable(lazy(() => import('modules/Charges/Panorama/ListPanorama')));
+const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
 const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama/Panorama')));
 const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/Panorama/UpdatePanorama')));
 
@@ -136,7 +135,7 @@ const UpdatePsychological = Loadable(lazy(() => import('modules/Programming/Atte
 const UpdateOthersAdvice = Loadable(lazy(() => import('modules/Programming/Attention/UpdateOtherAdvice')));
 const UpdateMedicalAdviceProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateMedicalAdvice')));
 const UpdateNoteInfirmaryProgra = Loadable(lazy(() => import('modules/Programming/Attention/UpdateNoteInfirmary')));
-const UpdateHistoryDrunkenness = Loadable(lazy(() => import('modules/Programming/Attention/UpdateHistoryDrunkenness')));
+const HistoryDrunkenness = Loadable(lazy(() => import('modules/Programming/Attention/HistoryDrunkenness/HistoryDrunkenness')));
 const UpdateAlcoholAndDrugTestings = Loadable(lazy(() => import('modules/Programming/Attention/UpdateAlcoholAndDrugTesting')));
 
 const ListMedicines = Loadable(lazy(() => import('modules/Medicines/Product/ListMedicines')));
@@ -595,21 +594,13 @@ const MainRoutes = {
         },
         /* Render de Charges */
         {
-            path: '/charges/list',
-            element: <ListCharges />
-        },
-        {
             path: '/charges/add',
-            element: <PositionOverview />
-        },
-        {
-            path: '/charges/update/:id',
-            element: <UpdateCharges />
+            element: <BulkLoadingCharges />
         },
         /* Render de Charges */
         {
-            path: '/panorama/list',
-            element: <ListPanorama />
+            path: '/charges/list',
+            element: <ListCharges />
         },
         {
             path: '/panorama/add/:id',
@@ -718,7 +709,7 @@ const MainRoutes = {
         },
         {
             path: '/programming/history-drunkenness/:id',
-            element: <UpdateHistoryDrunkenness />
+            element: <HistoryDrunkenness />
         },
         {
             path: '/programming/emo/:id',

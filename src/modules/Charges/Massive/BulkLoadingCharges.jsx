@@ -1,9 +1,13 @@
 import SearchIcon from '@mui/icons-material/Search';
 import {
     Button,
+    Card,
+    CardContent,
+    CardHeader,
     Grid,
     InputAdornment,
-    TextField
+    TextField,
+    Typography
 } from '@mui/material';
 import { ExtractInformationFromExcel, InsertPanoramaMasivo } from 'api/clients/PanoramaClient';
 import ic_excel from 'assets/icons/files/ic_excel.svg';
@@ -19,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import DetailsCharges from './DetailsCharges';
+import StepperExtractInformation from '../components/StepperExtractInformation';
 
 const BulkLoadingCharges = () => {
     const navigate = useNavigate();
@@ -116,93 +121,13 @@ const BulkLoadingCharges = () => {
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Panoramadecargo}>
             <AnimateComponent>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <SubCard
-                            daskTitle
-                            title="Cargar archivo"
-                            secondary={
-                                <AnimateButton>
-                                    <Button
-                                        disabled={filesData.length === 0}
-                                        variant="outlined"
-                                        fullWidth
-                                        onClick={handleClickExtraer}
-                                    >
-                                        Extraer información
-                                    </Button>
-                                </AnimateButton>
-                            }
-                        >
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} md={6}>
-                                    <Upload files={null} onDrop={handleDrop} multiple={true} />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <SubCard content title={`${numArchivos} Archivos cargados`}>
-                                        <PerfectScrollbar style={{ height: 180, padding: '0px 15px 0px 0px' }}>
-                                            {filesData && (
-                                                <MultiFilePreview
-                                                    files={filesData}
-                                                    isPdf={false}
-                                                    iconFile={ic_excel}
-                                                    onRemove={handleClickDelete}
-                                                />
-                                            )}
-                                        </PerfectScrollbar>
-                                    </SubCard>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    {lsData.length > 0 &&
+                <SubCard darkTitle title="Cargue masivo de cargos">
+                    <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <AnimateComponent>
-                                <SubCard daskTitle title="Información de la exposición ocupacional">
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={4}>
-                                            <TextField
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <SearchIcon fontSize="small" />
-                                                        </InputAdornment>
-                                                    )
-                                                }}
-                                                onChange={handleSearch}
-                                                placeholder="Buscar"
-                                                value={search}
-                                                size="small"
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <DetailsCharges lsData={lsData} />
-                                        </Grid>
-                                    </Grid>
-                                </SubCard>
-                            </AnimateComponent>
+                            <StepperExtractInformation />
                         </Grid>
-                    }
-
-                    <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }}>
-                        <AnimateButton>
-                            <Button disabled={lsData.length === 0} variant="contained" onClick={handleClick} fullWidth>
-                                {TitleButton.Guardar}
-                            </Button>
-                        </AnimateButton>
                     </Grid>
-
-                    <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }}>
-                        <AnimateButton>
-                            <Button variant="outlined" fullWidth onClick={() => navigate("/charges/list")}>
-                                {TitleButton.Cancelar}
-                            </Button>
-                        </AnimateButton>
-                    </Grid>
-                </Grid>
+                </SubCard>
             </AnimateComponent>
         </ValidateActionSkeleton>
     );

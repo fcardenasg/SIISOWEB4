@@ -1,8 +1,4 @@
-import {
-    Button,
-    Grid,
-    useMediaQuery
-} from '@mui/material';
+import { Button, Grid, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllClasePanorama, GetGesClaseRiesgo, InsertPanoramaIndividual } from 'api/clients/PanoramaClient';
@@ -18,7 +14,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import LoadingClass from './components/LoadingClass';
+import LoadingClass from '../components/LoadingClass';
 
 const IdRiesgoPsicosocial = 11070;
 
@@ -35,12 +31,12 @@ const IndividualCharges = () => {
     const [lsRosterPosition, setLsRosterPosition] = useState([]);
     const [lsGradoConSinEPP, setLsGradoConSinEPP] = useState([]);
     const [lsTiempo, setLTiempo] = useState([]);
+    const [clasesValues, setClasesValues] = useState({});
 
     const methods = useForm();
     const { handleSubmit, formState: { errors }, watch, reset, setError, setValue, resetField, clearErrors } = methods;
     const values = watch();
 
-    const [clasesValues, setClasesValues] = useState({});
 
     useEffect(() => {
         async function getCombo() {

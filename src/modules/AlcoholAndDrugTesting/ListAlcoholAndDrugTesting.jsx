@@ -217,7 +217,7 @@ const ListAlcoholAndDrugTesting = () => {
     const [lsAlcoholAndDrugTesting, setLsAlcoholAndDrugTesting] = useState([]);
 
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('fecha');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);

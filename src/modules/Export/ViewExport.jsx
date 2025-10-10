@@ -17,6 +17,7 @@ import ReintegroExport from "modules/ExportOccupationalHealth/Export/ReintegroEx
 import AccidenteTrabajo from "modules/ExportOccupationalHealth/Export/AccidenteTrabajo";
 import AusentismoExport from "modules/ExportOccupationalHealth/Export/AusentismoExport";
 import ExcelVentanilla from "./ExcelVentanilla";
+import ExcelHistoriaEmbriaguez from "./ExcelHistoriaEmbriaguez";
 
 const lsTipoExcelAusentismo = [
     { value: 0, label: 'DAILY' },
@@ -70,7 +71,7 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                 onClose={handleClose}
                 maxWidth="xs"
             >
-                {exportBy.codigo === 'MEDIC' ?
+                {exportBy.codigo === 'MEDIC' &&
                     <MedicionaLaboralExport
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
@@ -80,10 +81,10 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'REINT' ?
+                {exportBy.codigo === 'REINT' &&
                     <ReintegroExport
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
@@ -93,10 +94,10 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'AT' ?
+                {exportBy.codigo === 'AT' &&
                     <AccidenteTrabajo
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
@@ -107,10 +108,10 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
                         setPayStatus={setPayStatus} payStatus={payStatus}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'AUSENTI' ?
+                {exportBy.codigo === 'AUSENTI' &&
                     <AusentismoExport
                         parametroConsulta={exportBy.codigo}
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
@@ -121,35 +122,35 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'REGIS_ATEN' ?
+                {exportBy.codigo === 'REGIS_ATEN' &&
                     <ExcelRegistroAtencion
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'VENTANILLA' ?
+                {exportBy.codigo === 'VENTANILLA' &&
                     <ExcelVentanilla
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
                         setAtencion={setAtencion} atencion={atencion}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'ASESO' ?
+                {exportBy.codigo === 'ASESO' &&
                     <ExcelAsesoria
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'PARACLINI' ?
+                {exportBy.codigo === 'PARACLINI' &&
                     <ExcelParaclinico
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
@@ -158,58 +159,58 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setOpcionBusqueda={setOpcionBusqueda} opcionBusqueda={opcionBusqueda}
                         setTipoParaclinico={setTipoParaclinico} tipoParaclinico={tipoParaclinico}
                         setFechaExportacion={setFechaExportacion} fechaExportacion={fechaExportacion}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'ATEN_MEDI' ?
+                {exportBy.codigo === 'ATEN_MEDI' &&
                     <ExcelAtencionMedica
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'EMO' ?
+                {exportBy.codigo === 'EMO' &&
                     <ExcelEmo
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'ENFER' ?
+                {exportBy.codigo === 'ENFER' &&
                     <ExcelEnfermeria
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'ORDEN_EXAM' ?
+                {exportBy.codigo === 'ORDEN_EXAM' &&
                     <ExcelOrdenes
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'ALC_DRO' ?
+                {exportBy.codigo === 'ALC_DRO' &&
                     <ExcelPruebaAlcoholDroga
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'FRAMI' ?
+                {exportBy.codigo === 'FRAMI' &&
                     <ExcelFramingham
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'INDIC' ?
+                {exportBy.codigo === 'INDIC' &&
                     <ExcelIndicadores
                         setLsMeses={setLsMeses}
                         lsMeses={lsMeses}
@@ -217,14 +218,24 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         lsAnios={lsAnios}
                         setAllMes={setAllMes}
                         allMes={allMes}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'INDICADOR' ?
+                {exportBy.codigo === 'INDICADOR' &&
                     <ExcelIndicador
                         setSede={setSede}
                         sede={sede}
-                    /> : null
+                    />
+                }
+
+                {exportBy.codigo === 'HISEMBRIAGUEZ' &&
+                    <ExcelHistoriaEmbriaguez
+                        setSede={setSede} sede={sede}
+                        setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
+                        setFechaFin={setFechaFin} fechaFin={fechaFin}
+                        setDocumento={setDocumento} documento={documento}
+                        setOpcionBusqueda={setOpcionBusqueda} opcionBusqueda={opcionBusqueda}
+                    />
                 }
             </ControlModal>
         </Fragment>

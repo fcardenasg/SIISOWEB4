@@ -4,8 +4,8 @@ import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import { useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
-import BulkLoadingCharges from './BulkLoadingCharges';
-import IndividualCharges from './IndividualCharges';
+import BulkLoadingCharges from './Massive/BulkLoadingCharges';
+import IndividualCharges from './Individual/IndividualCharges';
 
 export default function PositionOverview() {
     const [value, setValue] = useState(1);
