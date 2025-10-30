@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ArraySubmenuDiseaseResearch = [
-    { title: "Cargue Historico de Enfermedades", url: "", icono: "tabler:upload", color: "#E31937" },
+    { title: "Cargue Historico de Enfermedades", url: "/HistoricalBurdenDiseases", icono: "tabler:upload", color: "#E31937" },
     { title: "Asignación de investigación", url: "/research-assignment/list", icono: "iwwa:assign", color: "#E31937" },
     { title: "Investigación de enfermedad laboral", url: "/investigation-occupational-disease/view", icono: "hugeicons:investigation", color: "#E31937" },
     { title: "Plan de rehabilitación", url: "", icono: "carbon:ibm-planning-analytics", color: "#E31937" },
