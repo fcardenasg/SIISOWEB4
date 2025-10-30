@@ -1,44 +1,20 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { styled } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Check from '@mui/icons-material/Check';
-import SettingsIcon from '@mui/icons-material/Settings';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import SettingsIcon from '@mui/icons-material/Settings';
 import VideoLabelIcon from '@mui/icons-material/VideoLabel';
-import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import UploadFile from './Tabs/UploadFile';
-import { useState } from 'react';
 import { Box, Button } from '@mui/material';
-import { ExtractInformationFromExcel } from 'api/clients/PanoramaClient';
+import Stack from '@mui/material/Stack';
+import Step from '@mui/material/Step';
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import { styled } from '@mui/material/styles';
+import { ExtractInformationFromExcel, GetInformationFromExcel } from 'api/clients/OccupationalExposure';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import UploadFile from './Tabs/UploadFile';
 import ViewExportedSetail from './Tabs/ViewExportedSetail';
-
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-    [`&.${stepConnectorClasses.alternativeLabel}`]: {
-        top: 10,
-        left: 'calc(-50% + 16px)',
-        right: 'calc(50% + 16px)',
-    },
-    [`&.${stepConnectorClasses.active}`]: {
-        [`& .${stepConnectorClasses.line}`]: {
-            borderColor: '#E31937',
-        },
-    },
-    [`&.${stepConnectorClasses.completed}`]: {
-        [`& .${stepConnectorClasses.line}`]: {
-            borderColor: '#E31937',
-        },
-    },
-    [`& .${stepConnectorClasses.line}`]: {
-        borderColor: '#eaeaf0',
-        borderTopWidth: 3,
-        borderRadius: 1,
-    },
-}));
+import SaveInformation from './Tabs/SaveInformation';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -132,6 +108,8 @@ ColorlibStepIcon.propTypes = {
 export default function StepperExtractInformation() {
     const [activeStep, setActiveStep] = useState(0);
     const [filesData, setFilesData] = useState([]);
+    const [lsDataExcel, setLsDataExcel] = useState([]);
+    const [rows, setRows] = useState([]);
 
     const steps = [
         {
@@ -139,11 +117,11 @@ export default function StepperExtractInformation() {
             label: "Cargar archivo"
         },
         {
-            component: <ViewExportedSetail />,
+            component: <ViewExportedSetail lsData={lsDataExcel} rows={rows} setLsData={setLsDataExcel} />,
             label: "Extraer información"
         },
         {
-            component: <UploadFile />,
+            component: <SaveInformation />,
             label: "Guardar información"
         }
     ];
@@ -151,12 +129,14 @@ export default function StepperExtractInformation() {
     const handleClickExtraer = async () => {
         try {
             const bases64Excel = filesData.map(excel => ({ fileName: excel.nombre, base64String: excel.base64 }));
-            const result = await ExtractInformationFromExcel(bases64Excel);
-            if (result.data.response) {
-                const { datos } = result.data;
-                /* setLsData(datos);
-                setRows(datos); */
-                toast.success("Información extraída correctamente");
+            const result = await GetInformationFromExcel(bases64Excel);
+            if (result.data.exito) {
+                setTimeout(() => {
+                    setRows(result.data.datos);
+                    setLsDataExcel(result.data.datos);
+
+                    toast.success("Información básica extraída correctamente");
+                }, 200);
             } else {
                 toast.error(result.data.mensaje);
             }
@@ -165,12 +145,44 @@ export default function StepperExtractInformation() {
         }
     }
 
+    const handleExtractInformation = async () => {
+        try {
+            const exposicionOcupacional = lsDataExcel.map(row => {
+                var fileData = filesData.find(file => file.nombre === row.filename);
+
+                return {
+                    idcargo: row.idcargo,
+                    idges: row.idges,
+                    claseriesgo: row.claseriesgo,
+                    descripcionges: row.descripcionges,
+                    base64excel: fileData ? fileData.base64 : null,
+                };
+            });
+
+            console.log("Datos con base64:", exposicionOcupacional);
+
+            const result = await ExtractInformationFromExcel(exposicionOcupacional);
+            if (result.data.exito) {
+                console.log(result.data);
+                toast.success("Información avanzada extraída correctamente");
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error("Error al extraer información del archivo");
+        }
+    };
+
     const handleNext = () => {
         setActiveStep((prevActiveStep) => {
             const nextStep = prevActiveStep + 1;
 
             if (nextStep === 1) {
                 handleClickExtraer();
+            }
+
+            if (nextStep === 2) {
+                handleExtractInformation();
             }
 
             return nextStep;
@@ -193,14 +205,14 @@ export default function StepperExtractInformation() {
 
     const handleClick = async () => {
         try {
-            const bases64Excel = filesData.map(excel => excel.base64);
+            /* const bases64Excel = filesData.map(excel => excel.base64);
 
             const result = await InsertPanoramaMasivo(bases64Excel);
             if (result.data.response) {
                 toast.success(result.data.mensaje);
             } else {
                 toast.error(result.data.mensaje);
-            }
+            } */
         } catch (error) {
 
         }

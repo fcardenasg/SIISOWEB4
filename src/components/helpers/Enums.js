@@ -118,7 +118,7 @@ export const CodCatalogo = {
     PAD_MOTIVO_NO_ASIS: 54,
 
     UNIDAD: 36,
-    LABORATORIO: 245 /* 246 */,
+    LABORATORIO: 245,
 
     PAD_MUESTRA_AD: 115,
     PAD_MUESTRA_AL: 117,
@@ -171,9 +171,6 @@ export const CodCatalogo = {
     EstadoCaso: 48,
     ESTADO_CASO: 38,
     TipoAtencion: 65,
-    Desocupado_EraDe_Plantilla1: 8,
-    Desocupado_EraDe_Plantilla2: 8,
-    Desocupado_EraDe_Plantilla3: 8,
     SaludOcupacional_Atencion: 8,
     SaludOcupacional_Motivo: 8,
     TipoAtencion_Item: 8,
@@ -281,7 +278,8 @@ export const Modulo = {
     Productos: 43,
     Panoramadecargo: 44,
     Usuario: 45,
-    Rol: 46
+    Rol: 46,
+    AsignacionInvestigacion: 47
 }
 
 export const IdTipoProveedor = {

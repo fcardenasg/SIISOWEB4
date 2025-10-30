@@ -139,7 +139,7 @@ const UpdateUser = () => {
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, resert, datos.nombre, datos.telefono, datos.idArea,
                 datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
                 datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica,
-                datos.registraTaxi, datos.puedeAdministrarPermisos, datos.medicoRegistroAtencion);
+                datos.registraTaxi, datos.puedeAdministrarPermisos, datos.medicoRegistroAtencion, datos.asesorInvestigacion);
 
             const result = await UpdateUsers(DataToUpdate);
             if (result.status === 200) {
@@ -386,6 +386,15 @@ const UpdateUser = () => {
                                                 name="medicoRegistroAtencion"
                                                 defaultValue={lsUsuario.medicoRegistroAtencion}
                                                 label="¿Es médico en registro de atención?"
+                                                size={30}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={4}>
+                                            <InputCheckBox
+                                                name="asesorInvestigacion"
+                                                defaultValue={lsUsuario.asesorInvestigacion}
+                                                label="¿Es asesor para investigaciones?"
                                                 size={30}
                                             />
                                         </Grid>

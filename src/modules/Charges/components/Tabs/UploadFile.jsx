@@ -1,36 +1,13 @@
-import SearchIcon from '@mui/icons-material/Search';
-import {
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    Grid,
-    InputAdornment,
-    TextField,
-    Typography
-} from '@mui/material';
-import { ExtractInformationFromExcel, InsertPanoramaMasivo } from 'api/clients/PanoramaClient';
+import { Grid } from '@mui/material';
 import ic_excel from 'assets/icons/files/ic_excel.svg';
-import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
-import AnimateComponent from 'components/loading/AnimateComponent';
 import MultiFilePreview from 'components/UploadDocument/MultiFilePreview';
 import Upload from 'components/UploadDocument/Upload';
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
-import DetailsCharges from 'modules/Charges/Massive/DetailsCharges';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useNavigate } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const UploadFile = ({ setFilesData, filesData }) => {
-    const navigate = useNavigate();
-
-    const [rows, setRows] = useState([]);
-    const [lsData, setLsData] = useState([]);
-    const [search, setSearch] = useState('');
-
     const allowedFiles = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
     const handleDrop = useCallback((acceptedFiles) => {
         try {
@@ -68,71 +45,10 @@ const UploadFile = ({ setFilesData, filesData }) => {
 
     const numArchivos = filesData.length ? `${filesData.length} ` : "";
 
-    const handleClickExtraer = async () => {
-        try {
-            const bases64Excel = filesData.map(excel => excel.base64);
-            const result = await ExtractInformationFromExcel(bases64Excel);
-            if (result.data.response) {
-                const { datos } = result.data;
-                setLsData(datos);
-                setRows(datos);
-                toast.success("Información extraída correctamente");
-            } else {
-                toast.error(result.data.mensaje);
-            }
-        } catch (error) {
-            toast.error("Error al extraer información del archivo");
-        }
-    }
-
-    const handleSearch = (event) => {
-        const newString = event?.target.value.trim();
-        setSearch(newString || '');
-
-        const lowerCaseQuery = newString.toLowerCase();
-
-        const newRows = newString
-            ? rows.filter((row) =>
-                ['nameGrupo', 'clase'].some((property) =>
-                    row[property]?.toString().toLowerCase().includes(lowerCaseQuery)
-                )
-            ) : rows;
-
-        setLsData(newRows);
-    };
-
-    const handleClick = async () => {
-        try {
-            const bases64Excel = filesData.map(excel => excel.base64);
-
-            const result = await InsertPanoramaMasivo(bases64Excel);
-            if (result.data.response) {
-                toast.success(result.data.mensaje);
-            } else {
-                toast.error(result.data.mensaje);
-            }
-        } catch (error) {
-
-        }
-    };
-
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Grid container spacing={3}>
-                    {/* <Grid item xs={12}>
-                        <AnimateButton>
-                            <Button
-                                disabled={filesData.length === 0}
-                                variant="outlined"
-                                fullWidth
-                                onClick={handleClickExtraer}
-                            >
-                                Extraer información
-                            </Button>
-                        </AnimateButton>
-                    </Grid> */}
-
                     <Grid item xs={12} md={6}>
                         <Upload files={null} onDrop={handleDrop} multiple={true} />
                     </Grid>
@@ -153,36 +69,6 @@ const UploadFile = ({ setFilesData, filesData }) => {
                     </Grid>
                 </Grid>
             </Grid>
-
-            {lsData.length > 0 &&
-                <Grid item xs={12}>
-                    <AnimateComponent>
-                        <SubCard daskTitle title="Información de la exposición ocupacional">
-                            <Grid container spacing={2}>
-                                <Grid item xs={4}>
-                                    <TextField
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SearchIcon fontSize="small" />
-                                                </InputAdornment>
-                                            )
-                                        }}
-                                        onChange={handleSearch}
-                                        placeholder="Buscar"
-                                        value={search}
-                                        size="small"
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <DetailsCharges lsData={lsData} />
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </AnimateComponent>
-                </Grid>
-            }
         </Grid>
     );
 }

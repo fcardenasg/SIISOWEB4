@@ -7,6 +7,7 @@ import {
     Button,
     CardContent,
     Checkbox,
+    Fade,
     Grid,
     IconButton,
     InputAdornment,
@@ -27,19 +28,21 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
-import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { ParamDelete } from 'components/alert/AlertAll';
 import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
+import Chip from 'ui-component/extended/Chip';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { DeleteMedicamentosProductos, GetAllMedicamentosProductos } from 'api/clients/MedicamentosProductosClient';
+import { DeleteResearchAssignment, GetAllResearchAssignment } from 'api/clients/ResearchAssignmentClient';
 import Cargando from 'components/loading/Cargando';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import toast from 'react-hot-toast';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -66,23 +69,28 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'nombre',
+        id: 'id',
+        label: 'ID',
+        align: 'left'
+    },
+    {
+        id: 'documento',
+        label: 'Documento',
+        align: 'left'
+    },
+    {
+        id: 'nombreEmpleado',
         label: 'Nombre',
         align: 'left'
     },
     {
-        id: 'nameLaboratorio',
-        label: 'Laboratorio',
+        id: 'nombreDx',
+        label: 'Diagnósticos',
         align: 'left'
     },
     {
-        id: 'nameFormaFarmaceutica',
-        label: 'Forma farmacéutica',
-        align: 'left'
-    },
-    {
-        id: 'presentacionComercial',
-        label: 'Presentación comercial',
+        id: 'investigador',
+        label: 'Investigadores',
         align: 'left'
     },
     {
@@ -184,7 +192,7 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Productos}>
+            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.AsignacionInvestigacion}>
                 <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
                     <IconButton size="large">
                         <DeleteIcon fontSize="small" />
@@ -200,10 +208,9 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListWarehouse = () => {
+const ListResearchAssignment = () => {
     const navigate = useNavigate();
-    const [lsMedicamentos, setLsMedicamentos] = useState([]);
-    const [openDelete, setOpenDelete] = useState(false);
+    const [lsModelData, setLsModelData] = useState([]);
     const [idCheck, setIdCheck] = useState('');
 
     const theme = useTheme();
@@ -217,11 +224,12 @@ const ListWarehouse = () => {
 
     async function getAll() {
         try {
-            const lsServer = await GetAllMedicamentosProductos();
-            if (lsServer.status === 200) {
-                setLsMedicamentos(lsServer.data);
-                setRows(lsServer.data);
-            }
+            const lsServer = await GetAllResearchAssignment();
+            if (lsServer.data.exito) {
+                setLsModelData(lsServer.data.datos);
+                setRows(lsServer.data.datos);
+            } else
+                toast.error(lsServer.data.mensaje);
         } catch (error) { }
     }
 
@@ -236,8 +244,7 @@ const ListWarehouse = () => {
         if (newString) {
             const newRows = rows.filter((row) => {
                 let matches = true;
-
-                const properties = ['codigo', 'descripcion'];
+                const properties = ['id', 'documento', 'nombreEmpleado'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -251,9 +258,9 @@ const ListWarehouse = () => {
                 }
                 return matches;
             });
-            setLsMedicamentos(newRows);
+            setLsModelData(newRows);
         } else {
-            setLsMedicamentos(rows);
+            setLsModelData(rows);
         }
     };
 
@@ -265,7 +272,7 @@ const ListWarehouse = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelectedId = lsMedicamentos.map((n) => n.id);
+            const newSelectedId = lsModelData.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
@@ -305,10 +312,9 @@ const ListWarehouse = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteMedicamentosProductos(idCheck);
-                    if (result.status === 200) {
-                        setOpenDelete(true);
-
+                    const result = await DeleteResearchAssignment(idCheck);
+                    if (result.data.exito) {
+                        toast.success(result.data.mensaje);
                         setSearch('');
                         setSelected([]);
                         getAll();
@@ -322,12 +328,10 @@ const ListWarehouse = () => {
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsModelData.length) : 0;
 
     return (
-        <MainCard title="Lista de productos de medicamentos" content={false}>
-            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
-
+        <MainCard title="Lista de asignación de investigación" content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -349,9 +353,9 @@ const ListWarehouse = () => {
                     <Grid item xs={12} sm={6} lg={3} sx={{ textAlign: 'right' }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Productos}>
+                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={() => navigate("/warehouse/add")}>
+                                        onClick={() => navigate("/research-assignment/add")}>
                                         {TitleButton.Agregar}
                                     </Button>
                                 </ValidateAction>
@@ -359,7 +363,7 @@ const ListWarehouse = () => {
 
                             <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/parameterization/menu")}>
+                                    onClick={() => navigate("/disease-research/view")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
@@ -369,7 +373,7 @@ const ListWarehouse = () => {
             </CardContent>
 
             <TableContainer>
-                {lsMedicamentos.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsModelData.length === 0 ? <Cargando size={220} myy={6} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -377,13 +381,13 @@ const ListWarehouse = () => {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={lsMedicamentos.length}
+                            rowCount={lsModelData.length}
                             theme={theme}
                             selected={selected}
                             onClick={handleDelete}
                         />
                         <TableBody>
-                            {stableSort(lsMedicamentos, getComparator(order, orderBy))
+                            {stableSort(lsModelData, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
 
@@ -422,7 +426,7 @@ const ListWarehouse = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nombre}
+                                                    {row.id}
                                                 </Typography>
                                             </TableCell>
 
@@ -437,7 +441,7 @@ const ListWarehouse = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameLaboratorio}
+                                                    {row.documento}
                                                 </Typography>
                                             </TableCell>
 
@@ -452,7 +456,7 @@ const ListWarehouse = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.nameFormaFarmaceutica}
+                                                    {row.nombreEmpleado}
                                                 </Typography>
                                             </TableCell>
 
@@ -463,12 +467,43 @@ const ListWarehouse = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.presentacionComercial}
-                                                </Typography>
+                                                <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
+                                                    <div>
+                                                        {row?.nombreDx.map((item, index) => (
+                                                            <div key={index}>{item}</div>
+                                                        ))}
+                                                    </div>
+                                                }>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        <Chip label={`${row?.nombreDx?.length} Diagnóstico(s)`} size="small" chipcolor="success" />
+                                                    </Typography>
+                                                </Tooltip>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
+                                                    <div>
+                                                        {row?.nombreInvestigador.map((item, index) => (
+                                                            <div key={index}>{item}</div>
+                                                        ))}
+                                                    </div>
+                                                }>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        <Chip label={`${row?.nombreInvestigador?.length} Investigador(es)`} size="small" chipcolor="success" />
+                                                    </Typography>
+                                                </Tooltip>
                                             </TableCell>
 
                                             <TableCell
@@ -491,8 +526,8 @@ const ListWarehouse = () => {
                                             </TableCell>
 
                                             <TableCell align="center">
-                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Productos}>
-                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/warehouse/update/${row.id}`)}>
+                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.AsignacionInvestigacion}>
+                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/research-assignment/update/${row.id}`)}>
                                                         <IconButton size="large">
                                                             <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                         </IconButton>
@@ -519,11 +554,11 @@ const ListWarehouse = () => {
             <TablePagination
                 labelRowsPerPage="Filas por página:"
                 labelDisplayedRows={({ from, to, count }) => (
-                    `${from} - ${to} de ${count !== -1 ? count : `más de ${lsMedicamentos.length}`}`
+                    `${from} - ${to} de ${count !== -1 ? count : `más de ${lsModelData.length}`}`
                 )}
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={lsMedicamentos.length}
+                count={lsModelData.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -533,4 +568,4 @@ const ListWarehouse = () => {
     );
 };
 
-export default ListWarehouse;
+export default ListResearchAssignment;

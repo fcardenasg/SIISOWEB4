@@ -1,0 +1,361 @@
+import { yupResolver } from '@hookform/resolvers/yup';
+import AddIcon from '@mui/icons-material/Add';
+import {
+    Button,
+    FormHelperText,
+    Grid,
+    IconButton,
+    Tooltip,
+    useMediaQuery
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
+import { GetByIdEmployee } from 'api/clients/EmployeeClient';
+import { DeleteDetailResearchAssignment, GetAllDetailResearchAssignment, GetByIdResearchAssignment, InsertDetailResearchAssignment, InsertResearchAssignment, UpdateResearchAssignments } from 'api/clients/ResearchAssignmentClient';
+import { GetAllComboAsesorInvestigacion } from 'api/clients/UserClient';
+import { ParamDelete } from 'components/alert/AlertAll';
+import {
+    AccionMenu,
+    Message,
+    Modulo,
+    TitleButton
+} from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
+import InputOnChange from 'components/input/InputOnChange';
+import InputSelect from 'components/input/InputSelect';
+import Cargando from 'components/loading/Cargando';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import ViewEmployee from 'components/views/ViewEmployee';
+import { motion } from 'framer-motion';
+import { useBoolean } from 'hooks/use-boolean';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
+import swal from 'sweetalert';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
+import DetailRA from './DetailRA';
+
+const buttonVariants = {
+    hover: {
+        rotate: 90,
+        transition: { duration: 0.2 },
+    },
+    tap: {
+        scale: 0.9,
+        transition: { duration: 0.2 },
+    },
+};
+
+const validationSchema = yup.object().shape({
+    fecha: yup.date().required("La fecha es requerida"),
+    documento: yup.string().required("El documento es requerido"),
+    investigador: yup.array().min(1, "Debe seleccionar al menos un investigador"),
+    listaDetalle: yup.array().required("Se requiere al menos un diagnóstico"),
+});
+
+const UpdateResearchAssignment = () => {
+    const { id } = useParams();
+    const theme = useTheme();
+    const navigate = useNavigate();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const loadingModulo = useBoolean(false);
+    const timeWait = useBoolean(false);
+
+    const [textDx, setTextDx] = useState("");
+    const [modelEmployee, setModelEmployee] = useState([]);
+    const [lsInvestigacion, setLsInvestigacion] = useState([]);
+    const [lsDx, setLsDx] = useState([]);
+    const [dataModel, setDataModel] = useState(null);
+
+    const methods = useForm({ resolver: yupResolver(validationSchema) });
+    const { handleSubmit, formState: { errors }, reset, watch, setError, setValue } = methods;
+    const documento = watch("documento");
+    const listaDetalle = watch("listaDetalle");
+    const dx = watch("dx");
+
+    const handleLoadingDocument = async (idEmployee) => {
+        try {
+            var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
+
+            if (lsServerEmployee?.data.status === 200) {
+                setModelEmployee(lsServerEmployee.data.data);
+            } else {
+                setModelEmployee(lsServerEmployee?.data.data);
+                toast.error(lsServerEmployee?.data.message);
+            }
+        } catch (error) {
+            setModelEmployee([]);
+            toast.error(Message.ErrorDeDatos);
+        }
+    }
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const lsServer = await GetByIdResearchAssignment(id);
+                if (lsServer.data.datos) {
+                    const datos = lsServer.data.datos;
+                    setValue('id', datos.id);
+                    setDataModel(datos);
+                    setValue('documento', datos.documento);
+                    handleLoadingDocument({ target: { value: datos.documento } });
+                    setValue("investigador", datos.investigador);
+                    setTimeout(timeWait.onTrue, 700);
+                }
+            } catch (error) {
+                toast.error(error.message || "Error al cargar los datos");
+            }
+        }
+
+        getData();
+    }, []);
+
+    async function getDxEmployee() {
+        try {
+            const service = await GetAllDetailResearchAssignment(id);
+            if (service.data.exito)
+                setValue('listaDetalle', service.data.datos);
+        } catch (error) {
+            toast.error(error.message || "Error al cargar los datos");
+        }
+    }
+
+    useEffect(() => {
+        getDxEmployee();
+    }, []);
+
+    useEffect(() => {
+        async function getCombo() {
+            try {
+                const lsServerCombo = await GetAllComboAsesorInvestigacion();
+                if (lsServerCombo.status === 200)
+                    setLsInvestigacion(lsServerCombo.data);
+            } catch (error) { }
+        }
+
+        getCombo();
+    }, []);
+
+    const handleDx = async (event) => {
+        const value = event.target.value;
+        setTextDx(value);
+
+        if (event.key === 'Enter' && value.trim()) {
+            try {
+                const listData = await GetAllByCodeOrName(value.trim());
+                setLsDx(listData.data);
+            } catch {
+                toast.error('Error al buscar el diagnóstico');
+            }
+        } else if (event.key === 'Enter') {
+            toast.error('Ingrese un código o nombre de diagnóstico');
+        }
+    };
+
+    const handleClickInsertDetail = async () => {
+        try {
+            if (!dx) {
+                setError('dx', { type: 'manual', message: 'Debe buscar y seleccionar un diagnóstico' });
+                return;
+            }
+
+            //Validar si ya existe en la lista
+            const currentDetails = Array.isArray(listaDetalle) ? listaDetalle : [];
+            const isDuplicate = currentDetails.some(detail => detail.dx === dx);
+            if (isDuplicate) {
+                setError('dx', { type: 'manual', message: 'El diagnóstico ya está en la lista' });
+                return;
+            }
+
+            const newDetail = {
+                idAsignacionInvestigacion: id,
+                fechaDx: FormatDate(new Date()),
+                dx,
+                modulo: "Asignación de Investigación"
+            };
+
+            const result = await InsertDetailResearchAssignment(newDetail);
+            if (result.data.exito) {
+                toast.success("Diagnóstico agregado a la lista correctamente");
+                getDxEmployee();
+                setTextDx("");
+                setLsDx([]);
+                setValue('dx', '');
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+
+        }
+    };
+
+    const handleClickRemoveDetail = async (modulo, dx) => {
+        try {
+            const currentDetails = listaDetalle || [];
+            const dataModel = currentDetails.find(detail => detail.modulo === modulo && detail.dx === dx);
+
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteDetailResearchAssignment(dataModel.id);
+                    if (result.data.exito) {
+                        toast.success("Diagnóstico eliminado de la lista correctamente");
+                        getDxEmployee();
+                    } else {
+                        toast.error(result.data.mensaje);
+                    }
+                }
+            });
+        } catch (error) {
+            toast.error(error.message || "Error al eliminar el diagnóstico de la lista");
+        }
+    }
+
+    const handleClick = async (datos) => {
+        try {
+            const result = await UpdateResearchAssignments(datos);
+            if (result.data.exito)
+                toast.success(result.data.mensaje);
+            else
+                toast.error(result.data.mensaje);
+        } catch (error) {
+            toast.error(error.message || "Error al actualizar la asignación de investigación");
+        }
+    };
+
+    return (
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
+            {timeWait.value ?
+                <FormProvider {...methods}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <ViewEmployee
+                                disabled
+                                errors={errors}
+                                title="Actualizar asignación de investigación"
+                                key={modelEmployee?.documento}
+                                documento={documento}
+                                onChange={(e) => setValue("documento", e.target.value)}
+                                lsEmployee={modelEmployee}
+                                handleDocumento={handleLoadingDocument}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <SubCard>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} md={6}>
+                                        <InputDatePicker
+                                            label="Fecha"
+                                            name="fecha"
+                                            defaultValue={dataModel.fecha}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.fecha}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <InputMultiselectTwo
+                                            checkbox
+                                            name="investigador"
+                                            label="Investigadores"
+                                            options={lsInvestigacion}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} sx={{ mb: 2 }}>
+                                        <SubCard title="Diagnósticos del empleado (Buscados en EMO y medicina laboral)">
+                                            <Grid container spacing={2} sx={{
+                                                borderColor: !!errors.listaDetalle && 'error.main',
+                                                borderStyle: !!errors.listaDetalle && 'dashed',
+                                                borderWidth: !!errors.listaDetalle && 1
+                                            }}>
+                                                <Grid item xs={12} md={4} lg={2}>
+                                                    <InputOnChange
+                                                        label="Buscar dx por palabras claves"
+                                                        onKeyDown={handleDx}
+                                                        onChange={(e) => setTextDx(e.target.value)}
+                                                        value={textDx}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={4} lg={9}>
+                                                    <InputSelect
+                                                        name="dx"
+                                                        label="Diagnóstico"
+                                                        defaultValue=""
+                                                        options={lsDx}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                        bug={errors.dx}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={1.5} lg={1}>
+                                                    <Tooltip placement="top" title="Agregar diagnóstico">
+                                                        <motion.button
+                                                            onClick={handleClickInsertDetail}
+                                                            variants={buttonVariants}
+                                                            whileHover="hover"
+                                                            whileTap="tap"
+                                                            style={{
+                                                                border: 'none',
+                                                                background: 'transparent',
+                                                                cursor: 'pointer',
+                                                                outline: 'none',
+                                                            }}
+                                                        >
+                                                            <IconButton size="large" color="secondary">
+                                                                <AddIcon sx={{ fontSize: '2rem' }} />
+                                                            </IconButton>
+                                                        </motion.button>
+                                                    </Tooltip>
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <DetailRA
+                                                        lsData={listaDetalle}
+                                                        loadingModulo={loadingModulo}
+                                                        onDelete={handleClickRemoveDetail}
+                                                    />
+                                                </Grid>
+
+                                                {!!errors.listaDetalle && <FormHelperText sx={{ margin: 1 }} error={!!errors.listaDetalle}>{errors?.listaDetalle.message}</FormHelperText>}
+                                            </Grid>
+                                        </SubCard>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={2}>
+                                                <AnimateButton>
+                                                    <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                                        {TitleButton.Actualizar}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" fullWidth onClick={() => navigate("/research-assignment/list")}>
+                                                        {TitleButton.Cancelar}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+                    </Grid>
+                </FormProvider> : <Cargando />
+            }
+        </ValidateActionSkeleton>
+    );
+};
+
+export default UpdateResearchAssignment;

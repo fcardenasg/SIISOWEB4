@@ -37,7 +37,6 @@ const IndividualCharges = () => {
     const { handleSubmit, formState: { errors }, watch, reset, setError, setValue, resetField, clearErrors } = methods;
     const values = watch();
 
-
     useEffect(() => {
         async function getCombo() {
             try {

@@ -1,14 +1,13 @@
-import PropTypes from 'prop-types';
-import { Controller } from 'react-hook-form';
 import {
     FormHelperText,
     Grid,
     TextField,
     useMediaQuery,
 } from '@mui/material';
-import { Fragment } from 'react';
-import { FormatDate } from 'components/helpers/Format';
 import { useTheme } from '@mui/material/styles';
+import { FormatDate } from 'components/helpers/Format';
+import { Fragment } from 'react';
+import { Controller } from 'react-hook-form';
 
 const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) => {
     const theme = useTheme();
@@ -37,6 +36,7 @@ const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) =>
                     />
                 )}
             />
+            
             {bug && (
                 <Grid item xs={12}>
                     <FormHelperText error>{bug.message}</FormHelperText>
@@ -47,9 +47,3 @@ const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) =>
 };
 
 export default InputDatePicker;
-
-InputDatePicker.propTypes = {
-    label: PropTypes.string,
-    defaultValue: PropTypes.any,
-    name: PropTypes.string
-};

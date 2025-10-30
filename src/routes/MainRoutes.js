@@ -227,6 +227,13 @@ const MenuParaclinics = Loadable(lazy(() => import('modules/Menu/MenuParaclinics
 const MenuParameterization = Loadable(lazy(() => import('modules/Menu/MenuParameterization')));
 const MenuExcel = Loadable(lazy(() => import('modules/Menu/MenuExcel')));
 const MenuVentanilla = Loadable(lazy(() => import('modules/Menu/MenuVentanilla')));
+const SubmenuDiseaseResearch = Loadable(lazy(() => import('modules/Menu/SubmenuDiseaseResearch')));
+
+const ResearchAssignment = Loadable(lazy(() => import('modules/DiseaseResearch/ResearchAssignment/ResearchAssignment')));
+const ListResearchAssignment = Loadable(lazy(() => import('modules/DiseaseResearch/ResearchAssignment/ListResearchAssignment')));
+const UpdateResearchAssignment = Loadable(lazy(() => import('modules/DiseaseResearch/ResearchAssignment/UpdateResearchAssignment')));
+const DataView = Loadable(lazy(() => import('modules/DiseaseResearch/InvestigationOccupationalDisease/DataView')));
+const InvestigationOccupationalDisease = Loadable(lazy(() => import('modules/DiseaseResearch/InvestigationOccupationalDisease/InvestigationOccupationalDisease')));
 
 const AddSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/AddSingleWindow')));
 const UpdateSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/UpdateSingleWindow')));
@@ -987,6 +994,30 @@ const MainRoutes = {
         {
             path: '/single-window/view',
             element: <MenuVentanilla />
+        },
+        {
+            path: '/disease-research/view',
+            element: <SubmenuDiseaseResearch />
+        },
+        {
+            path: '/research-assignment/list',
+            element: <ListResearchAssignment />
+        },
+        {
+            path: '/research-assignment/add',
+            element: <ResearchAssignment />
+        },
+        {
+            path: '/research-assignment/update/:id',
+            element: <UpdateResearchAssignment />
+        },
+        {
+            path: '/investigation-occupational-disease/view',
+            element: <DataView />
+        },
+        {
+            path: '/investigation-occupational-disease/investigate/:id',
+            element: <InvestigationOccupationalDisease />
         },
         {
             path: '/single-window/index',

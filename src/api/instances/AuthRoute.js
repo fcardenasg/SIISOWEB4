@@ -74,6 +74,8 @@ export const Url = {
     Cargo: 'api/Cargo',
     CargoId: 'api/Cargo/id',
 
+    ExposicionOcupacional: 'api/ExposicionOcupacional',
+
     Panorama: 'api/Panoramariesgo',
     PanoramaGetAllByCharge: 'api/Panoramariesgo/GetAllByCharge',
     PanoramaId: 'api/Panoramariesgo/id',
@@ -193,6 +195,8 @@ export const Url = {
 
     VentanillaUnicaDetalleArchivoAll: 'api/VentanillaUnicaDetalle/archivo/all',
     VentanillaUnicaDetalleArchivoById: 'api/VentanillaUnicaDetalle/archivo/by-id',
+
+    AsignacionInvestigacion: 'api/AsignacionInvestigacion',
 
     Asesorias: 'api/Asesorias',
     AsesoriasExcel: 'api/Asesorias/excel',
