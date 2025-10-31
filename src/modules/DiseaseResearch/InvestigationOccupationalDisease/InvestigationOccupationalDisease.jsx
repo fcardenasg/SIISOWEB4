@@ -644,7 +644,7 @@ const InvestigationOccupationalDisease = () => {
 
                                             <Grid item xs={2}>
                                                 <AnimateButton>
-                                                    <Button variant="outlined" fullWidth onClick={() => navigate("/research-assignment/list")}>
+                                                    <Button variant="outlined" fullWidth onClick={() => navigate("/investigation-occupational-disease/view")}>
                                                         {TitleButton.Cancelar}
                                                     </Button>
                                                 </AnimateButton>
