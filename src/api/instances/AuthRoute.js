@@ -28,6 +28,8 @@ export const Url = {
 
     default: "api/CalendarioCitas",
     getevents: 'api/CalendarioCitas/get-idmedico',
+    GetOpenIAFile: 'api/CalendarioCitas/GetOpenIAFile',
+    GetOpenIA: 'api/CalendarioCitas/GetOpenIA',
 
 
 
@@ -335,5 +337,9 @@ export const Url = {
 
     Cuestionario: 'api/CuestionarioPrevencion',
     CuestionarioSave: 'api/CuestionarioPrevencion/Save',
-    CuestionarioId: 'api/CuestionarioPrevencion/id'
+    CuestionarioId: 'api/CuestionarioPrevencion/id',
+
+
+  
+        
 }
