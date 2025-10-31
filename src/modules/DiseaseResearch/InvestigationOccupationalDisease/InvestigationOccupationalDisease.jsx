@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
     Button,
+    Divider,
     Grid,
     Typography,
     useMediaQuery
@@ -32,7 +33,8 @@ import Iconify from 'components/iconify/iconify';
 import InputText from 'components/input/InputText';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
-import EmployeeTable from './components/Table/EmployeeTable';
+import { TableDiagnosis, TableDiagnosisRating, TableDLTD, TableOtherCompanies } from './components/Table';
+import InputTextEditor from 'components/input/InputTextEditor';
 
 const validationSchema = yup.object().shape({
     fecha: yup.date().required("La fecha es requerida"),
@@ -56,10 +58,9 @@ const InvestigationOccupationalDisease = () => {
     const [dataModel, setDataModel] = useState(null);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
-    const { handleSubmit, formState: { errors }, reset, watch, setError, setValue } = methods;
-    const documento = watch("documento");
-    const listaDetalle = watch("listaDetalle");
-    const dx = watch("dx");
+    const { handleSubmit, formState: { errors }, reset, getValues, setError, setValue } = methods;
+    const documento = getValues("documento");
+    const resumenResultadosAnalisisPuesto = getValues("resumenResultadosAnalisisPuesto");
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -386,15 +387,15 @@ const InvestigationOccupationalDisease = () => {
                                         <Accordion title={<><Iconify width={25} icon="material-symbols-light:work-history-outline" /><Typography sx={{ ml: 2 }} align='right' variant="h5">3. Historia laboral en DLTD</Typography></>}>
                                             <Grid container spacing={2}>
                                                 <Grid item xs={12}>
-                                                    <EmployeeTable />
+                                                    <TableDLTD />
                                                 </Grid>
 
                                                 <Grid item xs={12}>
-                                                    <Typography variant="h5">Otros cargos</Typography>
+                                                    <Typography variant="h4">Otros cargos</Typography>
                                                 </Grid>
 
                                                 <Grid item xs={12}>
-                                                    <EmployeeTable />
+                                                    <TableDLTD />
                                                 </Grid>
                                             </Grid>
                                         </Accordion>
@@ -402,24 +403,231 @@ const InvestigationOccupationalDisease = () => {
 
                                     <Grid item xs={12}>
                                         <Accordion title={<><Iconify width={25} icon="icon-park-twotone:history-query" /><Typography sx={{ ml: 2 }} align='right' variant="h5">4. Historia laboral en otras empresas</Typography></>}>
-
+                                            <TableOtherCompanies />
                                         </Accordion>
                                     </Grid>
 
                                     <Grid item xs={12}>
                                         <Accordion title={<><Iconify width={25} icon="material-symbols-light:diagnosis-outline-rounded" /><Typography sx={{ ml: 2 }} align='right' variant="h5">5. Datos del diagnóstico y del proceso de calificación</Typography></>}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
+                                                    <TableDiagnosis />
+                                                </Grid>
 
+                                                <Grid item xs={12}><Divider /></Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputSelect
+                                                        name="idGeneroIncapacidad"
+                                                        label="Generó incapacidad"
+                                                        defaultValue={dataModel?.idGeneroIncapacidad}
+                                                        options={[]}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputText
+                                                        name="diasIncapacidad"
+                                                        label="Días de incapacidad"
+                                                        defaultValue={dataModel?.diasIncapacidad}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <InputText
+                                                        name="observacionesIncapacidad"
+                                                        label="Observaciones a la incapacidad"
+                                                        multiline
+                                                        rows={2}
+                                                        defaultValue={dataModel?.observacionesIncapacidad}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputText
+                                                        name="numeroFurel"
+                                                        label="FUREL #"
+                                                        defaultValue={dataModel?.numeroFurel}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputDatePicker
+                                                        name="fechaFurel"
+                                                        label="Fecha del FUREL"
+                                                        defaultValue={dataModel?.fechaFurel}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputDatePicker
+                                                        name="fechaEstructuracionOrigen"
+                                                        label="Fecha de estructuración de origen"
+                                                        defaultValue={dataModel?.fechaEstructuracionOrigen}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12}><Divider /></Grid>
+
+                                                <Grid item xs={12}>
+                                                    <TableDiagnosisRating methods={methods} />
+                                                </Grid>
+
+                                                <Grid item xs={12}><Divider /></Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputSelect
+                                                        name="idCalificacionPCL"
+                                                        label="Calificación PCL"
+                                                        defaultValue={dataModel?.idCalificacionPCL}
+                                                        options={[]}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputText
+                                                        name="porcentajePCL"
+                                                        label="% PCL"
+                                                        defaultValue={dataModel?.porcentajePCL}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputText
+                                                        name="instancia"
+                                                        label="Instancia"
+                                                        defaultValue={dataModel?.instancia}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputText
+                                                        name="dictamen"
+                                                        label="Dictamen #"
+                                                        defaultValue={dataModel?.dictamen}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={3}>
+                                                    <InputSelect
+                                                        name="idCalificacionIntegral"
+                                                        label="Calificación integral"
+                                                        defaultValue={dataModel?.idCalificacionIntegral}
+                                                        options={[]}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={6} lg={9}>
+                                                    <InputText
+                                                        name="otrasPatologias"
+                                                        label="Otras patologías que hacen parte de la calificación de PCL"
+                                                        defaultValue={dataModel?.otrasPatologias}
+                                                        size={matchesXS ? 'small' : 'medium'}
+                                                    />
+                                                </Grid>
+                                            </Grid>
                                         </Accordion>
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <Accordion title={<><Iconify width={25} icon="hugeicons:permanent-job" /><Typography sx={{ ml: 2 }} align='right' variant="h5">6. Datos sobre exposición en la empresa</Typography></>}>
+                                        <Accordion title={<><Iconify width={25} icon="hugeicons:permanent-job" /><Typography sx={{ ml: 2 }} align='right' variant="h5">6. Datos sobre la exposición en la empresa</Typography></>}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
+                                                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                                                        Resumen de los resultados del análisis del puesto de trabajo
+                                                    </Typography>
+                                                </Grid>
 
+                                                <Grid item xs={12}>
+                                                    <InputTextEditor />
+                                                </Grid>
+
+                                                {/* <Grid item xs={12}>
+                                                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                                                        Resumen de la valoración del riesgo
+                                                    </Typography>
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <InputTextEditor name="resumenValoracionRiesgo" defaultValue={dataModel?.resumenValoracionRiesgo} />
+                                                </Grid> */}
+                                            </Grid>
                                         </Accordion>
                                     </Grid>
 
                                     <Grid item xs={12}>
                                         <Accordion title={<><Iconify width={25} icon="carbon:ibm-webmethods-hybrid-integration" /><Typography sx={{ ml: 2 }} align='right' variant="h5">7. Métodos de control disponibles</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="streamline-ultimate:data-file-search" /><Typography sx={{ ml: 2 }} align='right' variant="h5">8. Datos clínicos y paraclínicos</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="streamline:copy-paste" /><Typography sx={{ ml: 2 }} align='right' variant="h5">9. Antecedentes</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="material-symbols-light:other-admission-outline-rounded" /><Typography sx={{ ml: 2 }} align='right' variant="h5">10. Otros datos clínicos</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="fluent:task-list-square-person-20-regular" /><Typography sx={{ ml: 2 }} align='right' variant="h5">11. Caracterización del ausentismo laboral por todas las causas</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="icon-park-outline:file-search" /><Typography sx={{ ml: 2 }} align='right' variant="h5">12. Revisión de la bibliografía aplicable</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="lets-icons:file-dock-search-light" /><Typography sx={{ ml: 2 }} align='right' variant="h5">13. Análisis de causas</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="tabler:report" /><Typography sx={{ ml: 2 }} align='right' variant="h5">14. Causa básica detectada</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="pepicons-print:file" /><Typography sx={{ ml: 2 }} align='right' variant="h5">15. Conclusión</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="covid:social-distancing-correct-3" /><Typography sx={{ ml: 2 }} align='right' variant="h5">16. Acciones preventivas o correctivas</Typography></>}>
+
+                                        </Accordion>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Accordion title={<><Iconify width={25} icon="material-symbols-light:signature-rounded" /><Typography sx={{ ml: 2 }} align='right' variant="h5">17. Firmas</Typography></>}>
 
                                         </Accordion>
                                     </Grid>
