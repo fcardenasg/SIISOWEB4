@@ -1,9 +1,9 @@
 import {
-    ContentPasteSearch as ContentPasteSearchIcon,
     Delete as DeleteIcon,
     Download as DownloadIcon,
+    Edit as EditIcon,
     MoreVert as MoreVertIcon,
-    Print as PrintIcon
+    Print as PrintIcon,
 } from '@mui/icons-material';
 import {
     Divider,
@@ -56,13 +56,13 @@ export const OptionsMenuList = ({ idAsignacion }) => {
                 }}
             >
                 <MenuItem onClick={() => handleAction(1)}>
-                    <ContentPasteSearchIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Investigar
+                    <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>
-                    <DownloadIcon sx={{ mr: 1.2, color: 'success.main' }} /> Exportar PDF
+                    <DownloadIcon sx={{ mr: 1.2 }} /> Exportar PDF
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('imprimir')}>
-                    <PrintIcon sx={{ mr: 1.2, color: 'info.main' }} /> Imprimir
+                    <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={() => handleAction('eliminar')} sx={{ color: 'error.main' }}>
@@ -127,16 +127,16 @@ export const OptionsMenuCard = ({ idAsignacion }) => {
                 }}
             >
                 <MenuItem onClick={() => handleAction('ver')}>
-                    <ContentPasteSearchIcon sx={{ mr: 1, color: 'primary.main' }} /> Investigar
+                    <EditIcon sx={{ mr: 1, color: 'primary.main' }} /> Atender
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>
-                    <DownloadIcon sx={{ mr: 1, color: 'success.main' }} /> Exportar PDF
+                    <DownloadIcon sx={{ mr: 1 }} /> Exportar PDF
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('imprimir')}>
-                    <PrintIcon sx={{ mr: 1, color: 'info.main' }} /> Imprimir
+                    <PrintIcon sx={{ mr: 1 }} /> Imprimir
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={() => handleAction('eliminar')} sx={{ color: 'error.main' }}>
+                <MenuItem onClick={() => handleAction('eliminar')} sx={{ color: 'primary.main' }}>
                     <DeleteIcon sx={{ mr: 1 }} /> Eliminar
                 </MenuItem>
             </Menu>

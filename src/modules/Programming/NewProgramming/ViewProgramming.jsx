@@ -15,20 +15,29 @@ import {
     useMediaQuery,
     useTheme
 } from '@mui/material';
-import { GetAllByDataResearcher } from 'api/clients/ResearchAssignmentClient';
+import { GetAllAtencion } from 'api/clients/AttentionClient';
 import { AnimatePresence, motion } from 'framer-motion';
+import NavigationBar from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/NavigationBar';
+import NoRecord from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/NoRecord';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import NavigationBar from './components/NavigationBar';
-import NoRecord from './components/NoRecord';
-import ViewCardData from './components/ViewCardData';
-import ViewListData from './components/ViewListData';
+import ViewCard from './components/View/ViewCard';
+import ViewCardSkeleton from './components/Skeleton/ViewCardSkeleton';
+import ViewList from './components/View/ViewList';
+import ViewListSkeleton from './components/Skeleton/ViewListSkeleton';
+import useAuth from 'hooks/useAuth';
+import { DefaultValue } from 'components/helpers/Enums';
+import ChatIA from './components/Chat/ChatIA';
 
-const DataView = () => {
+const ViewProgramming = () => {
+    const { user } = useAuth();
+    const [isOpen, setIsOpen] = useState(false);
     const [dataModel, setDataModel] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [viewMode, setViewMode] = useState('list');
+    const [infoEmployee, setInfoEmployee] = useState(null);
+    const [viewMode, setViewMode] = useState('card');
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -37,15 +46,16 @@ const DataView = () => {
     useEffect(() => {
         async function getData() {
             try {
-                const result = await GetAllByDataResearcher(0);
-                if (result.data.datos) {
-                    setDataModel(result.data.datos);
-                } else {
-                    toast.error(result.data.mensaje);
+                const result = await GetAllAtencion(DefaultValue.ATENCION_ATENDIDO, user?.idsede);
+                if (result.status === 200) {
+                    setDataModel(result.data);
                 }
+                else
+                    toast.error(result.data.mensaje);
             } catch (error) {
-                console.error(error);
                 toast.error('Error al cargar los datos');
+            } finally {
+                setTimeout(() => setLoading(false), 200);
             }
         }
 
@@ -80,10 +90,35 @@ const DataView = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const renderSkeletons = (count) => {
+        if (viewMode === 'list') {
+            return Array.from({ length: count }).map((_, index) => (
+                <ViewListSkeleton key={`skeleton-list-${index}`} index={index} />
+            ));
+        } else {
+            return (
+                <Grid container spacing={2}>
+                    {Array.from({ length: count }).map((_, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                            <ViewCardSkeleton key={`skeleton-card-${index}`} index={index} />
+                        </Grid>
+                    ))}
+                </Grid>
+            );
+        }
+    };
+
+    const handleOpenChat = (isOpen, infoEmployee) => {
+        setIsOpen(isOpen);
+        setInfoEmployee(infoEmployee);
+    };
+
     return (
         <Box sx={{ p: 1 }}>
+            <ChatIA setIsOpen={setIsOpen} isOpen={isOpen} setInfoEmployee={setInfoEmployee} infoEmployee={infoEmployee} />
+
             <Box sx={{ pb: 2 }}>
-                <NavigationBar title="Investigaciones asignadas" urlBack="/disease-research/view" />
+                <NavigationBar title="Atención programadas" urlBack="/dashboard/drummond" />
 
                 <Box
                     sx={{
@@ -153,61 +188,52 @@ const DataView = () => {
                 </Box>
             </Box>
 
-            {filteredData.length === 0 ? (
+            {loading ? (
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key="skeleton"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {renderSkeletons(viewMode === 'list' ? 4 : 6)}
+                    </motion.div>
+                </AnimatePresence>
+            ) : filteredData.length === 0 ? (
                 <NoRecord />
             ) : (
                 <>
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={`${viewMode}-${currentPage}`}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             transition={{
-                                duration: 0.45,
-                                ease: [0.34, 1.56, 0.64, 1],
+                                duration: 0.2,
+                                ease: 'easeOut',
                             }}
                             style={{ width: '100%' }}
                         >
                             {viewMode === 'list' ? (
                                 <List sx={{ p: 0 }}>
                                     {paginatedData.map((patient, index) => (
-                                        <motion.div
-                                            key={patient.id || index}
-                                            initial={{ opacity: 0, y: 8 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{
-                                                duration: 0.35,
-                                                delay: index * 0.03,
-                                                ease: 'easeOut',
-                                            }}
-                                        >
-                                            <ViewListData dataInfo={patient} index={index} />
-                                        </motion.div>
+                                        <ViewList dataInfo={patient} index={index} onClickOpenChat={handleOpenChat} />
                                     ))}
                                 </List>
                             ) : (
                                 <Grid container spacing={2.5}>
                                     {paginatedData.map((patient, index) => (
                                         <Grid item xs={12} sm={6} md={4} key={patient.id || index}>
-                                            <motion.div
-                                                layout
-                                                initial={{ opacity: 0, scale: 0.97 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                transition={{
-                                                    duration: 0.4,
-                                                    delay: index * 0.04,
-                                                    ease: 'easeOut',
-                                                }}
-                                            >
-                                                <ViewCardData dataInfo={patient} index={index} />
-                                            </motion.div>
+                                            <ViewCard dataInfo={patient} index={index} onClickOpenChat={handleOpenChat} />
                                         </Grid>
                                     ))}
                                 </Grid>
                             )}
                         </motion.div>
                     </AnimatePresence>
+
 
                     {totalPages > 1 && (
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 2 }}>
@@ -239,4 +265,4 @@ const DataView = () => {
     );
 };
 
-export default DataView;
+export default ViewProgramming;

@@ -14,9 +14,13 @@ import {
     Print as PrintIcon,
     Delete as DeleteIcon,
     ContentPasteSearch as ContentPasteSearchIcon,
+    CheckCircle as CheckCircleIcon,
+    HourglassEmpty as HourglassEmptyIcon,
+    PendingActions as PendingActionsIcon,
 } from '@mui/icons-material';
 import InvestigationProgress from './InvestigationProgress';
 import { OptionsMenuCard } from './OptionsMenu';
+import { getStatusConfig } from './methods';
 
 const variants = {
     hidden: { opacity: 0, y: 50 },
@@ -32,6 +36,8 @@ const variants = {
 };
 
 const ViewCardData = ({ dataInfo = {}, index }) => {
+    const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
+
     return (
         <motion.div
             initial="hidden"
@@ -80,7 +86,7 @@ const ViewCardData = ({ dataInfo = {}, index }) => {
                         }}
                     >
                         <Avatar
-                            src={dataInfo.foto || `https://picsum.photos/seed/${dataInfo.nombreEmpleado}/200/200`}
+                            src={dataInfo.foto}
                             alt={dataInfo.nombreEmpleado}
                             sx={{
                                 width: '100%',
@@ -96,7 +102,6 @@ const ViewCardData = ({ dataInfo = {}, index }) => {
                     </Box>
                 </Box>
 
-                {/* Body Blanco */}
                 <CardContent sx={{ p: 2.5, pt: 0, position: 'relative', top: '-28px', mb: -4 }}>
                     <Box
                         sx={{
@@ -119,7 +124,7 @@ const ViewCardData = ({ dataInfo = {}, index }) => {
                         <Typography variant="body2" color="text.secondary">{dataInfo.edad} años</Typography>
                     </Box>
 
-                    <InvestigationProgress status={dataInfo.estadoInvestigacion} />
+                    <InvestigationProgress config={statusConfig} />
 
                     <Divider sx={{ my: 2 }} />
 

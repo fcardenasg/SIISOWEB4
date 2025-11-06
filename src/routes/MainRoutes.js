@@ -103,7 +103,6 @@ const UpdateAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/Upda
 
 const BulkLoadingCharges = Loadable(lazy(() => import('modules/Charges/Massive/BulkLoadingCharges')));
 
-const ListPanorama = Loadable(lazy(() => import('modules/Charges/Panorama/ListPanorama')));
 const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
 const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama/Panorama')));
 const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/Panorama/UpdatePanorama')));
@@ -127,6 +126,8 @@ const OrdenesMasivas = Loadable(lazy(() => import('modules/Orders/OrdenesMasivas
 const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/ListOrdersIndividual')));
 const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/OrdersIndividual')));
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/UpdateOrdersIndividual')));
+
+const ViewNewProgramming = Loadable(lazy(() => import('modules/Programming/NewProgramming/ViewProgramming')));
 
 const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Programming/Attention/OccupationalExamination/OccupationalExamination')));
 const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/ClinicHistory/UpdateClinicHistory')));
@@ -1101,6 +1102,12 @@ const MainRoutes = {
             path: '/risk/list',
             element: <ListRisk />
         },
+
+        /* Modulo nuevo de programación */
+        {
+            path: '/new-programming/view',
+            element: <ViewNewProgramming />
+        }
     ]
 };
 

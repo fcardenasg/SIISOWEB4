@@ -310,9 +310,4 @@ const ViewProgramming = ({ programming, getAll }) => {
     );
 };
 
-ViewProgramming.propTypes = {
-    programming: PropTypes.object,
-    onClickDelete: PropTypes.object
-};
-
 export default ViewProgramming;

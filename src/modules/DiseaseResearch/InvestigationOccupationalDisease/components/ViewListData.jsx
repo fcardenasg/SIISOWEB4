@@ -1,44 +1,20 @@
-import React, { useState } from 'react';
 import {
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  Box,
-  Chip,
-  IconButton,
-  Menu,
-  MenuItem,
-  Divider,
-  Typography,
-  LinearProgress,
-} from '@mui/material';
-import { motion } from 'framer-motion';
-import {
-  MoreVert as MoreVertIcon,
-  Visibility as VisibilityIcon,
-  Download as DownloadIcon,
-  Print as PrintIcon,
-  Delete as DeleteIcon,
   Business as BusinessIcon,
   LocalHospital as LocalHospitalIcon,
-  Work as WorkIcon,
-  ContentPasteSearch as ContentPasteSearchIcon,
+  Work as WorkIcon
 } from '@mui/icons-material';
+import {
+  Avatar,
+  Box,
+  Chip,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography
+} from '@mui/material';
+import { motion } from 'framer-motion';
 import { OptionsMenuList } from './OptionsMenu';
-
-const getStatusConfig = (status) => {
-  switch (status) {
-    case 1:
-      return { percent: 0, color: '#bdbdbd', label: 'Pendiente' };
-    case 2:
-      return { percent: 50, color: '#ff9800', label: 'En progreso' };
-    case 3:
-      return { percent: 100, color: '#4caf50', label: 'Completada' };
-    default:
-      return { percent: 0, color: '#bdbdbd', label: 'Desconocido' };
-  }
-};
+import { getStatusConfig } from './methods';
 
 const variants = {
   hidden: { opacity: 0, x: -40 },
@@ -96,7 +72,6 @@ const ViewListData = ({ dataInfo = {}, index }) => {
           </Avatar>
         </ListItemAvatar>
 
-        {/* Contenido principal */}
         <ListItemText
           primary={
             <Typography variant="subtitle1" fontWeight="bold" fontSize="1.15rem" color="#1a1a1a">
