@@ -128,6 +128,7 @@ const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndiv
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/UpdateOrdersIndividual')));
 
 const ViewNewProgramming = Loadable(lazy(() => import('modules/Programming/NewProgramming/ViewProgramming')));
+const ViewNewEMO = Loadable(lazy(() => import('modules/Programming/NewEMO/ViewEMO')));
 
 const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Programming/Attention/OccupationalExamination/OccupationalExamination')));
 const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/ClinicHistory/UpdateClinicHistory')));
@@ -237,8 +238,6 @@ const DataView = Loadable(lazy(() => import('modules/DiseaseResearch/Investigati
 const InvestigationOccupationalDisease = Loadable(lazy(() => import('modules/DiseaseResearch/InvestigationOccupationalDisease/InvestigationOccupationalDisease')));
 
 const HistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/HistoricalBurdenDiseases')));
-
-
 
 const AddSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/AddSingleWindow')));
 const UpdateSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/UpdateSingleWindow')));
@@ -987,7 +986,7 @@ const MainRoutes = {
             element: <UpdateIndexNote />
         },
 
-        // new 
+        // 
         {
             path: '/HistoricalBurdenDiseases',
             element: <HistoricalBurdenDiseases />
@@ -1107,6 +1106,10 @@ const MainRoutes = {
         {
             path: '/new-programming/view',
             element: <ViewNewProgramming />
+        },
+        {
+            path: '/programming/new-emo/:id/:documento',
+            element: <ViewNewEMO />
         }
     ]
 };

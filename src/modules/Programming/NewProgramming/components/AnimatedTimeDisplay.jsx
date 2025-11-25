@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Box, Typography, styled, Tooltip, useTheme } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -141,4 +141,6 @@ const AnimatedTimeDisplay = ({ fechaRegistro }) => {
     );
 };
 
-export default AnimatedTimeDisplay;
+export default memo(AnimatedTimeDisplay, (prevProps, nextProps) => {
+    return prevProps.fechaRegistro === nextProps.fechaRegistro;
+});

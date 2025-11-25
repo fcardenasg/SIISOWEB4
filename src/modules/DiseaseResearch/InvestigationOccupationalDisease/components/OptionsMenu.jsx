@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const OptionsMenuList = ({ idAsignacion }) => {
+export const OptionsMenuList = ({ onClickGoAttention, idAsignacion }) => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -55,7 +55,7 @@ export const OptionsMenuList = ({ idAsignacion }) => {
                     },
                 }}
             >
-                <MenuItem onClick={() => handleAction(1)}>
+                <MenuItem onClick={onClickGoAttention}>
                     <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>
@@ -73,7 +73,7 @@ export const OptionsMenuList = ({ idAsignacion }) => {
     )
 }
 
-export const OptionsMenuCard = ({ idAsignacion }) => {
+export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion }) => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -126,7 +126,7 @@ export const OptionsMenuCard = ({ idAsignacion }) => {
                     },
                 }}
             >
-                <MenuItem onClick={() => handleAction('ver')}>
+                <MenuItem onClick={onClickGoAttention}>
                     <EditIcon sx={{ mr: 1, color: 'primary.main' }} /> Atender
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>

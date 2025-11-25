@@ -13,21 +13,15 @@ const UploadFile = ({ setFilesData, filesData }) => {
         try {
             acceptedFiles.forEach((archivoExtraido) => {
                 if (archivoExtraido && allowedFiles.includes(archivoExtraido.type)) {
-                    let reader = new FileReader();
-                    reader.readAsDataURL(archivoExtraido);
-
-                    reader.onloadend = async (e) => {
-                        const base64Content = e.target.result;
-                        setFilesData((prevFilesData) => [
-                            ...prevFilesData,
-                            {
-                                id: prevFilesData.length > 0 ? prevFilesData[prevFilesData.length - 1].id + 1 : 1,
-                                base64: base64Content,
-                                tamanio: archivoExtraido.size.toString(),
-                                nombre: archivoExtraido.name
-                            }
-                        ]);
-                    };
+                    setFilesData((prevFilesData) => [
+                        ...prevFilesData,
+                        {
+                            id: prevFilesData.length > 0 ? prevFilesData[prevFilesData.length - 1].id + 1 : 1,
+                            archivo: archivoExtraido,
+                            tamanio: archivoExtraido.size.toString(),
+                            nombre: archivoExtraido.name
+                        }
+                    ]);
                 } else {
                     toast.error(`El archivo "${archivoExtraido.name}" no es válido o no está permitido.`);
                 }

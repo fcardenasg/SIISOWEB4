@@ -107,7 +107,6 @@ export default function ChatIA({ setInfoEmployee, infoEmployee, setIsOpen, isOpe
         });
 
         const aiText = await fetchChatGPTResponse(conversation);
-
         setMessages((prev) =>
             prev.map((m) => (m.id === tempMsgId ? {
                 ...m,

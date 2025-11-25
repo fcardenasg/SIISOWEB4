@@ -13,3 +13,5 @@ export const GetAllDetailResearchAssignment = async (idDetalle) => await getData
 export const GetAllByDataResearcher = async (idInvestigador) => await getData(`${Url.AsignacionInvestigacion}/detalle/investigation`, { idInvestigador });
 export const InsertDetailResearchAssignment = async (detalle) => await postData(`${Url.AsignacionInvestigacion}/detalle`, detalle);
 export const DeleteDetailResearchAssignment = async (id) => await deleteData(`${Url.AsignacionInvestigacion}/detalle`, { id });
+
+export const GetDataMedicalOccupationalReseAssig = async (documento) => await getData(`${Url.AsignacionInvestigacion}/occupational-medicine`, { documento });

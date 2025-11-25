@@ -8,12 +8,13 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import loadingfile from 'assets/img/loadingfile.json';
 import Iconify from 'components/iconify/iconify';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { ColorDrummondltd } from 'themes/colors';
 import SubCard from 'ui-component/cards/SubCard';
-import ExtractingInformation from '../Skeleton/ExtractingInformation';
+import LoadingBasicInformation from '../LoadingBasicInformation';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -172,7 +173,9 @@ export default function ViewExportedSetail({ lsData = [], onDelete, rows, setLsD
                         </Grid>
                     </Grid>
                 </SubCard>
-            ) : <ExtractingInformation />}
+            ) :
+                <LoadingBasicInformation animationData={loadingfile} />
+            }
         </>
     );
 }

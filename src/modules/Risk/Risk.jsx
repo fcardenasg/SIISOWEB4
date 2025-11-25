@@ -104,8 +104,8 @@ const Risk = () => {
             const result = await InsertRisk(datos);
             if (result.data.exito) {
                 toast.success(result.data.mensaje);
-                setLsGrupoRiesgo([]);
-                reset();
+                /* setLsGrupoRiesgo([]);
+                reset(); */
                 getAll();
             } else {
                 toast.error(result.data.mensaje);

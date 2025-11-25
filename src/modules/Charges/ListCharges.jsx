@@ -1,19 +1,15 @@
-import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import ReactExport from "react-export-excel";
 
-// Componentes de Material-ui
-import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
     CardContent,
     Checkbox,
     Grid,
-    Fab,
     IconButton,
     InputAdornment,
+    ListItemText,
     Table,
     TableBody,
     TableCell,
@@ -25,30 +21,25 @@ import {
     TextField,
     Toolbar,
     Tooltip,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
-import { IconFileExport } from '@tabler/icons';
 
-// Import de proyectos
-import { GetAllCharges, DeleteCharges } from 'api/clients/ChargesClient';
-import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
-import { SNACKBAR_OPEN } from 'store/actions';
+import { MessageDelete, ParamDelete } from 'components/alert/AlertAll';
+import { TitleButton } from 'components/helpers/Enums';
+import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
 
-// Iconos y masss
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import SearchIcon from '@mui/icons-material/Search';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import HowToRegSharpIcon from '@mui/icons-material/HowToRegSharp';
-import Cargando from 'components/loading/Cargando';
-import ValidateAction from 'components/ValidateAction/ValidateAction';
+import SearchIcon from '@mui/icons-material/Search';
+import { DeleteExposicionOcupacional, GetAllExposicionOcupacional } from 'api/clients/OccupationalExposure';
+import LoadingList from 'components/loading/LoadingList';
+import { useBoolean } from 'hooks/use-boolean';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
-// Mesa de Destino
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -62,7 +53,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-/* Llenado de tabla y comparaciones */
 function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -73,32 +63,38 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-/* Construcción de la cabecera de la Tabla */
 const headCells = [
     {
-        id: 'idCargo',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
-        id: 'nameRosterPosition',
+        id: 'cargo',
         numeric: false,
         label: 'Cargo',
         align: 'left'
     },
     {
-        id: 'nameGES',
+        id: 'ges',
         numeric: false,
         label: 'GES',
         align: 'left'
     },
-
+    {
+        id: 'claseRiesgo',
+        numeric: false,
+        label: 'Clase de riesgo',
+        align: 'left'
+    },
+    {
+        id: 'descripcionGES',
+        numeric: false,
+        label: 'Descripcion del GES',
+        align: 'left'
+    },
+    {
+        id: 'fechaRegistro',
+        numeric: false,
+        label: 'Bitácora',
+        align: 'left'
+    }
 ];
-
-// ==============================|| TABLE HEADER ||============================== //
-
-/* RENDERIZADO DE LA CABECERA */
 
 function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, theme, selected }) {
     const createSortHandler = (property) => (event) => {
@@ -158,23 +154,6 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
     );
 }
 
-EnhancedTableHead.propTypes = {
-    theme: PropTypes.object,
-    selected: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
-};
-
-// ==============================|| TABLE HEADER TOOLBAR ||============================== //
-
-/* AQUÍ SE SELECCIONA POR MEDIO DEL CHECK BOX Y HACE EL CONTEO DE SELECIONES...
-A FUTURO SE DEBE TOMAR EL ID */
-
 const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     <Toolbar
         sx={{
@@ -186,69 +165,58 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
             })
         }}
     >
-        {numSelected > 0 ? (
+        {numSelected > 0 &&
             <Typography color="inherit" variant="h4">
                 {numSelected} {TitleButton.Seleccionadas}
             </Typography>
-        ) : (
-            <Typography variant="h6" id="tableTitle">
-                Nutrición
-            </Typography>
-        )}
+        }
+
         <Box sx={{ flexGrow: 1 }} />
         {numSelected > 0 && (
-            <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Panoramadecargo}>
-                <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-                    <IconButton size="large">
-                        <DeleteIcon fontSize="small" />
-                    </IconButton>
-                </Tooltip>
-            </ValidateAction>
+            <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+                <IconButton size="large">
+                    <DeleteIcon fontSize="small" />
+                </IconButton>
+            </Tooltip>
         )}
     </Toolbar>
 );
 
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onClick: PropTypes.func
-};
-
-// ==============================|| RENDER DE LA LISTA ||============================== //
-
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-
 const ListCharges = () => {
-    const dispatch = useDispatch();
-    const [charges, setCharges] = useState([]);
+    const navigate = useNavigate();
+    const loadingModulo = useBoolean(true);
+    const [lsMedicamentos, setLsMedicamentos] = useState([]);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [idCheck, setIdCheck] = useState('');
 
-    /* ESTADOS PARA LA TABLA, SON PREDETERMINADOS */
     const theme = useTheme();
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('id');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
 
-    /* METODO DONDE SE LLENA LA LISTA Y TOMA DE DATOS */
-    async function GetAll() {
+    async function getAll() {
         try {
-            const lsServer = await GetAllCharges(0, 0);
-            setCharges(lsServer.data.entities);
-            setRows(lsServer.data.entities);
+            const lsServer = await GetAllExposicionOcupacional();
+            if (lsServer.status === 200) {
+                setTimeout(() => {
+                    loadingModulo.onFalse();
+                    setLsMedicamentos(lsServer.data.datos);
+                    setRows(lsServer.data.datos);
+                }, 500);
+            }
         } catch (error) {
+            loadingModulo.onFalse();
         }
     }
 
-    /* EL useEffect QUE LLENA LA LISTA */
     useEffect(() => {
-        GetAll();
+        getAll();
     }, [])
 
-    /* EVENTO DE BUSCAR */
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -257,11 +225,11 @@ const ListCharges = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['idCargo', 'nameRosterPosition', 'nameGES'];
+                const properties = ['id', 'cargo', 'ges', 'descripcionGES', 'usuarioRegistro', 'fechaRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });
@@ -271,31 +239,28 @@ const ListCharges = () => {
                 }
                 return matches;
             });
-            setCharges(newRows);
+            setLsMedicamentos(newRows);
         } else {
-            setCharges(rows);
+            setLsMedicamentos(rows);
         }
     };
 
-    /* EVENTOS DE ORDENES SOLICITADAS */
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
-    /* EVENTO DE SELECT CHECKBOX ALL POR TODOS */
     const handleSelectAllClick = (event) => {
-
         if (event.target.checked) {
-            const newSelectedId = charges.map((n) => n.idCargo);
+            const newSelectedId = lsMedicamentos.map((n) => n.id);
             setSelected(newSelectedId);
             return;
         }
+
         setSelected([]);
     };
 
-    /* EVENTO DE SELECIONAR EL CHECK BOX */
     const handleClick = (event, id) => {
         setIdCheck(id);
 
@@ -324,39 +289,36 @@ const ListCharges = () => {
         setPage(0);
     };
 
-    const [idCheck, setIdCheck] = useState('');
-
-    /* FUNCION PARA ELIMINAR */
     const handleDelete = async () => {
         try {
-            const result = await DeleteCharges(idCheck);
-            if (result.status === 200) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: `${Message.Eliminar}`,
-                    variant: 'alert',
-                    alertSeverity: 'error',
-                    close: false,
-                    transition: 'SlideUp'
-                })
-            }
-            setSelected([]);
-            GetAll();
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteExposicionOcupacional(idCheck);
+                    if (result.status === 200) {
+                        setOpenDelete(true);
+                        setSearch('');
+                        setSelected([]);
+                        getAll();
+                    }
+                } else
+                    setSelected([]);
+            });
         } catch (error) {
+
         }
     }
 
-    const navigate = useNavigate();
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - charges.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsMedicamentos.length) : 0;
+    const notFound = !lsMedicamentos.length;
 
     return (
-        <MainCard title="Lista de Panorama de Cargos" content={false}>
+        <MainCard title="Lista de exposición ocupacional" content={false}>
+            <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={8}>
                         <TextField
                             InputProps={{
                                 startAdornment: (
@@ -371,42 +333,24 @@ const ListCharges = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        <ExcelFile element={
-                            <Tooltip title="Exportar">
-                                <IconButton size="large">
-                                    <IconFileExport />
-                                </IconButton>
-                            </Tooltip>
-                        } filename="Cargo">
-                            <ExcelSheet data={charges} name="Cargo">
-                                <ExcelColumn label="Id" value="idCargo" />
-                                <ExcelColumn label="Cargo" value="nameRosterPosition" />
-                                <ExcelColumn label="GES" value="nameGES" />
 
-                            </ExcelSheet>
-                        </ExcelFile>
-
-                        <Tooltip title="Impresión" onClick={() => navigate('/charges/report')}>
-                            <IconButton size="large">
-                                <PrintIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        {/* product add & dialog */}
-                        <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Panoramadecargo}>
-                            <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                onClick={() => navigate("/charges/add")}>
-                                {TitleButton.Agregar}
-                            </Button>
-                        </ValidateAction>
+                    <Grid item sx={{ textAlign: 'right', justifyItems: 'center' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <AnimateButton>
+                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={() => navigate("/charges/add")}>
+                                        {TitleButton.Agregar}
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </CardContent>
 
-            {/* Cabeceras y columnas de la tabla */}
-            <TableContainer>
-                {charges.length === 0 ? <Cargando size={220} myy={6} /> :
+            <LoadingList loadingModulo={loadingModulo.value} notFound={notFound}>
+                <TableContainer>
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -414,19 +358,19 @@ const ListCharges = () => {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={charges.length}
+                            rowCount={lsMedicamentos.length}
                             theme={theme}
                             selected={selected}
                             onClick={handleDelete}
                         />
                         <TableBody>
-                            {stableSort(charges, getComparator(order, orderBy))
+                            {stableSort(lsMedicamentos, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    /** Make sure no display bugs if row isn't an OrderData object */
-                                    if (typeof row === 'number') return null;
 
-                                    const isItemSelected = isSelected(row.idCargo);
+                                    if (typeof row === 'string') return null;
+
+                                    const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -438,7 +382,7 @@ const ListCharges = () => {
                                             key={index}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.idCargo)}>
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
@@ -447,67 +391,95 @@ const ListCharges = () => {
                                                     }}
                                                 />
                                             </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.idCargo)}
-                                                sx={{ cursor: 'pointer' }}
-                                                align="center"
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {' '}
-                                                    #{row.idCargo}{' '}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.idCargo)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {' '}
-                                                    {row.nameRosterPosition}{' '}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.idCargo)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {' '}
-                                                    {row.nameGES}{' '}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.Panoramadecargo}>
-                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/charges/update/${row.idCargo}`)}>
-                                                        <IconButton size="large">
-                                                            <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </ValidateAction>
 
-                                                <Tooltip title="Asignar Panorama de riesgos" onClick={() => navigate(`/panorama/add/${row.idCargo}`)}>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.cargo}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.ges}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.claseRiesgo}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.descripcionGES}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                <ListItemText
+                                                    primary={row?.usuarioRegistro?.toUpperCase()}
+                                                    secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                    primaryTypographyProps={{ typography: 'caption' }}
+                                                    secondaryTypographyProps={{
+                                                        mt: 0.5,
+                                                        component: 'span',
+                                                        typography: 'caption',
+                                                    }}
+                                                />
+                                            </TableCell>
+
+                                            <TableCell align="center" sx={{ pr: 3 }}>
+                                                <Tooltip title="Monitorear" onClick={
+                                                    () => navigate(row.tipoProgramacion === "MASIVA" ? `/programming/monitoring-massive/${row.id}`
+                                                        : `/programming/monitoring-individual/${row.id}`)}
+                                                >
                                                     <IconButton size="large">
-                                                        <HowToRegSharpIcon sx={{ fontSize: '1.3rem' }} />
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                     </IconButton>
                                                 </Tooltip>
-
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -523,14 +495,17 @@ const ListCharges = () => {
                             )}
                         </TableBody>
                     </Table>
-                }
-            </TableContainer>
+                </TableContainer>
+            </LoadingList>
 
-            {/* Paginación de la Tabla */}
             <TablePagination
+                labelRowsPerPage="Filas por página:"
+                labelDisplayedRows={({ from, to, count }) => (
+                    `${from} - ${to} de ${count !== -1 ? count : `más de ${lsMedicamentos.length}`}`
+                )}
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={charges.length}
+                count={lsMedicamentos.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

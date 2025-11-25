@@ -4,6 +4,7 @@ import { PendingActions, HourglassEmpty, CheckCircle } from "@mui/icons-material
 import { UpperFirstChar } from "components/helpers/Format";
 import axios from "axios";
 import { alpha, Chip, styled } from "@mui/material";
+import config from "config";
 
 export const getStatusConfig = (status) => {
     switch (status) {
@@ -39,8 +40,6 @@ export function capitalizarTypeCare(texto) {
 
 export const fetchChatGPTResponse = async (conversation, model = 'gpt-4o-mini') => {
     try {
-        const OPENAIKEY = "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";
-
         const response = await axios.post(
             'https://api.openai.com/v1/responses',
             {
@@ -50,7 +49,7 @@ export const fetchChatGPTResponse = async (conversation, model = 'gpt-4o-mini') 
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${OPENAIKEY}`,
+                    'Authorization': `Bearer ${config.apiKey.openia}`,
                 },
             }
         );
