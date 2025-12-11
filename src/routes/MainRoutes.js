@@ -236,6 +236,10 @@ const DataView = Loadable(lazy(() => import('modules/DiseaseResearch/Investigati
 const InvestigationOccupationalDisease = Loadable(lazy(() => import('modules/DiseaseResearch/InvestigationOccupationalDisease/InvestigationOccupationalDisease')));
 
 const HistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/HistoricalBurdenDiseases')));
+const ListHistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/ListHistoricalBurdenDiseases')));
+const UpdateHistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/UpdateHistoricalBurdenDiseases')));
+
+const VisualizatorFile = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/VisualizatorFile')));
 
 
 
@@ -990,6 +994,14 @@ const MainRoutes = {
         {
             path: '/HistoricalBurdenDiseases',
             element: <HistoricalBurdenDiseases />
+        },
+        {
+            path: '/ListHistoricalBurdenDiseases',
+            element: <ListHistoricalBurdenDiseases />
+        },
+        {
+            path: '/UpdateHistoricalBurdenDiseases',
+            element: <UpdateHistoricalBurdenDiseases />
         },
 
         /* Ventanilla Única */

@@ -6,51 +6,54 @@ import {
   Typography,
   Paper,
   Box,
+  Modal,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-// import FormProvider from 'src/components/hook-form/form-provider';
-
-// import animation from "src/assets/img/animation.json";
+import CloseIcon from "@mui/icons-material/Close";
 
 import Lottie from "lottie-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-// import { UploadBoxPdf } from 'src/components/input/InputUploadFile';
+
 import { useCallback, useEffect, useState } from "react";
 import ItemUpload from "./ItemUpload";
-// import { enqueueSnackbar } from "notistack";
 
-// import ModalBasic from "./ModalBasic";
-// import { useBoolean } from "src/hooks/use-boolean";
-
-// import { useAuthContext } from "src/auth/hooks";
-
-// import RobotBot from 'src/assets/img/lottieAnimation/Robot-Bot.json';
-// import animationloader from "src/assets/img/lottieAnimation/animationloader";
-// import CustomizedSteppers from "./ProgressBard";
-// import BasicModal from '../chatIA/BasicModal';
-import { m } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  extractDataSisso,
   extractImagesFromPdf,
   extractionDataBase,
-  fetchIAData,
-  // fetchToPdf,
-  MapeoPromptSisso,
-  mergeJsons,
+  extractWordFromText,
+  fileToBase64,
+  onSaveMaster,
   promptDatosGenerales,
+  propmt,
+  propmtprueba,
+  updateStateFile,
   validationStateFile,
+  wordOpenIa,
+  ConvertirDocxASfdt,
 } from "./serviceSisso";
-// import ControlModal from "src/components/components/ControlModal";
+
 import InvestigationView from "./InvestigationView";
 import Upload from "components/UploadDocument/Upload";
 import ControlModal from "components/controllers/ControlModal";
+import useAuth from "hooks/useAuth";
 import toast from "react-hot-toast";
 import { useBoolean } from "hooks/use-boolean";
-// import pdfToText from "react-pdftotext";
-// import VisualHtmlViewer from './VisualHtmlViewer';
-import CustomizedSteppers from './ProgressBard';
+
+import CustomizedSteppers from "./ProgressBard";
+import VisualizatorFile from "./VisualizatorFile";
+import ControlModalView from "components/controllers/ControlModalView";
+import AnimateButton from "ui-component/extended/AnimateButton";
+
+import ViewHtml from "./ViewHtml";
+import ModalBasic from "./ModalBasic";
+import { TitleButton } from "components/helpers/Enums";
+import { useNavigate } from "react-router-dom";
+import UploadMultiselect from "components/UploadDocument/UploadMultiselect";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -63,7 +66,8 @@ const Item = styled(Paper)(({ theme }) => ({
 const validations = Yup.object().shape({});
 
 export default function FormUploadFileSisso() {
-  //   const { user } = useAuthContext();
+  const { user } = useAuth();
+    const navigate = useNavigate();
   const [acceptedFiles, setAcceptedFiles] = useState([]);
   const [dataProduct, setDataProduct] = useState();
   const [listMappingproduct, setListMappingproduct] = useState([]);
@@ -77,15 +81,20 @@ export default function FormUploadFileSisso() {
   const [htmlContent, setHtmlContent] = useState(null);
 
   const [dataCurrent, setDataCurrent] = useState();
-  const [openError, setOpenError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [archivoAdjunto, setArchivoAdjunto] = useState(null);
+  const [currentFile, setCurrentFile] = useState(null);
+  const [database, setDatabase] = useState(null);
+  const [html, setHtml] = useState(null);
 
   const confirm = useBoolean();
   const enable = useBoolean();
   const onsave = useBoolean();
-  const saveState = useBoolean();
+  const saveState = useBoolean(true);
   const confirmModal = useBoolean();
+  const confirmModalDocx = useBoolean();
+  const confirmExport = useBoolean();
+
+  
 
   const methods = useForm({ resolver: yupResolver(validations) });
 
@@ -93,78 +102,52 @@ export default function FormUploadFileSisso() {
     formState: { isSubmitting },
   } = methods;
 
-  const handleDropCargar = useCallback((files) => {
-    setAcceptedFiles((prev) => {
-      const newFiles = files.filter(
-        (file) => !prev.some((acceptedFile) => acceptedFile.path === file.path)
-      );
-
-      if (newFiles.length < files.length) {
-        toast.error("Algunos archivos ya estaban en la lista");
-        // enqueueSnackbar("Algunos archivos ya estaban en la lista", {
-        //   variant: "warning",
-        //   anchorOrigin: { vertical: "top", horizontal: "right" },
-        // });
-      }
-      saveState.onTrue();
-      setCountProgress(1);
-
-      return [...prev, ...newFiles];
-    });
-  }, []);
-
   const extractInformation = async (file) => {
-    // const responseFile = await converToPDF(file);
+    console.log("extractInformation", file);
+
+    confirm.onTrue();
 
     try {
-      confirm.onTrue();
+      let currentFile = null;
+      const response = await wordOpenIa(file, promptDatosGenerales);
+      // const responseSfdt = await ConvertirDocxASfdt(file);
+      console.log("responseSfdt",response)
 
-      // Obtienes el texto (lo puedes dividir ya sea por páginas o secciones)
-      // const [database] = await Promise.all([
-      //   extractionDataBase(file),
-      //   // extractDataSisso(file), // <- ahora devuelve un array con bloques de texto
-      // ]);
+      // const response = await extractImagesFromPdf(file, promptDatosGenerales);
 
-      await GetResponseIA(file)
-      // console.log(dataBlocks);
+      if (response) {
+        currentFile = await fileToBase64(file);
+      }
 
-      enable.onTrue();
+      response.UsuarioRegistro = user?.nameuser;
+      response.Bat64 = currentFile;
 
-      // let allResponses = [];
+      console.log("respesta de texto", response);
+      setListMappingproduct((prev) => [...prev, response]);
 
-      // for (let i = 0; i < dataBlocks.length; i++) {
-      //   console.log(dataBlocks);
-      //   const response = await GetResponseIA(file, 0);
-      //   if (response) {
-      //     allResponses.push(response);
-      //   }
-      // }
-
-      // // Aquí unes todos los JSON en uno solo
-      // const merged = mergeJsons(allResponses);
-      // console.log("FINAL JSON:", merged);
-    } catch (error) {
+      setDataInvestigation(response);
       confirm.onFalse();
-      toast.error("Error al extraer la información");
-      //   enqueueSnackbar("Error al extraer la información", { variant: "error" });
+      updateStateFile(file, acceptedFiles, setAcceptedFiles);
+    } catch (err) {
+      console.log(err);
+      toast.error(
+        "Ha ocurrido un error al extraer la informaion por favor vuelva a intentarlo"
+      );
+      confirm.onFalse();
+      saveState.onTrue();
     }
   };
-
-  // const converToPDF = async (file) => {
-  //   try {
-  //     const response = await fetchToPdf(file);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
 
   useEffect(() => {
     if (listMappingproduct.length > 0) {
       const invalidFiles = validationStateFile(acceptedFiles);
+      console.log("validacion", invalidFiles);
+
       if (invalidFiles.length === 0) {
         saveState.onFalse();
         setCountProgress(2);
+      } else {
+        saveState.onTrue();
       }
     }
 
@@ -182,135 +165,32 @@ export default function FormUploadFileSisso() {
     );
   };
 
-  // Peticion a la IA
-  const GetResponseIA = async ( file) => {
-    console.log("archivo ia",file)
-  
+  const onSubmit = async () => {
+    console.log("listMappingproduct", listMappingproduct);
+    console.log("acceptedFiles", acceptedFiles);
+
     try {
-      // const fileres = await sendFile(file);
-      // console.log("respesta de IMAGENES",fileres);
-      //File
-
-
-
-      
-      // const response = await fetchIAData(
-      //   MapeoPromptSisso(extractedText, 0),
-      //   confirm,
-      //   file,
-      //   acceptedFiles,
-      //   setAcceptedFiles
-      // );
-      // console.log("respesta de IA", response);
-
-      const database = extractionDataBase(file);
-      console.log(database);
-
-      const response = await extractImagesFromPdf(file, promptDatosGenerales);
-      console.log("respesta de IMAGENES",response);
-
-      // res.departamentoempresa=response.departamento
-      // res.lugar_nacimiento=response.lugar_nacimiento
-      // res.departamento_nacimiento=response.departamento_nacimiento
-
-      response.id = database?.nombre;
-
-      console.log(response);
-
-      setDataInvestigation((prev) => [...prev, response]);
-
-      setCountProgress(2);
-
-      // setDataInvestigation(response)
-      // if (response === false) {
-      //   enqueueSnackbar('Este archivo no corresponde a una ficha tecnica FDS.', {
-      //     variant: 'warning',
-      //   });
-      //    confirm.onFalse();
-      //   return;
-      // }
-
-      confirm.onFalse();
-
-      // let mappingData = { ...database, ...response };
-
-      // if (!Array.isArray(response.cas) || response.cas.length === 0) {
-      //   const result = await fetchIAData(MapeoPromptCas(mappingData.nombre));
-      //   mappingData = { ...mappingData, cas: [result.cas] };
-      // }
-
-      // updateStateFile(file, acceptedFiles, setAcceptedFiles);
-
-      // setDataProduct(mappingData);
+      onsave.onTrue();
+      await onSaveMaster(listMappingproduct, acceptedFiles);
+      setAcceptedFiles([]);
+      setListMappingproduct([]);
+      saveState.onTrue();
     } catch (error) {
-      confirm.onFalse();
-
-      toast.error("No se pudo extraer la información. Intente nuevamente.");
-      //   enqueueSnackbar(
-      //     "No se pudo extraer la información. Intente nuevamente.",
-      //     {
-      //       variant: "warning",
-      //     }
-      //   );
-      console.error("Error:", error);
+      console.error("Error en onSubmit:", error);
+    } finally {
+      onsave.onFalse();
     }
   };
 
-  // useEffect(() => {
-  //   if (!dataProduct) return;
-  //   let active = true;
-
-  //   (async () => {
-  //     setMensaje('Haciendo scrapping para extraer resultado de CAS');
-  //     try {
-  //       const arraycas = await webScrapping(dataProduct.cas);
-  //       if (!active) return;
-
-  //       setMensaje('Mapeando datos extraídos');
-  //       const dataMaping = await mappingData(dataProduct, arraycas, user);
-  //       setListMappingproduct((prev) => [...prev, dataMaping]);
-  //       confirm.onFalse();
-  //     } catch {
-  //       setMensaje('Error al hacer scraping');
-  //       confirm.onFalse();
-  //     }
-  //   })();
-
-  //   return () => {
-  //     active = false;
-  //   };
-  // }, [dataProduct, user]);
-
-  const onSubmit = async () => {
-    // try {
-    //   onsave.onTrue();
-    //   await onSaveMaster(listMappingproduct, acceptedFiles, user);
-    //   setAcceptedFiles([]);
-    //   setListMappingproduct([]);
-    //   enqueueSnackbar("Archivos guardados correctamente ✅", {
-    //     variant: "success",
-    //   });
-    // } catch (error) {
-    //   console.error("Error en onSubmit:", error);
-    // } finally {
-    //   onsave.onFalse();
-    // }
-  };
-
   const handleView = async (file) => {
-    console.log(file);
-    console.log(dataInvestigation);
+    console.log("dataInvestigation", dataInvestigation);
     if (file) {
       const database = extractionDataBase(file);
-      const dataFile = dataInvestigation.find(
-        (item) => item.id === database.nombre
-      );
-      console.log(dataFile);
-      if (dataFile) {
-        setDataCurrent(dataFile);
-        // setFileView(dataFile);
-        confirmModal.onTrue();
-      }
+
+      setDatabase(database);
+
+      setDataCurrent(dataInvestigation);
+      confirmModal.onTrue();
     }
   };
 
@@ -332,7 +212,7 @@ export default function FormUploadFileSisso() {
           toast.error("Algunos archivos ya estaban en la lista");
         }
 
-        saveState.onTrue();
+        // saveState.onTrue();
         setCountProgress(1);
 
         return [...prev, ...newFiles];
@@ -341,35 +221,68 @@ export default function FormUploadFileSisso() {
     [archivoAdjunto]
   );
 
-  useEffect(() => {
-    console.log("Accepted files:", acceptedFiles.length);
-  }, [acceptedFiles]);
+  // Visualizar documento para editar
+  const handleViewDocx = async (file) => {
+    console.log(file);
+    console.log("entro aqui");
+
+    if (file) {
+      const database = extractionDataBase(file);
+      setDatabase(database);
+      setCurrentFile(file);
+      confirmModalDocx.onTrue();
+    }
+  };
+  //----------------------
 
   return (
     <>
       {/* Modales */}
-      {/* <ModalBasic
+      <ModalBasic
         confirmModal={confirm}
         message={mensaje}
         message2="Por favor espere..."
-        animation={animationloader}
-      /> */}
+      />
 
       <ControlModal
         open={confirmModal.value}
-        onclose={confirmModal.onFalse}
+        onClose={confirmModal.onFalse}
         children={<InvestigationView data={dataCurrent} />}
         maxWidth="lg"
-        // actions={
-        //   <Button
-        //     variant="contained"
-        //     color="error"
-        //     onClick={confirmModal.onFalse}
-        //   >
-        //     Cerrar
-        //   </Button>
-        // }
       />
+
+      {/* <ControlModal
+        open={confirmModal.value}
+        onClose={confirmModal.onFalse}
+        children={<ViewHtml html={html} />}
+        maxWidth="lg"
+      /> */}
+
+      {confirmModalDocx.value && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{
+            opacity: confirmModalDocx.value ? 1 : 0,
+            y: confirmModalDocx.value ? 0 : -10,
+          }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ControlModalView
+            title="Investigación de enfermedad laboral"
+            open={confirmModalDocx.value}
+            onClose={confirmModalDocx.onFalse}
+            confirmExport={confirmExport}
+            children={
+              <VisualizatorFile
+                file={currentFile}
+                confirmExport={confirmExport.value}
+              />
+            }
+            maxWidth="lg"
+          />
+        </motion.div>
+      )}
 
       {/* ------------------------ */}
 
@@ -378,186 +291,234 @@ export default function FormUploadFileSisso() {
         spacing={2}
         sx={{ display: "flex", alignItems: "center" }}
       >
-        <Grid item xs={12}>
-          <CustomizedSteppers countProgress={countProgress} />
-        </Grid>
         <Grid
-          xs={12}
-          sm={12}
-          md={6}
-          lg={6}
-          sx={{
-            paddingTop: 0,
-            flexGrow: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-
-            mt: 4,
-          }}
+          container
+          spacing={2}
+          sx={{ display: "flex", alignItems: "center" }}
         >
-          <Item
-            sx={{
-              height: "350px",
-              width: "90%",
-              alignItems: "center",
-              marginY: "auto",
-              boxShadow: 3,
-            }}
+          <Grid item xs={12}>
+            <CustomizedSteppers countProgress={countProgress} />
+          </Grid>
+        </Grid>
+        <Grid item xs={6}>
+          <Grid
+            container
+            spacing={2}
+            sx={{ display: "flex", alignItems: "center" }}
           >
-            <Upload multiple files={archivoAdjunto} onDrop={handleDrop} />
-          </Item>
+            <Grid
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              sx={{
+                paddingTop: 0,
+                flexGrow: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+
+                mt: 2,
+              }}
+            >
+              <Item
+                sx={{
+                  height: "350px",
+                  width: "90%",
+                  alignItems: "center",
+                  marginY: "auto",
+                  boxShadow: 3,
+                }}
+              >
+                <UploadMultiselect multiple files={archivoAdjunto} onDrop={handleDrop} />
+              </Item>
+            </Grid>
+          </Grid>
         </Grid>
 
-        {/* {acceptedFiles?.length > 0 && (
-          <Typography
-            sx={{
-              paddingLeft: 2,
-              whiteSpace: "pre-wrap",
-              width: "35%",
-            }}
-            variant="body2"
-            color="#546e7a"
-          >
-            {`  No. Items ${acceptedFiles.length}  `}
-          </Typography>
-        )} */}
-
-        {acceptedFiles?.length > 0 && (
+        <Grid item xs={6}>
           <Grid
-            xs={12}
-            sm={12}
-            md={6}
-            lg={6}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              mt: 4,
-              flexGrow: 1,
-              display: "flex",
-
-              padding: 2,
-              justifyContent: "start",
-            }}
+            container
+            spacing={2}
+            sx={{ display: "flex", alignItems: "center" }}
           >
-            {/* <m.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          > */}
-            <Item sx={{ paddingLeft: 2 }}>
-              <Box
+            {acceptedFiles?.length > 0 && (
+              <Grid
+                xs={12}
+                sm={12}
+                md={12}
+                lg={12}
                 sx={{
-                  alignContent: "space-between",
                   display: "flex",
-                  width: "100%",
+                  flexDirection: "column",
+                  gap: 2,
                   mt: 2,
-                  paddingX: 2,
+                  flexGrow: 1,
+                  display: "flex",
+
+                  padding: 2,
+                  justifyContent: "start",
                 }}
               >
-                <Typography
-                  sx={{
-                    paddingLeft: 0,
-                    whiteSpace: "pre-wrap",
-                    textAlign: "left",
-                    width: "65%",
-                  }}
-                  variant="body1"
-                  color="#546e7a"
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Lista de archivos
-                </Typography>
+                  <Item sx={{ paddingLeft: 2 }}>
+                    <Box
+                      sx={{
+                        alignContent: "space-between",
+                        display: "flex",
+                        width: "100%",
+                        mt: 2,
+                        paddingX: 2,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          paddingLeft: 0,
+                          whiteSpace: "pre-wrap",
+                          textAlign: "left",
+                          width: "65%",
+                        }}
+                        variant="body1"
+                        color="#546e7a"
+                      >
+                        Lista de archivos
+                      </Typography>
 
-                <Typography
-                  sx={{
-                    paddingLeft: 2,
-                    whiteSpace: "pre-wrap",
-                    width: "35%",
-                  }}
-                  variant="body2"
-                  color="#546e7a"
-                >
-                  {`  No. Items ${acceptedFiles.length}  `}
-                </Typography>
-              </Box>
+                      <Typography
+                        sx={{
+                          paddingLeft: 2,
+                          whiteSpace: "pre-wrap",
+                          width: "35%",
+                        }}
+                        variant="body2"
+                        color="#546e7a"
+                      >
+                        {`  No. Items ${acceptedFiles.length}  `}
+                      </Typography>
+                    </Box>
 
-              <Box sx={{ overflowY: "auto", height: "auto", maxHeight: 240 }}>
-                <ItemUpload
-                  acceptedFiles={acceptedFiles}
-                  handleViewPDF={handleView}
-                  handleFileRemove={handleFileRemove}
-                  handleFileSave={extractInformation}
-                  filecolor={""}
-                  enable={enable.value}
-                  enableview={false}
-                  estado={false}
-                />
-              </Box>
-
-              <Stack
-                direction="row"
-                spacing={2}
-                width="100%"
-                sx={{
-                  justifyContent: {
-                    xs: "center",
-                    sm: "center",
-                    md: "start",
-                    lg: "start",
-                  },
-                  paddingRight: {
-                    xs: 5,
-                    sm: 0,
-                    md: 5,
-                    lg: 5,
-                  },
-                  paddingLeft: {
-                    xs: 0,
-                    sm: 0,
-                    md: 0,
-                    lg: 0,
-                  },
-                }}
-              >
-                <Button
-                  onClick={onSubmit}
-                  disabled={saveState.value}
-                  sx={{
-                    width: {
-                      xs: "100%",
-                      sm: 300,
-                      md: 150,
-                      lg: 150,
-                    },
-                    height: 40,
-                    borderRadius: 4,
-                    background: "#d32f2f",
-                    marginTop: 2,
-                    "&:hover": {
-                      background: "#b71c1c",
-                    },
-                  }}
-                  size="large"
-                  variant="contained"
-                >
-                  Guardar
-                  {onsave.value && (
-                    <Box sx={{ paddingLeft: 1, display: "flex" }}>
-                      <CircularProgress
-                        color="inherit"
-                        size={25}
-                        thickness={5}
+                    <Box
+                      sx={{ overflowY: "auto", height: "auto", maxHeight: 240 }}
+                    >
+                      <ItemUpload
+                        acceptedFiles={acceptedFiles}
+                        handleViewPDF={handleView}
+                        handleFileRemove={handleFileRemove}
+                        handleFileSave={extractInformation}
+                        handleViewDocx={handleViewDocx}
+                        filecolor={""}
+                        enable={enable.value}
+                        enableview={false}
+                        estado={false}
                       />
                     </Box>
-                  )}
-                </Button>
-              </Stack>
-            </Item>
-            {/* </m.div> */}
+
+                    {/* <Stack
+                      direction="row"
+                      spacing={2}
+                      width="100%"
+                      sx={{
+                        justifyContent: {
+                          xs: "center",
+                          sm: "center",
+                          md: "start",
+                          lg: "start",
+                        },
+                        paddingRight: {
+                          xs: 5,
+                          sm: 0,
+                          md: 5,
+                          lg: 5,
+                        },
+                        paddingLeft: {
+                          xs: 0,
+                          sm: 0,
+                          md: 0,
+                          lg: 0,
+                        },
+                      }}
+                    >
+                      <Button
+                        onClick={onSubmit}
+                        disabled={saveState.value}
+                        sx={{
+                          width: {
+                            xs: "100%",
+                            sm: 300,
+                            md: 150,
+                            lg: 150,
+                          },
+                          height: 40,
+                          borderRadius: 4,
+                          background: "#d32f2f",
+                          marginTop: 2,
+                          "&:hover": {
+                            background: "#b71c1c",
+                          },
+                        }}
+                        size="large"
+                        variant="contained"
+                      >
+                        Guardar
+                        {onsave.value && (
+                          <Box sx={{ paddingLeft: 1, display: "flex" }}>
+                            <CircularProgress
+                              color="inherit"
+                              size={25}
+                              thickness={5}
+                            />
+                          </Box>
+                        )}
+                      </Button>
+                    </Stack> */}
+                  </Item>
+                </motion.div>
+              </Grid>
+            )}
           </Grid>
-        )}
+        </Grid>
+        <Grid item xs={12} sx={{ mb: 2,mt:2,display:"flex",flexDirection:"row",justifyContent:"flex-end" }}>
+          <Grid container spacing={2} sx={{pl:2}} >
+            <Grid item xs={6} md={4} lg={2}>
+              <AnimateButton>
+                <Button
+                   disabled={saveState.value}
+                  variant="contained"
+                  onClick={onSubmit}
+                  fullWidth
+                >
+                  {TitleButton.Guardar}
+                   {onsave.value && (
+                          <Box sx={{ paddingLeft: 1, display: "flex" }}>
+                            <CircularProgress
+                              color="inherit"
+                              size={25}
+                              thickness={5}
+                            />
+                          </Box>
+                        )}
+                </Button>
+              </AnimateButton>
+            </Grid>
+
+            <Grid item xs={6} md={4} lg={2}>
+              <AnimateButton>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => navigate("/ListHistoricalBurdenDiseases")}
+                >
+                  {TitleButton.Cancelar}
+                </Button>
+              </AnimateButton>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     </>
   );
