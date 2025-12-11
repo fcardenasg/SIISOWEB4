@@ -379,7 +379,7 @@ const ListOccupationalMedicine = () => {
             </CardContent>
 
             <TableContainer>
-                {occupationalMedicine.length === 0 ? <Cargando size={220} myy={6} /> :
+                {occupationalMedicine.length === 0 ? <Cargando size={140} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}

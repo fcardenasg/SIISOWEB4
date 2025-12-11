@@ -65,7 +65,7 @@ const OrdenesMasivas = () => {
     const [openError, setOpenError] = useState(false);
     const [search, setSearch] = useState('');
     const [lsEmployee, setLsEmployee] = useState([]);
-    const [lsIdOrdenes, setLsIdOrdenes] = useState([]); // Cambiado a useState
+    const [lsIdOrdenes, setLsIdOrdenes] = useState([]);
 
     const handleSearch = async () => {
         if (search.trim() === '') {

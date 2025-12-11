@@ -183,6 +183,7 @@ export const CodCatalogo = {
 
     AHC_ATENCION: 135,
     Opciones_SINO: 88,
+    OPCION_HABITO_INVESTIGACION: 3002,
     AHC_CONCEP_ACTITUD: 43,
 
     AUSLAB_INC: 198,

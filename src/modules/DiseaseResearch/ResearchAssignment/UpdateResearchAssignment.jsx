@@ -26,7 +26,6 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 import InputOnChange from 'components/input/InputOnChange';
 import InputSelect from 'components/input/InputSelect';
-import Cargando from 'components/loading/Cargando';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewEmployee from 'components/views/ViewEmployee';
 import { motion } from 'framer-motion';
@@ -42,6 +41,7 @@ import * as yup from 'yup';
 import DetailRA from './DetailRA';
 import { GetAllSegmentoAgrupado, GetAllBySubsegment, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import UpdateSkeleton from 'components/Skeleton/UpdateSkeleton';
 
 const buttonVariants = {
     hover: {
@@ -72,6 +72,7 @@ const UpdateResearchAssignment = () => {
     const [textDx, setTextDx] = useState("");
     const [modelEmployee, setModelEmployee] = useState([]);
     const [lsInvestigacion, setLsInvestigacion] = useState([]);
+    const [lsAsesorARL, setLsAsesorARL] = useState([]);
     const [lsDx, setLsDx] = useState([]);
     const [dataModel, setDataModel] = useState(null);
 
@@ -90,9 +91,11 @@ const UpdateResearchAssignment = () => {
     useEffect(() => {
         async function getCombo() {
             try {
-                const lsServerCombo = await GetAllComboAsesorInvestigacion();
-                if (lsServerCombo.status === 200)
-                    setLsInvestigacion(lsServerCombo.data);
+                const lsServerInvestigacion = await GetAllComboAsesorInvestigacion(false);
+                setLsInvestigacion(lsServerInvestigacion.data);
+
+                const lsServerAsesorARL = await GetAllComboAsesorInvestigacion(true);
+                setLsAsesorARL(lsServerAsesorARL.data);
 
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -155,7 +158,7 @@ const UpdateResearchAssignment = () => {
                     handleLoadingDocument({ target: { value: datos.documento } });
                     setValue("investigador", datos.investigador);
                     setValue("asesorARL", datos.asesorARL);
-                    setTimeout(timeWait.onTrue, 700);
+                    setTimeout(timeWait.onTrue, 500);
                 }
             } catch (error) {
                 toast.error(error.message || "Error al cargar los datos");
@@ -395,7 +398,7 @@ const UpdateResearchAssignment = () => {
                                             checkbox
                                             name="asesorARL"
                                             label="Asesor ARL"
-                                            options={lsInvestigacion}
+                                            options={lsAsesorARL}
                                         />
                                     </Grid>
 
@@ -484,7 +487,7 @@ const UpdateResearchAssignment = () => {
                             </SubCard>
                         </Grid>
                     </Grid>
-                </FormProvider> : <Cargando />
+                </FormProvider> : <UpdateSkeleton />
             }
         </ValidateActionSkeleton>
     );

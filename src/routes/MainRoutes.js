@@ -175,6 +175,7 @@ const UpdatePSA = Loadable(lazy(() => import('modules/Paraclinics/PSA/UpdatePSA'
 const Rol = Loadable(lazy(() => import('modules/Rol/Rol')));
 const ListRol = Loadable(lazy(() => import('modules/Rol/ListRol')));
 const UpdateRol = Loadable(lazy(() => import('modules/Rol/UpdateRol')));
+const OtherPermits = Loadable(lazy(() => import('modules/Rol/OtherPermits')));
 
 const ListRXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/ListRXTORAX')));
 const RXTORAX = Loadable(lazy(() => import('modules/Paraclinics/RXTorax/RXTORAX')));
@@ -260,6 +261,11 @@ const ListMessageScheduling = Loadable(lazy(() => import('modules/OrderSchedulin
 const ViewIndividualOrders = Loadable(lazy(() => import('modules/OrderScheduling/ViewIndividualOrders')));
 const ViewMassiveOrders = Loadable(lazy(() => import('modules/OrderScheduling/ViewMassiveOrders')));
 const OrderScheduling = Loadable(lazy(() => import('modules/OrderScheduling/OrderScheduling')));
+
+const ListAPTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/ListAPTPsychosocial')));
+const ListAPTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/ListAPTHygiene')));
+const APTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/APTHygiene')));
+const ViewAPT = Loadable(lazy(() => import('modules/DiseaseResearch/APT/ViewAPT')));
 
 const MainRoutes = {
     path: '/',
@@ -957,7 +963,10 @@ const MainRoutes = {
             path: '/rol/update/:id',
             element: <UpdateRol />
         },
-
+        {
+            path: '/rol/other-permits/:id',
+            element: <OtherPermits />
+        },
         /* Head Count */
         {
             path: '/headcount/add',
@@ -1110,7 +1119,25 @@ const MainRoutes = {
         {
             path: '/programming/new-emo/:id/:documento',
             element: <ViewNewEMO />
-        }
+        },
+
+        /* APT */
+        {
+            path: '/apt/view',
+            element: <ViewAPT />
+        },
+        {
+            path: '/apt-psychosocial/list',
+            element: <ListAPTPsychosocial />
+        },
+        {
+            path: '/apt-hygiene/list',
+            element: <ListAPTHygiene />
+        },
+        {
+            path: '/apt-hygiene/add',
+            element: <APTHygiene />
+        },
     ]
 };
 

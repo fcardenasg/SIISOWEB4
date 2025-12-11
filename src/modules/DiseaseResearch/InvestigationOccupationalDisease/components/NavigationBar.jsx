@@ -1,12 +1,8 @@
-import { Grid, IconButton, Typography } from '@mui/material';
 import { ChevronLeft as ChevronLeftIcon } from '@mui/icons-material';
-import { useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Grid, IconButton, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const NavigationBar = ({ title, urlBack }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
     return (
@@ -35,7 +31,7 @@ const NavigationBar = ({ title, urlBack }) => {
 
             <Grid item xs>
                 <Typography
-                    variant={isMobile ? 'h5' : 'h3'}
+                    variant="h3"
                     fontWeight="bold"
                     sx={{
                         lineHeight: 1.2,

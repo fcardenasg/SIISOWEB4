@@ -321,7 +321,7 @@ const TableConsulting = () => {
             </CardContent>
 
             <TableContainer>
-                {lsConsulting.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsConsulting.length === 0 ? <Cargando size={140} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}

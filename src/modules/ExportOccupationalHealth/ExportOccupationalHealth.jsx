@@ -25,6 +25,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
     const [opcionBusqueda, setOpcionBusqueda] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
+    const [opcionFecha, setOpcionFecha] = useState(3);
 
     const handleClose = () => {
         setOpenModal(false);
@@ -34,6 +35,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
         setOpcionBusqueda(0);
         setFechaInicio(null);
         setFechaFin(null);
+        setOpcionFecha(3);
     }
 
     return (
@@ -44,7 +46,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                 onClose={handleClose}
                 maxWidth="xs"
             >
-                {exportBy.codigo === 'MEDIC' ?
+                {exportBy.codigo === 'MEDIC' &&
                     <MedicionaLaboralExport
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
@@ -54,10 +56,10 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
-                {exportBy.codigo === 'REINT' ?
+                {exportBy.codigo === 'REINT' &&
                     <ReintegroExport
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
                         lsBusqueda={lsTipoBusqueda}
@@ -67,7 +69,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                    />
                 }
 
                 {exportBy.codigo === 'AT' &&
@@ -84,7 +86,7 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                     />
                 }
 
-                {exportBy.codigo === 'AUSENTI' ?
+                {exportBy.codigo === 'AUSENTI' &&
                     <AusentismoExport
                         parametroConsulta={exportBy.codigo}
                         lsTipoExcelAusentismo={lsTipoExcelAusentismo}
@@ -95,7 +97,8 @@ const ExportOccupationalHealth = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
-                    /> : null
+                        setOpcionFecha={setOpcionFecha} opcionFecha={opcionFecha}
+                    />
                 }
             </ControlModal>
         </Fragment>

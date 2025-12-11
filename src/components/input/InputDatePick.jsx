@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
 
-const InputDatePick = ({ value, label, onChange, size, ...others }) => {
+const InputDatePick = ({ value, label, noWriting = false, onChange, size, ...others }) => {
 
     return (
         <TextField
@@ -12,6 +12,9 @@ const InputDatePick = ({ value, label, onChange, size, ...others }) => {
             size={size}
             InputLabelProps={{
                 shrink: true
+            }}
+            inputProps={{
+                onKeyDown: noWriting ? (e) => e.preventDefault() : undefined
             }}
             fullWidth
             {...others}

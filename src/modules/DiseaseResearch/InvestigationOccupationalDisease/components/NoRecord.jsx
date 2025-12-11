@@ -2,7 +2,7 @@ import { SearchOff as SearchOffIcon } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
-const NoRecord = () => {
+const NoRecord = ({ title = "No se encontraron resultados" }) => {
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -45,7 +45,7 @@ const NoRecord = () => {
                     gutterBottom
                     sx={{ lineHeight: 1.5 }}
                 >
-                    No se encontraron resultados
+                    {title}
                 </Typography>
 
                 <Typography

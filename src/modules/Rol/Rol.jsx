@@ -78,7 +78,7 @@ const Rol = () => {
                 lsIdComponente.push(idComponente);
             });
 
-            setValueCompo({ valueCompo: lsIdComponente, labelComponente: typeof value === 'string' ? value.split(',') : value });
+            setValueCompo({ valueComponente: lsIdComponente, labelComponente: typeof value === 'string' ? value.split(',') : value });
 
             const lsServe = await GetComboItemMenu(lsIdComponente);
             setLsItemMenu(lsServe.data);
@@ -87,9 +87,7 @@ const Rol = () => {
 
     const handleChangeItem = async (event) => {
         try {
-            const {
-                target: { value },
-            } = event;
+            const { target: { value } } = event;
 
             const lsIdItemMenu = [];
             var lsItemMenuFilter = lsItemMenu;
@@ -108,14 +106,14 @@ const Rol = () => {
 
     const handleChangeCard = (event) => {
         try {
-            const {
-                target: { value },
-            } = event;
+            const { target: { value } } = event;
 
             const lsIdItemMenu = [];
             var lsCardItemFilter = lsCardItem;
             value.forEach(xValue => {
-                var idItemMenu = lsCardItemFilter.filter(x => x.label === xValue).map(dataMap => ({ idCard: dataMap.value, idItem: parseInt(dataMap.codigo) }));
+                var idItemMenu = lsCardItemFilter
+                    .filter(x => x.label === xValue)
+                    .map(dataMap => ({ idCard: dataMap.value, idItem: parseInt(dataMap.codigo) }));
                 lsIdItemMenu.push(idItemMenu[0]);
             });
 
@@ -234,7 +232,7 @@ const Rol = () => {
                         {idRol === 0 ? null : <ListaRol getAll={getAll} setLsPermisos={setLsPermisos} lsPermisos={lsPermisos} rows={rows} />}
                     </Grid>
 
-                    <Grid item xs={12} sx={{ mt: 4 }}>
+                    <Grid item xs={12} sx={{ mt: 2 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6} md={4} lg={2}>
                                 <AnimateButton>

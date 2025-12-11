@@ -139,7 +139,7 @@ const UpdateUser = () => {
             const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, resert, datos.nombre, datos.telefono, datos.idArea,
                 datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
                 datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica,
-                datos.registraTaxi, datos.puedeAdministrarPermisos, datos.medicoRegistroAtencion, datos.asesorInvestigacion);
+                datos.registraTaxi, datos.puedeAdministrarPermisos, datos.medicoRegistroAtencion, datos.asesorARL, datos.investigador);
 
             const result = await UpdateUsers(DataToUpdate);
             if (result.status === 200) {
@@ -392,9 +392,18 @@ const UpdateUser = () => {
 
                                         <Grid item xs={12} md={4}>
                                             <InputCheckBox
-                                                name="asesorInvestigacion"
-                                                defaultValue={lsUsuario.asesorInvestigacion}
-                                                label="¿Es asesor para investigaciones?"
+                                                name="asesorARL"
+                                                defaultValue={lsUsuario?.asesorARL}
+                                                label="¿Es asesor ARL?"
+                                                size={30}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={4}>
+                                            <InputCheckBox
+                                                name="investigador"
+                                                defaultValue={lsUsuario?.investigador}
+                                                label="¿Es investigador?"
                                                 size={30}
                                             />
                                         </Grid>

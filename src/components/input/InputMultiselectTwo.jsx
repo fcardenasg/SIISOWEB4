@@ -1,9 +1,7 @@
-import { Controller, useFormContext } from "react-hook-form";
 import { Box, Checkbox, Chip, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
+import { Controller } from "react-hook-form";
 
 export default function InputMultiselectTwo({ name, chip, label, options, checkbox, defaultValue = [], placeholder, helperText, ...other }) {
-    const { control } = useFormContext();
-
     const renderValues = (selectedIds) => {
         const selectedItems = Array.isArray(selectedIds)
             ? options.filter((item) => selectedIds.includes(item.value))
@@ -30,7 +28,6 @@ export default function InputMultiselectTwo({ name, chip, label, options, checkb
         <Controller
             name={name}
             defaultValue={defaultValue || []}
-            control={control}
             render={({ field, fieldState: { error } }) => {
                 const value = Array.isArray(field.value) ? field.value : [];
 

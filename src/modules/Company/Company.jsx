@@ -25,7 +25,9 @@ import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkel
 const validationSchema = yup.object().shape({
     codigo: yup.string().required(`${ValidationMessage.Requerido}`),
     descripcionSpa: yup.string().required(`${ValidationMessage.Requerido}`),
-
+    email: yup.string().email('Debe ser un email válido').nullable(true),
+    celular: yup.string().nullable(true),
+    gerente: yup.string().nullable(true),
 });
 
 const Company = () => {
@@ -42,21 +44,17 @@ const Company = () => {
         resolver: yupResolver(validationSchema)
     });
 
-
     const { handleSubmit, reset, formState: { errors } } = methods;
-
 
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PostCompany(datos.codigo, datos.descripcionSpa, datos.email, datos.celular, datos.gerente,
-                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()), datos.actividadEconomica);
 
-            if (Object.keys(datos.length !== 0)) {
-                const result = await InsertCompany(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    reset();
-                }
+            const result = await InsertCompany(DataToInsert);
+            if (result.status === 200) {
+                setOpenSuccess(true);
+                reset();
             }
         } catch (error) {
             setOpenError(true);
@@ -70,9 +68,9 @@ const Company = () => {
                 <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
+                <FormProvider {...methods}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <InputText
                                 defaultValue=""
                                 fullWidth
@@ -81,10 +79,9 @@ const Company = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.codigo}
                             />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
                             <InputText
                                 defaultValue=""
                                 fullWidth
@@ -93,10 +90,9 @@ const Company = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.descripcionSpa}
                             />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
                             <InputText
                                 defaultValue=""
                                 fullWidth
@@ -105,10 +101,9 @@ const Company = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.email}
                             />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
-                        <FormProvider {...methods}>
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
                             <InputText
                                 defaultValue=""
                                 fullWidth
@@ -117,10 +112,9 @@ const Company = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.celular}
                             />
-                        </FormProvider>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4} sx={{ pb: 2 }}>
-                        <FormProvider {...methods}>
+                        </Grid>
+
+                        <Grid item xs={12} md={6} lg={4}>
                             <InputText
                                 defaultValue=""
                                 fullWidth
@@ -129,29 +123,40 @@ const Company = () => {
                                 size={matchesXS ? 'small' : 'medium'}
                                 bug={errors.gerente}
                             />
-                        </FormProvider>
-                    </Grid>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {TitleButton.Guardar}
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                        <Grid item xs={12}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                name="actividadEconomica"
+                                label="Actividad económica de la empresa"
+                                size={matchesXS ? 'small' : 'medium'}
+                                bug={errors.actividadEconomica}
+                            />
+                        </Grid>
 
-                            <Grid item xs={2}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
-                                        {TitleButton.Cancelar}
-                                    </Button>
-                                </AnimateButton>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {TitleButton.Guardar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={2}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
+                                            {TitleButton.Cancelar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </FormProvider>
             </MainCard>
         </ValidateActionSkeleton>
     );

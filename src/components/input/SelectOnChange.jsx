@@ -12,7 +12,12 @@ const SelectOnChange = ({ disabled, defaultValue, options, value, onChange, size
             <InputLabel
                 htmlFor="my-input"
                 id="demo-simple-select-label"
-                sx={{ fontSize: 14, whiteSpace: 'normal', maxWidth: maxWidth }}
+                sx={{
+                    fontSize: size === 'small' ? 12 : 14,
+                    whiteSpace: 'normal',
+                    maxWidth: maxWidth,
+                    width: '100%'
+                }}
             >
                 {label}
             </InputLabel>
@@ -32,7 +37,11 @@ const SelectOnChange = ({ disabled, defaultValue, options, value, onChange, size
                     <MenuItem
                         key={option.value}
                         value={option.value}
-                        sx={{ whiteSpace: 'normal', maxWidth: maxWidth }}
+                        sx={{
+                            whiteSpace: 'normal',
+                            maxWidth: maxWidth,
+                            fontSize: size === 'small' ? 12 : undefined
+                        }}
                     >
                         {option.label}
                     </MenuItem>

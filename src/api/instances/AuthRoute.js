@@ -31,7 +31,8 @@ export const Url = {
     GetOpenIAFile: 'api/CalendarioCitas/GetOpenIAFile',
     GetOpenIA: 'api/CalendarioCitas/GetOpenIA',
 
-
+    Investigacion: 'api/InvestigacionEnfermedadLaboral',
+    InvestigacionId: 'api/InvestigacionEnfermedadLaboral/id',
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
@@ -340,6 +341,6 @@ export const Url = {
     CuestionarioId: 'api/CuestionarioPrevencion/id',
 
 
-  
-        
+
+
 }

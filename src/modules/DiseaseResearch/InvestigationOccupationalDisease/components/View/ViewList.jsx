@@ -24,7 +24,7 @@ import { StyledChip } from 'modules/Programming/NewProgramming/components/method
 import { getStatusConfig } from '../methods';
 import AnimatedTimeDisplay from 'modules/Programming/NewProgramming/components/AnimatedTimeDisplay';
 
-const ViewList = ({ dataInfo = {}, onClickOpenChat, onClickGoAttention }) => {
+const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention }) => {
     const theme = useTheme();
     const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
 
@@ -113,7 +113,7 @@ const ViewList = ({ dataInfo = {}, onClickOpenChat, onClickGoAttention }) => {
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6 }}>
                                 <WorkIcon sx={{ fontSize: '16px', color: 'success.main' }} /> <strong>Roster position:</strong> {dataInfo.nombreRoster}
                             </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, textTransform: 'capitalize' }}>
                                 <LocalHospitalIcon sx={{ fontSize: '16px', color: 'primary.800' }} /> <strong>EPS:</strong> {dataInfo.nombreEPS}
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6 }}>

@@ -1,45 +1,42 @@
-import { Fragment, useEffect, useState } from "react";
-import { Grid, CardMedia, FormGroup, FormControlLabel, useMediaQuery, IconButton, Tooltip, FormHelperText } from '@mui/material';
+import { Box, CardMedia, FormControlLabel, FormGroup, FormHelperText, Grid, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import user from 'assets/img/user.png';
+import { Fragment, useEffect, useState } from "react";
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 import {
-    Button,
     Divider,
     ListItemButton,
-    ListItemText,
-    ListItemSecondaryAction,
-    TextField,
     Stack,
+    TextField,
     Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import Chip from 'ui-component/extended/Chip';
 import ControlModal from 'components/controllers/ControlModal';
 import UpdateEmployee from 'modules/Programming/Attention/OccupationalExamination/Update/UpdateEmployee';
+import Chip from 'ui-component/extended/Chip';
 
 import {
+    IconBuildingFactory2,
+    IconCalendar,
+    IconDatabase,
+    IconDeviceMobile,
     IconEdit,
+    IconGenderBigender,
+    IconHierarchy,
     IconMail,
     IconPhone,
-    IconHierarchy,
-    IconUser,
-    IconDeviceMobile,
-    IconSchool,
-    IconDatabase,
-    IconCalendar,
-    IconBuildingFactory2,
-    IconGenderBigender
+    IconUser
 } from '@tabler/icons';
+import Accordion from 'components/accordion/Accordion';
 import { UpperFirstChar, ViewFormat } from "components/helpers/Format";
 import SubCard from 'ui-component/cards/SubCard';
-import Accordion from 'components/accordion/Accordion';
 
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import EpidemiologicalView from 'modules/EpidemiologicalView';
+import SocialSecurityInfo from "modules/Programming/NewEMO/components/SocialSecurityInfo";
 import { ColorDrummondltd } from "themes/colors";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -94,47 +91,50 @@ const ViewEmployeeDetails = [
     { icons: <IconDeviceMobile stroke={2} size="1.3rem" />, label: 'Celular' },
     { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de terminación' },
     { icons: <IconBuildingFactory2 stroke={2} size="1.3rem" />, label: 'Empresa' },
-    { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de Nacimiento' },
+    { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de nacimiento' },
     { icons: <IconGenderBigender stroke={2} size="1.3rem" />, label: 'Sexo / Genero' },
-    { icons: <IconHierarchy stroke={2} size="1.3rem" />, label: 'Estado Civil' },
+    { icons: <IconHierarchy stroke={2} size="1.3rem" />, label: 'Estado civil' },
     { icons: <IconUser stroke={2} size="1.3rem" />, label: 'Contacto' },
-    { icons: <IconPhone stroke={2} size="1.3rem" />, label: 'Telefono de Contacto' },
+    { icons: <IconPhone stroke={2} size="1.3rem" />, label: 'Telefono de contacto' },
 ]
 
 const ViewData = ({ icons, nameData, label }) => {
-    const theme = useTheme();
-    const isMobil = useMediaQuery(theme.breakpoints.down('md'));
-
     return (
-        <Grid item xs={12} md={4}>
-            <Grid container>
-                {icons}<Typography variant="h5" sx={{ pl: 1.2 }}>{label}: </Typography> {isMobil ? <Typography variant="body2" sx={{ pl: 2.5 }}>{nameData ? nameData : 'SIN REGISTRO'}</Typography> : null}
-            </Grid>
-
-            {!isMobil ? <Typography variant="body2" sx={{ pl: 2.5 }}>{nameData ? nameData : 'SIN REGISTRO'}</Typography> : null}
-
-            <Grid item xs={12} sx={{ mt: 1 }}>
-                <Divider />
-            </Grid>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {icons}
+            <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>{label}: </Typography>
+            <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, textTransform: 'capitalize' }}>{nameData ? nameData : 'SIN REGISTRO'}</Typography>
         </Grid>
     );
 }
 
 const ViewDataDetails = ({ title, nameData }) => {
+    const theme = useTheme();
+
     return (
-        <Fragment>
-            <ListItemButton>
-                <ListItemText primary={<Typography variant="subtitle1">{title}</Typography>} />
-                <ListItemSecondaryAction>
-                    <Grid item xs zeroMinWidth>
-                        <Typography variant="subtitle2" noWrap>
-                            {nameData}
-                        </Typography>
-                    </Grid>
-                </ListItemSecondaryAction>
+        <>
+            <ListItemButton sx={{ paddingTop: '4px', paddingBottom: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0, color: theme.palette.grey[700], pr: 1 }}>
+                    {title}
+                </Typography>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontSize: '0.87rem',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        textAlign: 'right',
+                        textTransform: 'capitalize',
+                        minWidth: '40%',
+                        maxWidth: '70%'
+                    }}
+                >
+                    {nameData || 'SIN REGISTRO'}
+                </Typography>
             </ListItemButton>
             <Divider />
-        </Fragment>
+        </>
     );
 }
 
@@ -170,7 +170,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                 <UpdateEmployee idEmpleado={documento} getDataAttention={handleDocumento} setOpenUpdateTwo={setOpenUpdate} />
             </ControlModal>
 
-            <SubCard darkTitle title={title && UpperFirstChar(title)}
+            <SubCard darkTitle content={false} title={title && UpperFirstChar(title)}
                 secondary={
                     <Fragment>
                         <Grid container spacing={2}>
@@ -193,112 +193,128 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                     </Fragment>
                 }
             >
-                <Grid container spacing={2}>
+                <Grid container spacing={1} sx={{ mt: 0.2, px: 2 }}>
                     <Grid item xs={12} md={3.2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <CardMedia
                             component="img"
                             image={lsEmployee?.imagenUrl ? lsEmployee?.imagenUrl : user}
-                            sx={{ width: isMobil ? 150 : 200, borderRadius: '150px' }}
+                            sx={{ width: isMobil ? 150 : 200, height: isMobil ? 150 : 200, borderRadius: '16px' }}
                         />
                     </Grid>
 
                     <Grid item xs={12} md={8.8}>
                         <Grid container spacing={1}>
-                            <Grid item xs={12} sx={{ pb: 4 }}>
-                                <Stack direction="row" alignItems="center" alignContent="center" justifyContent="space-between">
-                                    <Grid container alignItems="center" alignContent="center" spacing={3}>
-                                        <Grid item xs={1.6}>
+                            <Grid item xs={12}>
+                                <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                                        {!disabled &&
                                             <TextField
                                                 type="number"
                                                 disabled={disabled}
                                                 value={documento}
                                                 onChange={onChange}
                                                 onKeyDown={handleDocumento}
-                                                id="standard-basic"
+                                                id="documento-input"
+                                                size="small"
                                                 label="Documento"
                                                 variant="standard"
+                                                error={!!errors?.documento}
+                                                helperText={errors?.documento?.message}
+                                                sx={{ width: '100px', mr: 2 }}
                                             />
-                                        </Grid>
+                                        }
 
-                                        <Grid item xs={12} md={6.4}>
-                                            <Grid container spacing={2}>
-                                                <Grid item xs={9}>
-                                                    <Typography variant="h3">
-                                                        {lsEmployee?.nombres == null ? 'Digite Documento...' : lsEmployee?.nombres}
-                                                    </Typography>
-                                                </Grid>
+                                        <Typography variant="h4" sx={{ fontSize: '1.1rem' }}>
+                                            {disabled ?
+                                                <>{lsEmployee?.documento} • {lsEmployee?.nombres}</>
+                                                : lsEmployee?.nombres == null ? 'Digite Documento...'
+                                                    : lsEmployee?.nombres}
+                                        </Typography>
 
-                                                <Grid item xs={3}>
-                                                    {lsEmployee?.namePayStatus &&
-                                                        <Chip
-                                                            size="small"
-                                                            label={lsEmployee?.namePayStatus}
-                                                            chipcolor={lsEmployee?.namePayStatus === 'ACTIVO (A)'
-                                                                ? 'success' : 'error'}
-                                                            sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
-                                                        />
-                                                    }
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-
-                                        <Grid item xs={12} md={4}>
-                                            <Typography variant="h4">
-                                                <b>PROFESIÓN:</b> {lsEmployee?.nameOficio}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
+                                        {lsEmployee?.namePayStatus &&
+                                            <Chip
+                                                size="small"
+                                                label={lsEmployee?.namePayStatus}
+                                                chipcolor={lsEmployee?.namePayStatus === 'ACTIVO (A)'
+                                                    ? 'success' : 'error'}
+                                                sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
+                                            />
+                                        }
+                                    </Box>
 
                                     <AnimateButton>
-                                        <Tooltip title="Actualizar Empleado" placement="top" disabled={documento === '' && lsEmployee?.length === 0 ? true : false} onClick={() => setOpenUpdate(true)}>
-                                            <IconButton sx={{ color: ColorDrummondltd.RedDrummond }}>
-                                                <IconEdit stroke={2} size="1.5rem" />
-                                            </IconButton>
+                                        <Tooltip title="Actualizar Empleado" placement="top">
+                                            <span>
+                                                <IconButton
+                                                    sx={{ color: ColorDrummondltd.RedDrummond }}
+                                                    onClick={() => setOpenUpdate(true)}
+                                                    disabled={documento === '' || lsEmployee?.length === 0}
+                                                >
+                                                    <IconEdit stroke={2} size="1.5rem" />
+                                                </IconButton>
+                                            </span>
                                         </Tooltip>
                                     </AnimateButton>
                                 </Stack>
                             </Grid>
 
-                            <Grid item xs={12} sx={{ pb: 1 }}>
-                                <Grid container>
-                                    <Grid item xs={4}>
-                                        <Typography variant="h5">
-                                            Roster Position:
-                                            <Typography variant="h6">
-                                                {lsEmployee?.nameRosterPosition}
-                                            </Typography>
-                                        </Typography>
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        <Typography variant="h5">
-                                            Sede:
-                                            <Typography variant="h6">
-                                                {lsEmployee?.nameSede}
-                                            </Typography>
-                                        </Typography>
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        <Typography variant="h5">
-                                            Fecha de Contrato:
-                                            <Typography variant="h6">
-                                                {lsEmployee?.fechaContrato && ViewFormat(lsEmployee?.fechaContrato)}
-                                            </Typography>
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
+                            <Grid item xs={12}>
+                                <SocialSecurityInfo
+                                    dataEmployee={
+                                        {
+                                            nameEps: lsEmployee?.nameEps?.toLowerCase(),
+                                            nameAfp: lsEmployee?.nameAfp?.toLowerCase(),
+                                            nameArl: lsEmployee?.nameArl?.toLowerCase(),
+                                            nameCesantias: lsEmployee?.nameCesantias?.toLowerCase()
+                                        }
+                                    }
+                                />
                             </Grid>
 
-                            <Grid item xs={12} sx={{ pb: 1 }}>
+                            <Grid item xs={12}>
                                 <Divider orientation="horizontal" />
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Grid container spacing={2}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>R. position:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1 }}>{lsEmployee?.nameRosterPosition}</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem' }}>Sede:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textTransform: 'capitalize' }}>{lsEmployee?.nameSede?.toLowerCase()}</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Fecha de contrato:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', flexGrow: 1 }}>{lsEmployee?.fechaContrato && ViewFormat(lsEmployee?.fechaContrato)}</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Terminación de contrato:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem' }}>
+                                            {lsEmployee?.termDate && ViewFormat(lsEmployee?.termDate)}
+                                        </Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={8} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Profesión:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, textTransform: 'capitalize' }}>{lsEmployee?.nameOficio?.toLowerCase()}</Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Divider orientation="horizontal" />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Grid container spacing={1}>
                                     <ViewData
                                         icons={ViewEmployeeDetails[0].icons}
-                                        nameData={lsEmployee?.email}
+                                        nameData={lsEmployee?.email?.toUpperCase()}
                                         label={ViewEmployeeDetails[0].label}
                                     />
 
@@ -328,13 +344,13 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[5].icons}
-                                        nameData={`${lsEmployee?.nameGenero} ${lsEmployee?.nameGrupoLGBT != null ? `- ${lsEmployee?.nameGrupoLGBT}` : ''}`}
+                                        nameData={`${UpperFirstChar(lsEmployee?.nameGenero)} ${lsEmployee?.nameGrupoLGBT != null ? `- ${lsEmployee?.nameGrupoLGBT}` : ''}`}
                                         label={ViewEmployeeDetails[5].label}
                                     />
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[6].icons}
-                                        nameData={lsEmployee?.nameEstadoCivil}
+                                        nameData={lsEmployee?.nameEstadoCivil?.toLowerCase()}
                                         label={ViewEmployeeDetails[6].label}
                                     />
 
@@ -343,46 +359,43 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                         nameData={lsEmployee?.contacto}
                                         label={ViewEmployeeDetails[7].label}
                                     />
-
-                                    <ViewData
-                                        icons={ViewEmployeeDetails[8].icons}
-                                        nameData={lsEmployee?.telefonoContacto}
-                                        label={ViewEmployeeDetails[8].label}
-                                    />
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12} sx={{ pt: 1.5 }}>
+                    <Grid item xs={12} sx={{ mt: 1 }}>
                         <Divider />
-                        <Accordion title={<><IconDatabase stroke={2} color={theme.palette.primary.main} size="1.3rem" />
-                            <Typography sx={{ pl: 1 }} variant="h5">Ver mas...</Typography></>}
-                        >
+                        <Accordion title={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <IconDatabase stroke={2} color={theme.palette.primary.main} size="1.3rem" />
+                                <Typography variant="h5">Ver mas...</Typography>
+                            </Box>
+                        }>
                             <Grid container spacing={1}>
                                 <Grid item xs={12} md={6} lg={4}>
                                     <ViewDataDetails title="Rol" nameData={lsEmployee?.nameType} />
-                                    <ViewDataDetails title="Tipo de Contrato" nameData={lsEmployee?.nameTipoContrato} />
-                                    <ViewDataDetails title="Departamento" nameData={lsEmployee?.nameDepartamento} />
-                                    <ViewDataDetails title="Área" nameData={lsEmployee?.nameArea} />
-                                    <ViewDataDetails title="Subárea" nameData={lsEmployee?.nameSubArea} />
+                                    <ViewDataDetails title="Tipo de contrato" nameData={UpperFirstChar(lsEmployee?.nameTipoContrato)} />
+                                    <ViewDataDetails title="Departamento" nameData={UpperFirstChar(lsEmployee?.nameDepartamento)} />
+                                    <ViewDataDetails title="Área" nameData={UpperFirstChar(lsEmployee?.nameArea)} />
+                                    <ViewDataDetails title="Subárea" nameData={UpperFirstChar(lsEmployee?.nameSubArea)} />
                                     <ViewDataDetails title="Fecha de ingreso" nameData={lsEmployee?.fechaIngreso && ViewFormat(lsEmployee?.fechaIngreso)} />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={4}>
                                     <ViewDataDetails title="Grupo" nameData={lsEmployee?.nameGrupo} />
-                                    <ViewDataDetails title="General Position" nameData={lsEmployee?.nameGeneralPosition} />
-                                    <ViewDataDetails title="EPS" nameData={lsEmployee?.nameEps} />
-                                    <ViewDataDetails title="AFP" nameData={lsEmployee?.nameAfp} />
-                                    <ViewDataDetails title="Turno" nameData={lsEmployee?.nameTurno} />
+                                    <ViewDataDetails title="General position" nameData={lsEmployee?.nameGeneralPosition?.toLowerCase()} />
+                                    <ViewDataDetails title="EPS" nameData={lsEmployee?.nameEps?.toLowerCase()} />
+                                    <ViewDataDetails title="AFP" nameData={lsEmployee?.nameAfp?.toLowerCase()} />
+                                    <ViewDataDetails title="Turno" nameData={lsEmployee?.nameTurno?.toLowerCase()} />
                                     <ViewDataDetails title="Fecha de último control" nameData={lsEmployee?.fechaUltimoControl && ViewFormat(lsEmployee?.fechaUltimoControl)} />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={4}>
-                                    <ViewDataDetails title="Departamento de Nacimiento" nameData={lsEmployee?.nameDptoNacido} />
-                                    <ViewDataDetails title="Municipio de Nacimiento" nameData={lsEmployee?.nameMunicipioNacido} />
-                                    <ViewDataDetails title="Departamento de Residencia" nameData={lsEmployee?.nameDptoResidencia} />
-                                    <ViewDataDetails title="Municipio de Residencia" nameData={lsEmployee?.nameMunicipioResidencia} />
+                                    <ViewDataDetails title="Dpto. de nacimiento" nameData={UpperFirstChar(lsEmployee?.nameDptoNacido)} />
+                                    <ViewDataDetails title="Mun. de nacimiento" nameData={UpperFirstChar(lsEmployee?.nameMunicipioNacido)} />
+                                    <ViewDataDetails title="Dpto. de residencia" nameData={UpperFirstChar(lsEmployee?.nameDptoResidencia)} />
+                                    <ViewDataDetails title="Mun. de residencia" nameData={UpperFirstChar(lsEmployee?.nameMunicipioResidencia)} />
                                     <ViewDataDetails title="Dir. Residencia" nameData={lsEmployee?.direccionResidencia} />
                                     <ViewDataDetails title="Fecha de egreso" nameData={lsEmployee?.fechaEgreso && ViewFormat(lsEmployee?.fechaEgreso)} />
                                 </Grid>
@@ -391,15 +404,15 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                     </Grid>
 
                     {errors?.documento && (
-                        <Grid item xs={12} sx={{ mt: 2 }}>
-                            <FormHelperText error>{errors.documento.message}</FormHelperText>
+                        <Grid item xs={12} sx={{ mb: 1 }}>
+                            <FormHelperText error>{errors.documento?.message}</FormHelperText>
                         </Grid>
                     )}
                 </Grid>
 
                 {children}
             </SubCard>
-        </Fragment>
+        </Fragment >
     );
 }
 

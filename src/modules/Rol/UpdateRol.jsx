@@ -51,13 +51,19 @@ const UpdateRol = () => {
 
     const { handleSubmit, formState: { errors } } = methods;
 
-    async function getAll() {
+    async function getAllList() {
         try {
             const lsServer = await GetByListMenuRol(id);
+            console.log(lsServer.data);
+
             setLsPermisos(lsServer.data);
             setRows(lsServer.data);
         } catch (error) { }
     }
+
+    useEffect(() => {
+        getAllList();
+    }, []);
 
     useEffect(() => {
         async function getAll() {
@@ -111,7 +117,7 @@ const UpdateRol = () => {
             if (result.status === 200) {
                 if (!isNaN(result.data)) {
                     setOpenSuccess(true);
-                    getAll();
+                    getAllList();
 
                     setLsItem([]);
                     setLsCard([]);
@@ -237,7 +243,7 @@ const UpdateRol = () => {
                                         </Grid>
 
                                         <Grid item xs={12}>
-                                            <ListaRol getAll={getAll} setLsPermisos={setLsPermisos} lsPermisos={lsPermisos} rows={rows} />
+                                            <ListaRol getAll={getAllList} setLsPermisos={setLsPermisos} lsPermisos={lsPermisos} rows={rows} />
                                         </Grid>
                                     </Grid>
                                 </SubCard>
@@ -249,6 +255,14 @@ const UpdateRol = () => {
                                         <AnimateButton>
                                             <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
                                                 {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth onClick={() => navigate(`/rol/other-permits/${id}`)}>
+                                                Otros permisos
                                             </Button>
                                         </AnimateButton>
                                     </Grid>

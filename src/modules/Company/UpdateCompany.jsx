@@ -43,7 +43,7 @@ const UpdateCompany = () => {
     const methods = useForm(
         { resolver: yupResolver(validationSchema) }
     );
-    const { handleSubmit, errors } = methods;
+    const { handleSubmit, formState: { errors } } = methods;
 
     async function getAll() {
         try {
@@ -62,8 +62,7 @@ const UpdateCompany = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInsert = PutCompany(datos.codigo, datos.descripcionSpa, datos.email, datos.celular, datos.gerente,
-                lsCompany.usuarioRegistro, lsCompany.fechaRegistro, user?.nameuser, FormatDate(new Date()));
-
+                lsCompany.usuarioRegistro, lsCompany.fechaRegistro, user?.nameuser, FormatDate(new Date()), datos.actividadEconomica);
 
             if (Object.keys(datos.length !== 0)) {
                 const result = await UpdateCompanys(DataToInsert);
@@ -80,13 +79,13 @@ const UpdateCompany = () => {
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Empresa}>
-            <MainCard title="Actualizar Empresas">
-                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-                {lsCompany.length !== 0 ?
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
+            <FormProvider {...methods}>
+                <MainCard title="Actualizar Empresas">
+                    <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                    <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+                    {lsCompany.length !== 0 ?
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={lsCompany.codigo}
                                     fullWidth
@@ -94,81 +93,88 @@ const UpdateCompany = () => {
                                     name="codigo"
                                     label="Código"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.codigo}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={lsCompany.descripcionSpa}
                                     fullWidth
                                     name="descripcionSpa"
                                     label="Nombre"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.descripcionSpa}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={lsCompany.email}
                                     fullWidth
                                     name="email"
                                     label="Correo electronico"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.email}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <FormProvider {...methods}>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4}>
                                 <InputText
                                     defaultValue={lsCompany.celular}
                                     fullWidth
                                     name="celular"
                                     label="Celular"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.celular}
                                 />
-                            </FormProvider>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={4} sx={{ pb: 2 }}>
-                            <FormProvider {...methods}>
+                            </Grid>
+
+                            <Grid item xs={12} md={6} lg={4} sx={{ pb: 2 }}>
                                 <InputText
                                     defaultValue={lsCompany.gerente}
                                     fullWidth
                                     name="gerente"
                                     label="Contacto"
                                     size={matchesXS ? 'small' : 'medium'}
-                                    bug={errors}
+                                    bug={errors.gerente}
                                 />
-                            </FormProvider>
-                        </Grid>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
+                            <Grid item xs={12}>
+                                <InputText
+                                    defaultValue={lsCompany.actividadEconomica}
+                                    fullWidth
+                                    name="actividadEconomica"
+                                    label="Actividad económica de la empresa"
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    bug={errors.actividadEconomica}
+                                />
+                            </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/company/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid> : <Cargando />
-                }
-            </MainCard>
+                        </Grid> : <Cargando />
+                    }
+                </MainCard>
+            </FormProvider>
         </ValidateActionSkeleton>
     );
 };
