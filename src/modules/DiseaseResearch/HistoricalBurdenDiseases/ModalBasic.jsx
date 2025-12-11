@@ -1,6 +1,6 @@
 import { Box, Modal, Typography } from '@mui/material';
 import Lottie from 'lottie-react';
-import loadingAnimation from '../../assets/img/lottieAnimation/loading.json';
+import loadingAnimation from '../../../assets/img/loading.json';
 import { m } from 'framer-motion';
 
 export default function ModalBasic({
@@ -13,7 +13,6 @@ export default function ModalBasic({
     <Modal
       keepMounted
       open={confirmModal.value}
-      // onClose={confirmModalSave.onFalse}
       aria-labelledby="keep-mounted-modal-title"
       aria-describedby="keep-mounted-modal-description"
       width="xl"
@@ -33,32 +32,33 @@ export default function ModalBasic({
       >
         <Lottie style={{ width: 300, height: 300 }} loop={true} animationData={animation} />
 
-       
-          <m.div
-            style={{
-              backgroundImage: 'linear-gradient(90deg, #9ca3af 0%, #ffffff 50%, #9ca3af 100%)',
-              backgroundSize: '200% auto',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontSize: '3rem',
-              fontWeight: 600,
-            }}
-            animate={{
-              backgroundPosition: ['0% center', '200% center'],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          >
-            <Typography variant="h6">{message}</Typography>
-          </m.div>
-    
+        {/* TEXTO PRINCIPAL ANIMADO */}
+        <m.div
+          style={{
+            backgroundImage: 'linear-gradient(90deg, #9ca3af 0%, #ffffff 50%, #9ca3af 100%)',
+            backgroundSize: '200% auto',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontSize: '1.2rem',
+            fontWeight: 300,
+            textAlign: 'center',
+          }}
+          animate={{
+            backgroundPosition: ['0% center', '200% center'],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        >
+          {message}
+        </m.div>
 
+        {/* TEXTO SECUNDARIO NORMAL */}
         {message2 && (
-          <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
+          <Typography variant="h5" sx={{ color: 'white', fontWeight: 'bold', mt: 1 }}>
             {message2}
           </Typography>
         )}

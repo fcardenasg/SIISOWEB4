@@ -29,7 +29,7 @@ const Field = ({ label, value }) => (
 );
 
 export default function InvestigationView({ data }) {
-  console.log(data);
+  console.log("data recibe",data);
   return (
     <Paper elevation={2} sx={{ p: 3, maxWidth: 1100, mx: 'auto' }}>
       <Box textAlign="center" mb={2}>
@@ -43,24 +43,24 @@ export default function InvestigationView({ data }) {
         <SectionTitle>1. DATOS DE LA EMPRESA</SectionTitle>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={4}>
-            <Field label="Fecha de la investigación" value={data.fecha_investigacion} />
+            <Field label="Fecha de la investigación" value={data?.FechaInvestigacion} />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Field label="Razón social" value={data.razon_social} />
+            <Field label="Razón social" value={data?.RazonSocial} />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Field label="NIT" value={data.nit} />
+            <Field label="NIT" value={data?.Nit} />
           </Grid>
           <Grid item xs={12}>
-            <Field label="Actividad económica" value={data.actividad_economica} />
+            <Field label="Actividad económica" value={data?.ActividadEconomica} />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Field label="Sede de trabajo" value={data.sede} />
+            <Field label="Sede de trabajo" value={data?.Sede} />
           </Grid>
           <Grid item xs={12} sm={6} md={8}>
             <Field
               label="Departamento"
-              value={`${data.departamento || ''}`}
+              value={`${data?.Departamento || ''}`}
             />
           </Grid>
         </Grid>
@@ -73,61 +73,61 @@ export default function InvestigationView({ data }) {
         <SectionTitle>2. DATOS PERSONALES</SectionTitle>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Primer apellido" value={data.primer_apellido} />
+            <Field label="Primer apellido" value={data?.PrimerApellido} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Segundo apellido" value={data.segundo_apellido} />
+            <Field label="Segundo apellido" value={data?.SegundoApellido} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Primer nombre" value={data.primer_nombre} />
+            <Field label="Primer nombre" value={data?.PrimerNombre} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Segundo nombre" value={data.segundo_nombre} />
+            <Field label="Segundo nombre" value={data?.SegundoNombre} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Identificación" value={data.identificacion} />
+            <Field label="Identificación" value={data?.Identificacion} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Sexo" value={data.sexo} />
+            <Field label="Sexo" value={data?.Sexo} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Estado civil" value={data.estado_civil} />
+            <Field label="Estado civil" value={data?.EstadoCivil} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Field label="Fecha de nacimiento" value={data.fecha_nacimiento} />
+            <Field label="Fecha de nacimiento" value={data?.FechaNacimiento} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={6}>
-            <Field label="Lugar de nacimiento" value={data.lugar_nacimiento} />
+            <Field label="Lugar de nacimiento" value={data.LugarNacimiento} />
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
-            <Field label="Departamento (nacimiento)" value={data.departamento_nacimiento} />
+            <Field label="Departamento (nacimiento)" value={data?.DepartamentoNacimiento} />
           </Grid>
 
           <Grid item xs={12} sm={4} md={4}>
-            <Field label="Escolaridad" value={data.escolaridad} />
+            <Field label="Escolaridad" value={data?.Escolaridad} />
           </Grid>
           <Grid item xs={12} sm={4} md={4}>
-            <Field label="Profesión / oficio" value={data.profesion} />
+            <Field label="Profesión / oficio" value={data?.Profesion} />
           </Grid>
           <Grid item xs={12} sm={4} md={4}>
             <Field
               label="Residencia"
-              value={`${data.residencia || ''} ${
-                data.departamento_residencia ? `/ ${data.departamento_residencia}` : ''
+              value={`${data.Residencia || ''} ${
+                data?.DepartamentoResidencia ? `/ ${data.DepartamentoResidencia}` : ''
               }`}
             />
           </Grid>
 
           <Grid item xs={12} sm={4} md={4}>
-            <Field label="EPS" value={data.eps} />
+            <Field label="EPS" value={data.EPS} />
           </Grid>
           <Grid item xs={12} sm={4} md={4}>
-            <Field label="AFP" value={data.afp} />
+            <Field label="AFP" value={data.AFP} />
           </Grid>
           <Grid item xs={12} sm={4} md={4}>
-            <Field label="ARL" value={data.arl} />
+            <Field label="ARL" value={data.ARL} />
           </Grid>
         </Grid>
       </Box>
@@ -152,10 +152,10 @@ export default function InvestigationView({ data }) {
               <TableBody>
                 {data.diagnosticos.map((d, i) => (
                   <TableRow key={i}>
-                    <TableCell>{d?.codigo_cie10}</TableCell>
-                    <TableCell>{d?.descripcion}</TableCell>
+                    <TableCell>{d?.Codigocie10}</TableCell>
+                    <TableCell>{d?.Descripcion}</TableCell>
                     {/* <TableCell>{d?.fecha_inicio_sintomas}</TableCell> */}
-                    <TableCell>{d?.fecha_diagnostico}</TableCell>
+                    <TableCell>{d?.FechaDiagnostico}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -166,29 +166,29 @@ export default function InvestigationView({ data }) {
         <Box mt={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
-              <Field label="Genero incapacidad" value={data.genero_incapacidad} />
+              <Field label="Genero incapacidad" value={data.GeneroIncapacidad} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field label="Días de incapacidad" value={data.dias_incapacidad} />
+              <Field label="Días de incapacidad" value={data.DiasIncapacidad} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field label="Observaciones" value={data.observaciones_incapacidad} />
+              <Field label="Observaciones" value={data.ObservacionesIncapacidad} />
             </Grid>
 
             <Grid item xs={12} sm={4}>
-              <Field label="FUREL #" value={data.furel_numero} />
+              <Field label="FUREL #" value={data.FurelNumero} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field label="Fecha FUREL" value={data.fecha_furel} />
+              <Field label="Fecha FUREL" value={data.FechaFurel} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field label="Fecha estructuración origen" value={data.fecha_estructuracion_origen} />
+              <Field label="Fecha estructuración origen" value={data.FechaEstructuracionOrigen} />
             </Grid>
           </Grid>
         </Box>
 
         {/* Calificaciones */}
-        {data.calificaciones && data.calificaciones.length > 0 && (
+        {data?.Calificaciones && data.Calificaciones.length > 0 && (
           <Box mt={2}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
               Calificaciones
@@ -205,13 +205,13 @@ export default function InvestigationView({ data }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.calificaciones.map((c, i) => (
+                  {data?.Calificaciones?.map((c, i) => (
                     <TableRow key={i}>
-                      <TableCell>{c.tipo}</TableCell>
-                      <TableCell>{c.entidad}</TableCell>
-                      <TableCell>{c.fecha}</TableCell>
-                      <TableCell>{c.origen}</TableCell>
-                      <TableCell>{c.dictamen_numero || c.dictamen || ''}</TableCell>
+                      <TableCell>{c.Tipo}</TableCell>
+                      <TableCell>{c.Entidad}</TableCell>
+                      <TableCell>{c.Fecha}</TableCell>
+                      <TableCell>{c.Origen}</TableCell>
+                      <TableCell>{c.DictamenNumero || ''}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -228,27 +228,30 @@ export default function InvestigationView({ data }) {
         <SectionTitle>4. DATOS LABORALES DE INTERÉS EN DLTD</SectionTitle>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
-            <Field label="Fecha de ingreso" value={data.fecha_ingreso} />
+            <Field label="Fecha de ingreso" value={data.FechaIngreso} />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Field label="Cargo inicial" value={data.cargo_inicial} />
+            <Field label="Cargo inicial" value={data.CargoInicial} />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Field label="Turno / jornada" value={data.turno_jornada} />
+            <Field label="Turno / jornada" value={data.TurnoJornada} />
           </Grid>
 
           <Grid item xs={12} sm={4}>
-            <Field label="Tiempo en el cargo" value={data.tiempo_en_el_cargo} />
+            <Field label="Tiempo en el cargo" value={data.TiempoCargo} />
           </Grid>
+          {data?.EdadIngreso&&(
+
           <Grid item xs={12} sm={4}>
-            <Field label="Edad al momento del ingreso" value={data.edad_ingreso} />
+            <Field label="Edad al momento del ingreso" value={data?.EdadIngreso} />
           </Grid>
+          )}
           <Grid item xs={12}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 1 }}>
               Otros cargos
             </Typography>
 
-            {data.otros_cargos && data.otros_cargos.length > 0 ? (
+            {data.OtrosCargos && data.OtrosCargos.length > 0 ? (
               <TableContainer component={Paper} variant="outlined" sx={{ mt: 1 }}>
                 <Table size="small">
                   <TableHead>
@@ -260,12 +263,12 @@ export default function InvestigationView({ data }) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.otros_cargos.map((oc, i) => (
+                    {data.OtrosCargos.map((oc, i) => (
                       <TableRow key={i}>
-                        <TableCell>{oc.fecha_inicio}</TableCell>
-                        <TableCell>{oc.cargo}</TableCell>
-                        <TableCell>{oc.turno_jornada}</TableCell>
-                        <TableCell>{oc.tiempo_en_el_cargo}</TableCell>
+                        <TableCell>{oc.FechaInicio}</TableCell>
+                        <TableCell>{oc.argo}</TableCell>
+                        <TableCell>{oc.TurnoJornada}</TableCell>
+                        <TableCell>{oc.TiempoCargo}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

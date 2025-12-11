@@ -12,12 +12,14 @@ import {
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import BlurLinearIcon from '@mui/icons-material/BlurLinear';
+import PreviewIcon from '@mui/icons-material/Preview';
 
 export default function ItemUpload({
   acceptedFiles,
   handleFileRemove,
   handleViewPDF,
   handleFileSave,
+  handleViewDocx,
   filecolor,
   enable,
   enableview,
@@ -51,8 +53,27 @@ export default function ItemUpload({
         }}
         variant="contained"
       >
-        Extraer información
+        Extraer información 
       </Button>
+      {/* <Button
+        onClick={() => {
+          console.log('entro');
+          handleViewDocx(file);
+        }}
+        sx={{
+          background: '#4caf50',
+          borderRadius: 4,
+          mr: 0.5,
+          '&:hover': {
+            cursor: 'pointer',
+            color: '#4caf50',
+            background: '#c8e6c9',
+          },
+        }}
+        variant="contained"
+      >
+        Visualizar
+      </Button> */}
       <Tooltip title="Eliminar">
         <Box
           onClick={() => handleFileRemove(file)}
@@ -90,8 +111,8 @@ export default function ItemUpload({
               variant="outlined"
               sx={{
                 width: '100%',
-                height: 73,
-                background: file.state ? '#e3f2fd' : '#ffffff', // Fondo verde si state es true
+                height: "auto",
+                background: file.state ? '#e3f2fd' : '#ffffff', 
                 alignItems: 'center',
               }}
             >
@@ -152,6 +173,26 @@ export default function ItemUpload({
                         }}
                       >
                         <ImageSearchIcon />
+                      </Box>
+                      <Box
+                        onClick={() => handleViewDocx(file)}
+                        component="section"
+                        sx={{
+                          fontSize: 16.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginRight: 1,
+                          padding: 0.5,
+                          '&:hover': {
+                            cursor: 'pointer',
+                            color: '#004d40',
+                            background: '#80cbc4',
+                            borderRadius: 4,
+                          },
+                        }}
+                      >
+                        <PreviewIcon/>
                       </Box>
 
                       <Box
