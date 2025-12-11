@@ -16,6 +16,7 @@ import { GetAllComboAsesorInvestigacion } from 'api/clients/UserClient';
 import { ParamDelete } from 'components/alert/AlertAll';
 import {
     AccionMenu,
+    CodCatalogo,
     Message,
     Modulo,
     TitleButton
@@ -39,6 +40,8 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
 import DetailRA from './DetailRA';
+import { GetAllSegmentoAgrupado, GetAllBySubsegment, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 
 const buttonVariants = {
     hover: {
@@ -72,11 +75,56 @@ const UpdateResearchAssignment = () => {
     const [lsDx, setLsDx] = useState([]);
     const [dataModel, setDataModel] = useState(null);
 
+    const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
+    const [lsSegmentoAfectado, setLsSegmentoAfectado] = useState([]);
+    const [lsSubsegmento, setLsSubsegmento] = useState([]);
+    const [lsLateralidad, setLsLateralidad] = useState([]);
+    const [lsRegion, setLsRegion] = useState([]);
+
     const methods = useForm({ resolver: yupResolver(validationSchema) });
     const { handleSubmit, formState: { errors }, reset, watch, setError, setValue } = methods;
     const documento = watch("documento");
     const listaDetalle = watch("listaDetalle");
     const dx = watch("dx");
+
+    useEffect(() => {
+        async function getCombo() {
+            try {
+                const lsServerCombo = await GetAllComboAsesorInvestigacion();
+                if (lsServerCombo.status === 200)
+                    setLsInvestigacion(lsServerCombo.data);
+
+                const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
+                var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setLsSegmentoAgrupado(resultSegAgrupado);
+
+                const lsServerSegAfectado = await GetAllBySegmentoAfectado(0, 0);
+                var resultSegAfectado = lsServerSegAfectado.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setLsSegmentoAfectado(resultSegAfectado);
+
+                const lsServerSubsegmento = await GetAllBySubsegment(0, 0);
+                var resultSubsegmento = lsServerSubsegmento.data.entities.map((item) => ({
+                    value: item.id,
+                    label: item.nombre
+                }));
+                setLsSubsegmento(resultSubsegmento);
+
+                const lsServerLateralidad = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_LATERA);
+                setLsLateralidad(lsServerLateralidad.data);
+
+                const lsServerRegion = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_REGION);
+                setLsRegion(lsServerRegion.data);
+            } catch (error) { }
+        }
+
+        getCombo();
+    }, []);
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -100,11 +148,13 @@ const UpdateResearchAssignment = () => {
                 const lsServer = await GetByIdResearchAssignment(id);
                 if (lsServer.data.datos) {
                     const datos = lsServer.data.datos;
+                    console.log(datos);
                     setValue('id', datos.id);
                     setDataModel(datos);
                     setValue('documento', datos.documento);
                     handleLoadingDocument({ target: { value: datos.documento } });
                     setValue("investigador", datos.investigador);
+                    setValue("asesorARL", datos.asesorARL);
                     setTimeout(timeWait.onTrue, 700);
                 }
             } catch (error) {
@@ -127,18 +177,6 @@ const UpdateResearchAssignment = () => {
 
     useEffect(() => {
         getDxEmployee();
-    }, []);
-
-    useEffect(() => {
-        async function getCombo() {
-            try {
-                const lsServerCombo = await GetAllComboAsesorInvestigacion();
-                if (lsServerCombo.status === 200)
-                    setLsInvestigacion(lsServerCombo.data);
-            } catch (error) { }
-        }
-
-        getCombo();
     }, []);
 
     const handleDx = async (event) => {
@@ -247,14 +285,99 @@ const UpdateResearchAssignment = () => {
 
                         <Grid item xs={12}>
                             <SubCard>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={12} md={6}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <InputDatePicker
                                             label="Fecha"
                                             name="fecha"
-                                            defaultValue={dataModel.fecha}
+                                            defaultValue={dataModel?.fecha}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.fecha}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <InputDatePicker
+                                            label="Fecha de entrega"
+                                            name="fechaEntrega"
+                                            defaultValue={dataModel?.fechaEntrega}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.fecha}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <InputDatePicker
+                                            label="Fecha de revisión"
+                                            name="fechaRevision"
+                                            defaultValue={dataModel?.fechaRevision}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.fecha}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <InputDatePicker
+                                            label="Fecha de visto bueno"
+                                            name="fechaVistoBueno"
+                                            defaultValue={dataModel?.fechaVistoBueno}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.fecha}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <InputSelect
+                                            name="idSegmentoAgrupado"
+                                            label="Segmento agrupado"
+                                            defaultValue={dataModel?.idSegmentoAgrupado}
+                                            options={lsSegmentoAgrupado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idSegmentoAgrupado}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <InputSelect
+                                            name="idSegmentoAfectado"
+                                            label="Segmento afectado"
+                                            defaultValue={dataModel?.idSegmentoAfectado}
+                                            options={lsSegmentoAfectado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idSegmentoAfectado}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <InputSelect
+                                            name="idSubsegmento"
+                                            label="Subsegmento"
+                                            defaultValue={dataModel?.idSubsegmento}
+                                            options={lsSubsegmento}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idSubsegmento}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <InputSelect
+                                            name="idRegion"
+                                            label="Región"
+                                            defaultValue={dataModel?.idRegion}
+                                            options={lsRegion}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idRegion}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={3}>
+                                        <InputSelect
+                                            name="idLateralidad"
+                                            label="Lateralidad"
+                                            defaultValue={dataModel?.idLateralidad}
+                                            options={lsLateralidad}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.idLateralidad}
                                         />
                                     </Grid>
 
@@ -263,6 +386,15 @@ const UpdateResearchAssignment = () => {
                                             checkbox
                                             name="investigador"
                                             label="Investigadores"
+                                            options={lsInvestigacion}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <InputMultiselectTwo
+                                            checkbox
+                                            name="asesorARL"
+                                            label="Asesor ARL"
                                             options={lsInvestigacion}
                                         />
                                     </Grid>

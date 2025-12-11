@@ -1,7 +1,8 @@
-import { Grid } from '@mui/material';
+import { Divider, Grid } from '@mui/material';
 import HoverSocialCard from 'components/components/HoverSocialCard';
 import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
+import NavigationBar from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/NavigationBar';
 
 const ArraySubmenuDiseaseResearch = [
     { title: "Cargue Historico de Enfermedades", url: "/ListHistoricalBurdenDiseases", icono: "tabler:upload", color: "#E31937" },
@@ -15,22 +16,24 @@ const SubmenuDiseaseResearch = () => {
     const navigate = useNavigate();
 
     return (
-        <Fragment>
-            <Grid container spacing={2} sx={{ mt: 2.5 }}>
-                {ArraySubmenuDiseaseResearch.map((item) => (
-                    <Grid item xs={12} md={6} lg={3}>
-                        <HoverSocialCard
-                            diferent={true}
-                            secondary={item.title}
-                            onClick={() => navigate(`${item.url}`)}
-                            primary={item.subtitle}
-                            iconPrimary={item.icono}
-                            color={item.color}
-                        />
-                    </Grid>
-                ))}
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <NavigationBar title="Investigación de enfermedad laboral" urlBack="/occupational-health/menu" />
             </Grid>
-        </Fragment>
+
+            {ArraySubmenuDiseaseResearch.map((item) => (
+                <Grid item xs={12} md={6} lg={3} key={item.title}>
+                    <HoverSocialCard
+                        diferent={true}
+                        secondary={item.title}
+                        onClick={() => navigate(`${item.url}`)}
+                        primary={item.subtitle}
+                        iconPrimary={item.icono}
+                        color={item.color}
+                    />
+                </Grid>
+            ))}
+        </Grid>
     );
 };
 

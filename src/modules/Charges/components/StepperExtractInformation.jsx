@@ -9,12 +9,12 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { styled } from '@mui/material/styles';
 import { ExtractInformationFromExcel, GetInformationFromExcel } from 'api/clients/OccupationalExposure';
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import SaveInformation from './Tabs/SaveInformation';
 import UploadFile from './Tabs/UploadFile';
 import ViewExportedSetail from './Tabs/ViewExportedSetail';
-import SaveInformation from './Tabs/SaveInformation';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -24,7 +24,7 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
         [`& .${stepConnectorClasses.line}`]: {
             backgroundImage:
                 'linear-gradient( 95deg, #E31937 0%, #E31937 100%)',
-            animation: 'progress-line 0.8s ease-in-out forwards', // Animación para la línea
+            animation: 'progress-line 0.8s ease-in-out forwards',
         },
     },
     [`&.${stepConnectorClasses.completed}`]: {
@@ -41,7 +41,6 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     },
 }));
 
-// Animación CSS para la línea
 const GlobalStyles = `@keyframes progress-line {
     0% {
         width: 0%;
@@ -60,14 +59,14 @@ const ColorlibStepIconRoot = styled('div')(({ theme, ownerState }) => ({
     justifyContent: 'center',
     alignItems: 'center',
     ...(ownerState.active && {
-        backgroundColor: '#E31937', // Rojo para pasos activos
+        backgroundColor: '#E31937',
         boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
     }),
     ...(ownerState.completed && {
-        backgroundColor: '#E31937', // Rojo para pasos completados
+        backgroundColor: '#E31937',
     }),
     ...(!ownerState.active && !ownerState.completed && {
-        backgroundColor: '#ccc', // Gris claro para pasos incompletos
+        backgroundColor: '#ccc',
     }),
 }));
 
@@ -75,9 +74,9 @@ function ColorlibStepIcon(props) {
     const { active, completed, className } = props;
 
     const icons = {
-        1: <SettingsIcon style={{ color: '#FFFFFF' }} />, // Icono blanco
-        2: <GroupAddIcon style={{ color: '#FFFFFF' }} />, // Icono blanco
-        3: <VideoLabelIcon style={{ color: '#FFFFFF' }} />, // Icono blanco
+        1: <SettingsIcon style={{ color: '#FFFFFF' }} />,
+        2: <GroupAddIcon style={{ color: '#FFFFFF' }} />,
+        3: <VideoLabelIcon style={{ color: '#FFFFFF' }} />,
     };
 
     return (
@@ -86,24 +85,6 @@ function ColorlibStepIcon(props) {
         </ColorlibStepIconRoot>
     );
 }
-
-ColorlibStepIcon.propTypes = {
-    /**
-     * Whether this step is active.
-     * @default false
-     */
-    active: PropTypes.bool,
-    className: PropTypes.string,
-    /**
-     * Mark the step as completed. Is passed to child components.
-     * @default false
-     */
-    completed: PropTypes.bool,
-    /**
-     * The label displayed in the step icon.
-     */
-    icon: PropTypes.node,
-};
 
 export default function StepperExtractInformation() {
     const [activeStep, setActiveStep] = useState(0);
@@ -128,43 +109,54 @@ export default function StepperExtractInformation() {
 
     const handleClickExtraer = async () => {
         try {
-            const bases64Excel = filesData.map(excel => ({ fileName: excel.nombre, base64String: excel.base64 }));
-            const result = await GetInformationFromExcel(bases64Excel);
+            const formData = new FormData();
+            filesData.forEach((excel, index) => {
+                formData.append('files', excel.archivo);
+            });
+
+            const result = await GetInformationFromExcel(formData);
             if (result.data.exito) {
                 setTimeout(() => {
                     setRows(result.data.datos);
                     setLsDataExcel(result.data.datos);
 
                     toast.success("Información básica extraída correctamente");
-                }, 200);
+                }, 500);
             } else {
                 toast.error(result.data.mensaje);
             }
         } catch (error) {
             toast.error("Error al extraer información del archivo");
         }
-    }
+    };
 
     const handleExtractInformation = async () => {
         try {
-            const exposicionOcupacional = lsDataExcel.map(row => {
-                var fileData = filesData.find(file => file.nombre === row.filename);
+            const formData = new FormData();
 
-                return {
-                    idcargo: row.idcargo,
-                    idges: row.idges,
-                    claseriesgo: row.claseriesgo,
-                    descripcionges: row.descripcionges,
-                    base64excel: fileData ? fileData.base64 : null,
-                };
+            lsDataExcel.forEach((row, index) => {
+                const fileData = filesData.find(file => file.nombre === row.filename);
+
+                formData.append(`exposicionOcupacional[${index}].idcargo`, row.idcargo);
+                formData.append(`exposicionOcupacional[${index}].idges`, row.idges);
+                formData.append(`exposicionOcupacional[${index}].claseriesgo`, row.claseriesgo);
+                formData.append(`exposicionOcupacional[${index}].descripcionges`, row.descripcionges);
+
+                if (fileData?.archivo) {
+                    formData.append(
+                        `exposicionOcupacional[${index}].archivoexcel`,
+                        fileData.archivo,
+                        fileData.archivo.name
+                    );
+                }
             });
 
-            console.log("Datos con base64:", exposicionOcupacional);
-
-            const result = await ExtractInformationFromExcel(exposicionOcupacional);
+            const result = await ExtractInformationFromExcel(formData);
             if (result.data.exito) {
                 console.log(result.data);
-                toast.success("Información avanzada extraída correctamente");
+                setTimeout(() => {
+                    toast.success("Información avanzada extraída correctamente");
+                }, 200);
             } else {
                 toast.error(result.data.mensaje);
             }
@@ -196,31 +188,12 @@ export default function StepperExtractInformation() {
     };
 
     const handleSave = () => {
-        // Lógica para guardar la información
-        console.log("Guardando información...");
         alert("¡Información guardada exitosamente!");
-        // Opcional: Reiniciar el stepper después de guardar
         setActiveStep(0);
-    };
-
-    const handleClick = async () => {
-        try {
-            /* const bases64Excel = filesData.map(excel => excel.base64);
-
-            const result = await InsertPanoramaMasivo(bases64Excel);
-            if (result.data.response) {
-                toast.success(result.data.mensaje);
-            } else {
-                toast.error(result.data.mensaje);
-            } */
-        } catch (error) {
-
-        }
     };
 
     return (
         <>
-            {/* Agregar estilos globales para la animación */}
             <style>{GlobalStyles}</style>
 
             <Stack sx={{ width: '100%' }} spacing={4}>
@@ -237,19 +210,25 @@ export default function StepperExtractInformation() {
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Button variant="contained" color="primary" onClick={handleBack} disabled={activeStep === 0}>
-                        Atrás
-                    </Button>
+                    <AnimateButton>
+                        <Button variant="contained" color="primary" onClick={handleBack} disabled={activeStep === 0 || activeStep === 2}>
+                            Atrás
+                        </Button>
+                    </AnimateButton>
 
-                    {activeStep === steps.length - 1 ? (
-                        <Button variant="contained" color="primary" onClick={handleSave}>
-                            Guardar
-                        </Button>
-                    ) : (
-                        <Button variant="contained" color="primary" onClick={handleNext}>
-                            Siguiente
-                        </Button>
-                    )}
+                    {activeStep === steps.length - 1 ?
+                        <AnimateButton>
+                            <Button variant="contained" color="primary" onClick={handleSave}>
+                                Finalizar
+                            </Button>
+                        </AnimateButton>
+                        :
+                        <AnimateButton>
+                            <Button variant="contained" color="primary" onClick={handleNext} disabled={activeStep === 0 && filesData.length === 0}>
+                                Siguiente
+                            </Button>
+                        </AnimateButton>
+                    }
                 </Box>
             </Stack>
         </>

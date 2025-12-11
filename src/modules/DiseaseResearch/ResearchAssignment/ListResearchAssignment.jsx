@@ -69,11 +69,6 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'id',
-        label: 'ID',
-        align: 'left'
-    },
-    {
         id: 'documento',
         label: 'Documento',
         align: 'left'
@@ -426,21 +421,6 @@ const ListResearchAssignment = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.id}
-                                                </Typography>
-                                            </TableCell>
-
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                onClick={(event) => handleClick(event, row.id)}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
                                                     {row.documento}
                                                 </Typography>
                                             </TableCell>
@@ -492,7 +472,7 @@ const ListResearchAssignment = () => {
                                             >
                                                 <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
                                                     <div>
-                                                        {row?.nombreInvestigador.map((item, index) => (
+                                                        {row?.nombreAsesor.map((item, index) => (
                                                             <div key={index}>{item}</div>
                                                         ))}
                                                     </div>
@@ -527,7 +507,7 @@ const ListResearchAssignment = () => {
 
                                             <TableCell align="center">
                                                 <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.AsignacionInvestigacion}>
-                                                    <Tooltip title="Actualizar" onClick={() => navigate(`/research-assignment/update/${row.id}`)}>
+                                                    <Tooltip disableInteractive placement="top" title="Actualizar" onClick={() => navigate(`/research-assignment/update/${row.id}`)}>
                                                         <IconButton size="large">
                                                             <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                         </IconButton>

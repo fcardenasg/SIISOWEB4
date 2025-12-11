@@ -103,7 +103,6 @@ const UpdateAccidentRate = Loadable(lazy(() => import('modules/AccidentRate/Upda
 
 const BulkLoadingCharges = Loadable(lazy(() => import('modules/Charges/Massive/BulkLoadingCharges')));
 
-const ListPanorama = Loadable(lazy(() => import('modules/Charges/Panorama/ListPanorama')));
 const ListCharges = Loadable(lazy(() => import('modules/Charges/ListCharges')));
 const Panorama = Loadable(lazy(() => import('modules/Charges/Panorama/Panorama')));
 const UpdatePanorama = Loadable(lazy(() => import('modules/Charges/Panorama/UpdatePanorama')));
@@ -127,6 +126,9 @@ const OrdenesMasivas = Loadable(lazy(() => import('modules/Orders/OrdenesMasivas
 const ListOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/ListOrdersIndividual')));
 const OrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/OrdersIndividual')));
 const UpdateOrdersIndividual = Loadable(lazy(() => import('modules/Orders/OrdenesIndividuales/UpdateOrdersIndividual')));
+
+const ViewNewProgramming = Loadable(lazy(() => import('modules/Programming/NewProgramming/ViewProgramming')));
+const ViewNewEMO = Loadable(lazy(() => import('modules/Programming/NewEMO/ViewEMO')));
 
 const OccupationalExaminationProgra = Loadable(lazy(() => import('modules/Programming/Attention/OccupationalExamination/OccupationalExamination')));
 const UpdateClinicHistory = Loadable(lazy(() => import('modules/Programming/Attention/ClinicHistory/UpdateClinicHistory')));
@@ -240,8 +242,6 @@ const ListHistoricalBurdenDiseases = Loadable(lazy(() => import('modules/Disease
 const UpdateHistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/UpdateHistoricalBurdenDiseases')));
 
 const VisualizatorFile = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/VisualizatorFile')));
-
-
 
 const AddSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/AddSingleWindow')));
 const UpdateSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/UpdateSingleWindow')));
@@ -990,7 +990,7 @@ const MainRoutes = {
             element: <UpdateIndexNote />
         },
 
-        // new 
+        // 
         {
             path: '/HistoricalBurdenDiseases',
             element: <HistoricalBurdenDiseases />
@@ -1113,6 +1113,16 @@ const MainRoutes = {
             path: '/risk/list',
             element: <ListRisk />
         },
+
+        /* Modulo nuevo de programación */
+        {
+            path: '/new-programming/view',
+            element: <ViewNewProgramming />
+        },
+        {
+            path: '/programming/new-emo/:id/:documento',
+            element: <ViewNewEMO />
+        }
     ]
 };
 

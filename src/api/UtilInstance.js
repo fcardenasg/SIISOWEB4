@@ -2,34 +2,27 @@ import { Url } from "./instances/AuthRoute";
 import axios from "axios";
 
 export async function postData(url = '', datos = {}, headersVali = false) {
+    try {
+        const config = {
+            method: 'post',
+            url: `${Url.Base}${url}`,
+            data: datos
+        };
 
-    if (headersVali) {
-        try {
-            return await axios({
-                method: 'post',
-                url: `${Url.Base}${url}`,
-                data: datos,
-                headers: { 'Content-Type': 'multipart/form-data' }
-            }).then(respuesta => {
-                if (respuesta.status !== 200) throw Error(respuesta.status);
-                return respuesta;
-            }).catch((error) => {
-            })
-        } catch (error) { }
-    } else {
-        try {
-            return await axios({
-                method: 'post',
-                url: `${Url.Base}${url}`,
-                data: datos,
-            }).then(respuesta => {
-                if (respuesta.status !== 200) throw Error(respuesta.status);
-                return respuesta;
-            }).catch((error) => {
-            })
-        } catch (error) { }
+        if (headersVali) {
+            config.headers = { 'Content-Type': 'multipart/form-data' };
+        }
+
+        const respuesta = await axios(config);
+
+        if (respuesta.status !== 200) {
+            throw new Error(respuesta.status);
+        }
+
+        return respuesta;
+    } catch (error) {
+        throw error;
     }
-
 }
 
 export async function getData(url = '', parametros = {}) {

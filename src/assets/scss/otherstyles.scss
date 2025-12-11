@@ -97,3 +97,26 @@
 .pdf-viewer:hover {
     transform: scale(1.01);
 }
+
+
+/* Estilos del editor de texto avanzado */
+.editor-container {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    background: white;
+}
+
+.editor-input {
+    min-height: 120px;
+    outline: none;
+    width: 100%;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.editor-placeholder {
+    color: #999;
+    pointer-events: none;
+}

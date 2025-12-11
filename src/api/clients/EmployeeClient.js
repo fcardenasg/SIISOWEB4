@@ -11,3 +11,4 @@ export const UpdateEmployees = async (empleado) => await putData(Url.Empleado, e
 export const DeleteEmployee = async (idEmpleado) => await deleteData(Url.Empleado, { idEmpleado });
 
 export const GetAllEmployeeOrdenes = async (search) => await getData(Url.EmpleadoOrdenes, { search });
+export const GetDataEmployyeNewGetById = async (documento) => await getData(`${Url.Empleado}/new-getbyid`, { documento });
