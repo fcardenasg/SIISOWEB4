@@ -10,23 +10,13 @@ const infoItems = [
 
 const SocialSecurityInfo = ({ dataEmployee }) => {
     return (
-        <Box
-            sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-                flexWrap: "wrap",
-                mt: 1,
-            }}
-        >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap", mt: 1 }}>
             {infoItems.map((item) => (
-                <Box
-                    key={item.key}
-                    sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
+                <Box key={item.key} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Iconify icon={item.icon} color={item.color} />
-                    <Typography variant="body2" color="text.secondary">
-                        {item.label}: {dataEmployee?.[item.key] || `Sin ${item.label}`}
+                    <Typography variant="body2" color="text.secondary" sx={{ textTransform: "capitalize" }}>
+                        {`${item.label}: ${(dataEmployee?.[item.key]?.toLowerCase().includes("sin registro") || dataEmployee?.[item.key] === "")
+                            ? "Sin registro" : (dataEmployee?.[item.key] || `Sin ${item.label}`)}`}
                     </Typography>
                 </Box>
             ))}

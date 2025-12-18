@@ -1,35 +1,12 @@
-import { Checkbox, Divider, FormControlLabel, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Checkbox, FormControlLabel, TextField } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Controller } from 'react-hook-form';
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: '#E0E0E0',
-    color: theme.palette.common.black,
-    fontWeight: 'bold',
-    padding: '8px 12px',
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-    padding: '6px 12px',
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
+import { StyledTableCell, StyledTableRow } from './methods';
 
 function createData(fechaIngreso, cargoInicial, turno, rotacion, jornada, tiempoCargo) {
   return { fechaIngreso, cargoInicial, turno, rotacion, jornada, tiempoCargo };
@@ -117,47 +94,7 @@ export function TableOtherCompanies() {
   );
 }
 
-const rowsDiagnosis = [
-  {
-    diagnostico: 'Enfermedad laboral',
-    codigoCie: 'A123',
-    fechaInicioSintomas: '2021-03-15',
-    fechaDiagnostico: '2021-03-15'
-  },
-  {
-    diagnostico: 'Enfermedad laboral',
-    codigoCie: 'A123',
-    fechaInicioSintomas: '2021-03-15',
-    fechaDiagnostico: '2021-03-15'
-  }
-];
 
-export function TableDiagnosis() {
-  return (
-    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-      <Table sx={{ minWidth: 650 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Diagnóstico</StyledTableCell>
-            <StyledTableCell>Código CIE</StyledTableCell>
-            <StyledTableCell>Fecha de inicio de síntomas</StyledTableCell>
-            <StyledTableCell>Fecha del diagnóstico</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rowsDiagnosis.map((row, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell component="th" scope="row">{row.diagnostico}</StyledTableCell>
-              <StyledTableCell>{row.codigoCie}</StyledTableCell>
-              <StyledTableCell>{row.fechaInicioSintomas}</StyledTableCell>
-              <StyledTableCell>{row.fechaDiagnostico}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-}
 
 const controles = [
   {
@@ -268,8 +205,8 @@ export function TableDiagnosisRating() {
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      variant="standard"
                       fullWidth
+                      variant="standard"
                       InputProps={{ disableUnderline: false }}
                     />
                   )}
@@ -328,121 +265,6 @@ export function TableDiagnosisRating() {
     </TableContainer>
   );
 };
-
-
-const EstiloTitulo = {
-  fontWeight: 700,
-  fontSize: "0.95rem",
-  color: "#333",
-};
-
-const CeldaSeccion = ({ title }) => (
-  <TableCell
-    sx={{
-      background: "#f7f7f7",
-      width: "90px",
-      borderRight: "1px solid #e0e0e0",
-    }}
-  >
-    <Typography sx={EstiloTitulo}>{title}</Typography>
-  </TableCell>
-);
-
-export function TableHealth() {
-  return (
-    <TableContainer component={Paper} elevation={2} sx={{ borderRadius: 3 }}>
-      <Table size="small">
-        <TableBody>
-          <TableRow>
-            <CeldaSeccion title="Cigarrillo" />
-            <TableCell colSpan={4}>
-              <Grid container spacing={1} alignItems="center">
-                <Grid item xs={12} md={6} lg={4.2}>
-                  <Stack direction="row" spacing={.5} alignItems="center">
-                    <Typography>Fuma:</Typography>
-                    <FormControlLabel control={<Checkbox size="small" />} label="Si" />
-                    <FormControlLabel control={<Checkbox size="small" defaultChecked />} label="No" />
-                    <FormControlLabel control={<Checkbox size="small" />} label="Exfumador" />
-                  </Stack>
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Tiempo acumulado (años)" fullWidth size="small" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Años de tabaquismo" fullWidth size="small" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Cantidad (cigarrillos por día)" fullWidth size="small" />
-                </Grid>
-              </Grid>
-            </TableCell>
-          </TableRow>
-
-          <Divider />
-
-          <TableRow>
-            <CeldaSeccion title="Alcohol" />
-            <TableCell colSpan={4}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} md={6} lg={4.2}>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography>Consumo:</Typography>
-                    <FormControlLabel control={<Checkbox size="small" />} label="Si" />
-                    <FormControlLabel control={<Checkbox size="small" defaultChecked />} label="No" />
-                  </Stack>
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Frecuencia" fullWidth size="small" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Cantidad" fullWidth size="small" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Tipo de bebida" fullWidth size="small" />
-                </Grid>
-              </Grid>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <CeldaSeccion title="Deporte" />
-            <TableCell colSpan={4}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} md={6} lg={4.2}>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography>Práctica:</Typography>
-                    <FormControlLabel control={<Checkbox size="small" />} label="Si" />
-                    <FormControlLabel control={<Checkbox size="small" defaultChecked />} label="No" />
-                  </Stack>
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Frecuencia" fullWidth size="small" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Tiempo" fullWidth size="small" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={2.6}>
-                  <TextField variant="standard" label="Tipo de actividad" fullWidth size="small" />
-                </Grid>
-              </Grid>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <CeldaSeccion title="Otros" />
-            <TableCell colSpan={4}>
-              <TextField variant="standard" fullWidth label="Descripción" size="small" />
-            </TableCell>
-          </TableRow>
-
-        </TableBody>
-      </Table >
-    </TableContainer >
-  );
-}
 
 export function TableCharacterizationAbsenteeism() {
   return (

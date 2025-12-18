@@ -1,19 +1,28 @@
-import { Divider, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
+import { GetSubCardMenu } from 'api/clients/RolClient';
 import HoverSocialCard from 'components/components/HoverSocialCard';
-import { Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
 import NavigationBar from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/NavigationBar';
-
-const ArraySubmenuDiseaseResearch = [
-    { title: "Cargue Historico de Enfermedades", url: "/ListHistoricalBurdenDiseases", icono: "tabler:upload", color: "#E31937" },
-    { title: "Asignación de investigación", url: "/research-assignment/list", icono: "iwwa:assign", color: "#E31937" },
-    { title: "Investigación de enfermedad laboral", url: "/investigation-occupational-disease/view", icono: "hugeicons:investigation", color: "#E31937" },
-    { title: "Plan de rehabilitación", url: "", icono: "carbon:ibm-planning-analytics", color: "#E31937" },
-    { title: "Análisis de Puesto de Trabajo", url: "", icono: "hugeicons:permanent-job", color: "#E31937" },
-];
+import { useLayoutEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SubmenuDiseaseResearch = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
+    const [lsSubCardMenu, setLsSubCardMenu] = useState([]);
+
+    useLayoutEffect(() => {
+        async function getSubCardMenu() {
+            try {
+                const lsServer = await GetSubCardMenu(user?.idrol, true);
+                console.log(lsServer.data);
+                if (lsServer.data.exito)
+                    setLsSubCardMenu(lsServer.data.datos);
+            } catch (error) { }
+        }
+
+        getSubCardMenu();
+    }, []);
 
     return (
         <Grid container spacing={2}>
@@ -21,13 +30,12 @@ const SubmenuDiseaseResearch = () => {
                 <NavigationBar title="Investigación de enfermedad laboral" urlBack="/occupational-health/menu" />
             </Grid>
 
-            {ArraySubmenuDiseaseResearch.map((item) => (
+            {lsSubCardMenu.map((item) => (
                 <Grid item xs={12} md={6} lg={3} key={item.title}>
                     <HoverSocialCard
                         diferent={true}
                         secondary={item.title}
                         onClick={() => navigate(`${item.url}`)}
-                        primary={item.subtitle}
                         iconPrimary={item.icono}
                         color={item.color}
                     />

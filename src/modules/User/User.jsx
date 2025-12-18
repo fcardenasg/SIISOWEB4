@@ -19,20 +19,20 @@ import * as yup from 'yup';
 
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetComboRol } from 'api/clients/RolClient';
-import { GetPermiso, InsertUser } from 'api/clients/UserClient';
+import { InsertUser } from 'api/clients/UserClient';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { AccionMenu, CodCatalogo, IdUser, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import { UploadBox } from 'components/upload';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import { PostUser } from 'formatdata/UserForm';
 import useAuth from 'hooks/useAuth';
 import Lottie from 'lottie-react';
 import MainCard from 'ui-component/cards/MainCard';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
@@ -361,9 +361,18 @@ const User = () => {
 
                                     <Grid item xs={12} md={4}>
                                         <InputCheckBox
-                                            name="asesorInvestigacion"
+                                            name="asesorARL"
                                             defaultValue={false}
-                                            label="¿Es asesor para investigaciones?"
+                                            label="¿Es asesor ARL?"
+                                            size={30}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4}>
+                                        <InputCheckBox
+                                            name="investigador"
+                                            defaultValue={false}
+                                            label="¿Es investigador?"
                                             size={30}
                                         />
                                     </Grid>

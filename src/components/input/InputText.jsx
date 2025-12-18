@@ -2,10 +2,15 @@ import {
     FormHelperText,
     Grid,
     TextField,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import { Controller } from 'react-hook-form';
 
 const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, ...others }) => {
+    const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
         <>
             <Controller
@@ -15,7 +20,7 @@ const InputText = ({ bug, defaultValue, label, size, fullWidth = true, name, ...
                     <TextField
                         {...field}
                         label={label}
-                        size={size}
+                        size={matchesXS ? 'small' : 'medium'}
                         InputLabelProps={{
                             className: bug ? 'required-label' : '',
                             required: bug || false

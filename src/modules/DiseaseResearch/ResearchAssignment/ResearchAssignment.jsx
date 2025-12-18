@@ -66,6 +66,7 @@ const ResearchAssignment = () => {
     const [textDx, setTextDx] = useState("");
     const [modelEmployee, setModelEmployee] = useState([]);
     const [lsInvestigacion, setLsInvestigacion] = useState([]);
+    const [lsAsesorARL, setLsAsesorARL] = useState([]);
     const [lsDx, setLsDx] = useState([]);
 
     const [lsSegmentoAgrupado, setLsSegmentoAgrupado] = useState([]);
@@ -83,9 +84,11 @@ const ResearchAssignment = () => {
     useEffect(() => {
         async function getCombo() {
             try {
-                const lsServerCombo = await GetAllComboAsesorInvestigacion();
-                if (lsServerCombo.status === 200)
-                    setLsInvestigacion(lsServerCombo.data);
+                const lsServerInvestigacion = await GetAllComboAsesorInvestigacion(false);
+                setLsInvestigacion(lsServerInvestigacion.data);
+
+                const lsServerAsesorARL = await GetAllComboAsesorInvestigacion(true);
+                setLsAsesorARL(lsServerAsesorARL.data);
 
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -142,7 +145,7 @@ const ResearchAssignment = () => {
 
                     const dataMedical = await GetDataMedicalOccupationalReseAssig(document);
                     if (dataMedical.data.exito) {
-                        const datamodel = dataMedical.data.datos; 
+                        const datamodel = dataMedical.data.datos;
                         setValue("fechaEntrega", datamodel?.fechaEntrega);
                         setValue("idSegmentoAgrupado", datamodel?.segmentoAgrupado);
                         setValue("idSegmentoAfectado", datamodel?.segmentoAfectado);
@@ -236,7 +239,7 @@ const ResearchAssignment = () => {
                 toast.success(result.data.mensaje);
                 reset();
                 setModelEmployee([]);
-                setValue('documento', '');
+                setValue("documento", "");
             } else
                 toast.error(result.data.mensaje);
         } catch (error) {
@@ -269,7 +272,6 @@ const ResearchAssignment = () => {
                                         name="fecha"
                                         defaultValue={new Date()}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.fecha}
                                     />
                                 </Grid>
 
@@ -279,7 +281,6 @@ const ResearchAssignment = () => {
                                         name="fechaEntrega"
                                         defaultValue={null}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.fecha}
                                     />
                                 </Grid>
 
@@ -289,7 +290,6 @@ const ResearchAssignment = () => {
                                         name="fechaRevision"
                                         defaultValue={null}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.fecha}
                                     />
                                 </Grid>
 
@@ -299,7 +299,6 @@ const ResearchAssignment = () => {
                                         name="fechaVistoBueno"
                                         defaultValue={null}
                                         size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.fecha}
                                     />
                                 </Grid>
 
@@ -372,7 +371,7 @@ const ResearchAssignment = () => {
                                         checkbox
                                         name="asesorARL"
                                         label="Asesor ARL"
-                                        options={lsInvestigacion}
+                                        options={lsAsesorARL}
                                     />
                                 </Grid>
 

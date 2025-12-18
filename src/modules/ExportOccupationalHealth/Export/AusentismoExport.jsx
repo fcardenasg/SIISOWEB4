@@ -1,21 +1,26 @@
-import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
+import { GetExcelWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
+import { MessageError } from "components/alert/AlertAll";
 import { ArrayTodaSede } from "components/Arrays";
+import { DownloadFile } from "components/helpers/ConvertToBytes";
 import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
 import InputDatePick from "components/input/InputDatePick";
-import SelectOnChange from "components/input/SelectOnChange";
-import AnimateButton from "ui-component/extended/AnimateButton";
-import { Fragment } from "react";
-import { MessageError } from "components/alert/AlertAll";
-import LoadingGenerate from "components/loading/LoadingGenerate";
-import { DownloadFile } from "components/helpers/ConvertToBytes";
 import InputOnChange from "components/input/InputOnChange";
-import { GetExcelWorkAbsenteeismHistory } from 'api/clients/WorkAbsenteeismClient';
+import SelectOnChange from "components/input/SelectOnChange";
+import LoadingGenerate from "components/loading/LoadingGenerate";
+import { Fragment, useEffect, useState } from "react";
+import AnimateButton from "ui-component/extended/AnimateButton";
+
+const ArrayFecha = [
+    { value: 1, label: 'FECHA DE EXPEDICIÓN' },
+    { value: 2, label: 'FECHA DE INICIO' },
+    { value: 3, label: 'FECHA DE REGISTRO' }
+];
 
 const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, setDocumento, documento, parametroConsulta, tipoExcelAusentismo,
-    setFechaInicio, fechaInicio, setFechaFin, fechaFin, lsBusqueda, lsTipoExcelAusentismo, setTipoExcelAusentismo }) => {
+    setFechaInicio, fechaInicio, setFechaFin, fechaFin, lsBusqueda, lsTipoExcelAusentismo, setTipoExcelAusentismo, opcionFecha, setOpcionFecha }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -23,6 +28,7 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
     const [loading, setLoading] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
 
     useEffect(() => {
         async function getAll() {
@@ -46,7 +52,8 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                 fechaFin: fechaFin,
                 documento: documento,
                 opcionBusqueda: opcionBusqueda,
-                tipoExcelAusentismo: tipoExcelAusentismo
+                tipoExcelAusentismo: tipoExcelAusentismo,
+                opcionFecha: opcionFecha
             }
 
             const lsServerExcel = await GetExcelWorkAbsenteeismHistory(parametros);
@@ -56,7 +63,7 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
 
                 setTimeout(() => {
                     setLoading(false);
-                }, 500);
+                }, 5000);
             }
 
         } catch (error) {
@@ -70,6 +77,7 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
     return (
         <Fragment>
             <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <SelectOnChange
@@ -82,7 +90,7 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                     />
                 </Grid>
 
-                {parametroConsulta === 'AUSENTI' ?
+                {parametroConsulta === 'AUSENTI' &&
                     <Grid item xs={12}>
                         <SelectOnChange
                             name="busqueda"
@@ -92,7 +100,7 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                             onChange={(e) => setTipoExcelAusentismo(e.target.value)}
                             size={matchesXS ? 'small' : 'medium'}
                         />
-                    </Grid> : null
+                    </Grid>
                 }
 
                 {opcionBusqueda === 0 ?
@@ -119,7 +127,7 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                         />
                     </Grid> : null}
 
-                {opcionBusqueda === 2 ?
+                {opcionBusqueda === 2 &&
                     <Fragment>
                         <Grid item xs={12}>
                             <SelectOnChange
@@ -128,6 +136,17 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                                 value={sede}
                                 options={lsSede}
                                 onChange={(e) => setSede(e.target.value)}
+                                size={matchesXS ? 'small' : 'medium'}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <SelectOnChange
+                                name="opcionFecha"
+                                label="Fecha a exportar"
+                                value={opcionFecha}
+                                options={ArrayFecha}
+                                onChange={(e) => setOpcionFecha(e.target.value)}
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
@@ -149,7 +168,8 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
-                    </Fragment> : null}
+                    </Fragment>
+                }
 
                 <Grid item xs={12}>
                     <AnimateButton>
@@ -159,11 +179,10 @@ const AusentismoExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, se
                     </AnimateButton>
                 </Grid>
 
-                {
-                    loading ?
-                        <Grid item xs={12}>
-                            <LoadingGenerate title="Generando Excel..." />
-                        </Grid> : null
+                {loading ?
+                    <Grid item xs={12}>
+                        <LoadingGenerate title="Generando Excel..." />
+                    </Grid> : null
                 }
             </Grid>
         </Fragment>

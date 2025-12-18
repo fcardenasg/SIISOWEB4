@@ -11,7 +11,7 @@ export const UpdateUsers = async (usuarios) => await putData(Url.Usuarios, usuar
 export const UpdateSedeUser = async (updateSedeDTO) => await putData(Url.UsuariosUpdateSede, updateSedeDTO);
 export const DeleteUser = async (idUsuarios) => await deleteData(Url.Usuarios, { idUsuarios });
 
-export const GetAllComboAsesorInvestigacion = async () => await getData(`${Url.Usuarios}/combo-asesor-investigacion`);
+export const GetAllComboAsesorInvestigacion = async (isInvestigation) => await getData(`${Url.Usuarios}/combo-asesor-investigacion`, { isInvestigation });
 export const GetAllComboVentanilla = async () => await getData(Url.UsuariosVentanilla);
 export const GetAllComboRegTaxi = async () => await getData(Url.UsuariosRegTaxi);
 export const GetAllComboByIdRol = async (idRol) => await getData(Url.UsuariosRol, { idRol });

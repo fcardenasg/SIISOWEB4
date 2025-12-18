@@ -34,6 +34,7 @@ import { GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
 import Accordion from 'components/accordion/Accordion';
 import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewTrafficLight from 'components/components/ViewTrafficLight';
+import InputDatePicker from 'components/input/InputDatePicker';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import useAuth from 'hooks/useAuth';
 import UserCountCard from 'ui-component/cards/UserCountCard';
@@ -98,14 +99,11 @@ const WorkAbsenteeism = () => {
     const [lsRedExpide, setLsRedExpide] = useState([]);
     const [lsCumplimientoRequisito, setLsCumplimientoRequisito] = useState([]);
 
-    const [fechaExpedicion, setFechaExpedicion] = useState(null);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
     const [fechaModifica, setFechaModifica] = useState(new Date().toLocaleString());
 
-    const methods = useForm({
-        resolver: yupResolver(validationSchema)
-    });
+    const methods = useForm({ resolver: yupResolver(validationSchema) });
     const { handleSubmit, formState: { errors } } = methods;
 
     const handleDocumento = async (event) => {
@@ -318,7 +316,7 @@ const WorkAbsenteeism = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostWorkAbsenteeism(documento, datos.incapacidad, datos.nroIncapacidad, fechaExpedicion, departa,
+            const DataToInsert = PostWorkAbsenteeism(documento, datos.incapacidad, datos.nroIncapacidad, datos.fechaExpedicion, departa,
                 datos.ciudadExpedicion, datos.tipoIncapacidad, datos.contingencia, fechaInicio, fechaFin, diasSinLaborar,
                 datos.dxFinal, datos.dxFinal, datos.estadoCaso, datos.segmentoAgrupado, undefined, datos.segmento, tipoSoporte, datos.idCategoria,
 
@@ -359,23 +357,23 @@ const WorkAbsenteeism = () => {
             <MessageSuccess onClose={() => setOpenSuccess(false)} open={openSuccess} />
             <MessageError onClose={() => setOpenError(false)} open={openError} error={errorMessage} />
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <ViewEmployee
-                        title="Registrar ausentismo labora"
-                        key={lsEmployee?.documento}
-                        documento={documento}
-                        onChange={(e) => setDocumento(e.target.value)}
-                        lsEmployee={lsEmployee}
-                        handleDocumento={handleDocumento}
-                    />
-                </Grid>
+            <FormProvider {...methods}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            title="Registrar ausentismo labora"
+                            key={lsEmployee?.documento}
+                            documento={documento}
+                            onChange={(e) => setDocumento(e.target.value)}
+                            lsEmployee={lsEmployee}
+                            handleDocumento={handleDocumento}
+                        />
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos De La Empresa Que Expide</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos De La Empresa Que Expide</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={4}>
                                     <InputSelect
                                         defaultValue={DefaultValue.INCAPACIDAD_MEDICA}
                                         name="incapacidad"
@@ -383,11 +381,9 @@ const WorkAbsenteeism = () => {
                                         options={lsIncapacidad}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={4}>
                                     <InputText
                                         type="number"
                                         fullWidth
@@ -396,118 +392,110 @@ const WorkAbsenteeism = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.nroIncapacidad}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha de Expedición"
-                                    value={fechaExpedicion}
-                                    onChange={(e) => setFechaExpedicion(e.target.value)}
-                                />
-                            </Grid>
+                                <Grid item xs={4}>
+                                    <InputDatePicker
+                                        label="Fecha de Expedición"
+                                        name="fechaExpedicion"
+                                        defaultValue={null}
+                                        noWriting
+                                    />
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="departamento"
-                                    label="Departamento"
-                                    options={lsDeparta}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={departa}
-                                    onChange={handleChangeDepartamentoIncapa}
-                                />
-                            </Grid>
+                                <Grid item xs={4}>
+                                    <SelectOnChange
+                                        name="departamento"
+                                        label="Departamento"
+                                        options={lsDeparta}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        value={departa}
+                                        onChange={handleChangeDepartamentoIncapa}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={4}>
                                     <InputSelect
                                         name="ciudadExpedicion"
                                         label="Ciudad de Expedición"
                                         options={lsMunicipio}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                        </SubCard>
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos De Incapacidad O Licencia</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos De Incapacidad O Licencia</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={2.4}>
                                     <InputSelect
                                         name="tipoIncapacidad"
                                         label="Tipo de Incapacidad"
                                         options={lsTipoInca}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputSelect
                                         name="contingencia"
                                         label="Contingencia"
                                         options={lsContingencia}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <InputDatePick
-                                    label="Fecha de Inicio"
-                                    value={fechaInicio}
-                                    onChange={handleFechaInicio}
-                                />
-                            </Grid>
+                                <Grid item xs={2.4}>
+                                    <InputDatePick
+                                        label="Fecha de Inicio"
+                                        value={fechaInicio}
+                                        onChange={handleFechaInicio}
+                                        noWriting
+                                    />
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <InputDatePick
-                                    label="Fecha Fin"
-                                    value={fechaFin}
-                                    onChange={handleFechaFin}
-                                />
-                            </Grid>
+                                <Grid item xs={2.4}>
+                                    <InputDatePick
+                                        label="Fecha Fin"
+                                        value={fechaFin}
+                                        onChange={handleFechaFin}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <InputOnChange
-                                    fullWidth
-                                    disabled
-                                    name="diasSinLaborar"
-                                    label="Días de Incapacidad"
-                                    onChange={(e) => setDiasSinLaborar(e.target.value)}
-                                    value={diasSinLaborar}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
+                                <Grid item xs={2.4}>
+                                    <InputOnChange
+                                        fullWidth
+                                        disabled
+                                        name="diasSinLaborar"
+                                        label="Días de Incapacidad"
+                                        onChange={(e) => setDiasSinLaborar(e.target.value)}
+                                        value={diasSinLaborar}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <InputOnChange
-                                    label="Código Dx"
-                                    onKeyDown={handleChangeDx}
-                                    onChange={(e) => setTextoDx(e?.target.value)}
-                                    value={textoDx}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                />
-                            </Grid>
+                                <Grid item xs={2.4}>
+                                    <InputOnChange
+                                        label="Código Dx"
+                                        onKeyDown={handleChangeDx}
+                                        onChange={(e) => setTextoDx(e?.target.value)}
+                                        value={textoDx}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={9.6}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={9.6}>
                                     <InputSelect
                                         name="dxFinal"
                                         label="Diagnóstico"
                                         options={lsCIE11}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={4}>
                                     <InputSelect
                                         name="estadoCaso"
                                         label="Estado de Caso"
@@ -515,127 +503,109 @@ const WorkAbsenteeism = () => {
                                         size={matchesXS ? 'small' : 'medium'}
                                         defaultValue={DefaultValue.INCAPACIDAD_ANTIGUO}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={4}>
                                     <InputSelect
                                         name="segmentoAgrupado"
                                         label="Segmento Agrupado"
                                         options={lsSegmentoAgrupado}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={4}>
                                     <InputSelect
                                         name="segmento"
                                         label="Segmento"
                                         options={lsSubsegmento}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <SelectOnChange
-                                    name="idTipoSoporte"
-                                    label="Tipo de Soporte"
-                                    options={lsTipoSoporte}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={tipoSoporte}
-                                    onChange={handleChangeTipoSoporte}
-                                />
-                            </Grid>
+                                <Grid item xs={4}>
+                                    <SelectOnChange
+                                        name="idTipoSoporte"
+                                        label="Tipo de Soporte"
+                                        options={lsTipoSoporte}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        value={tipoSoporte}
+                                        onChange={handleChangeTipoSoporte}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={4}>
                                     <InputSelect
                                         name="idCategoria"
                                         label="Categoria"
                                         options={lsCategoria}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                        </SubCard>
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Datos Del Médico O IPS Prestadora Del Servicio</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4.8}>
-                                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Datos Del Médico O IPS Prestadora Del Servicio</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={4.8}>
                                     <InputText
                                         fullWidth
                                         name="proveedor"
                                         label="Proveedor"
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <SelectOnChange
-                                    name="departamentoIPS"
-                                    label="Departamento"
-                                    options={lsDeparta}
-                                    size={matchesXS ? 'small' : 'medium'}
-                                    value={departamentoIPS}
-                                    onChange={handleChangeDepartamentoMedico}
-                                />
-                            </Grid>
+                                <Grid item xs={2.4}>
+                                    <SelectOnChange
+                                        name="departamentoIPS"
+                                        label="Departamento"
+                                        options={lsDeparta}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        value={departamentoIPS}
+                                        onChange={handleChangeDepartamentoMedico}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputSelect
                                         name="ciudadIPS"
                                         label="Ciudad"
                                         options={lsMunicipioMedico}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputText
                                         fullWidth
                                         name="nombreProfesional"
                                         label="Nombre de Profesional"
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputText
                                         fullWidth
                                         name="especialidad"
                                         label="Profesión/Especialidad"
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputText
                                         fullWidth
                                         name="registroProfesional"
                                         label="Reg. Profesional"
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputSelect
                                         defaultValue={DefaultValue.INCAPACIDAD_HOSPITALIZACION}
                                         name="tipoAtencion"
@@ -643,11 +613,9 @@ const WorkAbsenteeism = () => {
                                         options={lsTipoAtencion}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputSelect
                                         defaultValue={DefaultValue.Opcion_SI}
                                         name="cumplimientoRequisito"
@@ -655,11 +623,9 @@ const WorkAbsenteeism = () => {
                                         options={lsCumplimientoRequisito}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={2.4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={2.4}>
                                     <InputSelect
                                         defaultValue={DefaultValue.INCAPACIDAD_EPS}
                                         name="expideInCapacidad"
@@ -667,11 +633,9 @@ const WorkAbsenteeism = () => {
                                         options={lsRedExpide}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={12}>
                                     <InputText
                                         fullWidth
                                         name="observacionCumplimiento"
@@ -680,17 +644,15 @@ const WorkAbsenteeism = () => {
                                         multiline
                                         rows={4}
                                     />
-                                </FormProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
+                        </SubCard>
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Observación/Descripción De La Novedad</Typography>}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <FormProvider {...methods}>
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Observación/Descripción De La Novedad</Typography>}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
                                     <InputText
                                         fullWidth
                                         name="observacion"
@@ -699,11 +661,9 @@ const WorkAbsenteeism = () => {
                                         multiline
                                         rows={4}
                                     />
-                                </FormProvider>
-                            </Grid>
+                                </Grid>
 
-                            <Grid item xs={4}>
-                                <FormProvider {...methods}>
+                                <Grid item xs={4}>
                                     <InputText
                                         fullWidth
                                         disabled
@@ -711,69 +671,69 @@ const WorkAbsenteeism = () => {
                                         label="Usuario Modifica"
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
-                                </FormProvider>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <InputDatePick
-                                    label="Fecha de Modificicación"
-                                    value={fechaModifica}
-                                    disabled
-                                    onChange={(e) => setFechaModifica(e.target.value)}
-                                />
-                            </Grid>
-                        </Grid>
-                    </SubCard>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <SubCard darkTitle title={<Typography variant="h4">Monitor de eventos</Typography>}>
-                        <ViewTrafficLight
-                            title1="De 75 a 90 Días"
-                            title2="De 90 a 180 Días"
-                            title3="> 180 Días"
-                        />
-
-                        <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4, textAlign: 'center' }}>
-                            <Grid item xs={6}>
-                                <UserCountCard
-                                    primary="Total días acumulado en incapacidad"
-                                    secondary={numeroDias}
-                                    iconPrimary={AccountCircleTwoTone}
-                                    color={() => ColorCard(numeroDias)}
-                                />
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ pt: 4 }}>
-                            <Accordion title={<><HistoryIcon color='info' />
-                                <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Historial de días acumulado en incapacidad</Typography></>}>
-                                <HistoryWorkAbsenteeism documento={documento} refresh={openSuccess} />
-                            </Accordion>
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ pt: 4 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button disabled={disabledButtons} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
-                                            {TitleButton.Guardar}
-                                        </Button>
-                                    </AnimateButton>
                                 </Grid>
 
-                                <Grid item xs={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/work-absenteeism/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
+                                <Grid item xs={4}>
+                                    <InputDatePick
+                                        label="Fecha de Modificicación"
+                                        value={fechaModifica}
+                                        disabled
+                                        onChange={(e) => setFechaModifica(e.target.value)}
+                                    />
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </SubCard>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard darkTitle title={<Typography variant="h4">Monitor de eventos</Typography>}>
+                            <ViewTrafficLight
+                                title1="De 75 a 90 Días"
+                                title2="De 90 a 180 Días"
+                                title3="> 180 Días"
+                            />
+
+                            <Grid container spacing={2} sx={{ pb: 2, pt: 3, pl: 4, textAlign: 'center' }}>
+                                <Grid item xs={6}>
+                                    <UserCountCard
+                                        primary="Total días acumulado en incapacidad"
+                                        secondary={numeroDias}
+                                        iconPrimary={AccountCircleTwoTone}
+                                        color={() => ColorCard(numeroDias)}
+                                    />
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ pt: 4 }}>
+                                <Accordion title={<><HistoryIcon color='info' />
+                                    <Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Historial de días acumulado en incapacidad</Typography></>}>
+                                    <HistoryWorkAbsenteeism documento={documento} refresh={openSuccess} />
+                                </Accordion>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ pt: 4 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button disabled={disabledButtons} variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
+                                                {TitleButton.Guardar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/work-absenteeism/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </FormProvider>
         </ValidateActionSkeleton>
     );
 };

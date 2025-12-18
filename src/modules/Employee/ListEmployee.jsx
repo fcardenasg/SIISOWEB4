@@ -8,6 +8,7 @@ import {
     IconButton,
     InputAdornment,
     Modal,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -418,47 +419,38 @@ const ListEmployee = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs>
-                                <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
-                                    <IconButton size="large">
-                                        <IconFileExport />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
+                    <Grid item xs={12} sm={6} lg={6}>
+                        <Stack direction="row" spacing={2} justifyContent="flex-end" alignItems="center">
+                            <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
+                                <IconButton size="large">
+                                    <IconFileExport />
+                                </IconButton>
+                            </Tooltip>
 
-                            <Grid item xs>
-                                <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport}>
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
+                            <Tooltip disabled={idCheck === ''} title="Impresión" onClick={handleClickReport}>
+                                <IconButton size="large">
+                                    <PrintIcon />
+                                </IconButton>
+                            </Tooltip>
 
                             <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Empleado}>
-                                <Grid item xs={4}>
-                                    <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={() => navigate("/employee/add")}>
-                                        {TitleButton.Agregar}
-                                    </Button>
-                                </Grid>
+                                <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/employee/add")}>
+                                    {TitleButton.Agregar}
+                                </Button>
                             </ValidateAction>
 
-                            <Grid item xs={4}>
-                                <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate(config.defaultPath)}>
-                                    {TitleButton.Cancelar}
-                                </Button>
-                            </Grid>
-
-                        </Grid>
+                            <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate(config.defaultPath)}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </Stack>
                     </Grid>
                 </Grid>
             </CardContent>
 
             <TableContainer>
-                {employee.length === 0 ? <Cargando size={220} myy={6} /> :
+                {employee.length === 0 ? <Cargando size={140} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}

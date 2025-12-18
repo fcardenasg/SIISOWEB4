@@ -224,10 +224,6 @@ const ListaRol = ({ getAll, setLsPermisos, lsPermisos, rows }) => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        getAll();
-    }, [])
-
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
@@ -350,7 +346,7 @@ const ListaRol = ({ getAll, setLsPermisos, lsPermisos, rows }) => {
             </CardContent>
 
             <TableContainer>
-                {lsPermisos.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsPermisos.length === 0 ? <Cargando size={140} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}

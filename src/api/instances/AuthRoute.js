@@ -42,7 +42,8 @@ export const Url = {
     wordopenia:"api/InvestigacionEnfermedadLaboralFile/word-openia",
 
 
-
+    Investigacion: 'api/InvestigacionEnfermedadLaboral',
+    InvestigacionId: 'api/InvestigacionEnfermedadLaboral/id',
 
     TipoCatalogo: 'api/TipoCatalogo',
     TipoCatalogoId: 'api/TipoCatalogo/id',
@@ -351,6 +352,6 @@ export const Url = {
     CuestionarioId: 'api/CuestionarioPrevencion/id',
 
 
-  
-        
+
+
 }

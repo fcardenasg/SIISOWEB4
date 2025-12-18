@@ -513,7 +513,7 @@ const ViewRespuesta = () => {
 
         );
     } else {
-        usersResult = <Cargando size={200} myy={8} mxx={8} />;
+        usersResult = <Cargando size={140} />;
     }
 
     return (

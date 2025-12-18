@@ -6,15 +6,14 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FormatDate } from 'components/helpers/Format';
-import { Fragment } from 'react';
 import { Controller } from 'react-hook-form';
 
-const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) => {
+const InputDatePicker = ({ label, name, defaultValue, noWriting = false, bug, ...others }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
-        <Fragment>
+        <>
             <Controller
                 name={name}
                 defaultValue={FormatDate(defaultValue)}
@@ -30,19 +29,22 @@ const InputDatePicker = ({ label, name, defaultValue, size, bug, ...others }) =>
                             className: bug ? 'required-label' : '',
                             required: bug || false
                         }}
+                        inputProps={{
+                            onKeyDown: noWriting ? (e) => e.preventDefault() : undefined
+                        }}
                         error={bug ? true : false}
                         fullWidth
                         {...others}
                     />
                 )}
             />
-            
+
             {bug && (
                 <Grid item xs={12}>
                     <FormHelperText error>{bug.message}</FormHelperText>
                 </Grid>
             )}
-        </Fragment>
+        </>
     );
 };
 

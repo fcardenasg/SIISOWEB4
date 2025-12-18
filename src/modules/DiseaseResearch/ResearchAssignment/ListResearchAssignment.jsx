@@ -43,6 +43,7 @@ import { DeleteResearchAssignment, GetAllResearchAssignment } from 'api/clients/
 import Cargando from 'components/loading/Cargando';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
 import toast from 'react-hot-toast';
+import EmptyState from 'components/loading/EmptyState';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -216,16 +217,24 @@ const ListResearchAssignment = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState('');
     const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     async function getAll() {
         try {
+            setLoading(true);
             const lsServer = await GetAllResearchAssignment();
             if (lsServer.data.exito) {
+                console.log(lsServer.data.datos);
+
                 setLsModelData(lsServer.data.datos);
                 setRows(lsServer.data.datos);
             } else
                 toast.error(lsServer.data.mensaje);
-        } catch (error) { }
+        } catch (error) {
+            setLoading(false);
+        } finally {
+            setTimeout(() => { setLoading(false); }, 1000);
+        }
     }
 
     useEffect(() => {
@@ -368,7 +377,7 @@ const ListResearchAssignment = () => {
             </CardContent>
 
             <TableContainer>
-                {lsModelData.length === 0 ? <Cargando size={220} myy={6} /> :
+                {loading ? <Cargando size={140} /> : lsModelData.length === 0 ? (<EmptyState />) : (
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -481,7 +490,7 @@ const ListResearchAssignment = () => {
                                                         variant="subtitle1"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        <Chip label={`${row?.nombreInvestigador?.length} Investigador(es)`} size="small" chipcolor="success" />
+                                                        <Chip label={`${row?.nombreAsesor?.length} Investigador(es)`} size="small" chipcolor="success" />
                                                     </Typography>
                                                 </Tooltip>
                                             </TableCell>
@@ -528,7 +537,7 @@ const ListResearchAssignment = () => {
                             )}
                         </TableBody>
                     </Table>
-                }
+                )}
             </TableContainer>
 
             <TablePagination

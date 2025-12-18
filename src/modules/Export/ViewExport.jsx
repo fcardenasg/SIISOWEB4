@@ -36,6 +36,7 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
     const [payStatus, setPayStatus] = useState(0);
     const [fechaInicio, setFechaInicio] = useState(null);
     const [fechaFin, setFechaFin] = useState(null);
+    const [opcionFecha, setOpcionFecha] = useState(3);
 
     const [allMes, setAllMes] = useState(false);
     const [lsMeses, setLsMeses] = useState([]);
@@ -61,6 +62,7 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
         setFechaFin(null);
         setLsMeses([]);
         setLsAnios([]);
+        setOpcionFecha(3);
     }
 
     return (
@@ -122,6 +124,7 @@ const ViewExport = ({ setOpenModal, openModal, exportBy }) => {
                         setSede={setSede} sede={sede}
                         setFechaInicio={setFechaInicio} fechaInicio={fechaInicio}
                         setFechaFin={setFechaFin} fechaFin={fechaFin}
+                        setOpcionFecha={setOpcionFecha} opcionFecha={opcionFecha}
                     />
                 }
 

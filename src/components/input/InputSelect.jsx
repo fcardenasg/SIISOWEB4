@@ -5,11 +5,16 @@ import {
     FormControl,
     MenuItem,
     InputLabel,
-    Select
+    Select,
+    useTheme,
+    useMediaQuery,
 } from '@mui/material';
 import Label from 'components/label';
 
 const InputSelect = ({ bug, options, size, defaultValue, label, name, maxWidth, ...others }) => {
+    const theme = useTheme();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
         <>
             <Controller
@@ -27,7 +32,7 @@ const InputSelect = ({ bug, options, size, defaultValue, label, name, maxWidth, 
                             id="demo-simple-select"
                             label={label}
                             fullWidth
-                            size={size}
+                            size={matchesXS ? 'small' : 'medium'}
                             sx={{
                                 '& .MuiSelect-select': {
                                     fontSize: size === 'small' && '0.65rem',

@@ -39,7 +39,7 @@ const variants = {
     }),
 };
 
-const ViewCard = ({ dataInfo = {}, onClickOpenChat }) => {
+const ViewCard = ({ dataInfo, onClickOpenChat }) => {
     const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
 
     return (
@@ -209,7 +209,7 @@ const ViewCard = ({ dataInfo = {}, onClickOpenChat }) => {
                                 EPS:
                             </Typography>
                         </Box>
-                        <Typography variant="body2" fontWeight="medium" noWrap>
+                        <Typography variant="body2" fontWeight="medium" noWrap textTransform="capitalize">
                             {dataInfo.nombreEPS}
                         </Typography>
                     </Grid>

@@ -7,6 +7,7 @@ import {
     Grid,
     IconButton,
     InputAdornment,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -358,38 +359,32 @@ const ListWorkAbsenteeism = () => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: 'right' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
-                                    onClick={() => navigate("/work-absenteeism/history")}>
-                                    {TitleButton.Historico}
-                                </Button>
-                            </Grid>
+                    <Grid item xs={12} sm={6} lg={6}>
+                        <Stack direction="row" spacing={2} justifyContent="flex-end" alignItems="center">
+                            <Button fullWidth variant="contained" size="large" startIcon={<HistoryIcon />}
+                                onClick={() => navigate("/work-absenteeism/history")}>
+                                {TitleButton.Historico}
+                            </Button>
 
-                            <Grid item xs={4}>
-                                <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Ausentismolaboral}>
-                                    <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={() => navigate("/work-absenteeism/add")}>
-                                        {TitleButton.Agregar}
-                                    </Button>
-                                </ValidateAction>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/occupational-health/menu")}>
-                                    {TitleButton.Cancelar}
+                            <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.Ausentismolaboral}>
+                                <Button fullWidth variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
+                                    onClick={() => navigate("/work-absenteeism/add")}>
+                                    {TitleButton.Agregar}
                                 </Button>
-                            </Grid>
-                        </Grid>
+                            </ValidateAction>
+
+                            <Button fullWidth variant="contained" size="large" startIcon={<ArrowBackIcon />}
+                                onClick={() => navigate("/occupational-health/menu")}>
+                                {TitleButton.Cancelar}
+                            </Button>
+                        </Stack>
                     </Grid>
                 </Grid>
             </CardContent>
 
             <TableContainer>
                 {/* AQUÍ SE HACE PRELOAD */}
-                {lsWorkAbsenteeism.length === 0 ? <Cargando size={220} myy={6} /> :
+                {lsWorkAbsenteeism.length === 0 ? <Cargando size={140} /> :
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
