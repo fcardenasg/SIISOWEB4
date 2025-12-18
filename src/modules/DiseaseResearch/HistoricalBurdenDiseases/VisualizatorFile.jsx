@@ -3,6 +3,7 @@ import WebViewer from "@pdftron/webviewer";
 import "./App.css";
 import { Box, Button, CircularProgress, Tooltip } from "@mui/material";
 import { motion } from "framer-motion";
+import ControlModal from "components/controllers/ControlModal";
 
 const VisualizatorFile = ({ file, confirmExport }) => {
   const viewer = useRef(null);

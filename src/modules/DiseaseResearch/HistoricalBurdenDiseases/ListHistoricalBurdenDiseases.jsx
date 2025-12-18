@@ -45,6 +45,7 @@ import MainCard from "ui-component/cards/MainCard";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
+import DescriptionTwoToneIcon from "@mui/icons-material/DescriptionTwoTone";
 import PrintIcon from "@mui/icons-material/PrintTwoTone";
 import SearchIcon from "@mui/icons-material/Search";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
@@ -66,7 +67,11 @@ import ValidateAction from "components/ValidateAction/ValidateAction";
 import {
   DeleteHistoricalBurdenDiseases,
   GetAllHistoricalBurdenDiseases,
+  GetByIdHistoricalBurdenDiseases,
 } from "../../../api/clients/HistoricalBurdenDiseases";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import "./markdown.css";
 import InfoCardMui from "./InfoCardMui";
 import InvestigationView from "./InvestigationView";
 
@@ -118,33 +123,28 @@ const headCells = [
     align: "left",
   },
   {
-    id: "primerNombre",
+    id: "nombres",
     numeric: false,
     label: "Nombres",
+    align: "left",
+  },
+
+  {
+    id: "profesion",
+    numeric: false,
+    label: "Profesión",
+    align: "left",
+  },
+  {
+    id: "residencia",
+    numeric: false,
+    label: "Lugar de residencia",
     align: "left",
   },
   {
     id: "fechaInvestigacion",
     numeric: false,
     label: "Fecha Investigación",
-    align: "left",
-  },
-  {
-    id: "generoIncapacidad",
-    numeric: false,
-    label: "Genero Incapacidad",
-    align: "left",
-  },
-  {
-    id: "diasIncapacidad",
-    numeric: false,
-    label: "Diás Incapacidad",
-    align: "left",
-  },
-  {
-    id: "cargoInicial",
-    numeric: false,
-    label: "Cargo Inicial",
     align: "left",
   },
 ];
@@ -318,12 +318,16 @@ const ListHistoricalBurdenDiseases = () => {
   };
 
   const [modalStyle] = useState(getModalStyle);
-  const handleOpen = (id) => {
+  const handleOpen = async (id) => {
     console.log("idCheck", id);
-    console.log("investigation", investigation);
-    const filter = investigation.find((item) => item.id === id);
-    setData(filter);
-    console.log("filter", filter);
+
+    try {
+      const response = await GetByIdHistoricalBurdenDiseases(id);
+      console.log("response", response.data);
+      setData(response.data.datos.informe);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -455,6 +459,25 @@ const ListHistoricalBurdenDiseases = () => {
     <MainCard title="Lista de investigaciones" content={false}>
       <MessageDelete open={openDelete} onClose={() => setOpenDelete(false)} />
       {/* <GenerateExcel setOpenModal={setOpenModal} openModal={openModal} /> */}
+
+      <ControlModal
+        open={open}
+        onClose={() => setOpen(false)}
+        children={
+          // <InvestigationView data={dataCurrent}/>
+          data && (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              children={data}
+              className="informe-medico"
+              components={{
+                br: () => <br />,
+              }}
+            />
+          )
+        }
+        maxWidth="lg"
+      />
 
       <ControlModal
         title={Message.VistaReporte}
@@ -598,7 +621,7 @@ const ListHistoricalBurdenDiseases = () => {
                             sx={{ bgcolor: ColorDrummondltd.RedDrummond }}
                           >
                             <Typography sx={{ color: "white" }}>
-                              {row?.primerNombre[0].toUpperCase()}
+                              {row?.nombres[0].toUpperCase()}
                             </Typography>
                           </Avatar>
                         </TableCell>
@@ -639,10 +662,48 @@ const ListHistoricalBurdenDiseases = () => {
                                   : "grey.900",
                             }}
                           >
-                            {row?.primerNombre.toUpperCase() + " " + row?.segundoNombre.toUpperCase()}
+                            {row?.nombres.toUpperCase()}
                           </Typography>
                         </TableCell>
 
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          onClick={(event) => handleClick(event, row.id)}
+                          sx={{ cursor: "pointer" }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            sx={{
+                              color:
+                                theme.palette.mode === "dark"
+                                  ? "grey.600"
+                                  : "grey.900",
+                            }}
+                          >
+                            {row?.profesion.toUpperCase()}
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          onClick={(event) => handleClick(event, row.id)}
+                          sx={{ cursor: "pointer" }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            sx={{
+                              color:
+                                theme.palette.mode === "dark"
+                                  ? "grey.600"
+                                  : "grey.900",
+                            }}
+                          >
+                            {row?.residencia.toUpperCase()}
+                          </Typography>
+                        </TableCell>
                         <TableCell
                           component="th"
                           id={labelId}
@@ -663,70 +724,13 @@ const ListHistoricalBurdenDiseases = () => {
                           </Typography>
                         </TableCell>
 
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row.generoIncapacidad.toUpperCase()}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row?.diasIncapacidad}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row?.cargoInicial.toUpperCase()}
-                          </Typography>
-                        </TableCell>
-
                         <TableCell align="center" sx={{ pr: 3 }}>
-                          <Tooltip title="Detalles" onClick={() =>handleOpen(row.id)}>
+                          <Tooltip
+                            title="Detalles"
+                            onClick={() => handleOpen(row.id)}
+                          >
                             <IconButton
-                            //   disabled={idCheck == "" ? true : false}
+                              //   disabled={idCheck == "" ? true : false}
                               color="primary"
                               size="large"
                             >
@@ -741,7 +745,7 @@ const ListHistoricalBurdenDiseases = () => {
                             idModulo={Modulo.Empleado}
                           >
                             <Tooltip
-                              title="Actualizar"
+                              title="Ver Documento"
                               onClick={() =>
                                 navigate(
                                   `/UpdateHistoricalBurdenDiseases?id=${row.id}`
@@ -749,7 +753,7 @@ const ListHistoricalBurdenDiseases = () => {
                               }
                             >
                               <IconButton size="large">
-                                <EditTwoToneIcon sx={{ fontSize: "1.3rem" }} />
+                                <DescriptionTwoToneIcon sx={{ fontSize: "1.3rem" }} />
                               </IconButton>
                             </Tooltip>
                           </ValidateAction>
@@ -780,15 +784,6 @@ const ListHistoricalBurdenDiseases = () => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-
-      <ControlModal
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-        children={<InfoCardMui data={data} />}
-        maxWidth="lg"
       />
     </MainCard>
   );

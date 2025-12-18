@@ -10,6 +10,19 @@ export const convertToBase64 = (archivos) => {
     })
 }
 
+export const convertToFileBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+};
+
+
+
+
 export function Base64ToFile(base64, filename, mimeType) {
     if (base64.startsWith('data:')) {
         var arr = base64.split(','),

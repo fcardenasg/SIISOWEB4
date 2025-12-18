@@ -13,18 +13,15 @@ import { UpperFirstChar } from "components/helpers/Format";
 const ControlModalView = ({
   open,
   onClose,
-  confirmExport,
+  handleExportar,
   maxWidth,
   title,
   children,
 }) => {
   const theme = useTheme();
 
-  console.log("title", title);
 
-  const handleExportar = () => {
-    confirmExport.onTrue();
-  };
+
   return (
     <div>
       <Dialog

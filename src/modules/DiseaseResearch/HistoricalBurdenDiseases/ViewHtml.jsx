@@ -1,16 +1,18 @@
-export default function ViewHtml({html}){
-     return (
-    <div style={{ padding: 20 }}>
-   
+export default function ViewHtml(htmlString) {
+  console.log("HTML NEW NEW", htmlString.html);
 
-      {/* Aquí mostramos el HTML */}
-      {html && (
-        <div
-          style={{ marginTop: 20 }}
-          contentEditable={true}  
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      )}
-    </div>
+  const blob = new Blob([htmlString], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  return (
+    <div
+     style={{
+    width: "100%",
+    boxSizing: "border-box"
+  }}
+      contentEditable
+      suppressContentEditableWarning={true}
+      dangerouslySetInnerHTML={{ __html: htmlString.html }}
+    />
   );
 }

@@ -1,0 +1,200 @@
+/* ================================================= */
+/* BASE GENERAL                                      */
+/* ================================================= */
+.informe-medico {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1f2937;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* ================================================= */
+/* PÁRRAFOS                                          */
+/* ================================================= */
+.informe-medico p {
+  margin: 4px 0;
+}
+
+/* ================================================= */
+/* NEGRILLA SIMPLE (NO INTENSA)                      */
+/* ================================================= */
+.informe-medico strong {
+  font-weight: 600;
+  display: inline;
+}
+
+/* Strong como subtítulo suave */
+.informe-medico p > strong:only-child {
+  display: block;
+  margin: 10px 0 4px 0;
+}
+
+/* ================================================= */
+/* TÍTULOS DE SECCIÓN                                */
+/* ================================================= */
+.informe-medico h1,
+.informe-medico h2,
+.informe-medico h3 {
+  margin-top: 32px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.informe-medico h2,
+.informe-medico h3 {
+  font-size: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+}
+
+/* ================================================= */
+/* LISTAS SIMPLES                                    */
+/* ================================================= */
+.informe-medico ul {
+  margin: 8px 0 8px 20px;
+  padding: 0;
+}
+
+.informe-medico li {
+  margin-bottom: 6px;
+  line-height: 1.45;
+}
+
+/* ================================================= */
+/* BLOQUES LARGOS / CITA                             */
+/* ================================================= */
+.informe-medico blockquote {
+  margin: 14px 0;
+  padding: 10px 14px;
+  border-left: 4px solid #d1d5db;
+  background-color: #f9fafb;
+  color: #374151;
+  border-radius: 4px;
+}
+
+/* ================================================= */
+/* LABEL + VALOR HORIZONTAL                          */
+/* ================================================= */
+/* Label + valor largo, siempre vertical */
+.informe-medico p:has(> strong + br) {
+  display: block; /* en lugar de grid */
+  margin-bottom: 12px;
+}
+
+.informe-medico p:has(> strong + br) > strong {
+  display: block;
+  margin-bottom: 4px; /* espacio entre label y valor */
+  font-weight: 600;
+}
+
+.informe-medico p:has(> strong + br) br {
+  display: none; /* opcional, si usabas <br> para separar */
+}
+
+/* ================================================= */
+/* TABLAS ELEGANTES                                  */
+/* ================================================= */
+.informe-medico table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 18px 0;
+  font-size: 14px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Encabezados */
+.informe-medico thead th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+/* Celdas */
+.informe-medico tbody td {
+  padding: 10px 12px;
+  color: #111827;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Zebra sutil */
+.informe-medico tbody tr:nth-child(even) {
+  background-color: #fcfcfd;
+}
+
+/* Última fila */
+.informe-medico tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Separadores verticales */
+.informe-medico th + th,
+.informe-medico td + td {
+  border-left: 1px solid #f1f5f9;
+}
+
+/* Hover suave */
+.informe-medico tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+
+/* Párrafos horizontales (label + valor corto) */
+.informe-medico p.horizontal {
+  display: flex;
+  flex-wrap: wrap;       /* permite que el contenido largo baje */
+  align-items: baseline; /* alinea el label y el valor */
+  gap: 6px;              /* espacio entre label y valor */
+  margin-bottom: 8px;
+}
+
+.informe-medico p.horizontal > strong {
+  display: inline-block;
+  width: 160px; /* ancho fijo para el label */
+  font-weight: 600;
+}
+
+/* ================================================= */
+/* RESPONSIVE                                        */
+/* ================================================= */
+@media (max-width: 768px) {
+  .informe-medico {
+    font-size: 14px;
+  }
+
+  .informe-medico h2,
+  .informe-medico h3 {
+    font-size: 15px;
+  }
+
+  .informe-medico p:has(> strong + br) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================================= */
+/* IMPRESIÓN (BONUS)                                 */
+/* ================================================= */
+@media print {
+  .informe-medico {
+    font-size: 13px;
+    color: #000;
+  }
+
+  .informe-medico table {
+    box-shadow: none;
+  }
+
+  .informe-medico h2,
+  .informe-medico h3 {
+    page-break-after: avoid;
+  }
+}

@@ -8,11 +8,12 @@ import {
   ListItemText,
   Tooltip,
   Typography,
-} from '@mui/material';
-import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import BlurLinearIcon from '@mui/icons-material/BlurLinear';
-import PreviewIcon from '@mui/icons-material/Preview';
+} from "@mui/material";
+import ImageSearchIcon from "@mui/icons-material/ImageSearch";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import BlurLinearIcon from "@mui/icons-material/BlurLinear";
+import PreviewIcon from "@mui/icons-material/Preview";
+import toast from "react-hot-toast";
 
 export default function ItemUpload({
   acceptedFiles,
@@ -20,40 +21,56 @@ export default function ItemUpload({
   handleViewPDF,
   handleFileSave,
   handleViewDocx,
+  isExtracting,
+  extractionComplete,
   filecolor,
   enable,
   enableview,
   estado,
 }) {
-
   const ViewExtraer = ({ file }) => (
     <Box
       component="section"
       sx={{
         fontSize: 18,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Button
         onClick={() => {
-          console.log('entro');
-          handleFileSave(file);
+          const lastFile = acceptedFiles[acceptedFiles.length - 1];
+          if (!lastFile) return;
+
+          // Si ya terminó
+          if (extractionComplete) {
+            toast.success("Información ya extraída");
+            return;
+          }
+
+          // Si ya está en progreso, no reiniciamos, pero confirmamos que sigue activo
+          if (isExtracting) {
+            toast.loading("Extracción en curso... Se completará en breve.");
+            return;
+          }
+
+          // Si no ha empezado, iniciamos
+          handleFileSave(lastFile);
         }}
         sx={{
-          background: '#4caf50',
+          background: "#4caf50",
           borderRadius: 4,
           mr: 0.5,
-          '&:hover': {
-            cursor: 'pointer',
-            color: '#4caf50',
-            background: '#c8e6c9',
+          "&:hover": {
+            cursor: "pointer",
+            color: "#4caf50",
+            background: "#c8e6c9",
           },
         }}
         variant="contained"
       >
-        Extraer información 
+        Extraer información
       </Button>
       {/* <Button
         onClick={() => {
@@ -80,14 +97,14 @@ export default function ItemUpload({
           component="section"
           sx={{
             fontSize: 18,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             padding: 0.5,
-            '&:hover': {
-              cursor: 'pointer',
-              color: '#d32f2f',
-              background: '#ffcdd2',
+            "&:hover": {
+              cursor: "pointer",
+              color: "#d32f2f",
+              background: "#ffcdd2",
               borderRadius: 4,
             },
           }}
@@ -100,20 +117,20 @@ export default function ItemUpload({
 
   return (
     <List>
-      {acceptedFiles.map((file, index) => {     
+      {acceptedFiles.map((file, index) => {
         return (
           <ListItem
-            sx={{ marginBottom: 1.5, width: '100%', paddingRight: 4 }}
+            sx={{ marginBottom: 1.5, width: "100%", paddingRight: 4 }}
             disablePadding
             key={index}
           >
             <Card
               variant="outlined"
               sx={{
-                width: '100%',
+                width: "100%",
                 height: "auto",
-                background: file.state ? '#e3f2fd' : '#ffffff', 
-                alignItems: 'center',
+                background: file.state ? "#e3f2fd" : "#ffffff",
+                alignItems: "center",
               }}
             >
               <Box
@@ -121,14 +138,19 @@ export default function ItemUpload({
                 sx={{
                   paddingX: 2,
                   paddingY: 1,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  height: '100%',
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  height: "100%",
                 }}
               >
                 <ListItemText
-                  sx={{ width: '20%', textAlign: 'left', marginY: 'auto', typography: 'body2' }}
+                  sx={{
+                    width: "20%",
+                    textAlign: "left",
+                    marginY: "auto",
+                    typography: "body2",
+                  }}
                   primary={file.path}
                 />
 
@@ -136,9 +158,9 @@ export default function ItemUpload({
                   component="section"
                   sx={{
                     paddingX: 2,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
                   {file.state ? (
@@ -146,12 +168,18 @@ export default function ItemUpload({
                       component="section"
                       sx={{
                         fontSize: 18,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      <Typography sx={{ fontSize: '1rem', fontWeight: 500, marginRight: 2 }}>
+                      <Typography
+                        sx={{
+                          fontSize: "1rem",
+                          fontWeight: 500,
+                          marginRight: 2,
+                        }}
+                      >
                         Listo para guardar
                       </Typography>
                       <Box
@@ -159,15 +187,15 @@ export default function ItemUpload({
                         component="section"
                         sx={{
                           fontSize: 16.5,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                           marginRight: 1,
                           padding: 0.5,
-                          '&:hover': {
-                            cursor: 'pointer',
-                            color: '#004d40',
-                            background: '#80cbc4',
+                          "&:hover": {
+                            cursor: "pointer",
+                            color: "#004d40",
+                            background: "#80cbc4",
                             borderRadius: 4,
                           },
                         }}
@@ -179,20 +207,20 @@ export default function ItemUpload({
                         component="section"
                         sx={{
                           fontSize: 16.5,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                           marginRight: 1,
                           padding: 0.5,
-                          '&:hover': {
-                            cursor: 'pointer',
-                            color: '#004d40',
-                            background: '#80cbc4',
+                          "&:hover": {
+                            cursor: "pointer",
+                            color: "#004d40",
+                            background: "#80cbc4",
                             borderRadius: 4,
                           },
                         }}
                       >
-                        <PreviewIcon/>
+                        <PreviewIcon />
                       </Box>
 
                       <Box
@@ -200,14 +228,14 @@ export default function ItemUpload({
                         component="section"
                         sx={{
                           fontSize: 18,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                           padding: 0.5,
-                          '&:hover': {
-                            cursor: 'pointer',
-                            color: '#d32f2f',
-                            background: '#ffcdd2',
+                          "&:hover": {
+                            cursor: "pointer",
+                            color: "#d32f2f",
+                            background: "#ffcdd2",
                             borderRadius: 4,
                           },
                         }}

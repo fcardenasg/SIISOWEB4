@@ -50,12 +50,17 @@ import { SNACKBAR_OPEN } from "store/actions";
 import MainCard from "ui-component/cards/MainCard";
 import SubCard from "ui-component/cards/SubCard";
 import AnimateButton from "ui-component/extended/AnimateButton";
-import { GetByIdHistoricalBurdenDiseases } from "api/clients/HistoricalBurdenDiseases";
+import {
+  GetByIdHistoricalBurdenDiseases,
+  GetByIdPDF,
+} from "api/clients/HistoricalBurdenDiseases";
 import { motion } from "framer-motion";
 import VisualizatorFile from "./VisualizatorFile";
 import { base64ToWord } from "./serviceSisso";
 import ControlModalView from "components/controllers/ControlModalView";
 import { useBoolean } from "hooks/use-boolean";
+import RightDrawer from "components/components/RightDrawer";
+import ChatIA from "./ChatIA";
 
 const validationSchema = yup.object().shape({});
 
@@ -75,21 +80,22 @@ const UpdateHistoricalBurdenDiseases = () => {
 
   const [timeWait, setTimeWait] = useState(false);
   const [file, setFile] = useState();
+  const [name, setName] = useState("");
+  const [informe, setInforme] = useState();
 
   const confirmModalDocx = useBoolean();
-  const confirmExport = useBoolean();
+  const confirm = useBoolean();
 
   async function getAll() {
     try {
       console.log("id", id);
-      const response = await GetByIdHistoricalBurdenDiseases(id);
+      const response = await GetByIdPDF(id);
       if (response.data.exito) {
-        console.log("response.data.datos.bat64", response.data.datos);
-        const bat64 = await base64ToWord(
-          response.data.datos.bat64,
-          "documeto.docx"
-        );
+        const { bat64, nombres,informe } = response.data.datos;
+         console.log("informe", informe);
         setFile(bat64);
+        setName(nombres);
+        setInforme(informe);
         setTimeWait(true);
       }
       console.log("response", response);
@@ -112,7 +118,6 @@ const UpdateHistoricalBurdenDiseases = () => {
 
   useEffect(() => {
     if (file) {
-      console.log("Hay arhiv");
       confirmModalDocx.onTrue();
     }
   }, [file]);
@@ -127,12 +132,47 @@ const UpdateHistoricalBurdenDiseases = () => {
   } = methods;
   const values = watch();
 
+  const handleExport = async () => {
+    const link = document.createElement("a");
+    link.href = file;
+    link.download = name + ".pdf";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleIA = () => {
+    confirm.onTrue();
+  };
+
   return (
-    <ValidateActionSkeleton
-      idAccion={AccionMenu.actualizar}
-      idModulo={Modulo.Empleado}
-    >
-      <MainCard>
+    <>
+      <RightDrawer
+        open={confirm.value}
+        onClose={confirm.onFalse}
+        title={
+          <>
+            <Typography variant="h4">
+              Investigación de enfermedad laboral
+            </Typography>
+            <Typography
+              variant="h4"
+              color="primary.main"
+              sx={{ fontSize: "1rem", fontWeight: "normal" }}
+            >
+              {name}
+            </Typography>
+          </>
+        }
+        width="40%"
+        children={<ChatIA informe={informe} />}
+      />
+
+      <ValidateActionSkeleton
+        idAccion={AccionMenu.actualizar}
+        idModulo={Modulo.Empleado}
+      >
         {confirmModalDocx.value ? (
           <FormProvider {...methods}>
             <MessageUpdate
@@ -150,21 +190,48 @@ const UpdateHistoricalBurdenDiseases = () => {
               darkTitle
               title={
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={10} lg={10}>
+                  <Grid item xs={12} md={8} lg={8}>
                     <Typography variant="h4">
                       Investigación de enfermedad laboral
                     </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: "1rem",
+                        color: theme.palette.primary.main,
+                        weight: "normal",
+                      }}
+                    >
+                      {name}
+                    </Typography>
                   </Grid>
-                  <Grid item xs={12} md={2} lg={2} sx={{display:"flex",justifyContent:"flex-end"}}>
+                  <Grid
+                    item
+                    xs={12}
+                    md={4}
+                    lg={4}
+                    sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+                  >
                     <AnimateButton>
                       <Tooltip title="Exportar">
                         <Button
                           variant="contained"
                           color="primary"
-                          onClick={confirmExport.onTrue}
+                          onClick={handleExport}
                           size="small"
                         >
                           Exportar pdf
+                        </Button>
+                      </Tooltip>
+                    </AnimateButton>
+                    <AnimateButton>
+                      <Tooltip title="Exportar">
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={handleIA}
+                          size="small"
+                        >
+                          SIISO IA
                         </Button>
                       </Tooltip>
                     </AnimateButton>
@@ -174,27 +241,23 @@ const UpdateHistoricalBurdenDiseases = () => {
             >
               <Grid container spacing={2}>
                 <Grid item xs={12} md={12} lg={12}>
-                  <VisualizatorFile
-                    file={file}
-                    confirmExport={confirmExport.value}
-                  />
+                  {file ? (
+                    <iframe
+                      src={file}
+                      title="Vista previa del PDF"
+                      width="100%"
+                      height="600px"
+                      style={{ border: "none" }}
+                    />
+                  ) : (
+                    <div>Cargando PDF...</div>
+                  )}
                 </Grid>
               </Grid>
             </SubCard>
 
             <Grid item xs={12} sx={{ mb: 2 }}>
               <Grid container spacing={2}>
-                {/* <Grid item xs={6} md={4} lg={2}>
-                  <AnimateButton>
-                    <Button
-                      variant="contained"
-                      onClick={() => console.log("presionado")}
-                      fullWidth
-                    >
-                      {TitleButton.Actualizar}
-                    </Button>
-                  </AnimateButton>
-                </Grid> */}
                 <Grid item xs={6} md={4} lg={2}>
                   <AnimateButton>
                     <Button
@@ -212,8 +275,8 @@ const UpdateHistoricalBurdenDiseases = () => {
         ) : (
           <Cargando />
         )}
-      </MainCard>
-    </ValidateActionSkeleton>
+      </ValidateActionSkeleton>
+    </>
   );
 };
 
