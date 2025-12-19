@@ -1,25 +1,33 @@
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import SendIcon from '@mui/icons-material/Send';
 import {
     Avatar,
     Box,
     Button,
+    Card,
+    CardContent,
     Divider,
     Grid,
-    Card,
-    Paper,
     TextField,
     Typography,
-    CardContent
+    useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetComboCompany } from 'api/clients/CompanyClient';
-import {
-    CodCatalogo
-} from 'components/helpers/Enums';
+import { GetByIdIELComentario, GetIELMetodoControl, InsertIELComentario, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
+import { CodCatalogo } from 'components/helpers/Enums';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import InputTextEditor from 'components/input/InputTextEditor';
+import { AnimatePresence, motion } from 'framer-motion';
+import useAuth from 'hooks/useAuth';
 import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
+import SubCard from 'ui-component/cards/SubCard';
 import {
     TableCharacterizationAbsenteeism,
     TableControlMethods,
@@ -30,14 +38,6 @@ import {
 } from './components/Table';
 import TableDiagnosis from './components/Table/TableDiagnosis';
 import TableHealth from './components/Table/TableHealth';
-import { useBoolean } from 'hooks/use-boolean';
-import useAuth from 'hooks/useAuth';
-import toast from 'react-hot-toast';
-import { ValidateResearchAssignment } from 'api/clients/ResearchAssignmentClient';
-import { motion, AnimatePresence } from 'framer-motion';
-import SendIcon from '@mui/icons-material/Send';
-import { useParams } from 'react-router-dom';
-import { GetByIdIELComentario, InsertIELComentario } from 'api/clients/InvestigationClient';
 
 export const CompanyDetails = ({ dataModel, matchesXS }) => {
     const [lsSede, setLsSede] = useState([]);
@@ -137,11 +137,15 @@ export const CompanyDetails = ({ dataModel, matchesXS }) => {
     )
 }
 
-export const WorkHistoryDLTD = () => {
+export const WorkHistoryDLTD = ({ methods, documento }) => {
     return (
-        <Grid container spacing={2}>
+        <TableDLTD methods={methods} documento={documento} />
+    )
+}
+
+{/* <Grid container spacing={2}>
             <Grid item xs={12}>
-                <TableDLTD />
+                <TableDLTD methods={methods} documento={documento} />
             </Grid>
 
             <Grid item xs={12}>
@@ -149,15 +153,13 @@ export const WorkHistoryDLTD = () => {
             </Grid>
 
             <Grid item xs={12}>
-                <TableDLTD />
+                <TableDLTD methods={methods} documento={documento} />
             </Grid>
-        </Grid>
-    )
-}
+        </Grid> */}
 
-export const WorkHistoryOtherCompanies = () => {
+export const WorkHistoryOtherCompanies = ({ methods, documento }) => {
     return (
-        <TableOtherCompanies />
+        <TableOtherCompanies methods={methods} documento={documento} />
     )
 }
 
@@ -176,7 +178,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <TableDiagnosis documento={dataModel?.documento} />
+                <TableDiagnosis methods={methods} />
             </Grid>
 
             <Grid item xs={12}><Divider /></Grid>
@@ -320,8 +322,135 @@ export const DataExposureCompany = ({ resumenResultadosAnalisisPuesto, resumenVa
 }
 
 export const AvailableControlMethods = () => {
+    const theme = useTheme();
+    const { idInvestigacion } = useParams();
+    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+    const [lsMetodoControl, setLsMetodoControl] = useState([]);
+    const [lsControl, setLsControl] = useState([]);
+    const [lsTipoControl, setLsTipoControl] = useState([]);
+
+    const methods = useForm();
+    const { handleSubmit } = methods;
+
+    async function getData() {
+        try {
+            const result = await GetIELMetodoControl(1);
+            if (result.data.exito) {
+                if (result.data.datos !== null) {
+                    setLsMetodoControl(result.data.datos);
+                }
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error("Error al obtener los métodos de control");
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    useEffect(() => {
+        async function getCombo() {
+            try {
+                const lsServerControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_CONTROL);
+                setLsControl(lsServerControl.data);
+
+                const lsServerTipoControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_TIPO_CONTROL);
+                setLsTipoControl(lsServerTipoControl.data);
+            } catch (error) {
+                toast.error("Error al obtener los tipos de control");
+            }
+        }
+
+        getCombo();
+    }, []);
+
+    const handleSave = async (data) => {
+        try {
+            data.idInvestigacion = parseInt(idInvestigacion);
+
+            const result = await InsertIELMetodoControl(data);
+            if (result.data.exito) {
+                toast.success(result.data.mensaje);
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.response.data.mensaje);
+        }
+    }
+
     return (
-        <TableControlMethods />
+        <FormProvider {...methods}>
+            <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} md={6} lg={5}>
+                    <InputSelect
+                        name="control"
+                        label="Control"
+                        defaultValue=""
+                        options={lsControl}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={5}>
+                    <InputSelect
+                        name="tipoControl"
+                        label="Tipo de control"
+                        defaultValue=""
+                        options={lsTipoControl}
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={2}>
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit(handleSave)}
+                        size={matchesXS ? 'small' : 'medium'}
+                        startIcon={<AddCircleIcon />}
+                    >
+                        Agregar
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <InputText
+                        defaultValue=""
+                        fullWidth
+                        multiline
+                        minRows={2}
+                        maxRows={4}
+                        name="observacionBrindado"
+                        label="Observaciones sobre uso brindado"
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <InputText
+                        defaultValue=""
+                        fullWidth
+                        multiline
+                        minRows={2}
+                        maxRows={4}
+                        name="observacionNivelProteccionBrindado"
+                        label="Observaciones sobre nivel de protección brindado"
+                        size={matchesXS ? 'small' : 'medium'}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <SubCard content={false}>
+                        <TableControlMethods listMC={lsMetodoControl} />
+                    </SubCard>
+                </Grid>
+            </Grid>
+        </FormProvider>
     )
 }
 
@@ -405,23 +534,7 @@ export const UnderlyingCauseDetected = ({ causaBasicaDetectada }) => {
 
 export const Conclusion = ({ conclusion, methods, idInvestigation }) => {
     const { user } = useAuth();
-    const validateCombo = useBoolean();
     const conclusionForm = methods.watch("conclusion");
-
-    /* useEffect(() => {
-        async function Validate() {
-            try {
-                const validate = await ValidateResearchAssignment(user?.id);
-                if (validate.data.datos) {
-                    validateCombo.onTrue();
-                }
-            } catch (error) {
-                toast.error('Error al validar los comentarios de conclusión');
-            }
-        }
-
-        Validate();
-    }, []); */
 
     return (
         <Grid container spacing={2}>
@@ -438,10 +551,10 @@ export const Conclusion = ({ conclusion, methods, idInvestigation }) => {
     )
 }
 
-export const PreventiveActions = () => {
+export const PreventiveActions = ({ methods }) => {
     return (
-        <TablePreventiveActions />
-    )
+        <TablePreventiveActions methods={methods} />
+    );
 }
 
 export const Signatures = () => {

@@ -224,8 +224,6 @@ const ListResearchAssignment = () => {
             setLoading(true);
             const lsServer = await GetAllResearchAssignment();
             if (lsServer.data.exito) {
-                console.log(lsServer.data.datos);
-
                 setLsModelData(lsServer.data.datos);
                 setRows(lsServer.data.datos);
             } else
@@ -233,7 +231,7 @@ const ListResearchAssignment = () => {
         } catch (error) {
             setLoading(false);
         } finally {
-            setTimeout(() => { setLoading(false); }, 1000);
+            setTimeout(() => { setLoading(false); }, 300);
         }
     }
 

@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 
-export default function EmptyState() {
+export default function EmptyState({ seeSubtitle = true, title = "No se encontraron registros", subtitle = "Actualmente no hay información disponible para mostrar.\nPuedes intentar realizar una nueva búsqueda o agregar un registro si es necesario." }) {
     return (
         <Box
             component={motion.div}
@@ -45,25 +45,26 @@ export default function EmptyState() {
                 transition={{ delay: 0.15, duration: 0.45 }}
                 sx={{ mt: 2, color: "text.secondary" }}
             >
-                No se encontraron registros
+                {title}
             </Typography>
 
-            <Typography
-                variant="body1"
-                component={motion.div}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.8 }}
-                transition={{ delay: 0.3, duration: 0.45 }}
-                sx={{
-                    mt: 1,
-                    maxWidth: 420,
-                    color: "text.disabled",
-                    lineHeight: 1.5
-                }}
-            >
-                Actualmente no hay información disponible para mostrar.
-                Puedes intentar realizar una nueva búsqueda o agregar un registro si es necesario.
-            </Typography>
+            {seeSubtitle &&
+                <Typography
+                    variant="body1"
+                    component={motion.div}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.8 }}
+                    transition={{ delay: 0.3, duration: 0.45 }}
+                    sx={{
+                        mt: 1,
+                        maxWidth: 420,
+                        color: "text.disabled",
+                        lineHeight: 1.5
+                    }}
+                >
+                    {subtitle}
+                </Typography>
+            }
         </Box>
     );
 }

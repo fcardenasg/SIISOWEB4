@@ -27,7 +27,8 @@ import {
     IconHierarchy,
     IconMail,
     IconPhone,
-    IconUser
+    IconUser,
+    IconSchool
 } from '@tabler/icons';
 import Accordion from 'components/accordion/Accordion';
 import { UpperFirstChar, ViewFormat } from "components/helpers/Format";
@@ -36,8 +37,42 @@ import SubCard from 'ui-component/cards/SubCard';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import EpidemiologicalView from 'modules/EpidemiologicalView';
-import SocialSecurityInfo from "modules/Programming/NewEMO/components/SocialSecurityInfo";
 import { ColorDrummondltd } from "themes/colors";
+import Iconify from 'components/iconify/iconify';
+
+const SocialSecurityInfo = ({ dataEmployee }) => {
+    return (
+        <Box sx={{ display: "flex", textAlign: "center", gap: 2, flexWrap: "wrap", mt: 1 }}>
+            <Box sx={{ display: "flex", textAlign: "center", gap: 1 }}>
+                <Iconify icon="mdi:building" color="#1E88E5" />
+                <Typography variant="body2" color="text.secondary" sx={{ textTransform: "capitalize" }}>
+                    Sede: {dataEmployee?.nameSede ? dataEmployee?.nameSede?.toLowerCase() : "Sin registro"}
+                </Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", textoA: "center", gap: 1 }}>
+                <Iconify icon="mdi:cake-variant" color="#8E24AA" />
+                <Typography variant="body2" color="text.secondary" sx={{ textTransform: "capitalize" }}>
+                    Edad: {dataEmployee?.edad ? `${dataEmployee?.edad} año(s)` : "Sin registro"}
+                </Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", textoA: "center", gap: 1 }}>
+                <IconCalendar color="#43A047" />
+                <Typography variant="body2" color="text.secondary" sx={{ textTransform: "capitalize" }}>
+                    Antigüedad: {dataEmployee?.antiguedad ? `${dataEmployee?.antiguedad} año(s)` : "Sin registro"}
+                </Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", textoA: "center", gap: 1 }}>
+                <Iconify icon="mdi:stethoscope" color="#FB8C00" />
+                <Typography variant="body2" color="text.secondary" sx={{ textTransform: "capitalize" }}>
+                    EPS: {dataEmployee?.nameEps ? dataEmployee?.nameEps?.toLowerCase() : "Sin registro"}
+                </Typography>
+            </Box>
+        </Box>
+    );
+};
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -89,13 +124,12 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const ViewEmployeeDetails = [
     { icons: <IconMail stroke={2} size="1.3rem" />, label: 'Email' },
     { icons: <IconDeviceMobile stroke={2} size="1.3rem" />, label: 'Celular' },
-    { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de terminación' },
+    { icons: <IconSchool stroke={2} size="1.3rem" />, label: 'Escolaridad' },
     { icons: <IconBuildingFactory2 stroke={2} size="1.3rem" />, label: 'Empresa' },
-    { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de nacimiento' },
     { icons: <IconGenderBigender stroke={2} size="1.3rem" />, label: 'Sexo / Genero' },
+    { icons: <IconCalendar stroke={2} size="1.3rem" />, label: 'Fecha de nacimiento' },
     { icons: <IconHierarchy stroke={2} size="1.3rem" />, label: 'Estado civil' },
-    { icons: <IconUser stroke={2} size="1.3rem" />, label: 'Contacto' },
-    { icons: <IconPhone stroke={2} size="1.3rem" />, label: 'Telefono de contacto' },
+    { icons: <IconUser stroke={2} size="1.3rem" />, label: 'Contacto' }
 ]
 
 const ViewData = ({ icons, nameData, label }) => {
@@ -103,7 +137,7 @@ const ViewData = ({ icons, nameData, label }) => {
         <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {icons}
             <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>{label}: </Typography>
-            <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, textTransform: 'capitalize' }}>{nameData ? nameData : 'SIN REGISTRO'}</Typography>
+            <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, textTransform: 'capitalize' }}>{nameData ? nameData : 'Sin registro'}</Typography>
         </Grid>
     );
 }
@@ -130,7 +164,7 @@ const ViewDataDetails = ({ title, nameData }) => {
                         maxWidth: '70%'
                     }}
                 >
-                    {nameData || 'SIN REGISTRO'}
+                    {nameData || 'Sin registro'}
                 </Typography>
             </ListItemButton>
             <Divider />
@@ -262,10 +296,10 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                 <SocialSecurityInfo
                                     dataEmployee={
                                         {
-                                            nameEps: lsEmployee?.nameEps?.toLowerCase(),
-                                            nameAfp: lsEmployee?.nameAfp?.toLowerCase(),
-                                            nameArl: lsEmployee?.nameArl?.toLowerCase(),
-                                            nameCesantias: lsEmployee?.nameCesantias?.toLowerCase()
+                                            nameSede: lsEmployee?.nameSede,
+                                            edad: lsEmployee?.edad,
+                                            antiguedad: lsEmployee?.antiguedad,
+                                            nameEps: lsEmployee?.nameEps
                                         }
                                     }
                                 />
@@ -277,29 +311,34 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
                             <Grid item xs={12}>
                                 <Grid container spacing={1}>
-                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
-                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>R. position:</Typography>
-                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1 }}>{lsEmployee?.nameRosterPosition}</Typography>
+                                    <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Tipo de contrato:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, textTransform: 'capitalize' }}>{lsEmployee?.nameTipoContrato?.toLowerCase()}</Typography>
                                     </Grid>
 
-                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
-                                        <Typography variant="h4" sx={{ fontSize: '0.87rem' }}>Sede:</Typography>
-                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textTransform: 'capitalize' }}>{lsEmployee?.nameSede?.toLowerCase()}</Typography>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                    <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
                                         <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Fecha de contrato:</Typography>
                                         <Typography variant="h6" sx={{ fontSize: '0.87rem', flexGrow: 1 }}>{lsEmployee?.fechaContrato && ViewFormat(lsEmployee?.fechaContrato)}</Typography>
                                     </Grid>
 
-                                    <Grid item xs={12} md={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                    <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
                                         <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Terminación de contrato:</Typography>
                                         <Typography variant="h6" sx={{ fontSize: '0.87rem' }}>
                                             {lsEmployee?.termDate && ViewFormat(lsEmployee?.termDate)}
                                         </Typography>
                                     </Grid>
 
-                                    <Grid item xs={12} md={8} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                    <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Departamento:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, textTransform: 'capitalize' }}>{lsEmployee?.nameDepartamento?.toLowerCase()}</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
+                                        <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>R. position:</Typography>
+                                        <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1 }}>{lsEmployee?.nameRosterPosition}</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', alignItems: 'center', gap: .3 }}>
                                         <Typography variant="h4" sx={{ fontSize: '0.87rem', flexShrink: 0 }}>Profesión:</Typography>
                                         <Typography variant="h6" sx={{ fontSize: '0.87rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, textTransform: 'capitalize' }}>{lsEmployee?.nameOficio?.toLowerCase()}</Typography>
                                     </Grid>
@@ -326,7 +365,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[2].icons}
-                                        nameData={lsEmployee?.termDate && ViewFormat(lsEmployee?.termDate)}
+                                        nameData={UpperFirstChar(lsEmployee?.nameEscolaridad)}
                                         label={ViewEmployeeDetails[2].label}
                                     />
 
@@ -338,13 +377,13 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[4].icons}
-                                        nameData={lsEmployee?.fechaNaci && ViewFormat(lsEmployee?.fechaNaci)}
+                                        nameData={`${UpperFirstChar(lsEmployee?.nameGenero)} ${lsEmployee?.nameGrupoLGBT != null ? `- ${lsEmployee?.nameGrupoLGBT}` : ''}`}
                                         label={ViewEmployeeDetails[4].label}
                                     />
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[5].icons}
-                                        nameData={`${UpperFirstChar(lsEmployee?.nameGenero)} ${lsEmployee?.nameGrupoLGBT != null ? `- ${lsEmployee?.nameGrupoLGBT}` : ''}`}
+                                        nameData={lsEmployee?.fechaNaci && ViewFormat(lsEmployee?.fechaNaci)}
                                         label={ViewEmployeeDetails[5].label}
                                     />
 
@@ -356,7 +395,7 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
 
                                     <ViewData
                                         icons={ViewEmployeeDetails[7].icons}
-                                        nameData={lsEmployee?.contacto}
+                                        nameData={lsEmployee?.contacto?.toLowerCase()}
                                         label={ViewEmployeeDetails[7].label}
                                     />
                                 </Grid>
@@ -375,20 +414,12 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                             <Grid container spacing={1}>
                                 <Grid item xs={12} md={6} lg={4}>
                                     <ViewDataDetails title="Rol" nameData={lsEmployee?.nameType} />
-                                    <ViewDataDetails title="Tipo de contrato" nameData={UpperFirstChar(lsEmployee?.nameTipoContrato)} />
-                                    <ViewDataDetails title="Departamento" nameData={UpperFirstChar(lsEmployee?.nameDepartamento)} />
+                                    <ViewDataDetails title="General position" nameData={UpperFirstChar(lsEmployee?.nameGeneralPosition)} />
                                     <ViewDataDetails title="Área" nameData={UpperFirstChar(lsEmployee?.nameArea)} />
-                                    <ViewDataDetails title="Subárea" nameData={UpperFirstChar(lsEmployee?.nameSubArea)} />
-                                    <ViewDataDetails title="Fecha de ingreso" nameData={lsEmployee?.fechaIngreso && ViewFormat(lsEmployee?.fechaIngreso)} />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={4}>
+                                    <ViewDataDetails title="Subarea" nameData={UpperFirstChar(lsEmployee?.nameArea)} />
                                     <ViewDataDetails title="Grupo" nameData={lsEmployee?.nameGrupo} />
-                                    <ViewDataDetails title="General position" nameData={lsEmployee?.nameGeneralPosition?.toLowerCase()} />
-                                    <ViewDataDetails title="EPS" nameData={lsEmployee?.nameEps?.toLowerCase()} />
-                                    <ViewDataDetails title="AFP" nameData={lsEmployee?.nameAfp?.toLowerCase()} />
                                     <ViewDataDetails title="Turno" nameData={lsEmployee?.nameTurno?.toLowerCase()} />
-                                    <ViewDataDetails title="Fecha de último control" nameData={lsEmployee?.fechaUltimoControl && ViewFormat(lsEmployee?.fechaUltimoControl)} />
+                                    <ViewDataDetails title="Rotación" nameData={lsEmployee?.nameRotation?.toLowerCase()} />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={4}>
@@ -397,7 +428,18 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                     <ViewDataDetails title="Dpto. de residencia" nameData={UpperFirstChar(lsEmployee?.nameDptoResidencia)} />
                                     <ViewDataDetails title="Mun. de residencia" nameData={UpperFirstChar(lsEmployee?.nameMunicipioResidencia)} />
                                     <ViewDataDetails title="Dir. Residencia" nameData={lsEmployee?.direccionResidencia} />
-                                    <ViewDataDetails title="Fecha de egreso" nameData={lsEmployee?.fechaEgreso && ViewFormat(lsEmployee?.fechaEgreso)} />
+                                    <ViewDataDetails title="Dpto. de residencia laboral" nameData={UpperFirstChar(lsEmployee?.nameDptoResidenciaLaboral)} />
+                                    <ViewDataDetails title="Mun. de residencia laboral" nameData={UpperFirstChar(lsEmployee?.nameMunicipioResidenciaLaboral)} />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <ViewDataDetails title="AFP" nameData={lsEmployee?.nameAfp?.toLowerCase()} />
+                                    <ViewDataDetails title="ARL" nameData={lsEmployee?.nameArl?.toLowerCase()} />
+                                    <ViewDataDetails title="Cesantías" nameData={lsEmployee?.nameCesantias?.toLowerCase()} />
+                                    <ViewDataDetails title="GES" nameData={lsEmployee?.nameGes?.toUpperCase()} />
+                                    <ViewDataDetails title="Fecha de ingreso" nameData={ViewFormat(lsEmployee?.fechaIngreso)} />
+                                    <ViewDataDetails title="Fecha de último control" nameData={ViewFormat(lsEmployee?.fechaUltimoControl)} />
+                                    <ViewDataDetails title="Fecha de egreso" nameData={ViewFormat(lsEmployee?.fechaEgreso)} />
                                 </Grid>
                             </Grid>
                         </Accordion>

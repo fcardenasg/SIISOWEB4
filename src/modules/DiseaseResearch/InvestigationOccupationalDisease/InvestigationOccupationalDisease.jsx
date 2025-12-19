@@ -1,5 +1,6 @@
 import {
     Button,
+    CircularProgress,
     Grid,
     Typography,
     useMediaQuery
@@ -42,6 +43,7 @@ import {
     WorkHistoryDLTD,
     WorkHistoryOtherCompanies
 } from './OtherComponents';
+import SaveLoader from './components/SaveLoader';
 
 const FadeShell = ({ children }) => (
     <motion.div
@@ -67,12 +69,14 @@ const InvestigationOccupationalDisease = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const timeWait = useBoolean(false);
     const loading = useBoolean(false);
+    const disabledButtonSave = useBoolean(false);
     const disabledButton = useBoolean(false);
     const [dataModel, setDataModel] = useState(null);
 
     const methods = useForm();
     const { handleSubmit, setValue, watch } = methods;
     const idInvestigation = watch('id');
+    const documento = watch('documento');
 
     useEffect(() => {
         async function getData() {
@@ -81,16 +85,14 @@ const InvestigationOccupationalDisease = () => {
 
                 if (lsServer.data.datos) {
                     const datos = lsServer.data.datos;
-
                     if (datos.isUpdate) {
                         setValue('id', datos.id);
                         disabledButton.onTrue();
                     }
 
-                    setDataModel(datos);
                     setValue('idAsignacion', id);
                     setValue('documento', datos.documento);
-
+                    setDataModel(datos);
                     setTimeout(timeWait.onTrue, 200);
                 }
             } catch (error) {
@@ -103,7 +105,9 @@ const InvestigationOccupationalDisease = () => {
 
     const handleClick = async (datos) => {
         try {
+            disabledButtonSave.onTrue();
             const result = await InsertInvestigation(datos);
+
             if (result.data.exito) {
                 disabledButton.onTrue();
                 setValue('id', result.data.datos);
@@ -112,7 +116,9 @@ const InvestigationOccupationalDisease = () => {
                 toast.error(result.data.mensaje);
             }
         } catch (error) {
-            toast.error(error.message || "Error al actualizar la asignación de investigación");
+            toast.error(error.message || "Error al procesar la investigación");
+        } finally {
+            disabledButtonSave.onFalse();
         }
     };
 
@@ -123,11 +129,11 @@ const InvestigationOccupationalDisease = () => {
         },
         {
             title: { icon: "material-symbols-light:work-history-outline", text: "Historia laboral en DLTD" },
-            content: <WorkHistoryDLTD />
+            content: <WorkHistoryDLTD methods={methods} documento={documento} />
         },
         {
             title: { icon: "icon-park-twotone:history-query", text: "Historia laboral en otras empresas" },
-            content: <WorkHistoryOtherCompanies />
+            content: <WorkHistoryOtherCompanies methods={methods} documento={documento} />
         },
         {
             title: { icon: "material-symbols-light:diagnosis-outline-rounded", text: "Datos del diagnóstico y del proceso de calificación" },
@@ -180,7 +186,7 @@ const InvestigationOccupationalDisease = () => {
         },
         {
             title: { icon: "covid:social-distancing-correct-3", text: "Acciones preventivas o correctivas" },
-            content: <PreventiveActions dataModel={dataModel} matchesXS={matchesXS} />
+            content: <PreventiveActions methods={methods} />
         },
         {
             title: { icon: "material-symbols-light:signature-rounded", text: "Firmas" },
@@ -212,15 +218,18 @@ const InvestigationOccupationalDisease = () => {
                                 <StickyActionBar
                                     onClickSave={handleSubmit(handleClick)}
                                     onClickUpdate={handleSubmit(handleClick)}
-                                    disabledUpdate={!disabledButton.value}
-                                    disabledSave={disabledButton.value}
+                                    disabledUpdate={!disabledButton.value || disabledButtonSave.value}
+                                    disabledSave={disabledButton.value || disabledButtonSave.value}
                                     showButton={false}
                                     threshold={325}
                                 >
+                                    <SaveLoader isSaving={disabledButtonSave.value} />
+
                                     <Grid container spacing={2}>
                                         {ArrayAccordion.map((item, index) => (
                                             <Grid item xs={12} key={index}>
                                                 <Accordion
+                                                    disabled={disabledButtonSave.value} // Opcional: deshabilitar interacción mientras guarda
                                                     title={
                                                         <>
                                                             <Iconify width={25} icon={item.title.icon} />
@@ -240,6 +249,7 @@ const InvestigationOccupationalDisease = () => {
                                                 <Button
                                                     variant="outlined"
                                                     fullWidth
+                                                    disabled={disabledButtonSave.value}
                                                     onClick={() => navigate("/investigation-occupational-disease/view")}
                                                 >
                                                     {TitleButton.Cancelar}

@@ -271,6 +271,8 @@ const ListAPTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/H
 const APTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/APTHygiene')));
 const ViewAPT = Loadable(lazy(() => import('modules/DiseaseResearch/APT/ViewAPT')));
 
+const ListRehabilitationPlan = Loadable(lazy(() => import('modules/DiseaseResearch/RehabilitationPlan/ListRehabilitationPlan')));
+
 const MainRoutes = {
     path: '/',
     element: (
@@ -999,7 +1001,7 @@ const MainRoutes = {
             element: <UpdateIndexNote />
         },
 
-        // 
+        // Enfermedades de Carga Histórica
         {
             path: '/HistoricalBurdenDiseases',
             element: <HistoricalBurdenDiseases />
@@ -1149,6 +1151,10 @@ const MainRoutes = {
         {
             path: '/apt-hygiene/add',
             element: <APTHygiene />
+        },
+        {
+            path: '/rehabilitation-plan/list',
+            element: <ListRehabilitationPlan />
         },
     ]
 };

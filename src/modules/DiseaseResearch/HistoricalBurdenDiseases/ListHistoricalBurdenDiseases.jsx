@@ -304,7 +304,7 @@ const ListHistoricalBurdenDiseases = () => {
         setInvestigation(lsServer.data.datos);
         setRows(lsServer.data.datos);
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const handleClickReport = async () => {
@@ -442,7 +442,7 @@ const ListHistoricalBurdenDiseases = () => {
           }
         } else setSelected([]);
       });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const navigate = useNavigate();
@@ -488,7 +488,7 @@ const ListHistoricalBurdenDiseases = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} lg={4} sx={{ textAlign: "right" }}>
+          <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: "right" }}>
             <Grid container spacing={2}>
               {/* <Grid item xs>
                                 <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
@@ -724,9 +724,9 @@ const ListHistoricalBurdenDiseases = () => {
                         </TableCell>
 
                         <TableCell align="center" sx={{ pr: 3 }}>
-                          <Tooltip title="Detalles" onClick={() =>handleOpen(row.id)}>
+                          <Tooltip title="Detalles" onClick={() => handleOpen(row.id)}>
                             <IconButton
-                            //   disabled={idCheck == "" ? true : false}
+                              //   disabled={idCheck == "" ? true : false}
                               color="primary"
                               size="large"
                             >

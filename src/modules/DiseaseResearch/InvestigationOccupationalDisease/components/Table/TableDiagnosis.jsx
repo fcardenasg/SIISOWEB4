@@ -1,162 +1,107 @@
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton, Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Tooltip from "@mui/material/Tooltip";
-import { GetDxMLInvestigation } from "api/clients/InvestigationClient";
+import {
+    Paper,
+    Table, TableBody, TableContainer,
+    TableHead, TableRow,
+    TextField
+} from "@mui/material";
 import { useEffect } from "react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { Controller, FormProvider, useFieldArray, useFormContext } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
+
+// API y Estilos locales
+import { GetAllDetailResearchAssignment } from "api/clients/ResearchAssignmentClient";
 import { StyledTableCell, StyledTableRow } from "../methods";
 
-export default function TableDiagnosis({ documento }) {
-    const { control } = useFormContext();
-    const { fields, append, remove, replace } = useFieldArray({ control, name: "diagnostico" });
+export default function TableDiagnosis({ methods }) {
+    const { id } = useParams();
+    const { control } = methods;
+    const idIEL = useFormContext().getValues('id');
 
-    const defaultDiagnosis = {
-        dx: '',
-        codigo: '',
-        fechaInicioSintomas: '',
-        fechaDiagnostico: '',
+    const { fields, replace } = useFieldArray({
+        control,
+        name: "listDiagnostico"
+    });
+
+    const getDxEmployee = async () => {
+        try {
+            const service = await GetAllDetailResearchAssignment(id);
+            if (service.data.exito) {
+                const formattedData = service.data.datos.map(item => ({
+                    diagnostico: item.dx || null,
+                    nombreDx: item.nombreDx || null,
+                    fechaInicioSintomas: item.fechaInicioSintomas || null,
+                    fechaDiagnostico: item.fechaDiagnostico || null
+                }));
+
+                replace(formattedData);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al cargar los datos");
+        }
     };
 
     useEffect(() => {
-        async function getData() {
-            if (documento) {
-                const result = await GetDxMLInvestigation(documento);
-                if (result.data.exito) {
-                    const fetchedDiagnosis = result.data.datos;
-                    if (fetchedDiagnosis && fetchedDiagnosis.length > 0) {
-                        replace(fetchedDiagnosis);
-                    } else if (fields.length === 0) {
-                        append(defaultDiagnosis);
-                    }
-                } else if (fields.length === 0) {
-                    append(defaultDiagnosis);
-                }
-            } else if (fields.length === 0) {
-                append(defaultDiagnosis);
-            }
-        }
-
-        getData();
-    }, [documento, replace, append, fields.length]);
-
-    const handleAddAfter = (index) => {
-        append(defaultDiagnosis, { shouldFocus: false, at: index + 1 });
-    };
+        if (id) getDxEmployee();
+    }, [id, replace]);
 
     return (
-        <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-            <Table sx={{ minWidth: 700 }} aria-label="editable diagnosis table">
-                <TableHead>
-                    <TableRow>
-                        <StyledTableCell sx={{ width: '20px' }}>Diagnóstico</StyledTableCell>
-                        <StyledTableCell>Código CIE</StyledTableCell>
-                        <StyledTableCell>Fecha de inicio de síntomas</StyledTableCell>
-                        <StyledTableCell>Fecha del diagnóstico</StyledTableCell>
-                        <StyledTableCell sx={{ textAlign: 'center' }}>Acciones</StyledTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {fields.map((field, index) => (
-                        <StyledTableRow key={field.id}>
-                            <StyledTableCell>
-                                <Controller
-                                    name={`diagnostico.${index}.dx`}
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            variant="standard"
-                                            fullWidth
-                                            InputProps={{ disableUnderline: false }}
-                                        />
-                                    )}
-                                />
-                            </StyledTableCell>
+        <FormProvider {...methods}>
+            <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+                <Table sx={{ minWidth: 700 }} aria-label="editable diagnosis table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell>Diagnóstico</StyledTableCell>
+                            <StyledTableCell>Código CIE</StyledTableCell>
+                            <StyledTableCell>Fecha de inicio de síntomas</StyledTableCell>
+                            <StyledTableCell>Fecha del diagnóstico</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {fields.map((item, index) => (
+                            <StyledTableRow key={item.id}>
+                                <StyledTableCell>
+                                    {item.diagnostico}
+                                </StyledTableCell>
 
-                            <StyledTableCell>
-                                <Controller
-                                    name={`diagnostico.${index}.codigo`}
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            variant="standard"
-                                            fullWidth
-                                            multiline
-                                            minRows={1}
-                                            maxRows={3}
-                                            InputProps={{ disableUnderline: false }}
-                                        />
-                                    )}
-                                />
-                            </StyledTableCell>
+                                <StyledTableCell>{item.nombreDx}</StyledTableCell>
 
-                            <StyledTableCell>
-                                <Controller
-                                    name={`diagnostico.${index}.fechaInicioSintomas`}
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            type="date"
-                                            variant="standard"
-                                            fullWidth
-                                            InputLabelProps={{ shrink: true }}
-                                            InputProps={{ disableUnderline: false }}
-                                        />
-                                    )}
-                                />
-                            </StyledTableCell>
+                                <StyledTableCell>
+                                    <Controller
+                                        name={`listDiagnostico.${index}.fechaInicioSintomas`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <TextField
+                                                {...field}
+                                                type="date"
+                                                variant="standard"
+                                                fullWidth
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        )}
+                                    />
+                                </StyledTableCell>
 
-                            <StyledTableCell>
-                                <Controller
-                                    name={`diagnostico.${index}.fechaDiagnostico`}
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            type="date"
-                                            variant="standard"
-                                            fullWidth
-                                            InputLabelProps={{ shrink: true }}
-                                            InputProps={{ disableUnderline: false }}
-                                        />
-                                    )}
-                                />
-                            </StyledTableCell>
-
-                            <StyledTableCell sx={{ textAlign: 'center' }}>
-                                <Tooltip title="Agregar una nueva fila">
-                                    <IconButton
-                                        onClick={() => handleAddAfter(index)}
-                                        color="primary"
-                                        aria-label={`Agregar nueva fila después de ${index + 1}`}
-                                        size="small"
-                                    >
-                                        <AddIcon />
-                                    </IconButton>
-                                </Tooltip>
-
-                                {fields.length > 1 && (
-                                    <Tooltip title="Eliminar esta fila">
-                                        <IconButton
-                                            onClick={() => remove(index)}
-                                            color="error"
-                                            aria-label={`Eliminar diagnóstico ${index + 1}`}
-                                            size="small"
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
-                            </StyledTableCell>
-                        </StyledTableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                                <StyledTableCell>
+                                    <Controller
+                                        name={`listDiagnostico.${index}.fechaDiagnostico`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <TextField
+                                                {...field}
+                                                type="date"
+                                                variant="standard"
+                                                fullWidth
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        )}
+                                    />
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </FormProvider>
     );
-};
+}

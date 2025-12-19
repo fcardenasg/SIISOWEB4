@@ -24,7 +24,7 @@ import { StyledChip } from 'modules/Programming/NewProgramming/components/method
 import { getStatusConfig } from '../methods';
 import AnimatedTimeDisplay from 'modules/Programming/NewProgramming/components/AnimatedTimeDisplay';
 
-const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention }) => {
+const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete }) => {
     const theme = useTheme();
     const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
 
@@ -42,7 +42,12 @@ const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention }) => {
                     transition: 'all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 },
             }}
-            secondaryAction={<OptionsMenuList onClickGoAttention={onClickGoAttention} idAsignacion={dataInfo.id} />}
+            secondaryAction={
+                <OptionsMenuList
+                    idAsignacion={dataInfo.id}
+                    onClickGoAttention={onClickGoAttention}
+                    onClickDelete={onClickDelete}
+                />}
         >
             <ListItemAvatar>
                 <Avatar

@@ -30,6 +30,11 @@ export const CodCatalogo = {
     TIPO_RIESGO: 3001, /* CAMBIAR */
     PARAMETRO_ESPIRO: 2001, /* CAMBIAR */
 
+    /* IEL */
+    IEL_CONTROL: 4003,
+    IEL_TIPO_CONTROL: 4004,
+    IEL_ASPCONSI: 4005,
+
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
     VentanillaEmpresaMensajeria: 226,

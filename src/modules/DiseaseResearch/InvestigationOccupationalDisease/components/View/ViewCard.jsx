@@ -39,7 +39,7 @@ const variants = {
     }),
 };
 
-const ViewCard = ({ dataInfo, onClickOpenChat }) => {
+const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete }) => {
     const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
 
     return (
@@ -66,7 +66,7 @@ const ViewCard = ({ dataInfo, onClickOpenChat }) => {
                         />
                     </Tooltip>
                 )}
-                action={<OptionsMenuCard idAsignacion={dataInfo.id} />}
+                action={<OptionsMenuCard onClickGoAttention={onClickGoAttention} idAsignacion={dataInfo.id} onClickDelete={onClickDelete} />}
                 sx={{
                     backgroundColor: "primary.main",
                     color: 'white',

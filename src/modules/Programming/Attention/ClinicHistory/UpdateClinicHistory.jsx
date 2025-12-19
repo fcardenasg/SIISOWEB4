@@ -316,6 +316,8 @@ const UpdateClinicHistory = () => {
         }
     };
 
+    console.log(lsAtencion);
+
     return (
         <FormProvider {...methods}>
             {timeWait.value ?
@@ -640,8 +642,10 @@ const UpdateClinicHistory = () => {
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </Grid>
+
                                                 <Grid item xs={10}>
                                                     <InputSelect
+                                                        clearable
                                                         name="dx1"
                                                         label="Dx1"
                                                         defaultValue={lsAtencion?.dx1}
@@ -659,8 +663,10 @@ const UpdateClinicHistory = () => {
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </Grid>
+
                                                 <Grid item xs={10}>
                                                     <InputSelect
+                                                        clearable
                                                         name="dx2"
                                                         label="Dx2"
                                                         defaultValue={lsAtencion?.dx2}
@@ -678,8 +684,10 @@ const UpdateClinicHistory = () => {
                                                         size={matchesXS ? 'small' : 'medium'}
                                                     />
                                                 </Grid>
+
                                                 <Grid item xs={10}>
                                                     <InputSelect
+                                                        clearable
                                                         name="dx3"
                                                         label="Dx3"
                                                         defaultValue={lsAtencion?.dx3}

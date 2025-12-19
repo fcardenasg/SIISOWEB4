@@ -589,9 +589,7 @@ export function generateReportConceptAptitude(
   lsDataUser
 ) {
   var marXR = doc.internal.pageSize.width - 5;
-  var validateFechaContrato = lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_CONTRO
-    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_EGRESO
-    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_REINCORPORACION;
+  var validateFechaContrato = lsDataReport.idAtencion !== DefaultValue.EMO_ATENCION_INGRESO;
 
   doc.text("CONCEPTO EXAMEN OCUPACIONAL", 7, 30);
   doc.text(
@@ -674,9 +672,7 @@ export function generateReportDiagnosis(
   lsDataUser = []
 ) {
   var marXR = doc.internal.pageSize.width - 5;
-  var validateFechaContrato = lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_CONTRO
-    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_EGRESO
-    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_REINCORPORACION;
+  var validateFechaContrato = lsDataReport.idAtencion !== DefaultValue.EMO_ATENCION_INGRESO;
 
   doc.text("CONCEPTO EXAMEN OCUPACIONAL", 7, 30);
   doc.text(
@@ -782,9 +778,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   var marXR = doc.internal.pageSize.width - 5;
   var longitud = lsWorkHistoryOtherCompany.length;
 
-  var validateFechaContrato = lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_CONTRO
-    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_EGRESO
-    || lsDataReport.idAtencion === DefaultValue.EMO_ATENCION_REINCORPORACION;
+  var validateFechaContrato = lsDataReport.idAtencion !== DefaultValue.EMO_ATENCION_INGRESO;
 
   doc.text(`TIPO DE EXAMEN:  ${lsDataReport.nameAtencion}`, 7, 30);
   doc.text(`FECHA:  ${ViewFormat(lsDataReport.fecha)}`, 110, 30, {

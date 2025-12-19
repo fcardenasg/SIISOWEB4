@@ -2,8 +2,10 @@ import {
     Delete as DeleteIcon,
     Download as DownloadIcon,
     Edit as EditIcon,
+    HighlightOff as HighlightOffIcon,
     MoreVert as MoreVertIcon,
     Print as PrintIcon,
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import {
     Divider,
@@ -14,7 +16,7 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const OptionsMenuList = ({ onClickGoAttention, idAsignacion }) => {
+export const OptionsMenuList = ({ onClickGoAttention, idAsignacion, onClickDelete }) => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -58,6 +60,12 @@ export const OptionsMenuList = ({ onClickGoAttention, idAsignacion }) => {
                 <MenuItem onClick={onClickGoAttention}>
                     <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
                 </MenuItem>
+                <MenuItem>
+                    <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
+                </MenuItem>
+                <MenuItem onClick={() => handleAction('rechazar')}>
+                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Rechazar
+                </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>
                     <DownloadIcon sx={{ mr: 1.2 }} /> Exportar PDF
                 </MenuItem>
@@ -65,7 +73,7 @@ export const OptionsMenuList = ({ onClickGoAttention, idAsignacion }) => {
                     <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
-                <MenuItem onClick={() => handleAction('eliminar')} sx={{ color: 'error.main' }}>
+                <MenuItem onClick={onClickDelete} sx={{ color: 'error.main' }}>
                     <DeleteIcon sx={{ mr: 1.2 }} /> Eliminar
                 </MenuItem>
             </Menu>
@@ -73,7 +81,7 @@ export const OptionsMenuList = ({ onClickGoAttention, idAsignacion }) => {
     )
 }
 
-export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion }) => {
+export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion, onClickDelete }) => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -129,6 +137,12 @@ export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion }) => {
                 <MenuItem onClick={onClickGoAttention}>
                     <EditIcon sx={{ mr: 1, color: 'primary.main' }} /> Atender
                 </MenuItem>
+                <MenuItem>
+                    <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
+                </MenuItem>
+                <MenuItem onClick={() => handleAction('rechazar')}>
+                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Rechazar
+                </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>
                     <DownloadIcon sx={{ mr: 1 }} /> Exportar PDF
                 </MenuItem>
@@ -136,7 +150,7 @@ export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion }) => {
                     <PrintIcon sx={{ mr: 1 }} /> Imprimir
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={() => handleAction('eliminar')} sx={{ color: 'primary.main' }}>
+                <MenuItem onClick={onClickDelete} sx={{ color: 'primary.main' }}>
                     <DeleteIcon sx={{ mr: 1 }} /> Eliminar
                 </MenuItem>
             </Menu>

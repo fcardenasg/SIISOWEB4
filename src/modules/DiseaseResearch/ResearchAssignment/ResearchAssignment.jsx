@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import AddIcon from '@mui/icons-material/Add';
 import {
     Button,
+    Divider,
     FormHelperText,
     Grid,
     IconButton,
@@ -9,9 +10,11 @@ import {
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetAllDxEmployeeResearchAssignment, GetDataMedicalOccupationalReseAssig, InsertResearchAssignment } from 'api/clients/ResearchAssignmentClient';
+import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+import { InsertResearchAssignment } from 'api/clients/ResearchAssignmentClient';
 import { GetAllComboAsesorInvestigacion } from 'api/clients/UserClient';
 import {
     AccionMenu,
@@ -19,6 +22,8 @@ import {
     Modulo,
     TitleButton
 } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePick from 'components/input/InputDatePick';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 import InputOnChange from 'components/input/InputOnChange';
@@ -35,8 +40,6 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
 import DetailRA from './DetailRA';
-import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 
 const buttonVariants = {
     hover: {
@@ -74,12 +77,25 @@ const ResearchAssignment = () => {
     const [lsSubsegmento, setLsSubsegmento] = useState([]);
     const [lsLateralidad, setLsLateralidad] = useState([]);
     const [lsRegion, setLsRegion] = useState([]);
+    const [lsResultadoOrigen, setLsResultadoOrigen] = useState([]);
+    const [lsInvestigacionEL, setLsInvestigacionEL] = useState([]);
+
+    const [fechaEntrega, setFechaEntrega] = useState(null);
+    const [fechaRevision, setFechaRevision] = useState(null);
+    const [fechaVistoBueno, setFechaVistoBueno] = useState(null);
+    const [fechaDictamen, setFechaDictamen] = useState(null);
+    const [fechaInvestigacion, setFechaInvestigacion] = useState(null);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
-    const { handleSubmit, formState: { errors }, reset, watch, setError, setValue } = methods;
+    const { handleSubmit, formState: { errors }, reset, watch, setError, resetField, setValue } = methods;
     const documento = watch("documento");
     const listaDetalle = watch("listaDetalle");
     const dx = watch("dx");
+    const idSegmentoAgrupado = watch("idSegmentoAgrupado");
+    const idSegmentoAfectado = watch("idSegmentoAfectado");
+    const idSubsegmento = watch("idSubsegmento");
+    const idRegion = watch("idRegion");
+    const idLateralidad = watch("idLateralidad");
 
     useEffect(() => {
         async function getCombo() {
@@ -89,6 +105,12 @@ const ResearchAssignment = () => {
 
                 const lsServerAsesorARL = await GetAllComboAsesorInvestigacion(true);
                 setLsAsesorARL(lsServerAsesorARL.data);
+
+                const lsServerResultadoOrigen = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_RESULTADO_EN_ORIGEN);
+                setLsResultadoOrigen(lsServerResultadoOrigen.data);
+
+                const lsServerInvestigacionEL = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_INVESTIGACION_EL);
+                setLsInvestigacionEL(lsServerInvestigacionEL.data);
 
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -137,22 +159,6 @@ const ResearchAssignment = () => {
                         setModelEmployee(lsServerEmployee?.data.data);
                         toast.error(lsServerEmployee?.data.message);
                     }
-
-                    const listDxEmployee = await GetAllDxEmployeeResearchAssignment(document);
-                    if (listDxEmployee.data.exito) {
-                        setValue("listaDetalle", listDxEmployee.data.datos, { shouldValidate: true });
-                    }
-
-                    const dataMedical = await GetDataMedicalOccupationalReseAssig(document);
-                    if (dataMedical.data.exito) {
-                        const datamodel = dataMedical.data.datos;
-                        setValue("fechaEntrega", datamodel?.fechaEntrega);
-                        setValue("idSegmentoAgrupado", datamodel?.segmentoAgrupado);
-                        setValue("idSegmentoAfectado", datamodel?.segmentoAfectado);
-                        setValue("idSubsegmento", datamodel?.subsegmento);
-                        setValue("idRegion", datamodel?.regionInfoLaboral);
-                        setValue("idLateralidad", datamodel?.lateralidad);
-                    }
                 } else {
                     var lsServerEmployee = await GetByIdEmployee(document);
                     if (lsServerEmployee.data.status === 200) {
@@ -196,10 +202,16 @@ const ResearchAssignment = () => {
 
             const nombreDx = lsDx?.find(item => item.value === dx)?.label;
             const newDetail = {
-                fechaDx: new Date(),
-                dx,
-                modulo: "Asignación de Investigación",
-                nombreDx: nombreDx?.split(" - ")[1]
+                dx: dx || null,
+                idSegmentoAgrupado: idSegmentoAgrupado || null,
+                idSegmentoAfectado: idSegmentoAfectado || null,
+                idSubsegmento: idSubsegmento || null,
+                idRegion: idRegion || null,
+                idLateralidad: idLateralidad || null,
+                nombreDx: nombreDx?.split(" - ")[1],
+                nombreSegmentoAgrupado: lsSegmentoAgrupado?.find(item => item.value === idSegmentoAgrupado)?.label || "N/A",
+                nombreSegmentoAfectado: lsSegmentoAfectado?.find(item => item.value === idSegmentoAfectado)?.label || "N/A",
+                nombreSubsegmento: lsSubsegmento?.find(item => item.value === idSubsegmento)?.label || "N/A",
             };
 
             const updatedDetails = [...currentDetails, newDetail];
@@ -207,8 +219,13 @@ const ResearchAssignment = () => {
             toast.success("Diagnóstico agregado a la lista correctamente");
 
             setTextDx("");
+            resetField("dx");
             setLsDx([]);
-            setValue('dx', '');
+            resetField("idSegmentoAgrupado");
+            resetField("idSegmentoAfectado");
+            resetField("idSubsegmento");
+            resetField("idRegion");
+            resetField("idLateralidad");
         } catch (error) {
 
         }
@@ -234,12 +251,26 @@ const ResearchAssignment = () => {
 
     const handleClick = async (datos) => {
         try {
+            datos.tipoInvestigacion = datos.tipoInvestigacion || null;
+            datos.resultadoOrigen = datos.resultadoOrigen || null;
+
+            datos.fechaEntrega = FormatDate(fechaEntrega);
+            datos.fechaRevision = FormatDate(fechaRevision);
+            datos.fechaVistoBueno = FormatDate(fechaVistoBueno);
+            datos.fechaDictamen = FormatDate(fechaDictamen);
+            datos.fechaInvestigacion = FormatDate(fechaInvestigacion);
+
             const result = await InsertResearchAssignment(datos);
             if (result.data.exito) {
                 toast.success(result.data.mensaje);
-                reset();
-                setModelEmployee([]);
                 setValue("documento", "");
+                setModelEmployee([]);
+                setFechaEntrega("");
+                setFechaRevision("");
+                setFechaVistoBueno("");
+                setFechaDictamen("");
+                setFechaInvestigacion("");
+                reset();
             } else
                 toast.error(result.data.mensaje);
         } catch (error) {
@@ -268,121 +299,53 @@ const ResearchAssignment = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={6} lg={3}>
                                     <InputDatePicker
+                                        defaultValue={new Date()}
                                         label="Fecha"
                                         name="fecha"
-                                        defaultValue={new Date()}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePicker
+                                    <InputDatePick
+                                        onChange={(e) => setFechaEntrega(e.target.value)}
+                                        value={fechaEntrega}
                                         label="Fecha de entrega"
                                         name="fechaEntrega"
-                                        defaultValue={null}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePicker
+                                    <InputDatePick
+                                        onChange={(e) => setFechaRevision(e.target.value)}
+                                        value={fechaRevision}
                                         label="Fecha de revisión"
                                         name="fechaRevision"
-                                        defaultValue={null}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePicker
+                                    <InputDatePick
+                                        onChange={(e) => setFechaVistoBueno(e.target.value)}
+                                        value={fechaVistoBueno}
                                         label="Fecha de visto bueno"
                                         name="fechaVistoBueno"
-                                        defaultValue={null}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <InputSelect
-                                        name="idSegmentoAgrupado"
-                                        label="Segmento agrupado"
-                                        defaultValue=""
-                                        options={lsSegmentoAgrupado}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idSegmentoAgrupado}
-                                    />
-                                </Grid>
+                                <Grid item xs={12}><Divider /></Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <InputSelect
-                                        name="idSegmentoAfectado"
-                                        label="Segmento afectado"
-                                        defaultValue=""
-                                        options={lsSegmentoAfectado}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idSegmentoAfectado}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputSelect
-                                        name="idSubsegmento"
-                                        label="Subsegmento"
-                                        defaultValue=""
-                                        options={lsSubsegmento}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idSubsegmento}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <InputSelect
-                                        name="idRegion"
-                                        label="Región"
-                                        defaultValue=""
-                                        options={lsRegion}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idRegion}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <InputSelect
-                                        name="idLateralidad"
-                                        label="Lateralidad"
-                                        defaultValue=""
-                                        options={lsLateralidad}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                        bug={errors.idLateralidad}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputMultiselectTwo
-                                        checkbox
-                                        name="investigador"
-                                        label="Investigadores"
-                                        options={lsInvestigacion}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputMultiselectTwo
-                                        checkbox
-                                        name="asesorARL"
-                                        label="Asesor ARL"
-                                        options={lsAsesorARL}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} sx={{ mb: 2 }}>
+                                <Grid item xs={12}>
                                     <SubCard title="Diagnósticos del empleado (Buscados en EMO y medicina laboral)">
                                         <Grid container spacing={2} sx={{
                                             borderColor: !!errors.listaDetalle && 'error.main',
                                             borderStyle: !!errors.listaDetalle && 'dashed',
                                             borderWidth: !!errors.listaDetalle && 1
                                         }}>
-                                            <Grid item xs={12} md={4} lg={2}>
+                                            <Grid item xs={12} md={4} lg={3}>
                                                 <InputOnChange
                                                     label="Buscar dx por palabras claves"
                                                     onKeyDown={handleDx}
@@ -392,11 +355,11 @@ const ResearchAssignment = () => {
                                                 />
                                             </Grid>
 
-                                            <Grid item xs={12} md={4} lg={9}>
+                                            <Grid item xs={12} md={6.5} lg={8}>
                                                 <InputSelect
+                                                    defaultValue=""
                                                     name="dx"
                                                     label="Diagnóstico"
-                                                    defaultValue=""
                                                     options={lsDx}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.dx}
@@ -417,24 +380,141 @@ const ResearchAssignment = () => {
                                                             outline: 'none',
                                                         }}
                                                     >
-                                                        <IconButton size="large" color="secondary">
-                                                            <AddIcon sx={{ fontSize: '2rem' }} />
+                                                        <IconButton color="secondary">
+                                                            <AddIcon />
                                                         </IconButton>
                                                     </motion.button>
                                                 </Tooltip>
                                             </Grid>
 
-                                            <Grid item xs={12}>
-                                                <DetailRA
-                                                    lsData={listaDetalle}
-                                                    loadingModulo={loadingModulo}
-                                                    onDelete={handleClickRemoveDetail}
+                                            <Grid item xs={12} md={6}>
+                                                <InputSelect
+                                                    defaultValue=""
+                                                    name="idSegmentoAgrupado"
+                                                    label="Segmento agrupado"
+                                                    options={lsSegmentoAgrupado}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.idSegmentoAgrupado}
                                                 />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <InputSelect
+                                                    defaultValue=""
+                                                    name="idSegmentoAfectado"
+                                                    label="Segmento afectado"
+                                                    options={lsSegmentoAfectado}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.idSegmentoAfectado}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <InputSelect
+                                                    defaultValue=""
+                                                    name="idSubsegmento"
+                                                    label="Subsegmento"
+                                                    options={lsSubsegmento}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.idSubsegmento}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={3}>
+                                                <InputSelect
+                                                    defaultValue=""
+                                                    name="idRegion"
+                                                    label="Región"
+                                                    options={lsRegion}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.idRegion}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={3}>
+                                                <InputSelect
+                                                    defaultValue=""
+                                                    name="idLateralidad"
+                                                    label="Lateralidad"
+                                                    options={lsLateralidad}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    bug={errors.idLateralidad}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <SubCard content={false}>
+                                                    <DetailRA
+                                                        lsData={listaDetalle}
+                                                        loadingModulo={loadingModulo}
+                                                        onDelete={handleClickRemoveDetail}
+                                                    />
+                                                </SubCard>
                                             </Grid>
 
                                             {!!errors.listaDetalle && <FormHelperText sx={{ margin: 1 }} error={!!errors.listaDetalle}>{errors?.listaDetalle.message}</FormHelperText>}
                                         </Grid>
                                     </SubCard>
+                                </Grid>
+
+                                <Grid item xs={12}><Divider /></Grid>
+
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="tipoInvestigacion"
+                                        label="Tipo de investigación"
+                                        options={lsInvestigacionEL}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputDatePick
+                                        onChange={(e) => setFechaDictamen(e.target.value)}
+                                        value={fechaDictamen}
+                                        label="Fecha dictamen última instancia"
+                                        name="fechaDictamen"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="resultadoOrigen"
+                                        label="Resultado origen última instancia"
+                                        options={lsResultadoOrigen}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={3}>
+                                    <InputDatePick
+                                        onChange={(e) => setFechaInvestigacion(e.target.value)}
+                                        value={fechaInvestigacion}
+                                        label="Fecha de investigación"
+                                        name="fechaInvestigacion"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputMultiselectTwo
+                                        checkbox
+                                        name="investigador"
+                                        label="Investigadores"
+                                        options={lsInvestigacion}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputMultiselectTwo
+                                        checkbox
+                                        name="asesorARL"
+                                        label="Asesor ARL"
+                                        options={lsAsesorARL}
+                                    />
                                 </Grid>
 
                                 <Grid item xs={12}>

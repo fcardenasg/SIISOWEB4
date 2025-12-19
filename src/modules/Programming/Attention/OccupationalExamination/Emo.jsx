@@ -3324,8 +3324,10 @@ const Emo = ({
                                                 size={matchesXS ? 'small' : 'medium'}
                                             />
                                         </Grid>
+
                                         <Grid item xs={10}>
                                             <InputSelect
+                                                clearable
                                                 name="dx1"
                                                 label="Dx1"
                                                 defaultValue={lsLastRecord?.dx1}
@@ -3336,6 +3338,7 @@ const Emo = ({
 
                                         <Grid item xs={2}>
                                             <InputOnChange
+                                                clearable
                                                 label="Dx 2"
                                                 onKeyDown={handleDx2}
                                                 onChange={(e) => setTextDx2(e.target.value)}
@@ -3345,6 +3348,7 @@ const Emo = ({
                                         </Grid>
                                         <Grid item xs={10}>
                                             <InputSelect
+                                                clearable
                                                 name="dx2"
                                                 label="Dx2"
                                                 defaultValue={lsLastRecord?.dx2}
@@ -3364,6 +3368,7 @@ const Emo = ({
                                         </Grid>
                                         <Grid item xs={10}>
                                             <InputSelect
+                                                clearable
                                                 name="dx3"
                                                 label="Dx3"
                                                 defaultValue={lsLastRecord?.dx3}

@@ -5,131 +5,154 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Controller } from 'react-hook-form';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetIELHistoriaLaboralDLTD, GetIELHistoriaLaboralOtrosEmpresas } from 'api/clients/InvestigationClient';
+import { CodCatalogo } from 'components/helpers/Enums';
+import { ViewFormat } from 'components/helpers/Format';
+import EmptyState from 'components/loading/EmptyState';
+import { useEffect, useState } from 'react';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import SubCard from 'ui-component/cards/SubCard';
 import { StyledTableCell, StyledTableRow } from './methods';
 
-function createData(fechaIngreso, cargoInicial, turno, rotacion, jornada, tiempoCargo) {
-  return { fechaIngreso, cargoInicial, turno, rotacion, jornada, tiempoCargo };
-}
+export function TableDLTD({ documento }) {
+  const [listHL, setListHL] = useState([]);
+  const idIEL = useFormContext().getValues('id');
 
-const rows = [
-  createData('2021-03-15', 'Asistente Administrativo', 'Mañana', 'No', 'Completa', '4 años / 7 meses'),
-  createData('2023-08-01', 'Técnico de Soporte', 'Tarde', 'Sí', 'Parcial', '2 años / 2 meses'),
-];
+  useEffect(() => {
+    async function getData() {
+      try {
+        if (documento) {
+          var statusData = idIEL ? true : false;
+          const response = await GetIELHistoriaLaboralDLTD(documento, statusData);
+          if (response.data.exito) {
+            const mappedData = (response.data.datos || []).map((item) => ({
+              id: item.id,
+              fecha: item.fecha,
+              cargo: item.nameCargo,
+              turno: item.nameTurno,
+              rotacion: item.nameRotacion,
+              anios: item.anio,
+              meses: item.meses
+            }));
 
-export function TableDLTD() {
+            setListHL(mappedData);
+          }
+        }
+      } catch (error) {
+        toast.error("Error al cargar la historia laboral DLTD");
+      }
+    }
+
+    getData();
+  }, [documento, idIEL]);
+
   return (
-    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-      <Table sx={{ minWidth: 650 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Fecha de ingreso</StyledTableCell>
-            <StyledTableCell>Cargo inicial</StyledTableCell>
-            <StyledTableCell>Turno</StyledTableCell>
-            <StyledTableCell>Rotación</StyledTableCell>
-            <StyledTableCell>Jornada</StyledTableCell>
-            <StyledTableCell>Tiempo en el cargo (años / meses)</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell component="th" scope="row">
-                {row.fechaIngreso}
-              </StyledTableCell>
-              <StyledTableCell>{row.cargoInicial}</StyledTableCell>
-              <StyledTableCell>{row.turno}</StyledTableCell>
-              <StyledTableCell>{row.rotacion}</StyledTableCell>
-              <StyledTableCell>{row.jornada}</StyledTableCell>
-              <StyledTableCell>{row.tiempoCargo}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <SubCard content={false}>
+      <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+        <Table sx={{ minWidth: 650 }} aria-label="historia laboral table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Fecha de ingreso</StyledTableCell>
+              <StyledTableCell>Cargo inicial</StyledTableCell>
+              <StyledTableCell>Turno</StyledTableCell>
+              <StyledTableCell>Rotación</StyledTableCell>
+              <StyledTableCell>Tiempo en el cargo (años / meses)</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {listHL.length > 0 ? (
+              listHL.map((item) => (
+                <StyledTableRow key={item.id}>
+                  <StyledTableCell>{ViewFormat(item.fecha)}</StyledTableCell>
+                  <StyledTableCell>{item.cargo}</StyledTableCell>
+                  <StyledTableCell>{item.turno}</StyledTableCell>
+                  <StyledTableCell>{item.rotacion}</StyledTableCell>
+                  <StyledTableCell>{`${item.anios} año(s) / ${item.meses} mes(es)`}</StyledTableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow>
+                <StyledTableCell colSpan={5} align="center">
+                  <EmptyState seeSubtitle={false} title="No hay registros" />
+                </StyledTableCell>
+              </StyledTableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </SubCard>
   );
 }
 
-const rowsOtherCompanies = [
-  {
-    empresa: 'Constructora Andina S.A.',
-    actividadEconomica: 'Construcción de edificios residenciales',
-    cargoUOficio: 'Ingeniero Civil',
-    tiempoEnCargo: '3 años / 5 meses'
-  },
-  {
-    empresa: 'Servicios Logísticos del Sur Ltda.',
-    actividadEconomica: 'Transporte terrestre de carga',
-    cargoUOficio: 'Coordinador de Operaciones',
-    tiempoEnCargo: '1 año / 10 meses'
-  }
-];
+export function TableOtherCompanies({ documento }) {
+  const [listHLOE, setListHLOE] = useState([]);
+  const idIEL = useFormContext().getValues('id');
 
-export function TableOtherCompanies() {
+  useEffect(() => {
+    async function getData() {
+      try {
+        if (documento) {
+          var statusData = idIEL ? true : false;
+          const response = await GetIELHistoriaLaboralOtrosEmpresas(documento, statusData);
+          if (response.data.exito) {
+            const mappedData = response.data.datos.map((item) => ({
+              id: item.id,
+              empresa: item.empresa,
+              cargo: item.cargo,
+              anios: item.anio,
+              meses: item.meses
+            }));
+
+            setListHLOE(mappedData);
+          }
+        }
+      } catch (error) {
+        toast.error("Error al cargar la historia laboral de otras empresas");
+      }
+    }
+
+    getData();
+  }, [documento]);
+
   return (
-    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-      <Table sx={{ minWidth: 650 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Empresa</StyledTableCell>
-            <StyledTableCell>Actividad económica</StyledTableCell>
-            <StyledTableCell>Cargo u oficio</StyledTableCell>
-            <StyledTableCell>Tiempo en el cargo (años / meses)</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rowsOtherCompanies.map((row, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell component="th" scope="row">
-                {row.empresa}
-              </StyledTableCell>
-              <StyledTableCell>{row.actividadEconomica}</StyledTableCell>
-              <StyledTableCell>{row.cargoUOficio}</StyledTableCell>
-              <StyledTableCell>{row.tiempoEnCargo}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <SubCard content={false}>
+      <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+        <Table sx={{ minWidth: 650 }} aria-label="otras empresas table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Empresa</StyledTableCell>
+              <StyledTableCell>Cargo</StyledTableCell>
+              <StyledTableCell>Tiempo en el cargo (años / meses)</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {listHLOE.length > 0 ? (
+              listHLOE.map((item) => (
+                <StyledTableRow key={item.id}>
+                  <StyledTableCell>{item.empresa}</StyledTableCell>
+                  <StyledTableCell>{item.cargo}</StyledTableCell>
+                  <StyledTableCell>
+                    {`${item.anios} año(s) / ${item.meses} mes(es)`}
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow>
+                <StyledTableCell colSpan={3} align="center">
+                  No hay registros
+                </StyledTableCell>
+              </StyledTableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </SubCard>
   );
 }
 
-
-
-const controles = [
-  {
-    control: "Ayudas mecánicas",
-    tipoControl: "Ingeniería",
-    observacionesUso: "El área cuenta con ayudas mecánicas para la manipulación y traslado de peso (escaleras de tres pasos, diferenciales y camión grúa).",
-    observacionesProteccion: "Estas contribuyen a la disminución de esfuerzo físico, durante la manipulación de pesos superiores a 10.6 kg."
-  },
-  {
-    control: "Prácticas de trabajo",
-    tipoControl: "Administrativo",
-    observacionesUso: "Procedimientos de trabajo seguro. Rotación de actividades las cuales se realizan en grupos de dos personas, disminuyendo el tiempo de exposición a diferentes posturas y/o riesgos inherentes al cargo.",
-    observacionesProteccion: "Se establecen formas seguras para realizar las labores."
-  },
-  {
-    control: "Prácticas de trabajo",
-    tipoControl: "Administrativo",
-    observacionesUso: "Rotación del personal durante el uso de herramientas neumáticas y eléctricas.",
-    observacionesProteccion: "Disminución del tiempo de exposición, se utiliza el 4% de forma individual, durante la jornada laboral."
-  },
-  {
-    control: "Pausas activas y descanso autoadministrado",
-    tipoControl: "Administrativo",
-    observacionesUso: "Durante la realización de las actividades el trabajador tiene la facultad de auto administrar las tareas, realizar sus pausas activas, hidratarse y tomar periodos de reposición cuando lo requiera.",
-    observacionesProteccion: "En general las pausas suman 150 minutos al día, pero además hay tiempos de espera durante la operación. Disminuye la fatiga y el estrés durante la jornada laboral, previniendo lesiones osteomusculares en el trabajador."
-  },
-  {
-    control: "Entrenamiento regular sobre prevención de desórdenes osteomusculares",
-    tipoControl: "Administrativo",
-    observacionesUso: "Los ciclos de entrenamiento se dictan de manera regular y son de carácter obligatorio.",
-    observacionesProteccion: "De acuerdo con lo definido por el departamento de Salud Ocupacional de la empresa DLTD."
-  }
-];
-
-export function TableControlMethods() {
+export function TableControlMethods({ listMC }) {
   return (
     <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
       <Table sx={{ minWidth: 650 }} aria-label="customized table">
@@ -142,47 +165,74 @@ export function TableControlMethods() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {controles.map((row, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell component="th" scope="row">{row.control}</StyledTableCell>
-              <StyledTableCell>{row.tipoControl}</StyledTableCell>
-              <StyledTableCell>{row.observacionesUso}</StyledTableCell>
-              <StyledTableCell>{row.observacionesProteccion}</StyledTableCell>
+          {listMC?.length > 0 ? (
+            listMC.map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell component="th" scope="row">
+                  {row.nameControl}
+                </StyledTableCell>
+                <StyledTableCell>{row.nameTipoControl}</StyledTableCell>
+                <StyledTableCell>{row.observacionesUso}</StyledTableCell>
+                <StyledTableCell>{row.observacionesProteccion}</StyledTableCell>
+              </StyledTableRow>
+            ))
+          ) : (
+            <StyledTableRow>
+              <StyledTableCell colSpan={4} align="center">
+                <EmptyState seeSubtitle={false} title="No hay registros" />
+              </StyledTableCell>
             </StyledTableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </TableContainer>
   );
 }
 
-const FIRST_COLUMN_LABELS = [
-  'Primera oportunidad',
-  'Segunda oportunidad',
-  'Primera instancia',
-  'Segunda instancia',
-];
+export function TableDiagnosisRating({ methods }) {
+  const { control, getValues, setValue } = methods;
+  const { fields } = useFieldArray({
+    control,
+    name: "listCalificacion"
+  });
 
-const inputSx = {
-  fontSize: '14px',
-  '& .MuiInputBase-input': {
-    padding: '4px 0',
-  },
-  '& .MuiInput-underline:before': {
-    borderBottom: '1px solid rgba(0,0,0,0.12)',
-  },
-  '& .MuiInput-underline:hover:before': {
-    borderBottom: '1px solid rgba(0,0,0,0.87)',
-  },
-  '& .MuiInput-underline:after': {
-    borderBottom: '2px solid primary.main',
-  },
-};
+  useEffect(() => {
+    async function getData() {
+      try {
+        const response = await GetByTipoCatalogoCombo(4002);
+        const lsServerCalificacion = (response.data || []).sort((a, b) => a.value - b.value);
 
-export function TableDiagnosisRating() {
+        // 1. Usamos getValues de forma específica
+        const currentValues = getValues("listCalificacion");
+
+        // Solo inicializamos si el array está vacío o no existe
+        if (!currentValues || currentValues.length === 0) {
+          const initialRows = lsServerCalificacion.map((item) => ({
+            calificacion: item.value,
+            nombreCalificacion: item.label,
+            entidad: null,
+            fechaCalificacion: null,
+            origen: null,
+            dictamen: null
+          }));
+
+          // 2. CAMBIO CLAVE: Usar setValue en lugar de reset
+          // Esto actualiza SOLO la lista sin tocar el resto de los campos (como 'documento')
+          setValue("listCalificacion", initialRows, { shouldDirty: false, shouldValidate: false });
+        }
+      } catch (error) {
+        console.error("Error cargando catálogo:", error);
+      }
+    }
+
+    getData();
+    // 3. Limpiamos dependencias: setValue y getValues son estables, 
+    // no causarán re-renders infinitos.
+  }, [setValue, getValues]);
+
   return (
-    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-      <Table sx={{ minWidth: 700 }} aria-label="editable diagnosis table">
+    <TableContainer component={Paper} sx={{ overflowX: 'auto', mt: 2 }}>
+      <Table sx={{ minWidth: 700 }}>
         <TableHead>
           <TableRow>
             <StyledTableCell>Calificación</StyledTableCell>
@@ -193,29 +243,26 @@ export function TableDiagnosisRating() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Array.from({ length: 4 }).map((_, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell component="th" scope="row">
-                {FIRST_COLUMN_LABELS[index]}
+          {fields.map((item, index) => (
+            <StyledTableRow key={item?.calificacion}>
+              <StyledTableCell sx={{ textTransform: 'capitalize' }}>
+                {item?.nombreCalificacion?.toLowerCase()}
               </StyledTableCell>
 
               <StyledTableCell>
                 <Controller
-                  name={`diagnosisRows.${index}.entidad`}
+                  name={`listCalificacion.${index}.entidad`}
+                  control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      variant="standard"
-                      InputProps={{ disableUnderline: false }}
-                    />
+                    <TextField {...field} fullWidth variant="standard" />
                   )}
                 />
               </StyledTableCell>
 
               <StyledTableCell>
                 <Controller
-                  name={`diagnosisRows.${index}.fechaCalificacion`}
+                  name={`listCalificacion.${index}.fechaCalificacion`}
+                  control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
@@ -223,7 +270,6 @@ export function TableDiagnosisRating() {
                       variant="standard"
                       fullWidth
                       InputLabelProps={{ shrink: true }}
-                      InputProps={{ disableUnderline: false }}
                     />
                   )}
                 />
@@ -231,30 +277,20 @@ export function TableDiagnosisRating() {
 
               <StyledTableCell>
                 <Controller
-                  name={`diagnosisRows.${index}.origen`}
+                  name={`listCalificacion.${index}.origen`}
+                  control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant="standard"
-                      fullWidth
-                      InputProps={{ disableUnderline: false }}
-                      sx={inputSx}
-                    />
+                    <TextField {...field} variant="standard" fullWidth />
                   )}
                 />
               </StyledTableCell>
 
               <StyledTableCell>
                 <Controller
-                  name={`diagnosisRows.${index}.dictamen`}
+                  name={`listCalificacion.${index}.dictamen`}
+                  control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant="standard"
-                      fullWidth
-                      InputProps={{ disableUnderline: false }}
-                      sx={inputSx}
-                    />
+                    <TextField {...field} variant="standard" fullWidth />
                   )}
                 />
               </StyledTableCell>
@@ -264,7 +300,7 @@ export function TableDiagnosisRating() {
       </Table>
     </TableContainer>
   );
-};
+}
 
 export function TableCharacterizationAbsenteeism() {
   return (
@@ -297,46 +333,79 @@ export function TableCharacterizationAbsenteeism() {
   );
 }
 
-const columnaAspectoConsiderar = [
-  "Exámenes o estudios adicionales",
-  "Remisión (especificar)",
-  "Necesidades de formación",
-  "Revisión de EPP",
-  "Normas de trabajo",
-  "Evaluación o medición del riesgo",
-  "Controles administrativos",
-  "Controles adicionales",
-  "Modificación de actividades",
-  "Reubicación",
-  "Otras"
-]
+export function TablePreventiveActions({ methods }) {
+  // 1. Desestructuramos setValue en lugar de reset
+  const { control, setValue, getValues } = methods;
 
-export function TablePreventiveActions() {
+  const { fields } = useFieldArray({
+    control,
+    name: "listAspectosConsiderar"
+  });
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const response = await GetByTipoCatalogoCombo(CodCatalogo.IEL_ASPCONSI);
+        const lsServer = response.data || [];
+
+        const currentValues = getValues("listAspectosConsiderar");
+
+        // Verificamos si la lista ya tiene datos para no sobrescribir si el usuario ya escribió algo
+        if (!currentValues || currentValues.length === 0) {
+          const initialRows = lsServer.map((item) => ({
+            aspectoConsiderar: item.value,
+            nombreAspectoConsiderar: item.label,
+            opcion: false,
+            observacion: null
+          }));
+
+          // 2. Usamos setValue con la ruta específica. 
+          // Esto NO toca el 'documento' ni el 'id' del formulario.
+          setValue("listAspectosConsiderar", initialRows, {
+            shouldValidate: false,
+            shouldDirty: false // Evita que el formulario se marque como "tocado" solo por cargar el catálogo
+          });
+        }
+      } catch (error) {
+        toast.error("Error al obtener las acciones preventivas");
+      }
+    }
+
+    getData();
+    // 3. Dependencias limpias
+  }, [setValue, getValues]);
+
   return (
     <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-      <Table sx={{ minWidth: 700 }} aria-label="editable diagnosis table">
+      <Table sx={{ minWidth: 700 }} aria-label="preventive actions table">
         <TableHead>
           <TableRow>
             <StyledTableCell sx={{ width: '30%' }}>Aspectos para considerar</StyledTableCell>
-            <StyledTableCell sx={{ width: '10%' }}>Si / No</StyledTableCell>
-            <StyledTableCell sx={{ width: '60%' }}>Observaciones</StyledTableCell>
+            <StyledTableCell sx={{ width: '15%' }}>Si / No</StyledTableCell>
+            <StyledTableCell sx={{ width: '55%' }}>Observaciones</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {Array.from({ length: columnaAspectoConsiderar.length }).map((_, index) => (
-            <StyledTableRow key={index}>
+          {fields.map((item, index) => (
+            <StyledTableRow key={item.id}>
               <StyledTableCell component="th" scope="row">
-                {columnaAspectoConsiderar[index]}
+                {item.nombreAspectoConsiderar}
               </StyledTableCell>
 
               <StyledTableCell>
                 <Controller
-                  name={`aspectosConsiderar.${index}.siNo`}
+                  name={`listAspectosConsiderar.${index}.opcion`}
+                  control={control}
                   render={({ field }) => (
                     <FormControlLabel
-                      control={<Checkbox {...field} />}
+                      control={
+                        <Checkbox
+                          {...field}
+                          checked={!!field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
+                        />
+                      }
                       label={field.value ? 'Si' : 'No'}
-                      onChange={(e) => field.onChange(e.target.checked)}
                     />
                   )}
                 />
@@ -344,7 +413,8 @@ export function TablePreventiveActions() {
 
               <StyledTableCell>
                 <Controller
-                  name={`aspectosConsiderar.${index}.observaciones`}
+                  name={`listAspectosConsiderar.${index}.observacion`}
+                  control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
@@ -352,9 +422,7 @@ export function TablePreventiveActions() {
                       fullWidth
                       multiline
                       minRows={1}
-                      maxRows={6}
-                      InputProps={{ disableUnderline: false }}
-                      sx={inputSx}
+                      maxRows={4}
                     />
                   )}
                 />

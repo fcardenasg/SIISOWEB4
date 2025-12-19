@@ -1,7 +1,6 @@
 import { TextField } from '@mui/material';
 
 const InputDatePick = ({ value, label, noWriting = false, onChange, size, ...others }) => {
-
     return (
         <TextField
             id="fecha"

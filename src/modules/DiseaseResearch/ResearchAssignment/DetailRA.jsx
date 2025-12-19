@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, TablePagination, Tooltip } from '@mui/material';
+import { Fade, IconButton, TablePagination, Tooltip, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,9 +7,9 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { ViewFormat } from 'components/helpers/Format';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import Chip from 'ui-component/extended/Chip';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -48,7 +48,6 @@ const buttonVariants = {
 export default function DetailRA({ lsData = [], onDelete }) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);
-    const notFound = !lsData.length;
 
     const handleChangeRowsPerPage = (event) => {
         if (event?.target.value)
@@ -63,23 +62,28 @@ export default function DetailRA({ lsData = [], onDelete }) {
                 <Table sx={{ minWidth: 700, mb: 7 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Fecha</TableCell>
-                            <TableCell>Módulo</TableCell>
-                            <TableCell>Código Dx</TableCell>
-                            <TableCell>Diagnóstico</TableCell>
+                            <TableCell>Dx</TableCell>
+                            <TableCell>Segmento Agrupado</TableCell>
+                            <TableCell>Segmento Afectado</TableCell>
+                            <TableCell>Subsegmento</TableCell>
                             <TableCell />
                         </TableRow>
                     </TableHead>
 
                     <TableBody>
-                        {stableSort(lsData, getComparator('asc', 'modulo', 'nombreDx', 'dx'))
+                        {stableSort(lsData, getComparator('asc', 'dx', 'nombreSegmentoAgrupado', 'nombreSegmentoAfectado', 'nombreSubsegmento'))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{ViewFormat(row.fechaDx)}</TableCell>
-                                    <TableCell>{row.modulo}</TableCell>
-                                    <TableCell>{row.dx}</TableCell>
-                                    <TableCell>{row.nombreDx}</TableCell>
-
+                                    <TableCell>
+                                        <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={row?.nombreDx}>
+                                            <Typography textAlign="left">
+                                                <Chip label={row?.dx} size="small" chipcolor="success" sx={{ textAlign: 'left' }} />
+                                            </Typography>
+                                        </Tooltip>
+                                    </TableCell>
+                                    <TableCell>{row?.nombreSegmentoAgrupado}</TableCell>
+                                    <TableCell>{row?.nombreSegmentoAfectado}</TableCell>
+                                    <TableCell>{row?.nombreSubsegmento}</TableCell>
                                     <TableCell>
                                         <motion.button
                                             variants={buttonVariants}

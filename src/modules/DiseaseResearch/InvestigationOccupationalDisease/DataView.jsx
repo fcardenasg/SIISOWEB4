@@ -15,8 +15,9 @@ import {
     useMediaQuery,
     useTheme
 } from '@mui/material';
-import { GetAllByDataResearcher, ValidateResearchAssignment } from 'api/clients/ResearchAssignmentClient';
+import { DeleteResearchAssignment, GetAllByDataResearcher, ValidateResearchAssignment } from 'api/clients/ResearchAssignmentClient';
 import SelectOnChange from 'components/input/SelectOnChange';
+import UnauthorizedAccess from 'components/loading/UnauthorizedAccess';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
 import useAuth from 'hooks/useAuth';
@@ -26,10 +27,12 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import ViewCardSkeleton from '../../../components/Skeleton/ViewCardSkeleton';
 import ViewListSkeleton from '../../../components/Skeleton/ViewListSkeleton';
+import swal from 'sweetalert';
 import NavigationBar from './components/NavigationBar';
 import NoRecord from './components/NoRecord';
 import ViewCard from './components/View/ViewCard';
 import ViewList from './components/View/ViewList';
+import { ParamDelete } from 'components/alert/AlertAll';
 
 const DataView = () => {
     const { user } = useAuth();
@@ -43,9 +46,13 @@ const DataView = () => {
     const [dataModel, setDataModel] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [infoEmployee, setInfoEmployee] = useState(null);
-    const [viewMode, setViewMode] = useState('list');
+    const [viewMode, setViewMode] = useState(() => {
+        const savedViewMode = localStorage.getItem('dataViewMode');
+        return savedViewMode || 'list';
+    });
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [textError, setTextError] = useState('');
 
     const itemsPerPage = viewMode === 'list' ? 4 : 6;
 
@@ -64,25 +71,29 @@ const DataView = () => {
         Validate();
     }, []);
 
-    useEffect(() => {
-        async function getData() {
-            try {
-                setLoading(true);
+    async function getData() {
+        try {
+            setLoading(true);
+            setDataModel([]);
+            setTextError('');
+
+            const result = await GetAllByDataResearcher(user?.id, filter);
+            if (result.data.exito) {
+                setDataModel(result.data.datos);
+            } else if (result.data.mensaje !== 'NOPERMITIDO') {
                 setDataModel([]);
-
-                const result = await GetAllByDataResearcher(user?.id, filter);
-                if (result.data.exito) {
-                    setDataModel(result.data.datos);
-                }
-                else
-                    toast.error(result.data.mensaje);
-            } catch (error) {
-                toast.error('Error al cargar los datos');
-            } finally {
-                setTimeout(() => setLoading(false), 500);
+                toast.error(result.data.mensaje);
+            } else {
+                setTextError(result.data.mensaje);
             }
+        } catch (error) {
+            toast.error('Error al cargar los datos');
+        } finally {
+            setTimeout(() => setLoading(false), 500);
         }
+    }
 
+    useEffect(() => {
         getData();
     }, [filter]);
 
@@ -104,6 +115,7 @@ const DataView = () => {
         if (newViewMode) {
             setViewMode(newViewMode);
             setCurrentPage(1);
+            localStorage.setItem('dataViewMode', newViewMode);
         }
     };
 
@@ -139,6 +151,22 @@ const DataView = () => {
         setFilter(event.target.value);
         setCurrentPage(1);
     };
+
+    const handleDelete = async (idEliminar) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteResearchAssignment(idEliminar);
+                    if (result.data.exito) {
+                        toast.success(result.data.mensaje);
+                        getData();
+                    }
+                }
+            });
+        } catch (error) {
+            toast.error('Error al eliminar el registro');
+        }
+    }
 
     return (
         <AnimatePresence mode="wait">
@@ -239,13 +267,9 @@ const DataView = () => {
                     </Box>
 
                     {loading ? (
-                        <>{renderSkeletons(viewMode === 'list' ? 4 : 6)}</>
-                    ) : filteredData.length === 0 && filter === 1 ? (
-                        <NoRecord title="No se encontraron investigaciones" />
-                    ) : filteredData.length === 0 && filter === 2 ? (
-                        <NoRecord title="No tienes investigaciones asignadas" />
-                    ) : filteredData.length === 0 && filter === 3 ? (
-                        <NoRecord title="No tienes asesorías ARL asignadas" />
+                        <>{renderSkeletons(viewMode === 'list' ? 2 : 3)}</>
+                    ) : textError === 'NOPERMITIDO' ? (
+                        <UnauthorizedAccess />
                     ) : filteredData.length === 0 ? (
                         <NoRecord />
                     ) : (
@@ -268,6 +292,7 @@ const DataView = () => {
                                                     dataInfo={patient}
                                                     onClickOpenChat={handleOpenChat}
                                                     onClickGoAttention={() => navigate(`/investigation-occupational-disease/investigate/${patient.id}`)}
+                                                    onClickDelete={() => handleDelete(patient.id)}
                                                 />
                                             ))}
                                         </List>
@@ -281,6 +306,7 @@ const DataView = () => {
                                                         index={index}
                                                         onClickGoAttention={() => navigate(`/investigation-occupational-disease/investigate/${patient.id}`)}
                                                         onClickOpenChat={handleOpenChat}
+                                                        onClickDelete={() => handleDelete(patient.id)}
                                                     />
                                                 </Grid>
                                             ))}
