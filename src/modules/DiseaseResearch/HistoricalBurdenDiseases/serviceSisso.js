@@ -2,7 +2,6 @@ import axios from "axios";
 import { Url } from "api/instances/AuthRoute";
 import toast from "react-hot-toast";
 
-
 export const promptDatosGenerales = `
 Analiza las siguientes información y devuelve exclusivamente un objeto JSON válido con la información extraída.
 Los datos aparecen en formato de tabla pero extraídos como texto plano, por lo tanto los encabezados y los valores estarán juntos o en secuencia.
@@ -266,6 +265,279 @@ Representa los saltos visuales del documento usando "\n".
 
 `;
 
+export const propmthtml = `"Convierte el siguiente HTML a Markdown, respetando estrictamente la estructura original:
+– Las listas <ol><li> se transforman en encabezados numerados (## 1., ### 1.1, etc.).
+– Todas las tablas se convierten a Markdown manteniendo exactamente el número de filas, columnas, orden de celdas y contenido literal.
+– Las tablas anidadas dentro de una <td> deben aparecer inmediatamente después del texto de esa celda.
+– No resumas, interpretes ni reformules el contenido.
+– El resultado debe ser legible y bien organizado, pero fiel al original."
+`;
+
+export const promptInformeTexto = `
+Te enviaré un HTML generado automáticamente (Word -> HTML).
+
+Tu tarea es TRANSFORMAR ese HTML en un TEXTO CLARO, LEGIBLE Y BIEN ORGANIZADO,
+similar a un INFORME MEDICO-LABORAL leido por personas, NO tecnico.
+
+REGLA PRINCIPAL:
+NO devuelvas HTML ni Markdown tecnico.
+Devuelve TEXTO FORMATEADO Y VISUALMENTE ORDENADO,
+usando titulos, subtitulos, listas con guiones y parrafos claros.
+
+========================================
+REGLAS OBLIGATORIAS
+========================================
+
+1. INTERPRETACION GENERAL
+- NO resumas.
+- NO omitas informacion.
+- NO inventes datos.
+- Mantén TODO el contenido original, solo reorganizalo para que sea legible.
+- Usa un lenguaje formal y profesional de informe medico-laboral.
+- El resultado debe poder leerse facilmente en una aplicacion web.
+
+2. SECCIONES
+- Identifica las secciones reales del informe (por ejemplo:
+  Datos de la empresa, Identificacion del trabajador, Historia laboral,
+  Diagnosticos, Exposicion, Conclusion).
+- Usa titulos claros en mayusculas.
+- NO muestres numeraciones tecnicas internas del HTML.
+
+3. NUMERACIONES Y CONTADORES
+- Ignora numeraciones automaticas o tecnicas como:
+  1; 2; 3; I; II; III; a); b); awlist, contadores CSS.
+- SOLO conserva numeracion cuando represente una seccion real del informe.
+
+4. TABLAS (MUY IMPORTANTE)
+- Analiza cuidadosamente las tablas.
+- Algunas columnas pueden contener tablas internas.
+- Si una celda contiene otra tabla:
+  extrae su contenido y presentalo como texto organizado
+  inmediatamente despues del campo correspondiente.
+- Nunca pierdas filas, columnas ni informacion.
+
+5. FORMATO VISUAL
+- Usa titulos.
+- Usa subtitulos.
+- Usa listas con guiones.
+- Usa parrafos separados.
+
+6. TONO DEL RESULTADO
+- Debe parecer un INFORME MEDICO-LABORAL OFICIAL,
+  como los usados por ARL o Juntas de Calificacion,
+  pero en formato de lectura humana.
+
+========================================
+SALIDA ESPERADA
+========================================
+
+Devuelve UNICAMENTE el texto final organizado y legible.
+No incluyas explicaciones ni comentarios adicionales.
+`;
+
+
+export const promptTexto = `
+Te enviaré un HTML generado automáticamente desde Word (Word → HTML).
+
+Tu tarea es TRANSFORMAR ese HTML en TEXTO LEGIBLE Y BIEN ORGANIZADO,
+en formato MARKDOWN, para ser renderizado con ReactMarkdown + remarkGfm.
+
+⚠️ NO debes resumir, eliminar ni reinterpretar la información.
+⚠️ Debes conservar TODA la información con ALTA FIDELIDAD.
+
+OBJETIVO:
+Entregar un INFORME MÉDICO-LABORAL claro, profesional y fácil de leer en frontend,
+similar a un documento leído por personas, NO técnico ni estructurado como HTML.
+
+FORMATO OBLIGATORIO:
+
+1. Usa MARKDOWN PURO (###, **negrillas**, listas, saltos de línea).
+2. Cada bloque de información debe estar claramente separado por SECCIONES.
+3. Los títulos de sección deben ir en encabezados Markdown (###).
+4. Los nombres de campos o conceptos importantes deben ir en **NEGRILLA**.
+5. Los valores deben ir en líneas separadas, no en tablas técnicas.
+6. Mantén el orden original del documento.
+7. NO uses HTML en la respuesta.
+8. NO devuelvas JSON.
+9. NO devuelvas tablas Markdown, excepto si es estrictamente necesario.
+10. El resultado debe verse limpio y legible en ReactMarkdown.
+
+INTERPRETACIÓN DE LISTAS Y SECCIONES:
+
+- Las etiquetas <ol><li> representan ENCABEZADOS DE SECCIÓN.
+- El contenido que sigue a cada <li> pertenece a esa sección,
+  hasta que aparezca el siguiente <li>.
+- Respeta estrictamente esa jerarquía.
+
+MANEJO DE TABLAS (MUY IMPORTANTE):
+
+- El HTML contiene TABLAS ANIDADAS (tablas dentro de celdas).
+- NO mezcles información de distintas columnas.
+- Si una celda contiene una tabla interna, interprétala como SUBSECCIONES o LISTAS.
+- Convierte cada fila en pares **Campo: Valor**.
+- Si una tabla representa opciones (Sí / No), interpreta cuál está marcada
+  según el contenido recibido y muéstralo claramente en texto:
+  Ejemplo:
+  **Generó incapacidad:** Sí
+
+CASOS ESPECIALES:
+
+- Si un campo indica “No se registra información”, muéstralo textualmente.
+- Si hay múltiples diagnósticos, sepáralos como Diagnóstico (1), (2), (3).
+- Si hay fechas múltiples, respétalas y sepáralas claramente.
+- Si hay observaciones largas, preséntalas como párrafos legibles.
+
+ESTILO VISUAL ESPERADO:
+
+- Secciones bien delimitadas.
+- Mucho uso de espacios en blanco.
+- Información importante destacada en **negrilla**.
+- Texto listo para visualizarse como INFORME en frontend.
+
+IMPORTANTE:
+No expliques lo que haces.
+No agregues comentarios.
+No incluyas introducciones.
+Devuelve ÚNICAMENTE el TEXTO FINAL FORMATEADO en Markdown.
+`;
+
+
+export const promptTextoNaturales = `
+Te enviaré un HTML generado automáticamente desde Word (Word → HTML).
+
+Tu tarea es TRANSFORMAR ese HTML en TEXTO LEGIBLE, NATURAL y BIEN ORGANIZADO,
+conservando **toda la información original**, sin resumir, eliminar ni reformular nada.
+
+⚠️ IMPORTANTE:  
+- **NO uses tablas en ningún caso**, ni siquiera en Markdown.  
+- **NO devuelvas JSON, HTML ni código**.  
+- **NO uses viñetas innecesarias**: solo para listas explícitas o factores enumerados.  
+
+OBJETIVO:  
+Entregar un INFORME claro, profesional y fácil de leer en frontend,  
+como si fuera un documento Word convertido a texto narrativo estructurado.
+
+FORMATO OBLIGATORIO:
+
+1. Usa **encabezados Markdown** con ### para cada sección principal (basado en <ol><li><span>...</span></li></ol>).  
+2. Cada <ol start="X"> anidado se convierte en #### (subsección).  
+3. **Convierte cada fila de tabla en pares legibles**:  
+   - Formato: **Nombre del campo:** Valor  
+   - Cada par en su propia línea.  
+   - Si una fila tiene múltiples celdas, colócalas como pares consecutivos, respetando el orden.  
+4. **Tablas anidadas o bloques de texto largos** (como descripciones de puesto):  
+   - Preséntalos como párrafos normales, sangrados si es necesario, o como listas si describen factores o actividades.  
+5. **Notas, aclaraciones o observaciones** van como párrafos sueltos, precedidos por "Nota:" si aplica.  
+6. **Mantén el orden original** del documento.  
+7. **Usa líneas en blanco** entre secciones y bloques para respirabilidad visual.  
+8. **Nunca inventes títulos**; usa el texto exacto de los <span>.  
+9. **Campos como "EPS:", "AFP:", etc., deben aparecer tal cual**, seguidos de su valor.  
+
+INTERPRETACIÓN DE ESTRUCTURA HTML:
+
+- Cada <ol><li> representa un ENCABEZADO DE SECCIÓN.  
+- Todo el contenido después de ese <li> pertenece a esa sección, hasta el siguiente <li>.  
+- Las <table> son conjuntos de datos: conviértelas a **pares Campo: Valor**, no a tablas.  
+- Si una celda contiene múltiples líneas o conceptos, sepáralos de forma lógica (párrafos o listas).  
+
+El resultado final debe ser **texto continuo, profesional, jerárquico y fácil de leer**,  
+sin elementos técnicos, sin tablas, sin formularios,  
+como un informe humano escrito para ser leído, no para ser procesado.
+`;
+
+export const promptTextoNatural = `
+Te entregaré un fragmento de HTML generado desde Word (Word → HTML) que contiene información detallada sobre una persona, su historial laboral, diagnóstico médico y evaluación ergonómica.
+
+Tu tarea es transformarlo en un **texto continuo, narrativo y profesional**, como una **carta o informe redactado por un experto**, que conserve **cada palabra, número, fecha, observación y dato del original, sin omitir ni resumir absolutamente nada**.
+
+⚠️ REGLAS ESENCIALES:
+
+1. **NO resumas, interpretes, reformules ni elimines ni una sola palabra** del contenido original. Todo debe estar presente.
+2. **NO uses tablas, formularios ni estructuras técnicas** (como JSON, YAML o grids).
+3. **Organiza el contenido en secciones lógicas** usando encabezados Markdown con ### (por ejemplo, ### DATOS DE LA EMPRESA), respetando el orden del HTML.
+4. **Dentro de cada sección, escribe en prosa fluida**, como si redactaras un informe para ser leído por una persona.
+5. **Cuando el HTML original presenta pares clave-valor (como en tablas), incorpóralos en el texto continuo** usando este formato:  
+   → **Primer apellido:** PICO, **Segundo apellido:** ALVARADO, **Primer nombre:** BERNARDO, **Segundo nombre:** -, **Identificación:** CC 8.743.088.  
+   Es decir: la **clave en negrita**, seguida inmediatamente por dos puntos y el valor, y separado por comas si hay varios en la misma oración.  
+   No uses saltos de línea entre estos pares a menos que la longitud lo exija para legibilidad.
+6. **Mantén la puntuación, mayúsculas, fechas, códigos (como M751), porcentajes, tiempos ("11 años y 4 meses"), rotaciones ("7x3 – 7x4") y observaciones textuales exactamente como aparecen**.
+7. **Usa listas con viñetas (-) SOLO cuando el contenido original describe una secuencia de factores, actividades, riesgos o pasos** (por ejemplo: “Lo anterior se explica por los siguientes factores:” → entonces sí usa viñetas para enumerarlos). En esos casos, la lista debe ser fiel al orden y redacción original.
+8. **Las notas (como "Nota: el 6 de mayo de 2005 fue...") deben incluirse textualmente como parte del párrafo o como oración independiente, según el contexto**.
+9. **Escribe en tercera persona, tono técnico pero humano**, sin jerga innecesaria, y con conectores naturales ("posteriormente", "asimismo", "cabe destacar que", etc.) solo para fluidez —nunca para alterar el significado.
+10. **El resultado debe leerse como un documento coherente**, no como un volcado de datos. Pero **la fidelidad al contenido original es absoluta**.
+
+El objetivo final es un **informe íntegro, legible y profesional**, que **no pierda ni una coma del original**, pero que **no se sienta como un formulario**, sino como una **carta explicativa y completa** dirigida a un lector humano.
+`;
+
+
+export const MapeoPromptSisso = (data, index) => {
+  const prompts = [propmthtml];
+
+  if (!prompts[index]) {
+    throw new Error(`No existe un prompt definido para el índice ${index}`);
+  }
+
+  // Construimos el prompt final
+  const promptFinal = `
+  Información proporcionada:
+  ${data}
+  
+  Instrucción de extracción html:
+  ${promptDatosGenerales}
+  `;
+
+  return promptFinal;
+};
+
+export async function fetchIA(prompt) {
+  try {
+    const response = await axios.post(
+      `${Url.Base}${Url.GetOpenIA}`,
+      JSON.stringify(prompt),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Respuesta INFORMACION::",response.data);
+    const { data } = response.data;
+    console.log("Respuesta INFORMACION DOS::",data);
+    const mappingData = parseJsonSafe(data);
+    console.log(mappingData);
+
+    return mappingData;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+export async function fetchIAChat(prompt) {
+  try {
+    const response = await axios.post(
+      `${Url.Base}${Url.GetOpenIAChat}`,
+      JSON.stringify(prompt),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Respuesta INFORMACION::",response.data);
+    const { data } = response.data;
+    console.log("Respuesta INFORMACION DOS::",data);
+
+
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 export const mergeJsons = (jsonArray) => {
   return jsonArray.reduce((acc, item) => {
     return { ...acc, ...item };
@@ -386,15 +658,11 @@ export async function extractWordFromText(file) {
   console.log("archivo:", file);
   try {
     const formData = new FormData();
-    formData.append("file", file);  
+    formData.append("file", file);
 
-    const response = await axios.post(
-      `${Url.Base}${Url.wordtexto}`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
+    const response = await axios.post(`${Url.Base}${Url.wordtexto}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     const { data } = response.data;
     console.log("texto jean", data);
@@ -407,28 +675,26 @@ export async function extractWordFromText(file) {
   }
 }
 
-export async function onSaveMaster(listMappingproduct, acceptedFiles) {
+export async function onSaveMaster(data, acceptedFiles) {
   // const data = listMappingproduct.map(({ path, ...resto }) => resto);
 
-  const data={
-    FechaInvestigacion:"24 diciembre",
-    RazonSocial:"drummond",
-    Estado:true,
-    UsuarioRegistro:"admin"
-  }
+  
 
   try {
-    const response = await axios.post(`${Url.Base}${Url.InvestigacionEnfermedadLaboralFile}`, listMappingproduct);
+    const response = await axios.post(
+      `${Url.Base}${Url.InvestigacionEnfermedadLaboralFile}`,
+      data
+    );
     console.log(response);
     if (response.data.exito) {
       toast.success(response.data.mensaje);
       // onSaveFile(response.data.datos, acceptedFiles, user);
     } else {
-      toast.error('Error al guardar los datos');
+      toast.error("Error al guardar los datos");
     }
   } catch (error) {
     console.log(error);
-    toast.error('Error al guardar los datos');
+    toast.error("Error al guardar los datos");
   }
 }
 
@@ -601,7 +867,7 @@ export function fileToBase64(file) {
     const reader = new FileReader();
 
     reader.onload = () => {
-      resolve(reader.result); 
+      resolve(reader.result);
     };
 
     reader.onerror = (error) => {
@@ -612,14 +878,14 @@ export function fileToBase64(file) {
   });
 }
 
-
 export function base64ToWord(base64String, fileName = "archivo.docx") {
-  console.log("base64String",base64String)
+  console.log("base64String", base64String);
   // 1. separar cabecera y contenido
   const [header, base64Data] = base64String.split(",");
 
   // 2. validar MIME desde la cabecera
-  let mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  let mime =
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
   const match = header.match(/data:(.*?);base64/);
   if (match) {
@@ -639,13 +905,11 @@ export function base64ToWord(base64String, fileName = "archivo.docx") {
   return new File([u8arr], fileName, { type: mime });
 }
 
-
 export async function ConvertirDocxASfdt(file, prompt) {
   console.log("archivo:", file);
   try {
     const formData = new FormData();
     formData.append("file", file);
- 
 
     const response = await axios.post(
       `${Url.Base}${Url.ConvertirDocxASfdt}`,
@@ -666,3 +930,54 @@ export async function ConvertirDocxASfdt(file, prompt) {
   }
 }
 
+export async function ConvertirWordtoHtml(file, prompt) {
+  console.log("archivo:", file);
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axios.post(
+      `${Url.Base}${Url.ConvertWordToHtml}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+
+    console.log("jean", response);
+    const { data } = response.data;
+    // const mappingData = parseJsonSafe(data);
+
+    return response;
+  } catch (error) {
+    console.error("❌ Error al enviar el archivo:", error);
+    throw error;
+  }
+}
+export async function ConvertirWordtoPdf(file, prompt) {
+  console.log("archivo:", file);
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axios.post(
+      `${Url.Base}${Url.ConvertWordToPdf}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        responseType: "blob", // 👈 ¡ESTO ES CLAVE!
+      }
+    );
+
+    console.log("jean", response);
+    // const { data } = response.data;
+    // const mappingData = parseJsonSafe(data);
+
+    return response;
+  } catch (error) {
+    console.error("❌ Error al enviar el archivo:", error);
+    throw error;
+  }
+}

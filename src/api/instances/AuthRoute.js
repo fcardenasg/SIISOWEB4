@@ -30,9 +30,14 @@ export const Url = {
     getevents: 'api/CalendarioCitas/get-idmedico',
     GetOpenIAFile: 'api/CalendarioCitas/GetOpenIAFile',
     GetOpenIA: 'api/CalendarioCitas/GetOpenIA',
+    GetOpenIAChat: 'api/CalendarioCitas/GetOpenIAChat',
     ConvertirDocxASfdt: 'api/CalendarioCitas/ConvertirDocxASfdt',
+    ConvertWordToHtml: 'api/CalendarioCitas/ConvertWordToHtml',
+    ConvertWordToPdf: 'api/CalendarioCitas/ConvertWordToPdf',
 
     InvestigacionEnfermedadLaboralFile:"api/InvestigacionEnfermedadLaboralFile",   
+    GetByIdPDF:"api/InvestigacionEnfermedadLaboralFile/GetByIdPDF",
+    
     wordtexto:"api/InvestigacionEnfermedadLaboralFile/word-texto",
     wordopenia:"api/InvestigacionEnfermedadLaboralFile/word-openia",
 

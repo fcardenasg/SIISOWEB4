@@ -8,6 +8,9 @@ export const GetAllHistoricalBurdenDiseases = async () => await getData(Url.Inve
  export const GetByIdHistoricalBurdenDiseases = async (id) => 
   await getData(`${Url.InvestigacionEnfermedadLaboralFile}/${id}`);
 
+ export const GetByIdPDF = async (id) => 
+  await getData(`${Url.GetByIdPDF}/${id}`);
+
 // export const InsertEmployee = async (empleado) => await postData(Url.Empleado, empleado);
 // export const UpdateEmployees = async (empleado) => await putData(Url.Empleado, empleado);
 export const DeleteHistoricalBurdenDiseases = async (id) => await deleteData(Url.InvestigacionEnfermedadLaboralFile, { id });

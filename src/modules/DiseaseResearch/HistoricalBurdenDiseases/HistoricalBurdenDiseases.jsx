@@ -35,6 +35,10 @@ import {
   validationStateFile,
   wordOpenIa,
   ConvertirDocxASfdt,
+  ConvertirWordtoHtml,
+  MapeoPromptSisso,
+  fetchIA,
+  ConvertirWordtoPdf,
 } from "./serviceSisso";
 
 import InvestigationView from "./InvestigationView";
@@ -54,6 +58,10 @@ import ModalBasic from "./ModalBasic";
 import { TitleButton } from "components/helpers/Enums";
 import { useNavigate } from "react-router-dom";
 import UploadMultiselect from "components/UploadDocument/UploadMultiselect";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import "./markdown.css";
+import { convertToFileBase64 } from "components/helpers/ConvertToBytes";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -67,7 +75,7 @@ const validations = Yup.object().shape({});
 
 export default function FormUploadFileSisso() {
   const { user } = useAuth();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [acceptedFiles, setAcceptedFiles] = useState([]);
   const [dataProduct, setDataProduct] = useState();
   const [listMappingproduct, setListMappingproduct] = useState([]);
@@ -84,7 +92,9 @@ export default function FormUploadFileSisso() {
   const [archivoAdjunto, setArchivoAdjunto] = useState(null);
   const [currentFile, setCurrentFile] = useState(null);
   const [database, setDatabase] = useState(null);
-  const [html, setHtml] = useState(null);
+  const [html, setHtml] = useState();
+  const [markdown, setMarkdown] = useState();
+  const [data, setData] = useState([]);
 
   const confirm = useBoolean();
   const enable = useBoolean();
@@ -93,8 +103,7 @@ export default function FormUploadFileSisso() {
   const confirmModal = useBoolean();
   const confirmModalDocx = useBoolean();
   const confirmExport = useBoolean();
-
-  
+  const confirmModalHtml = useBoolean();
 
   const methods = useForm({ resolver: yupResolver(validations) });
 
@@ -103,31 +112,42 @@ export default function FormUploadFileSisso() {
   } = methods;
 
   const extractInformation = async (file) => {
-    console.log("extractInformation", file);
-
     confirm.onTrue();
+    let base64String = null;
+      let pdfBlob=null
 
     try {
-      let currentFile = null;
-      const response = await wordOpenIa(file, promptDatosGenerales);
-      // const responseSfdt = await ConvertirDocxASfdt(file);
-      console.log("responseSfdt",response)
+      const responseSfdt = await ConvertirWordtoHtml(file);
+      const { datosEncabezado, fileName, informe } = responseSfdt.data;
 
-      // const response = await extractImagesFromPdf(file, promptDatosGenerales);
-
-      if (response) {
-        currentFile = await fileToBase64(file);
+      if (datosEncabezado.identificacion) {
+        const identificacion = datosEncabezado.identificacion;
+        const soloNumeros = identificacion.replace(/\D/g, "");
+        datosEncabezado.identificacion = soloNumeros;
       }
 
-      response.UsuarioRegistro = user?.nameuser;
-      response.Bat64 = currentFile;
+      setMarkdown(informe);
+      const responsePDF = await ConvertirWordtoPdf(file);
+      if (responsePDF.data) {
+        base64String = await convertToFileBase64(responsePDF.data);
+          pdfBlob = responsePDF.data;
+      }
 
-      console.log("respesta de texto", response);
-      setListMappingproduct((prev) => [...prev, response]);
+      setData((prev) => [
+        ...prev,
+        {
+          ...datosEncabezado,
+          filename: file.path,
+          informe: informe,
+          bat64: base64String,
+          pdfBlob: pdfBlob,
+        },
+      ]);
 
-      setDataInvestigation(response);
-      confirm.onFalse();
       updateStateFile(file, acceptedFiles, setAcceptedFiles);
+      setCountProgress(2);
+      confirm.onFalse();
+      saveState.onFalse();
     } catch (err) {
       console.log(err);
       toast.error(
@@ -138,40 +158,45 @@ export default function FormUploadFileSisso() {
     }
   };
 
-  useEffect(() => {
-    if (listMappingproduct.length > 0) {
-      const invalidFiles = validationStateFile(acceptedFiles);
-      console.log("validacion", invalidFiles);
 
+  useEffect(() => {
+    if (html) {
+      confirmModalHtml.onTrue();
+    }
+  }, [html]);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      const invalidFiles = validationStateFile(acceptedFiles);
       if (invalidFiles.length === 0) {
         saveState.onFalse();
         setCountProgress(2);
       } else {
         saveState.onTrue();
       }
+    }else{
+      saveState.onTrue();
     }
 
     if (acceptedFiles.length === 0) {
       setCountProgress(0);
     }
-  }, [listMappingproduct, acceptedFiles]);
+  }, [data, acceptedFiles]);
 
   const handleFileRemove = (file) => {
     if (!file?.path) return;
 
     setAcceptedFiles((prev) => prev.filter((f) => f.path !== file.path));
-    setListMappingproduct((prev) =>
-      prev.filter((item) => item.path !== file.path)
+    setData((prev) =>
+      prev.filter((item) => item.filename !== file.path)
     );
   };
 
   const onSubmit = async () => {
-    console.log("listMappingproduct", listMappingproduct);
-    console.log("acceptedFiles", acceptedFiles);
 
     try {
       onsave.onTrue();
-      await onSaveMaster(listMappingproduct, acceptedFiles);
+      await onSaveMaster(data, acceptedFiles);
       setAcceptedFiles([]);
       setListMappingproduct([]);
       saveState.onTrue();
@@ -197,7 +222,6 @@ export default function FormUploadFileSisso() {
   const handleDrop = useCallback(
     (event) => {
       const files = Array.isArray(event) ? event : event.target?.files || [];
-      console.log("Archivos recibidos:", files);
 
       setAcceptedFiles((prev) => {
         const newFiles = files.filter(
@@ -211,8 +235,7 @@ export default function FormUploadFileSisso() {
         if (newFiles.length < files.length) {
           toast.error("Algunos archivos ya estaban en la lista");
         }
-
-        // saveState.onTrue();
+ 
         setCountProgress(1);
 
         return [...prev, ...newFiles];
@@ -221,19 +244,44 @@ export default function FormUploadFileSisso() {
     [archivoAdjunto]
   );
 
-  // Visualizar documento para editar
+ 
   const handleViewDocx = async (file) => {
-    console.log(file);
-    console.log("entro aqui");
-
-    if (file) {
-      const database = extractionDataBase(file);
-      setDatabase(database);
-      setCurrentFile(file);
-      confirmModalDocx.onTrue();
+    console.log("file", file);
+    setMensaje("Generando vista previa del documento, por favor espere...");
+    confirm.onTrue();
+    const filterData = data.find((item) => item.filename === file.path);
+    
+    if(filterData && filterData.pdfBlob){
+      setFileView(file);
+      const urlpdf = URL.createObjectURL(filterData.pdfBlob);
+      setPdfUrl(urlpdf);
+      confirmModalDocx.onTrue();     
     }
+    confirm.onFalse();
   };
-  //----------------------
+
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [pdfUrl]);
+
+  const handleExport = async () => { 
+    const filterData = data.find((item) => item.filename === fileView.path);
+    const base64String = await convertToFileBase64(filterData.pdfBlob);
+    console.log("filterData", filterData);
+  
+    const link = document.createElement('a');
+    link.href = base64String;
+    link.download = filterData.nombres+".pdf";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+ 
+  };
 
   return (
     <>
@@ -247,16 +295,28 @@ export default function FormUploadFileSisso() {
       <ControlModal
         open={confirmModal.value}
         onClose={confirmModal.onFalse}
-        children={<InvestigationView data={dataCurrent} />}
+        children={
+          // <InvestigationView data={dataCurrent}/>
+          markdown && (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              children={markdown}
+              className="informe-medico"
+              components={{
+                br: () => <br />,
+              }}
+            />
+          )
+        }
         maxWidth="lg"
       />
 
-      {/* <ControlModal
-        open={confirmModal.value}
-        onClose={confirmModal.onFalse}
+      <ControlModal
+        open={confirmModalHtml.value}
+        onClose={confirmModalHtml.onFalse}
         children={<ViewHtml html={html} />}
-        maxWidth="lg"
-      /> */}
+        maxWidth="md"
+      />
 
       {confirmModalDocx.value && (
         <motion.div
@@ -272,12 +332,19 @@ export default function FormUploadFileSisso() {
             title="Investigación de enfermedad laboral"
             open={confirmModalDocx.value}
             onClose={confirmModalDocx.onFalse}
-            confirmExport={confirmExport}
+            handleExportar={handleExport}
             children={
-              <VisualizatorFile
-                file={currentFile}
-                confirmExport={confirmExport.value}
-              />
+              pdfUrl ? (
+                <iframe
+                  src={pdfUrl}
+                  title="Vista previa del PDF"
+                  width="100%"
+                  height="600px"
+                  style={{ border: "none" }}
+                />
+              ) : (
+                <div>Cargando PDF...</div>
+              )
             }
             maxWidth="lg"
           />
@@ -300,7 +367,7 @@ export default function FormUploadFileSisso() {
             <CustomizedSteppers countProgress={countProgress} />
           </Grid>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <Grid
             container
             spacing={2}
@@ -330,13 +397,17 @@ export default function FormUploadFileSisso() {
                   boxShadow: 3,
                 }}
               >
-                <UploadMultiselect multiple files={archivoAdjunto} onDrop={handleDrop} />
+                <UploadMultiselect
+                  multiple
+                  files={archivoAdjunto}
+                  onDrop={handleDrop}
+                />
               </Item>
             </Grid>
           </Grid>
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <Grid
             container
             spacing={2}
@@ -482,26 +553,36 @@ export default function FormUploadFileSisso() {
             )}
           </Grid>
         </Grid>
-        <Grid item xs={12} sx={{ mb: 2,mt:2,display:"flex",flexDirection:"row",justifyContent:"flex-end" }}>
-          <Grid container spacing={2} sx={{pl:2}} >
+        <Grid
+          item
+          xs={12}
+          sx={{
+            mb: 2,
+            mt: 2,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Grid container spacing={2} sx={{ pl: 2 }}>
             <Grid item xs={6} md={4} lg={2}>
               <AnimateButton>
                 <Button
-                   disabled={saveState.value}
+                  disabled={saveState.value}
                   variant="contained"
                   onClick={onSubmit}
                   fullWidth
                 >
                   {TitleButton.Guardar}
-                   {onsave.value && (
-                          <Box sx={{ paddingLeft: 1, display: "flex" }}>
-                            <CircularProgress
-                              color="inherit"
-                              size={25}
-                              thickness={5}
-                            />
-                          </Box>
-                        )}
+                  {onsave.value && (
+                    <Box sx={{ paddingLeft: 1, display: "flex" }}>
+                      <CircularProgress
+                        color="inherit"
+                        size={25}
+                        thickness={5}
+                      />
+                    </Box>
+                  )}
                 </Button>
               </AnimateButton>
             </Grid>
