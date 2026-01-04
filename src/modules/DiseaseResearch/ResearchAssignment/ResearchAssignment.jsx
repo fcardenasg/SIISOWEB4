@@ -40,6 +40,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
 import DetailRA from './DetailRA';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const buttonVariants = {
     hover: {
@@ -339,7 +340,7 @@ const ResearchAssignment = () => {
                                 <Grid item xs={12}><Divider /></Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard title="Diagnósticos del empleado (Buscados en EMO y medicina laboral)">
+                                    <SubCard title="Diagnósticos del empleado">
                                         <Grid container spacing={2} sx={{
                                             borderColor: !!errors.listaDetalle && 'error.main',
                                             borderStyle: !!errors.listaDetalle && 'dashed',
@@ -355,7 +356,7 @@ const ResearchAssignment = () => {
                                                 />
                                             </Grid>
 
-                                            <Grid item xs={12} md={6.5} lg={8}>
+                                            <Grid item xs={12} md={6.5} lg={9}>
                                                 <InputSelect
                                                     defaultValue=""
                                                     name="dx"
@@ -364,27 +365,6 @@ const ResearchAssignment = () => {
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.dx}
                                                 />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={1.5} lg={1}>
-                                                <Tooltip placement="top" title="Agregar diagnóstico">
-                                                    <motion.button
-                                                        onClick={handleClickInsertDetail}
-                                                        variants={buttonVariants}
-                                                        whileHover="hover"
-                                                        whileTap="tap"
-                                                        style={{
-                                                            border: 'none',
-                                                            background: 'transparent',
-                                                            cursor: 'pointer',
-                                                            outline: 'none',
-                                                        }}
-                                                    >
-                                                        <IconButton color="secondary">
-                                                            <AddIcon />
-                                                        </IconButton>
-                                                    </motion.button>
-                                                </Tooltip>
                                             </Grid>
 
                                             <Grid item xs={12} md={6}>
@@ -440,6 +420,18 @@ const ResearchAssignment = () => {
                                                     size={matchesXS ? 'small' : 'medium'}
                                                     bug={errors.idLateralidad}
                                                 />
+                                            </Grid>
+
+                                            <Grid item xs={12} textAlign="right">
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={handleClickInsertDetail}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                    startIcon={<AddCircleIcon />}
+                                                >
+                                                    Agregar
+                                                </Button>
                                             </Grid>
 
                                             <Grid item xs={12}>

@@ -10,6 +10,6 @@ export const UpdateResearchAssignments = async (asignacion) => await putData(Url
 export const DeleteResearchAssignment = async (id) => await deleteData(Url.AsignacionInvestigacion, { id });
 
 /* Detalle de la asignacion */
-export const GetAllDetailResearchAssignment = async (idDetalle) => await getData(`${Url.AsignacionInvestigacion}/detalle`, { idDetalle });
+export const GetAllDetailResearchAssignment = async (idDetalle, isInvestigacion) => await getData(`${Url.AsignacionInvestigacion}/detalle`, { idDetalle, isInvestigacion });
 export const InsertDetailResearchAssignment = async (detalle) => await postData(`${Url.AsignacionInvestigacion}/detalle`, detalle);
 export const DeleteDetailResearchAssignment = async (id) => await deleteData(`${Url.AsignacionInvestigacion}/detalle`, { id });

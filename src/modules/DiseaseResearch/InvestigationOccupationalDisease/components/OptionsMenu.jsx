@@ -64,7 +64,7 @@ export const OptionsMenuList = ({ onClickGoAttention, idAsignacion, onClickDelet
                     <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('rechazar')}>
-                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Rechazar
+                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Devolver
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>
                     <DownloadIcon sx={{ mr: 1.2 }} /> Exportar PDF
@@ -141,7 +141,7 @@ export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion, onClickDelet
                     <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('rechazar')}>
-                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Rechazar
+                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Devolver
                 </MenuItem>
                 <MenuItem onClick={() => handleAction('exportar')}>
                     <DownloadIcon sx={{ mr: 1 }} /> Exportar PDF

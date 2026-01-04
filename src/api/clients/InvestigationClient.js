@@ -25,3 +25,4 @@ export const GetIELCaracterizacionAusentismo = async (idInvestigacion) => await 
 /* Get de Historias laborales */
 export const GetIELHistoriaLaboralDLTD = async (documento, isUpdate) => await getData(`${Url.Investigacion}/hl-dltd`, { documento, isUpdate });
 export const GetIELHistoriaLaboralOtrosEmpresas = async (documento, isUpdate) => await getData(`${Url.Investigacion}/hl-otrasemp`, { documento, isUpdate });
+export const GetIELCalificacion = async (idInvestigacion) => await getData(`${Url.Investigacion}/iel-calificacion`, { idInvestigacion });

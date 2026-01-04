@@ -4,46 +4,65 @@ import {
     TableHead, TableRow,
     TextField
 } from "@mui/material";
-import { useEffect } from "react";
-import { Controller, FormProvider, useFieldArray, useFormContext } from "react-hook-form";
+import { useEffect, useCallback } from "react";
+import { Controller, FormProvider, useFieldArray } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
-// API y Estilos locales
 import { GetAllDetailResearchAssignment } from "api/clients/ResearchAssignmentClient";
 import { StyledTableCell, StyledTableRow } from "../methods";
 
 export default function TableDiagnosis({ methods }) {
     const { id } = useParams();
-    const { control } = methods;
-    const idIEL = useFormContext().getValues('id');
+    const { control, getValues, setValue } = methods;
+    const idIEL = getValues('id');
 
     const { fields, replace } = useFieldArray({
         control,
         name: "listDiagnostico"
     });
 
-    const getDxEmployee = async () => {
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return null;
+        return dateString.split('T')[0];
+    };
+
+    const handleFieldChange = (index, fieldName, value, originalField) => {
+        originalField.onChange(value);
+        setValue(`listDiagnostico.${index}.cambioRegistro`, true, {
+            shouldDirty: true,
+            shouldValidate: true
+        });
+    };
+
+    const getDxEmployee = useCallback(async () => {
         try {
-            const service = await GetAllDetailResearchAssignment(id);
-            if (service.data.exito) {
-                const formattedData = service.data.datos.map(item => ({
-                    diagnostico: item.dx || null,
-                    nombreDx: item.nombreDx || null,
-                    fechaInicioSintomas: item.fechaInicioSintomas || null,
-                    fechaDiagnostico: item.fechaDiagnostico || null
+            const idEnviar = idIEL || id;
+            const statusData = Boolean(idIEL);
+            const { data } = await GetAllDetailResearchAssignment(idEnviar, statusData);
+
+            if (data?.exito && Array.isArray(data.datos)) {
+                const formattedData = data.datos.map((item) => ({
+                    id: item.id,
+                    diagnostico: item.dx || item.diagnostico,
+                    nombreDx: item.nombreDx ?? "",
+                    fechaInicioSintomas: formatDateForInput(item.fechaInicioSintomas),
+                    fechaDiagnostico: formatDateForInput(item.fechaDiagnostico),
+                    cambioRegistro: false
                 }));
 
                 replace(formattedData);
             }
         } catch (error) {
-            toast.error(error.message || "Error al cargar los datos");
+            toast.error(error.response?.data?.mensaje || "Error al cargar los datos");
         }
-    };
+    }, [id, idIEL, replace]);
 
     useEffect(() => {
-        if (id) getDxEmployee();
-    }, [id, replace]);
+        if (id || idIEL) {
+            getDxEmployee();
+        }
+    }, [getDxEmployee]);
 
     return (
         <FormProvider {...methods}>
@@ -60,10 +79,7 @@ export default function TableDiagnosis({ methods }) {
                     <TableBody>
                         {fields.map((item, index) => (
                             <StyledTableRow key={item.id}>
-                                <StyledTableCell>
-                                    {item.diagnostico}
-                                </StyledTableCell>
-
+                                <StyledTableCell>{item.diagnostico}</StyledTableCell>
                                 <StyledTableCell>{item.nombreDx}</StyledTableCell>
 
                                 <StyledTableCell>
@@ -76,7 +92,11 @@ export default function TableDiagnosis({ methods }) {
                                                 type="date"
                                                 variant="standard"
                                                 fullWidth
+                                                value={field.value || null}
                                                 InputLabelProps={{ shrink: true }}
+                                                onChange={(e) =>
+                                                    handleFieldChange(index, 'fechaInicioSintomas', e.target.value, field)
+                                                }
                                             />
                                         )}
                                     />
@@ -92,7 +112,11 @@ export default function TableDiagnosis({ methods }) {
                                                 type="date"
                                                 variant="standard"
                                                 fullWidth
+                                                value={field.value || null}
                                                 InputLabelProps={{ shrink: true }}
+                                                onChange={(e) =>
+                                                    handleFieldChange(index, 'fechaDiagnostico', e.target.value, field)
+                                                }
                                             />
                                         )}
                                     />

@@ -82,7 +82,6 @@ const InvestigationOccupationalDisease = () => {
         async function getData() {
             try {
                 const lsServer = await GetByIdInvestigation(id);
-
                 if (lsServer.data.datos) {
                     const datos = lsServer.data.datos;
                     if (datos.isUpdate) {
@@ -105,6 +104,8 @@ const InvestigationOccupationalDisease = () => {
 
     const handleClick = async (datos) => {
         try {
+            console.log(datos);
+
             disabledButtonSave.onTrue();
             const result = await InsertInvestigation(datos);
 
@@ -229,7 +230,7 @@ const InvestigationOccupationalDisease = () => {
                                         {ArrayAccordion.map((item, index) => (
                                             <Grid item xs={12} key={index}>
                                                 <Accordion
-                                                    disabled={disabledButtonSave.value} // Opcional: deshabilitar interacción mientras guarda
+                                                    disabled={disabledButtonSave.value}
                                                     title={
                                                         <>
                                                             <Iconify width={25} icon={item.title.icon} />

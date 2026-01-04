@@ -27,13 +27,15 @@ export const CodCatalogo = {
     TIPO_SOLICITUD_DEREPETICION: 28,
     RESPONSABLE_RESPUESTA_DEREPETICION: 112,
     GRUPO_RIESGO: 249,
-    TIPO_RIESGO: 3001, /* CAMBIAR */
-    PARAMETRO_ESPIRO: 2001, /* CAMBIAR */
+    TIPO_RIESGO: 3001,
+    PARAMETRO_ESPIRO: 2001,
 
     /* IEL */
-    IEL_CONTROL: 4003,
-    IEL_TIPO_CONTROL: 4004,
-    IEL_ASPCONSI: 4005,
+    IEL_CALIFICACION: 4002, /* 4002 Local - 2016 Servidor */
+    IEL_CONTROL: 4003, /* 4003 Local - 2017 Servidor */
+    IEL_TIPO_CONTROL: 4004, /* 4004 Local - 2018 Servidor */
+    IEL_ASPCONSI: 4005, /* 4005 Local - 2019 Servidor */
+    OPCION_HABITO_INVESTIGACION: 3002,
 
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
@@ -188,7 +190,6 @@ export const CodCatalogo = {
 
     AHC_ATENCION: 135,
     Opciones_SINO: 88,
-    OPCION_HABITO_INVESTIGACION: 3002,
     AHC_CONCEP_ACTITUD: 43,
 
     AUSLAB_INC: 198,

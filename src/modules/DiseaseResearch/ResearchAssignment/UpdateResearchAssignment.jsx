@@ -183,7 +183,7 @@ const UpdateResearchAssignment = () => {
 
     async function getDxEmployee() {
         try {
-            const service = await GetAllDetailResearchAssignment(id);
+            const service = await GetAllDetailResearchAssignment(id, false);
             if (service.data.exito)
                 setValue('listaDetalle', service.data.datos);
         } catch (error) {
@@ -354,7 +354,7 @@ const UpdateResearchAssignment = () => {
                                     <Grid item xs={12}><Divider /></Grid>
 
                                     <Grid item xs={12} sx={{ mb: 2 }}>
-                                        <SubCard title="Diagnósticos del empleado (Buscados en EMO y medicina laboral)">
+                                        <SubCard title="Diagnósticos del empleado">
                                             <Grid container spacing={2} sx={{
                                                 borderColor: !!errors.listaDetalle && 'error.main',
                                                 borderStyle: !!errors.listaDetalle && 'dashed',

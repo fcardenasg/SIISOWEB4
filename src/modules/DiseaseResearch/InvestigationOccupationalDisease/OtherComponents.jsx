@@ -1,6 +1,8 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SendIcon from '@mui/icons-material/Send';
 import {
+    Alert,
+    AlertTitle,
     Avatar,
     Box,
     Button,
@@ -15,7 +17,7 @@ import {
 import { useTheme } from '@mui/styles';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetComboCompany } from 'api/clients/CompanyClient';
-import { GetByIdIELComentario, GetIELMetodoControl, InsertIELComentario, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
+import { DeleteIELMetodoControl, GetByIdIELComentario, GetIELMetodoControl, InsertIELComentario, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
@@ -24,7 +26,7 @@ import InputTextEditor from 'components/input/InputTextEditor';
 import { AnimatePresence, motion } from 'framer-motion';
 import useAuth from 'hooks/useAuth';
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
@@ -38,6 +40,8 @@ import {
 } from './components/Table';
 import TableDiagnosis from './components/Table/TableDiagnosis';
 import TableHealth from './components/Table/TableHealth';
+import swal from 'sweetalert';
+import { ParamDelete } from 'components/alert/AlertAll';
 
 export const CompanyDetails = ({ dataModel, matchesXS }) => {
     const [lsSede, setLsSede] = useState([]);
@@ -178,7 +182,9 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <TableDiagnosis methods={methods} />
+                <SubCard content={false}>
+                    <TableDiagnosis methods={methods} />
+                </SubCard>
             </Grid>
 
             <Grid item xs={12}><Divider /></Grid>
@@ -243,7 +249,9 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
             <Grid item xs={12}><Divider /></Grid>
 
             <Grid item xs={12}>
-                <TableDiagnosisRating methods={methods} />
+                <SubCard content={false}>
+                    <TableDiagnosisRating methods={methods} />
+                </SubCard>
             </Grid>
 
             <Grid item xs={12}><Divider /></Grid>
@@ -323,22 +331,21 @@ export const DataExposureCompany = ({ resumenResultadosAnalisisPuesto, resumenVa
 
 export const AvailableControlMethods = () => {
     const theme = useTheme();
-    const { idInvestigacion } = useParams();
+    const idIEL = useFormContext().getValues('id');
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [lsMetodoControl, setLsMetodoControl] = useState([]);
     const [lsControl, setLsControl] = useState([]);
     const [lsTipoControl, setLsTipoControl] = useState([]);
 
+    const isDisabled = !idIEL;
     const methods = useForm();
-    const { handleSubmit } = methods;
+    const { handleSubmit, reset } = methods;
 
     async function getData() {
         try {
-            const result = await GetIELMetodoControl(1);
+            const result = await GetIELMetodoControl(idIEL);
             if (result.data.exito) {
-                if (result.data.datos !== null) {
-                    setLsMetodoControl(result.data.datos);
-                }
+                setLsMetodoControl(result.data.datos);
             } else {
                 toast.error(result.data.mensaje);
             }
@@ -348,8 +355,10 @@ export const AvailableControlMethods = () => {
     }
 
     useEffect(() => {
-        getData();
-    }, []);
+        if (idIEL) {
+            getData();
+        }
+    }, [idIEL]);
 
     useEffect(() => {
         async function getCombo() {
@@ -369,11 +378,12 @@ export const AvailableControlMethods = () => {
 
     const handleSave = async (data) => {
         try {
-            data.idInvestigacion = parseInt(idInvestigacion);
-
+            data.idInvestigacion = parseInt(idIEL);
             const result = await InsertIELMetodoControl(data);
             if (result.data.exito) {
                 toast.success(result.data.mensaje);
+                getData();
+                reset();
             } else {
                 toast.error(result.data.mensaje);
             }
@@ -382,40 +392,56 @@ export const AvailableControlMethods = () => {
         }
     }
 
+    const handleDelete = async (idCheck) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteIELMetodoControl(idCheck);
+                    if (result.data.exito) {
+                        toast.success(result.data.mensaje);
+                        getData();
+                    } else {
+                        toast.error(result.data.mensaje);
+                    }
+                }
+            });
+        } catch (error) {
+            toast.error("Error al eliminar el método de control");
+        }
+    }
+
     return (
         <FormProvider {...methods}>
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} md={6} lg={5}>
+                {isDisabled && (
+                    <Grid item xs={12}>
+                        <Alert severity="info" variant="outlined">
+                            <AlertTitle>Acción requerida</AlertTitle>
+                            Para comenzar a agregar métodos de control, <strong>primero debe guardar la información general</strong> de la investigación.
+                        </Alert>
+                    </Grid>
+                )}
+
+                <Grid item xs={12} md={6}>
                     <InputSelect
                         name="control"
                         label="Control"
                         defaultValue=""
                         options={lsControl}
                         size={matchesXS ? 'small' : 'medium'}
+                        disabled={isDisabled}
                     />
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={5}>
+                <Grid item xs={12} md={6}>
                     <InputSelect
                         name="tipoControl"
                         label="Tipo de control"
                         defaultValue=""
                         options={lsTipoControl}
                         size={matchesXS ? 'small' : 'medium'}
+                        disabled={isDisabled}
                     />
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={2}>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit(handleSave)}
-                        size={matchesXS ? 'small' : 'medium'}
-                        startIcon={<AddCircleIcon />}
-                    >
-                        Agregar
-                    </Button>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -428,6 +454,7 @@ export const AvailableControlMethods = () => {
                         name="observacionBrindado"
                         label="Observaciones sobre uso brindado"
                         size={matchesXS ? 'small' : 'medium'}
+                        disabled={isDisabled}
                     />
                 </Grid>
 
@@ -441,12 +468,31 @@ export const AvailableControlMethods = () => {
                         name="observacionNivelProteccionBrindado"
                         label="Observaciones sobre nivel de protección brindado"
                         size={matchesXS ? 'small' : 'medium'}
+                        disabled={isDisabled}
                     />
                 </Grid>
 
+                <Grid item xs={12} textAlign="right">
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit(handleSave)}
+                        size={matchesXS ? 'small' : 'medium'}
+                        startIcon={<AddCircleIcon />}
+                        disabled={isDisabled}
+                    >
+                        Agregar
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12}><Divider /></Grid>
+
                 <Grid item xs={12}>
-                    <SubCard content={false}>
-                        <TableControlMethods listMC={lsMetodoControl} />
+                    <SubCard
+                        content={false}
+                        sx={{ opacity: isDisabled ? 0.5 : 1, pointerEvents: isDisabled ? 'none' : 'auto' }}
+                    >
+                        <TableControlMethods listMC={lsMetodoControl} handleDelete={handleDelete} />
                     </SubCard>
                 </Grid>
             </Grid>
@@ -498,7 +544,29 @@ export const OtherClinicalData = ({ otrosDatosClinicos }) => {
 
 export const CharacterizationAbsenteeism = () => {
     return (
-        <TableCharacterizationAbsenteeism />
+        <Grid container spacing={2}>
+            {/* <Grid item xs={12}>
+
+            </Grid>
+
+            <Grid item xs={12}>
+
+            </Grid>
+
+            <Grid item xs={12}>
+
+            </Grid>
+
+            <Grid item xs={12}>
+
+            </Grid> */}
+
+            <Grid item xs={12}>
+                <SubCard content={false}>
+                    <TableCharacterizationAbsenteeism />
+                </SubCard>
+            </Grid>
+        </Grid>
     )
 }
 
@@ -553,7 +621,9 @@ export const Conclusion = ({ conclusion, methods, idInvestigation }) => {
 
 export const PreventiveActions = ({ methods }) => {
     return (
-        <TablePreventiveActions methods={methods} />
+        <SubCard content={false}>
+            <TablePreventiveActions methods={methods} />
+        </SubCard>
     );
 }
 
