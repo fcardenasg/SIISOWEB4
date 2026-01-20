@@ -1,12 +1,11 @@
 import {
     Button,
-    CircularProgress,
     Grid,
     Typography,
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { GetByIdInvestigation, InsertInvestigation } from 'api/clients/InvestigationClient';
+import { GetByIdInvestigation } from 'api/clients/InvestigationClient';
 import Accordion from 'components/accordion/Accordion';
 import {
     AccionMenu,
@@ -14,7 +13,6 @@ import {
     TitleButton
 } from 'components/helpers/Enums';
 import Iconify from 'components/iconify/iconify';
-import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
@@ -22,31 +20,30 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import Comment from './components/Comment/Comment';
 import InvestigationSkeleton from './components/InvestigationSkeleton';
 import ViewEmployee from './components/View/ViewEmployee';
 import {
-    CompanyDetails,
-    DataDiagnosisQualificationProcess,
-    DataExposureCompany,
     AvailableControlMethods,
-    ClinicalData,
     Background,
-    OtherClinicalData,
-    CharacterizationAbsenteeism,
     BiographyReview,
     CauseAnalysis,
-    UnderlyingCauseDetected,
+    CharacterizationAbsenteeism,
+    ClinicalData,
+    CompanyDetails,
     Conclusion,
+    DataDiagnosisQualificationProcess,
+    DataExposureCompany,
+    OtherClinicalData,
     PreventiveActions,
     Signatures,
+    UnderlyingCauseDetected,
     WorkHistoryDLTD,
     WorkHistoryOtherCompanies
 } from './OtherComponents';
-import SaveLoader from './components/SaveLoader';
-import { ChangeStatusAssignment } from 'api/clients/ResearchAssignmentClient';
-import Swal from 'sweetalert2';
-import { ColorDrummondltd } from 'themes/colors';
 
 const FadeShell = ({ children }) => (
     <motion.div
@@ -65,19 +62,19 @@ const FadeShell = ({ children }) => (
     </motion.div>
 );
 
-const InvestigationOccupationalDisease = () => {
+const ViewAndReview = () => {
     const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const timeWait = useBoolean(false);
     const loading = useBoolean(false);
-    const disabledButtonSave = useBoolean(false);
     const disabledButton = useBoolean(false);
+    const openComment = useBoolean(false);
     const [dataModel, setDataModel] = useState(null);
 
     const methods = useForm();
-    const { handleSubmit, setValue, watch } = methods;
+    const { setValue, watch } = methods;
     const idInvestigation = watch('id');
     const documento = watch('documento');
 
@@ -105,29 +102,38 @@ const InvestigationOccupationalDisease = () => {
         getData();
     }, []);
 
-    const handleClick = async (datos) => {
+    const handleClickReturn = async () => {
         try {
-            disabledButtonSave.onTrue();
-            const result = await InsertInvestigation(datos);
+            Swal.fire({
+                title: 'Devolución de la investigación',
+                text: "¿La investigación será devuelta, desea agregar un comentario?",
+                icon: 'question',
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                denyButtonText: 'No',
+                confirmButtonText: 'Sí',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    openComment.onTrue();
+                } else if (result.isDenied) {
+                    toast.success("Operación cancelada");
+                }
+            });
 
-            if (result.data.exito) {
-                disabledButton.onTrue();
-                setValue('id', result.data.datos);
-                toast.success(result.data.mensaje);
-            } else {
-                toast.error(result.data.mensaje);
-            }
         } catch (error) {
-            toast.error(error.message || "Error al procesar la investigación");
+            toast.error(error.message || "Error al procesar la devolución de la investigación");
         } finally {
-            disabledButtonSave.onFalse();
+
         }
     };
 
     const ArrayAccordion = [
         {
             title: { icon: "clarity:employee-line", text: "Datos de la empresa" },
-            content: <CompanyDetails dataModel={dataModel} matchesXS={matchesXS} />
+            content: <CompanyDetails dataModel={dataModel} matchesXS={matchesXS} disabledControl={true} />
         },
         {
             title: { icon: "material-symbols-light:work-history-outline", text: "Historia laboral en DLTD" },
@@ -139,29 +145,30 @@ const InvestigationOccupationalDisease = () => {
         },
         {
             title: { icon: "material-symbols-light:diagnosis-outline-rounded", text: "Datos del diagnóstico y del proceso de calificación" },
-            content: <DataDiagnosisQualificationProcess dataModel={dataModel} matchesXS={matchesXS} methods={methods} />
+            content: <DataDiagnosisQualificationProcess dataModel={dataModel} matchesXS={matchesXS} methods={methods} disabledControl={true} />
         },
         {
             title: { icon: "hugeicons:permanent-job", text: "Datos sobre la exposición en la empresa" },
             content: <DataExposureCompany
                 resumenResultadosAnalisisPuesto={dataModel?.resumenResultadosAnalisisPuesto}
-                resumenValoracionRiesgo={dataModel?.resumenValoracionRiesgo} />
+                resumenValoracionRiesgo={dataModel?.resumenValoracionRiesgo}
+                disabledControl={true} />
         },
         {
             title: { icon: "carbon:ibm-webmethods-hybrid-integration", text: "Métodos de control disponibles" },
-            content: <AvailableControlMethods methodsMain={methods} />
+            content: <AvailableControlMethods disabledControl={true} methodsMain={methods} />
         },
         {
             title: { icon: "streamline-ultimate:data-file-search", text: "Datos clínicos y paraclínicos" },
-            content: <ClinicalData datosClinicos={dataModel?.datosClinicos} matchesXS={matchesXS} />
+            content: <ClinicalData datosClinicos={dataModel?.datosClinicos} matchesXS={matchesXS} disabledControl={true} />
         },
         {
             title: { icon: "streamline:copy-paste", text: "Antecedentes personales, familiares y laborales" },
-            content: <Background dataModel={dataModel} />
+            content: <Background dataModel={dataModel} disabledControl={true} />
         },
         {
             title: { icon: "material-symbols-light:other-admission-outline-rounded", text: "Otros datos clínicos" },
-            content: <OtherClinicalData otrosDatosClinicos={dataModel?.otrosDatosClinicos} />
+            content: <OtherClinicalData otrosDatosClinicos={dataModel?.otrosDatosClinicos} disabledControl={true} />
         },
         {
             title: { icon: "fluent:task-list-square-person-20-regular", text: "Caracterización del ausentismo laboral por todas las causas" },
@@ -169,63 +176,41 @@ const InvestigationOccupationalDisease = () => {
         },
         {
             title: { icon: "lets-icons:file-dock-search-light", text: "Revisión de la bibliografía aplicable" },
-            content: <BiographyReview revisionBibliografia={dataModel?.revisionBibliografia} matchesXS={matchesXS} />
+            content: <BiographyReview revisionBibliografia={dataModel?.revisionBibliografia} matchesXS={matchesXS} disabledControl={true} />
         },
         {
             title: { icon: "lets-icons:file-dock-search-light", text: "Análisis de causas" },
-            content: <CauseAnalysis analisisCausas={dataModel?.analisisCausas} matchesXS={matchesXS} />
+            content: <CauseAnalysis analisisCausas={dataModel?.analisisCausas} matchesXS={matchesXS} disabledControl={true} />
         },
         {
             title: { icon: "tabler:report", text: "Causa básica detectada" },
-            content: <UnderlyingCauseDetected causaBasicaDetectada={dataModel?.causaBasicaDetectada} />
+            content: <UnderlyingCauseDetected causaBasicaDetectada={dataModel?.causaBasicaDetectada} disabledControl={true} />
         },
         {
             title: { icon: "pepicons-print:file", text: "Conclusión" },
-            content: <Conclusion conclusion={dataModel?.conclusion} methods={methods} idInvestigation={idInvestigation} />
+            content: <Conclusion conclusion={dataModel?.conclusion} methods={methods} idInvestigation={idInvestigation} disabledControl={true} />
         },
         {
             title: { icon: "covid:social-distancing-correct-3", text: "Acciones preventivas o correctivas" },
-            content: <PreventiveActions methods={methods} />
+            content: <PreventiveActions methods={methods} disabledControl={true} />
         }
     ];
 
-    async function handleClose(estado) {
-        try {
-            if (estado === 3) {
-                const { isConfirmed } = await Swal.fire({
-                    title: 'Cerrar Caso',
-                    text: "¿Está seguro que desea cerrar el caso de investigación?",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: ColorDrummondltd.RedDrummond,
-                    cancelButtonColor: ColorDrummondltd.GrayDrummond,
-                    cancelButtonText: 'Cancelar',
-                    confirmButtonText: 'Sí',
-                });
-
-                if (!isConfirmed) return;
-            }
-
-            const response = await ChangeStatusAssignment(estado, id);
-            if (response.data.exito) {
-                navigate("/investigation-occupational-disease/view");
-            } else {
-                toast.error(response.data.mensaje);
-            }
-
-        } catch (error) {
-            toast.error(error.message || "Error al procesar la solicitud");
-        }
-    }
-
     return (
-        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.InvestigacionEnfermedadLaboral}>
+        <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
             <AnimatePresence mode="wait">
                 {!timeWait.value && (
                     <FadeShell key="loading-shell">
                         <InvestigationSkeleton small />
                     </FadeShell>
                 )}
+
+                <Comment
+                    idInvestigation={idInvestigation}
+                    open={openComment.value}
+                    handleClose={openComment.onFalse}
+                    arrayCompartments={ArrayAccordion}
+                />
 
                 {timeWait.value && (
                     <FormProvider {...methods}>
@@ -239,21 +224,11 @@ const InvestigationOccupationalDisease = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <StickyActionBar
-                                    onClickSave={handleSubmit(handleClick)}
-                                    onClickUpdate={handleSubmit(handleClick)}
-                                    disabledUpdate={!disabledButton.value || disabledButtonSave.value}
-                                    disabledSave={disabledButton.value || disabledButtonSave.value}
-                                    showButton={false}
-                                    threshold={325}
-                                >
-                                    <SaveLoader isSaving={disabledButtonSave.value} />
-
+                                <SubCard>
                                     <Grid container spacing={2}>
                                         {ArrayAccordion.map((item, index) => (
                                             <Grid item xs={12} key={index}>
                                                 <Accordion
-                                                    disabled={disabledButtonSave.value}
                                                     title={
                                                         <>
                                                             <Iconify width={25} icon={item.title.icon} />
@@ -269,36 +244,32 @@ const InvestigationOccupationalDisease = () => {
                                         ))}
 
                                         <Grid item xs={12} sx={{ mt: 2 }}>
+                                            <SubCard darkTitle title="Firmas de la investigación">
+                                                <Signatures dataModel={dataModel} matchesXS={matchesXS} />
+                                            </SubCard>
+                                        </Grid>
+
+                                        <Grid item xs={12} sx={{ mt: 2 }}>
                                             <Grid container spacing={2}>
-                                                <Grid item xs={6} md={2}>
+                                                <Grid item xs={6} md={4} lg={2}>
                                                     <AnimateButton>
-                                                        <Button
-                                                            variant="outlined"
-                                                            fullWidth
-                                                            disabled={disabledButtonSave.value}
-                                                            onClick={() => handleClose(1)}
-                                                        >
-                                                            {TitleButton.Cancelar}
+                                                        <Button disabled={!disabledButton.value} variant="contained" onClick={handleClickReturn} fullWidth>
+                                                            Devolver
                                                         </Button>
                                                     </AnimateButton>
                                                 </Grid>
 
-                                                <Grid item>
+                                                <Grid item xs={6} md={4} lg={2}>
                                                     <AnimateButton>
-                                                        <Button
-                                                            variant="outlined"
-                                                            fullWidth
-                                                            disabled={disabledButtonSave.value}
-                                                            onClick={() => handleClose(3)}
-                                                        >
-                                                            {TitleButton.Cancelar} Investigación
+                                                        <Button variant="outlined" fullWidth onClick={() => navigate("/investigation-occupational-disease/view")}>
+                                                            {TitleButton.Cancelar}
                                                         </Button>
                                                     </AnimateButton>
                                                 </Grid>
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                </StickyActionBar>
+                                </SubCard>
                             </Grid>
                         </Grid>
                     </FormProvider>
@@ -308,4 +279,4 @@ const InvestigationOccupationalDisease = () => {
     );
 };
 
-export default InvestigationOccupationalDisease;
+export default ViewAndReview;

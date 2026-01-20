@@ -21,9 +21,10 @@ import {
 import { ViewFormat } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import InvestigationProgress from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/InvestigationProgress';
-import { OptionsMenuCard } from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
+import OptionsMenu from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
 import { StyledChip } from 'modules/Programming/NewProgramming/components/methods';
 import { getStatusConfig } from '../methods';
+import { useInvestigationActions } from '../../contexts/InvestigationActionsContext';
 
 const variants = {
     hidden: { opacity: 0, x: 40 },
@@ -39,7 +40,8 @@ const variants = {
     }),
 };
 
-const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete }) => {
+const ViewCard = ({ dataInfo, index }) => {
+    const { onOpenChat } = useInvestigationActions();
     const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
 
     return (
@@ -58,15 +60,22 @@ const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
             }}
         >
             <CardHeader
-                title={dataInfo.usuarioCierreAtencion && (
+                title={dataInfo.usuarioCierreInvestigacion && (
                     <Tooltip placement="top" title="Usuario atendiendo">
                         <StyledChip
-                            label={dataInfo.usuarioCierreAtencion}
+                            label={dataInfo.usuarioCierreInvestigacion}
                             timeColor="#f3e6d9"
                         />
                     </Tooltip>
                 )}
-                action={<OptionsMenuCard onClickGoAttention={onClickGoAttention} idAsignacion={dataInfo.id} onClickDelete={onClickDelete} />}
+                action={
+                    <OptionsMenu
+                        idInvestigation={dataInfo.id}
+                        disabledRevisar={dataInfo.estadoInvestigacion !== 3}
+                        estadoInvestigacion={dataInfo.estadoInvestigacion}
+                        variant="card"
+                    />
+                }
                 sx={{
                     backgroundColor: "primary.main",
                     color: 'white',
@@ -127,7 +136,7 @@ const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                 >
                     <Tooltip placement="top" title="Asistente de SIISO">
                         <IconButton
-                            onClick={() => onClickOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
+                            onClick={() => onOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
                             sx={{
                                 bgcolor: 'white',
                                 boxShadow: '0 2px 6px rgba(0,0,0,0.15)',

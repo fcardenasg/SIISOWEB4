@@ -129,8 +129,6 @@ const HistoryDrunkenness = () => {
                     handleLoadingDocument(event);
 
                     const lsServerHistoryDrunkenness = await GetByIdHistoryDrunkenness(id);
-
-                    console.log(lsServerHistoryDrunkenness);
                     if (lsServerHistoryDrunkenness.data.exito && lsServerHistoryDrunkenness.data.datos) {
                         setValue('id', lsServerHistoryDrunkenness.data.datos.id);
                         setModelData(lsServerHistoryDrunkenness.data.datos);

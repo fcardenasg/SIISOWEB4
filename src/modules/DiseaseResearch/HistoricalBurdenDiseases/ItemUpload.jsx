@@ -74,7 +74,6 @@ export default function ItemUpload({
       </Button>
       {/* <Button
         onClick={() => {
-          console.log('entro');
           handleViewDocx(file);
         }}
         sx={{

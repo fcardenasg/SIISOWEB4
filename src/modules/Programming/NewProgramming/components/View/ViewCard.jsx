@@ -25,6 +25,7 @@ import { motion } from 'framer-motion';
 import InvestigationProgress from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/InvestigationProgress';
 import { OptionsMenuCard } from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
 import { capitalizarTypeCare, getColorCard, getStatusConfig, StyledChip } from '../methods';
+import { useProgrammingActions } from 'modules/Programming/NewProgramming/contexts/ProgrammingActionsContext';
 
 const variants = {
     hidden: { opacity: 0, x: 40 },
@@ -40,7 +41,8 @@ const variants = {
     }),
 };
 
-const ViewCard = ({ dataInfo = {}, index, onClickOpenChat }) => {
+const ViewCard = ({ dataInfo = {}, index }) => {
+    const { onOpenChat } = useProgrammingActions();
     const statusConfig = getStatusConfig(dataInfo.estadoPac);
 
     return (
@@ -128,7 +130,7 @@ const ViewCard = ({ dataInfo = {}, index, onClickOpenChat }) => {
                 >
                     <Tooltip placement="top" title="Asistente de SIISO">
                         <IconButton
-                            onClick={() => onClickOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nameEmpleado })}
+                            onClick={() => onOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nameEmpleado })}
                             sx={{
                                 bgcolor: 'white',
                                 boxShadow: '0 2px 6px rgba(0,0,0,0.15)',

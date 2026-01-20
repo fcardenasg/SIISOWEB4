@@ -6,7 +6,7 @@ import { alpha } from '@mui/material/styles';
 import Image from 'components/image';
 import { Controller, useFormContext } from 'react-hook-form';
 
-export default function UploadBox({ name, defaultValue, placeholder, onDelete, error, disabled, sx, ...other }) {
+export default function UploadBox({ name, defaultValue, placeholder, onDelete, error, disabled, size, sx, ...other }) {
   const { control } = useFormContext();
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
@@ -59,7 +59,7 @@ export default function UploadBox({ name, defaultValue, placeholder, onDelete, e
             }}
           >
             <input {...getInputProps()} />
-            {field.value === null ? <>{placeholder}</> : <Image alt="avatar" src={field.value} sx={{ width: 0.7, height: 0.7, borderRadius: '10%' }} />}
+            {field.value === null ? <>{placeholder}</> : <Image alt="avatar" src={field.value} sx={{ height: size, borderRadius: '10%' }} />}
           </Box>
 
           {!!error && (

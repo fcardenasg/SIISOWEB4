@@ -268,8 +268,6 @@ const OccupationalMedicine = () => {
                     if (lsServerAtencion.data.aplica == 4006)
                         disabledInvestigacionEL.onTrue();
 
-                    console.log(lsServerAtencion.data);
-
                     setValue("aplica", lsServerAtencion.data.aplica);
                     setValue("origenInvestigacion", lsServerAtencion.data.origenInvestigacion);
                     setValue("idInvestigadoPor", lsServerAtencion.data.idInvestigadoPor);
@@ -391,8 +389,6 @@ const OccupationalMedicine = () => {
                 "invesOrigenReubicacion", "invesOrigenOtras", "peligroAsociadoEnfermedad", "aplica"
             ];
             investigacion.forEach(f => { datos[f] = datos[f] || null; });
-
-            console.log(datos);
 
             const result = await UpdateOccupationalMedicines(datos);
             if (result.status === 200) {

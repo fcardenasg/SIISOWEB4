@@ -96,9 +96,7 @@ export default function AddMedicinesOrders({ idPedido }) {
     async function getAll() {
         try {
             cleanDate();
-
             const lsServer = await GetAllMedicinesPedidoDetalle(idPedido);
-            console.log(lsServer);
             if (lsServer.status == 200)
                 setDataModel(lsServer.data);
         } catch (error) { }

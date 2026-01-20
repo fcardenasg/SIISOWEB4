@@ -43,6 +43,7 @@ import DetailRA from './DetailRA';
 import { GetAllSegmentoAgrupado, GetAllBySubsegment, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import UpdateSkeleton from 'components/Skeleton/UpdateSkeleton';
+import ReasonAlert from './ReasonAlert';
 
 const buttonVariants = {
     hover: {
@@ -295,7 +296,13 @@ const UpdateResearchAssignment = () => {
             {timeWait.value ?
                 <FormProvider {...methods}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        {dataModel?.isDevolver &&
+                            <Grid item xs={12}>
+                                <ReasonAlert reason={dataModel?.nameMotivoDevolver} observation={dataModel?.observacionDevolver} />
+                            </Grid>
+                        }
+
+                        <Grid item xs={12} sx={{ mt: dataModel?.isDevolver && 2 }}>
                             <ViewEmployee
                                 disabled
                                 errors={errors}

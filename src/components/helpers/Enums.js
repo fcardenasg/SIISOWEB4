@@ -31,12 +31,12 @@ export const CodCatalogo = {
     PARAMETRO_ESPIRO: 2001,
 
     /* IEL */
-    IEL_CALIFICACION: 4002, /* 4002 Local - 2016 Servidor */
-    IEL_CONTROL: 4003, /* 4003 Local - 2017 Servidor */
-    IEL_TIPO_CONTROL: 4004, /* 4004 Local - 2018 Servidor */
-    IEL_ASPCONSI: 4005, /* 4005 Local - 2019 Servidor */
-    OPCION_HABITO_INVESTIGACION: 3002,
+    IEL_CALIFICACION: 2016,
+    IEL_CONTROL: 2017,
+    IEL_TIPO_CONTROL: 2018,
+    IEL_ASPCONSI: 2019,
 
+    OPCION_HABITO_INVESTIGACION: 3002,
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
     VentanillaEmpresaMensajeria: 226,
@@ -286,7 +286,8 @@ export const Modulo = {
     Panoramadecargo: 44,
     Usuario: 45,
     Rol: 46,
-    AsignacionInvestigacion: 47
+    AsignacionInvestigacion: 47,
+    InvestigacionEnfermedadLaboral: 48,
 }
 
 export const IdTipoProveedor = {

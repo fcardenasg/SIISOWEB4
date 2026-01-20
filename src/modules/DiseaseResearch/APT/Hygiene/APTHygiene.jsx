@@ -73,7 +73,6 @@ const APTHygiene = () => {
     };
 
     const handleClick = () => {
-        console.log(getValues());
     };
 
     const ArrayAccordion = [

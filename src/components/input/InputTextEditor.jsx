@@ -10,7 +10,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Controller } from 'react-hook-form';
 
-const RichTextEditor = ({ value, onChange, error, label, placeholder, ...other }) => {
+const RichTextEditor = ({ value, onChange, error, label, placeholder, disabled, ...other }) => {
     const theme = useTheme();
     const [editorState, setEditorState] = useState(() => {
         if (value) {
@@ -32,15 +32,16 @@ const RichTextEditor = ({ value, onChange, error, label, placeholder, ...other }
     );
 
     const onEditorStateChange = (newEditorState) => {
+        if (disabled) return;
         setEditorState(newEditorState);
         debouncedOnChange(newEditorState.getCurrentContent());
     };
 
     return (
-        <FormControl error={!!error} fullWidth>
+        <FormControl error={!!error} fullWidth disabled={disabled}>
             {label && (
                 <Box sx={{ flex: 'column', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="h4" sx={{ mb: 1.5 }}>{label}</Typography>
+                    <Typography variant="h4" sx={{ mb: 1.5, color: disabled ? theme.palette.text.disabled : 'inherit' }}>{label}</Typography>
                     <Divider />
                 </Box>
             )}
@@ -48,25 +49,27 @@ const RichTextEditor = ({ value, onChange, error, label, placeholder, ...other }
             <Box
                 sx={{
                     border: '1px solid',
-                    borderColor: error ? theme.palette.error.main : theme.palette.grey[400],
+                    borderColor: disabled ? theme.palette.action.disabled : (error ? theme.palette.error.main : theme.palette.grey[400]),
                     borderRadius: `${theme.shape.borderRadius}px`,
                     '&:hover': {
-                        borderColor: error ? theme.palette.error.dark : theme.palette.primary.main,
+                        borderColor: disabled ? theme.palette.action.disabled : (error ? theme.palette.error.dark : theme.palette.primary.main),
                     },
                     '&:focus-within': {
-                        borderColor: theme.palette.primary.main,
-                        boxShadow: `0 0 0 2px ${theme.palette.primary.light}`,
+                        borderColor: disabled ? theme.palette.action.disabled : theme.palette.primary.main,
+                        boxShadow: disabled ? 'none' : `0 0 0 2px ${theme.palette.primary.light}`,
                     },
                     minHeight: '300px',
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column',
-                    bgcolor: theme.palette.background.paper,
+                    bgcolor: disabled ? theme.palette.action.hover : theme.palette.background.paper,
+                    cursor: disabled ? 'not-allowed' : 'default',
                 }}
             >
                 <Editor
                     editorState={editorState}
                     onEditorStateChange={onEditorStateChange}
+                    readOnly={disabled}
                     wrapperClassName="wrapper-class"
                     editorClassName="editor-class"
                     toolbarClassName="toolbar-class"
@@ -87,7 +90,8 @@ const RichTextEditor = ({ value, onChange, error, label, placeholder, ...other }
                         border: 'none',
                         borderBottom: `1px solid ${theme.palette.grey[300]}`,
                         marginBottom: 0,
-                        backgroundColor: theme.palette.grey[50],
+                        backgroundColor: disabled ? theme.palette.action.disabledBackground : theme.palette.grey[50],
+                        display: disabled ? 'none' : 'flex'
                     }}
                     {...other}
                 />
@@ -103,9 +107,10 @@ RichTextEditor.propTypes = {
     error: PropTypes.object,
     label: PropTypes.string,
     placeholder: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
-const InputTextEditor = ({ name, label, defaultValue = "", ...other }) => {
+const InputTextEditor = ({ name, label, defaultValue = "", disabled = false, ...other }) => {
     return (
         <Controller
             name={name}
@@ -117,6 +122,7 @@ const InputTextEditor = ({ name, label, defaultValue = "", ...other }) => {
                     error={error}
                     label={label}
                     placeholder="Digite el texto"
+                    disabled={disabled}
                     {...other}
                 />
             )}
@@ -128,6 +134,7 @@ InputTextEditor.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string,
     defaultValue: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 export default InputTextEditor;

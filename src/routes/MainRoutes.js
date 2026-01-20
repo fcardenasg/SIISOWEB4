@@ -237,6 +237,7 @@ const ListResearchAssignment = Loadable(lazy(() => import('modules/DiseaseResear
 const UpdateResearchAssignment = Loadable(lazy(() => import('modules/DiseaseResearch/ResearchAssignment/UpdateResearchAssignment')));
 const DataView = Loadable(lazy(() => import('modules/DiseaseResearch/InvestigationOccupationalDisease/DataView')));
 const InvestigationOccupationalDisease = Loadable(lazy(() => import('modules/DiseaseResearch/InvestigationOccupationalDisease/InvestigationOccupationalDisease')));
+const ViewAndReview = Loadable(lazy(() => import('modules/DiseaseResearch/InvestigationOccupationalDisease/ViewAndReview')));
 
 const HistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/HistoricalBurdenDiseases')));
 const ListHistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/ListHistoricalBurdenDiseases')));
@@ -1051,6 +1052,10 @@ const MainRoutes = {
         {
             path: '/investigation-occupational-disease/investigate/:id',
             element: <InvestigationOccupationalDisease />
+        },
+        {
+            path: '/investigation-occupational-disease/view-and-review/:id',
+            element: <ViewAndReview />
         },
         {
             path: '/single-window/index',

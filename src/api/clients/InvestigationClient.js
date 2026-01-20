@@ -13,6 +13,7 @@ export const InsertIELComentario = async (comentario) => await postData(`${Url.I
 /* Insert de detalles */
 export const InsertIELMetodoControl = async (data) => await postData(`${Url.Investigacion}/metodo-control`, data);
 export const InsertIELCaracterizacionAusentismo = async (data) => await postData(`${Url.Investigacion}/caracterizacion-ausentismo`, data);
+export const InsertIELFirma = async (data) => await postData(`${Url.Investigacion}/iel-firma`, data);
 
 /* Delete de detalles */
 export const DeleteIELMetodoControl = async (id) => await deleteData(`${Url.Investigacion}/metodo-control`, { id });
@@ -26,3 +27,5 @@ export const GetIELCaracterizacionAusentismo = async (idInvestigacion) => await 
 export const GetIELHistoriaLaboralDLTD = async (documento, isUpdate) => await getData(`${Url.Investigacion}/hl-dltd`, { documento, isUpdate });
 export const GetIELHistoriaLaboralOtrosEmpresas = async (documento, isUpdate) => await getData(`${Url.Investigacion}/hl-otrasemp`, { documento, isUpdate });
 export const GetIELCalificacion = async (idInvestigacion) => await getData(`${Url.Investigacion}/iel-calificacion`, { idInvestigacion });
+export const GetIELFirma = async (idInvestigacion) => await getData(`${Url.Investigacion}/iel-firma`, { idInvestigacion });
+export const GetIELAccionPreventivaCorrectiva = async (idInvestigacion) => await getData(`${Url.Investigacion}/iel-accion-preventiva-correctiva`, { idInvestigacion });

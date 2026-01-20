@@ -138,19 +138,16 @@ const MedicalAdvice = () => {
   let appId = searchParams.get("appId");
   let channelurl = searchParams.get("channel");
 
-  console.log(channelurl);
 
   const data = useMemo(() => {
     return encodedData ? JSON.parse(decodeURIComponent(encodedData)) : null;
   }, [encodedData]);
 
-  console.log("data", data);
 
   const IdCalendario = useMemo(() => {
     return extraParam ? JSON.parse(decodeURIComponent(extraParam)) : null;
   }, [extraParam]);
 
-  console.log("data", IdCalendario);
 
   const [extenderDescripcion, setExtenderDescripcion] = useState(false);
   const [openApuntesPersonales, setOpenApuntesPersonales] = useState(false);
@@ -384,8 +381,6 @@ const MedicalAdvice = () => {
         const soloFecha1 = fechaCurrent.split("T")[0];
         const soloFecha2 = channelCurrent?.fecha.split("T")[0];
 
-        console.log("soloFecha1", soloFecha1);
-        console.log("soloFecha2", soloFecha2);
         if (soloFecha1 !== soloFecha2) {
           channelCurrent.fecha = fechaCurrent;
           channel = channelCurrent?.channel;
@@ -426,7 +421,6 @@ const MedicalAdvice = () => {
         channel
       );
 
-      console.log("DataToUpdate", DataToUpdate);
 
       const result = await SaveAdvice(DataToUpdate);
       if (result.status === 200) {

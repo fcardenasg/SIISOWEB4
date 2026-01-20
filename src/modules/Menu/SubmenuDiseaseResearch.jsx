@@ -15,7 +15,6 @@ const SubmenuDiseaseResearch = () => {
         async function getSubCardMenu() {
             try {
                 const lsServer = await GetSubCardMenu(user?.idrol, true);
-                console.log(lsServer.data);
                 if (lsServer.data.exito)
                     setLsSubCardMenu(lsServer.data.datos);
             } catch (error) { }

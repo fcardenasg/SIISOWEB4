@@ -13,100 +13,57 @@ import {
     Menu,
     MenuItem
 } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { InvestigationActionsContext } from '../contexts/InvestigationActionsContext';
+import { ProgrammingActionsContext } from 'modules/Programming/NewProgramming/contexts/ProgrammingActionsContext';
 
-export const OptionsMenuList = ({ onClickGoAttention, idAsignacion, onClickDelete }) => {
-    const navigate = useNavigate();
+/**
+ * Componente unificado de menú de opciones para investigaciones y programación
+ * @param {Object} props
+ * @param {string} props.idInvestigation - ID de la investigación (investigación)
+ * @param {string} props.idAsignacion - ID de la asignación (programación)
+ * @param {boolean} props.disabledRevisar - Si la opción de revisar está deshabilitada
+ * @param {number} props.estadoInvestigacion - Estado actual de la investigación
+ * @param {'list' | 'card'} props.variant - Variante de estilo (lista o tarjeta)
+ * @param {Object} props.actions - Acciones pasadas por props (opcional, sobrescribe contexto)
+ */
+const OptionsMenu = ({
+    idInvestigation,
+    idAsignacion,
+    disabledRevisar,
+    estadoInvestigacion,
+    variant = 'list',
+    actions: propsActions
+}) => {
+    // Obtenemos acciones de ambos contextos de forma segura (sin errores de hooks condicionales)
+    const investigationActions = useContext(InvestigationActionsContext) || {};
+    const programmingActions = useContext(ProgrammingActionsContext) || {};
+
+    const actions = { ...investigationActions, ...programmingActions, ...propsActions };
+    const { onGoAttention, onDelete, onRestore, onReview, numStatus } = actions;
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
 
-    const handleAction = (action) => {
-        if (action === 1) {
-            navigate(`/investigation-occupational-disease/investigate/${idAsignacion}`);
-        }
-
-        handleClose();
-    };
-
-    return (
-        <>
-            <IconButton sx={{ mr: 0.2 }} edge="end" onClick={handleClick} size="medium">
-                <MoreVertIcon sx={{ color: '#757575' }} />
-            </IconButton>
-            <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'center',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'center',
-                    horizontal: 'right',
-                }}
-                PaperProps={{
-                    sx: {
-                        borderRadius: '14px',
-                        boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
-                        minWidth: 200
-                    },
-                }}
-            >
-                <MenuItem onClick={onClickGoAttention}>
-                    <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
-                </MenuItem>
-                <MenuItem>
-                    <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
-                </MenuItem>
-                <MenuItem onClick={() => handleAction('rechazar')}>
-                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Devolver
-                </MenuItem>
-                <MenuItem onClick={() => handleAction('exportar')}>
-                    <DownloadIcon sx={{ mr: 1.2 }} /> Exportar PDF
-                </MenuItem>
-                <MenuItem onClick={() => handleAction('imprimir')}>
-                    <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
-                </MenuItem>
-                <Divider sx={{ my: 0.5 }} />
-                <MenuItem onClick={onClickDelete} sx={{ color: 'error.main' }}>
-                    <DeleteIcon sx={{ mr: 1.2 }} /> Eliminar
-                </MenuItem>
-            </Menu>
-        </>
-    )
-}
-
-export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion, onClickDelete }) => {
-    const navigate = useNavigate();
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-
-    const handleClick = (event) => setAnchorEl(event.currentTarget);
-    const handleClose = () => setAnchorEl(null);
-
-    const handleAction = (action) => {
-        if (action === 1) {
-            navigate(`/investigation-occupational-disease/investigate/${idAsignacion}`);
-        }
-
-        handleClose();
-    };
+    const isCard = variant === 'card';
+    const id = idInvestigation || idAsignacion;
 
     return (
         <>
             <IconButton
                 onClick={handleClick}
+                edge={!isCard ? "end" : undefined}
+                size={!isCard ? "medium" : undefined}
                 sx={{
-                    color: 'white',
-                    '&:hover': {
+                    mr: !isCard ? 0.2 : 0,
+                    color: isCard ? 'white' : '#757575',
+                    '&:hover': isCard ? {
                         backgroundColor: 'rgba(255,255,255,0.2)',
-                    },
-                    zIndex: 2,
+                    } : undefined,
+                    zIndex: isCard ? 2 : undefined,
                 }}
             >
                 <MoreVertIcon />
@@ -116,44 +73,74 @@ export const OptionsMenuCard = ({ onClickGoAttention, idAsignacion, onClickDelet
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                anchorOrigin={{
+                anchorOrigin={isCard ? {
                     vertical: 'top',
                     horizontal: 'left',
+                } : {
+                    vertical: 'center',
+                    horizontal: 'left',
                 }}
-                transformOrigin={{
+                transformOrigin={isCard ? {
                     vertical: 'top',
                     horizontal: 'right',
+                } : {
+                    vertical: 'center',
+                    horizontal: 'right',
                 }}
-                PaperProps={{
-                    elevation: 2,
-                    sx: {
-                        mt: 1,
-                        borderRadius: '12px',
-                        minWidth: 180,
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                slotProps={{
+                    paper: {
+                        elevation: isCard ? 2 : undefined,
+                        sx: {
+                            mt: isCard ? 1 : 0,
+                            borderRadius: isCard ? '12px' : '14px',
+                            minWidth: isCard ? 180 : 200,
+                            boxShadow: isCard ? '0 4px 12px rgba(0,0,0,0.1)' : '0 6px 20px rgba(0,0,0,0.12)',
+                        },
                     },
                 }}
             >
-                <MenuItem onClick={onClickGoAttention}>
-                    <EditIcon sx={{ mr: 1, color: 'primary.main' }} /> Atender
+                <MenuItem
+                    onClick={() => { onGoAttention && onGoAttention(id); handleClose(); }}
+                    disabled={estadoInvestigacion === 3 && numStatus === 2}
+                >
+                    <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
                 </MenuItem>
+
+                {onReview && (numStatus === 1 || numStatus === 3) &&
+                    <MenuItem onClick={() => { onReview(id); handleClose(); }} disabled={disabledRevisar}>
+                        <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
+                    </MenuItem>
+                }
+
+                {onRestore &&
+                    <MenuItem onClick={() => { onRestore(id); handleClose(); }}>
+                        <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Devolver
+                    </MenuItem>
+                }
+
                 <MenuItem>
-                    <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
+                    <DownloadIcon sx={{ mr: 1.2 }} /> Exportar PDF
                 </MenuItem>
-                <MenuItem onClick={() => handleAction('rechazar')}>
-                    <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Devolver
+
+                <MenuItem>
+                    <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
                 </MenuItem>
-                <MenuItem onClick={() => handleAction('exportar')}>
-                    <DownloadIcon sx={{ mr: 1 }} /> Exportar PDF
-                </MenuItem>
-                <MenuItem onClick={() => handleAction('imprimir')}>
-                    <PrintIcon sx={{ mr: 1 }} /> Imprimir
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={onClickDelete} sx={{ color: 'primary.main' }}>
-                    <DeleteIcon sx={{ mr: 1 }} /> Eliminar
-                </MenuItem>
+
+                {onDelete && <Divider sx={{ my: 0.5 }} />}
+
+                {onDelete &&
+                    <MenuItem onClick={() => { onDelete(id); handleClose(); }} sx={{ color: 'error.main' }}>
+                        <DeleteIcon sx={{ mr: 1.2 }} /> Eliminar
+                    </MenuItem>
+                }
             </Menu>
         </>
-    )
-}
+    );
+};
+
+// Aliases para compatibilidad hacia atrás
+export const OptionsMenuList = (props) => <OptionsMenu {...props} variant="list" />;
+export const OptionsMenuCard = (props) => <OptionsMenu {...props} variant="card" />;
+
+export default OptionsMenu;
+

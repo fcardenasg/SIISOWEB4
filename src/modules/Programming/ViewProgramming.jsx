@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,13 +11,13 @@ import { IconCircleMinus, IconEye } from '@tabler/icons';
 import { DeleteAttention, UpdateEstadoRegistroAtencion } from 'api/clients/AttentionClient';
 import { MessageSuccess } from 'components/alert/AlertAll';
 import { DefaultValue } from 'components/helpers/Enums';
+import { HtmlTooltip } from 'components/label/HtmlTooltip';
 import useAuth from 'hooks/useAuth';
 import { gridSpacing } from 'store/constant';
 import { ColorDrummondltd } from 'themes/colors';
 import Avatar from 'ui-component/extended/Avatar';
 import ChipControl from 'ui-component/extended/Chip';
 import MenuOptions from './MenuOptions';
-import { HtmlTooltip } from 'components/label/HtmlTooltip';
 
 const ViewProgramming = ({ programming, getAll }) => {
     const { user } = useAuth();

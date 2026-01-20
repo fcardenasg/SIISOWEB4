@@ -54,8 +54,6 @@ const UpdateRol = () => {
     async function getAllList() {
         try {
             const lsServer = await GetByListMenuRol(id);
-            console.log(lsServer.data);
-
             setLsPermisos(lsServer.data);
             setRows(lsServer.data);
         } catch (error) { }

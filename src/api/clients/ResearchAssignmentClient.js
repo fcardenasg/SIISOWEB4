@@ -3,11 +3,14 @@ import { getData, deleteData, postData, putData } from '../UtilInstance';
 
 export const GetAllResearchAssignment = async () => await getData(Url.AsignacionInvestigacion);
 export const GetByIdResearchAssignment = async (id) => await getData(`${Url.AsignacionInvestigacion}/id`, { id });
-export const ValidateResearchAssignment = async (idUsuario) => await getData(`${Url.AsignacionInvestigacion}/validate-research-user`, { idUsuario });
+export const ValidateResearchAssignment = async () => await getData(`${Url.AsignacionInvestigacion}/validate-research-user`);
 export const InsertResearchAssignment = async (asignacion) => await postData(Url.AsignacionInvestigacion, asignacion);
-export const GetAllByDataResearcher = async (idInvestigador, filter) => await getData(`${Url.AsignacionInvestigacion}/investigation`, { idInvestigador, filter });
+export const GetAllByDataResearcher = async (filter) => await getData(`${Url.AsignacionInvestigacion}/investigation`, { filter });
 export const UpdateResearchAssignments = async (asignacion) => await putData(Url.AsignacionInvestigacion, asignacion);
 export const DeleteResearchAssignment = async (id) => await deleteData(Url.AsignacionInvestigacion, { id });
+
+export const RestoreResearchAssignment = async (asignacion) => await putData(`${Url.AsignacionInvestigacion}/action-restore`, asignacion);
+export const ChangeStatusAssignment = async (estado, idAsignacion) => await getData(`${Url.AsignacionInvestigacion}/change-status`, { estado, idAsignacion });
 
 /* Detalle de la asignacion */
 export const GetAllDetailResearchAssignment = async (idDetalle, isInvestigacion) => await getData(`${Url.AsignacionInvestigacion}/detalle`, { idDetalle, isInvestigacion });

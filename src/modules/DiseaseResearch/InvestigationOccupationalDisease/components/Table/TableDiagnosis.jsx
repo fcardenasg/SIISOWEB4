@@ -10,9 +10,9 @@ import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
 import { GetAllDetailResearchAssignment } from "api/clients/ResearchAssignmentClient";
-import { StyledTableCell, StyledTableRow } from "../methods";
+import { formatDateForInput, StyledTableCell, StyledTableRow } from "../methods";
 
-export default function TableDiagnosis({ methods }) {
+export default function TableDiagnosis({ methods, disabledControl }) {
     const { id } = useParams();
     const { control, getValues, setValue } = methods;
     const idIEL = getValues('id');
@@ -21,11 +21,6 @@ export default function TableDiagnosis({ methods }) {
         control,
         name: "listDiagnostico"
     });
-
-    const formatDateForInput = (dateString) => {
-        if (!dateString) return null;
-        return dateString.split('T')[0];
-    };
 
     const handleFieldChange = (index, fieldName, value, originalField) => {
         originalField.onChange(value);
@@ -97,6 +92,7 @@ export default function TableDiagnosis({ methods }) {
                                                 onChange={(e) =>
                                                     handleFieldChange(index, 'fechaInicioSintomas', e.target.value, field)
                                                 }
+                                                disabled={disabledControl}
                                             />
                                         )}
                                     />
@@ -117,6 +113,7 @@ export default function TableDiagnosis({ methods }) {
                                                 onChange={(e) =>
                                                     handleFieldChange(index, 'fechaDiagnostico', e.target.value, field)
                                                 }
+                                                disabled={disabledControl}
                                             />
                                         )}
                                     />

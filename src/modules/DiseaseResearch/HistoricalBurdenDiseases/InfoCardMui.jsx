@@ -29,7 +29,6 @@ const Field = ({ label, value }) => (
 );
 
 export default function InfoCardMui({ data }) {
-  console.log("data recibe",data);
   return (
     <Paper elevation={2} sx={{ p: 3, maxWidth: 1100, mx: 'auto' }}>
       <Box textAlign="center" mb={2}>
@@ -114,9 +113,8 @@ export default function InfoCardMui({ data }) {
           <Grid item xs={12} sm={4} md={4}>
             <Field
               label="Residencia"
-              value={`${data.residencia || ''} ${
-                data?.departamentoResidencia ? `/ ${data.departamentoResidencia}` : ''
-              }`}
+              value={`${data.residencia || ''} ${data?.departamentoResidencia ? `/ ${data.departamentoResidencia}` : ''
+                }`}
             />
           </Grid>
 
@@ -134,7 +132,7 @@ export default function InfoCardMui({ data }) {
 
       <Divider />
 
-    
+
 
       {/* 5. Datos laborales */}
       <Box my={3}>
@@ -153,17 +151,17 @@ export default function InfoCardMui({ data }) {
           <Grid item xs={12} sm={4}>
             <Field label="Tiempo en el cargo" value={data.tiempoCargo} />
           </Grid>
-          {data?.EdadIngreso&&(
+          {data?.EdadIngreso && (
 
-          <Grid item xs={12} sm={4}>
-            <Field label="Edad al momento del ingreso" value={data?.edadIngreso} />
-          </Grid>
+            <Grid item xs={12} sm={4}>
+              <Field label="Edad al momento del ingreso" value={data?.edadIngreso} />
+            </Grid>
           )}
-          
+
         </Grid>
       </Box>
 
-     
+
     </Paper>
   );
 }

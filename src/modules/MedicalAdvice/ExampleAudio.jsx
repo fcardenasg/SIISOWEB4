@@ -127,10 +127,6 @@ const ExampleAudio = () => {
         }
     };
 
-    useEffect(() => {
-        console.log(correctedText)
-    }, [correctedText])
-
     const copyToClipboard = () => {
         navigator.clipboard.writeText(correctedText || text);
         setText(correctedText || text)
@@ -143,11 +139,11 @@ const ExampleAudio = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "start",
-                height: "auto", 
-           
+                height: "auto",
+
             }}
         >
-            <Box sx={{ marginBottom: 3, width: "100%", height: "35vh",}}>
+            <Box sx={{ marginBottom: 3, width: "100%", height: "35vh", }}>
                 <Box
                     sx={{
                         position: "relative",
@@ -157,7 +153,7 @@ const ExampleAudio = () => {
                         color: "gray",
                         transition: "color 0.5s ease",
                         minHeight: "100px",
-                        height: "35vh",             
+                        height: "35vh",
                     }}
                 >
                     <TextareaAutosize
@@ -261,7 +257,7 @@ const ExampleAudio = () => {
                     </Button>
                 </Box>
             )}
-          
+
         </Box>
     );
 };

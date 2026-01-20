@@ -1,12 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import AddIcon from '@mui/icons-material/Add';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
     Button,
     Divider,
     FormHelperText,
     Grid,
-    IconButton,
-    Tooltip,
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -22,7 +20,6 @@ import {
     Modulo,
     TitleButton
 } from 'components/helpers/Enums';
-import { FormatDate } from 'components/helpers/Format';
 import InputDatePick from 'components/input/InputDatePick';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
@@ -30,7 +27,6 @@ import InputOnChange from 'components/input/InputOnChange';
 import InputSelect from 'components/input/InputSelect';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -39,8 +35,8 @@ import { useNavigate } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
+import { formatDateForInput } from '../InvestigationOccupationalDisease/components/methods';
 import DetailRA from './DetailRA';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const buttonVariants = {
     hover: {
@@ -255,11 +251,11 @@ const ResearchAssignment = () => {
             datos.tipoInvestigacion = datos.tipoInvestigacion || null;
             datos.resultadoOrigen = datos.resultadoOrigen || null;
 
-            datos.fechaEntrega = FormatDate(fechaEntrega);
-            datos.fechaRevision = FormatDate(fechaRevision);
-            datos.fechaVistoBueno = FormatDate(fechaVistoBueno);
-            datos.fechaDictamen = FormatDate(fechaDictamen);
-            datos.fechaInvestigacion = FormatDate(fechaInvestigacion);
+            datos.fechaEntrega = formatDateForInput(fechaEntrega);
+            datos.fechaRevision = formatDateForInput(fechaRevision);
+            datos.fechaVistoBueno = formatDateForInput(fechaVistoBueno);
+            datos.fechaDictamen = formatDateForInput(fechaDictamen);
+            datos.fechaInvestigacion = formatDateForInput(fechaInvestigacion);
 
             const result = await InsertResearchAssignment(datos);
             if (result.data.exito) {

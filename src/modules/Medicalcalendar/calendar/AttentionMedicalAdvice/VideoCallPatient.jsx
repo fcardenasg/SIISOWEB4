@@ -32,8 +32,6 @@ const ViewCall = () => {
 
   dayjs.extend(utc);
 
-  console.log("url paciente:", channel);
-
   let localAudioTrack = null;
   let localVideoTrack = null;
 
@@ -79,7 +77,6 @@ const ViewCall = () => {
       displayLocalVideo();
       setInCall(true);
     } catch (error) {
-      console.error("Error al unirse al canal:", error);
       setOpenError(true);
       setErrorMessage("Error al conectar con el canal.");
     }
@@ -154,7 +151,6 @@ const ViewCall = () => {
   function setupEventListeners() {
     client.on("user-published", async (user, mediaType) => {
       await client.subscribe(user, mediaType);
-      console.log("subscribe success");
 
       if (mediaType === "video") {
         displayRemoteVideo(user);

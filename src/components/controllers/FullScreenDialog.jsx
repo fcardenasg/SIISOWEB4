@@ -1,10 +1,9 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
+import PropTypes from 'prop-types';
+import * as React from 'react';
 
-import { Grid, Typography, IconButton, Toolbar, AppBar, Dialog } from '@mui/material';
-import { ColorDrummondltd } from 'themes/colors';
+import { AppBar, Dialog, Grid, IconButton, Toolbar, Typography } from '@mui/material';
 import { UpperFirstChar } from 'components/helpers/Format';
 
 const Transition = React.forwardRef(function Transition(props, ref) {

@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import { GetIELCalificacion, GetIELHistoriaLaboralDLTD, GetIELHistoriaLaboralOtrosEmpresas } from 'api/clients/InvestigationClient';
+import { GetIELAccionPreventivaCorrectiva, GetIELCalificacion, GetIELHistoriaLaboralDLTD, GetIELHistoriaLaboralOtrosEmpresas } from 'api/clients/InvestigationClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import { UpperFirstChar, ViewFormat } from 'components/helpers/Format';
 import EmptyState from 'components/loading/EmptyState';
@@ -155,7 +155,7 @@ export function TableOtherCompanies({ documento }) {
   );
 }
 
-export function TableControlMethods({ listMC, handleDelete }) {
+export function TableControlMethods({ listMC, handleDelete, disabledControl }) {
   return (
     <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
       <Table sx={{ minWidth: 650 }} aria-label="customized table">
@@ -165,7 +165,7 @@ export function TableControlMethods({ listMC, handleDelete }) {
             <StyledTableCell>Tipo de control</StyledTableCell>
             <StyledTableCell>Observaciones uso brindado</StyledTableCell>
             <StyledTableCell>Observaciones nivel de protección</StyledTableCell>
-            <StyledTableCell>Acciones</StyledTableCell>
+            {!disabledControl && <StyledTableCell>Acciones</StyledTableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -178,18 +178,20 @@ export function TableControlMethods({ listMC, handleDelete }) {
                 <StyledTableCell>{UpperFirstChar(row.nameTipoControl)}</StyledTableCell>
                 <StyledTableCell>{row.observacionBrindado}</StyledTableCell>
                 <StyledTableCell>{row.observacionNivelProteccionBrindado}</StyledTableCell>
-                <StyledTableCell>
-                  <AnimateButton>
-                    <Tooltip title="Eliminar" disableInteractive placement="top">
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDelete(row.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </AnimateButton>
-                </StyledTableCell>
+                {!disabledControl &&
+                  <StyledTableCell>
+                    <AnimateButton>
+                      <Tooltip title="Eliminar" disableInteractive placement="top">
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDelete(row.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </AnimateButton>
+                  </StyledTableCell>
+                }
               </StyledTableRow>
             ))
           ) : (
@@ -205,16 +207,16 @@ export function TableControlMethods({ listMC, handleDelete }) {
   );
 }
 
-export function TableDiagnosisRating({ methods }) {
-  const { control, setValue } = methods;
-  const idIEL = useFormContext().getValues('id');
+export function TableDiagnosisRating({ methods, disabledControl }) {
+  const { control, setValue, getValues } = methods;
+  const idIEL = getValues('id');
 
   const { fields, replace } = useFieldArray({
     control,
     name: "listCalificacion"
   });
 
-  const formatDate = (date) => (date ? date.split('T')[0] : "");
+  const formatDate = (date) => (date ? date.split('T')[0] : null);
   const handleFieldChange = (index, field, value) => {
     field.onChange(value);
     setValue(`listCalificacion.${index}.cambioRegistro`, true, {
@@ -244,8 +246,8 @@ export function TableDiagnosisRating({ methods }) {
           }
         } else {
           response = await GetByTipoCatalogoCombo(CodCatalogo.IEL_CALIFICACION);
-          if (response.data.exito) {
-            const mappedData = response.data.datos.map((item) => ({
+          if (response.status === 200) {
+            const mappedData = response.data.map((item) => ({
               calificacion: item.value,
               nombreCalificacion: item.label,
               entidad: null,
@@ -253,7 +255,7 @@ export function TableDiagnosisRating({ methods }) {
               origen: null,
               dictamen: null,
               cambioRegistro: false
-            }));
+            })).sort((a, b) => a.calificacion - b.calificacion);
             replace(mappedData);
           }
         }
@@ -293,6 +295,7 @@ export function TableDiagnosisRating({ methods }) {
                       {...field}
                       fullWidth
                       variant="standard"
+                      disabled={disabledControl}
                       onChange={(e) => handleFieldChange(index, field, e.target.value)}
                     />
                   )}
@@ -310,7 +313,8 @@ export function TableDiagnosisRating({ methods }) {
                       variant="standard"
                       fullWidth
                       InputLabelProps={{ shrink: true }}
-                      value={field.value || ""}
+                      value={field.value || null}
+                      disabled={disabledControl}
                       onChange={(e) => handleFieldChange(index, field, e.target.value)}
                     />
                   )}
@@ -326,6 +330,7 @@ export function TableDiagnosisRating({ methods }) {
                       {...field}
                       variant="standard"
                       fullWidth
+                      disabled={disabledControl}
                       onChange={(e) => handleFieldChange(index, field, e.target.value)}
                     />
                   )}
@@ -341,6 +346,7 @@ export function TableDiagnosisRating({ methods }) {
                       {...field}
                       variant="standard"
                       fullWidth
+                      disabled={disabledControl}
                       onChange={(e) => handleFieldChange(index, field, e.target.value)}
                     />
                   )}
@@ -393,8 +399,9 @@ export function TableCharacterizationAbsenteeism() {
   );
 }
 
-export function TablePreventiveActions({ methods }) {
+export function TablePreventiveActions({ methods, disabledControl }) {
   const { control, setValue, getValues } = methods;
+  const idIEL = getValues('id');
 
   const { fields, replace } = useFieldArray({
     control,
@@ -411,28 +418,41 @@ export function TablePreventiveActions({ methods }) {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await GetByTipoCatalogoCombo(CodCatalogo.IEL_ASPCONSI);
-        const lsServer = response.data || [];
-        const currentValues = getValues("listAspectosConsiderar");
+        let response;
+        const statusData = Boolean(idIEL);
 
-        if (!currentValues || currentValues.length === 0) {
-          const initialRows = lsServer.map((item) => ({
-            aspectoConsiderar: item.value,
-            nombreAspectoConsiderar: item.label,
-            opcion: false,
-            observacion: null,
-            cambioRegistro: false
-          }));
-
-          replace(initialRows);
+        if (statusData) {
+          response = await GetIELAccionPreventivaCorrectiva(idIEL);
+          if (response.data.exito) {
+            const mappedData = response.data.datos.map((item) => ({
+              id: item.id,
+              nombreAspectoConsiderar: item.nombreAspectoConsiderar,
+              opcion: item.opcion || false,
+              observacion: item.observacion || null,
+              cambioRegistro: false
+            }));
+            replace(mappedData);
+          }
+        } else {
+          response = await GetByTipoCatalogoCombo(CodCatalogo.IEL_ASPCONSI);
+          if (response.status === 200) {
+            const initialRows = response.data.map((item) => ({
+              aspectoConsiderar: item.value,
+              nombreAspectoConsiderar: item.label,
+              opcion: false,
+              observacion: null,
+              cambioRegistro: false
+            })).sort((a, b) => a.aspectoConsiderar - b.aspectoConsiderar);
+            replace(initialRows);
+          }
         }
       } catch (error) {
-        toast.error("Error al obtener las acciones preventivas");
+        toast.error("Error al obtener los aspectos a considerar");
       }
     }
 
     getData();
-  }, [replace, getValues]);
+  }, [idIEL, replace]);
 
   return (
     <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
@@ -463,6 +483,7 @@ export function TablePreventiveActions({ methods }) {
                           {...field}
                           size="small"
                           checked={!!field.value}
+                          disabled={disabledControl}
                           onChange={(e) =>
                             handleFieldChange(index, field, e.target.checked)
                           }
@@ -481,7 +502,7 @@ export function TablePreventiveActions({ methods }) {
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      value={field.value || ""}
+                      value={field.value || null}
                       variant="standard"
                       fullWidth
                       multiline
@@ -491,6 +512,7 @@ export function TablePreventiveActions({ methods }) {
                       onChange={(e) =>
                         handleFieldChange(index, field, e.target.value)
                       }
+                      disabled={disabledControl}
                     />
                   )}
                 />

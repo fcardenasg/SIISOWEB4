@@ -316,8 +316,6 @@ const UpdateClinicHistory = () => {
         }
     };
 
-    console.log(lsAtencion);
-
     return (
         <FormProvider {...methods}>
             {timeWait.value ?

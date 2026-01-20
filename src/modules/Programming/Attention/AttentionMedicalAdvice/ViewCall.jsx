@@ -49,13 +49,10 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
   let channel = searchParams.get("channel");
   let tokenend = searchParams.get("tokenend");
 
-  console.log(channel)
 
-  let fechaactual; 
+  let fechaactual;
 
   if (channelCurrent?.channel) {
-    console.log("entro", channelCurrent.channel);
-    console.log("entro fecha", channelCurrent.fecha);
 
     appId = "24620e849c55400aad51c1da9141ac46";
     channel = channelCurrent.channel;
@@ -93,16 +90,13 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
     let today = dayjs().startOf("day").startOf('day');
 
     if (channelCurrent && channelCurrent.fecha) {
-      expirationDate = dayjs.utc(channelCurrent.fecha).startOf('day');      
+      expirationDate = dayjs.utc(channelCurrent.fecha).startOf('day');
     } else {
       bytes = CryptoJS.AES.decrypt(decodeURIComponent(tokenend), SECRET_kEY);
       decryptedDate = bytes.toString(CryptoJS.enc.Utf8);
-      expirationDate = dayjs.utc(decryptedDate).startOf('day');  
+      expirationDate = dayjs.utc(decryptedDate).startOf('day');
     }
 
-    console.log(channelCurrent)
-    console.log(expirationDate)
-    console.log(today)
 
     if (today.isBefore(expirationDate)) {
       setOpenError(true);
@@ -114,8 +108,7 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
       setOpenError(true);
       setErrorMessage("Esta reunión ha caducado");
       return;
-    } else {  
-      console.log("canal final=", channel);
+    } else {
 
       try {
         await client.join(appId, channel, token, uid);
@@ -124,7 +117,6 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
         displayLocalVideo();
         setInCall(true);
       } catch (error) {
-        console.error("Error al unirse al canal. verifique que tenga una reuinion programada:", error);
         setOpenError(true);
         setErrorMessage("Error al unirse, verifique que su camara este funcionando e intente nuevamente.");
       }
@@ -200,7 +192,6 @@ const ViewCall = ({ onCancel, channelCurrent }) => {
   function setupEventListeners() {
     client.on("user-published", async (user, mediaType) => {
       await client.subscribe(user, mediaType);
-      console.log("subscribe success");
 
       if (mediaType === "video") {
         displayRemoteVideo(user);

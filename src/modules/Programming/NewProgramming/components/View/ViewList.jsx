@@ -26,7 +26,10 @@ import { OptionsMenuList } from 'modules/DiseaseResearch/InvestigationOccupation
 import AnimatedTimeDisplay from '../AnimatedTimeDisplay';
 import { capitalizarTypeCare, getColorCard, getStatusConfig, StyledChip } from '../methods';
 
-const ViewList = ({ dataInfo = {}, index, onClickOpenChat, onClickGoAttention }) => {
+import { useProgrammingActions } from 'modules/Programming/NewProgramming/contexts/ProgrammingActionsContext';
+
+const ViewList = ({ dataInfo = {}, index }) => {
+    const { onOpenChat } = useProgrammingActions();
     const theme = useTheme();
     const statusConfig = getStatusConfig(dataInfo.estadoPac);
 
@@ -46,7 +49,6 @@ const ViewList = ({ dataInfo = {}, index, onClickOpenChat, onClickGoAttention })
             }}
             secondaryAction={
                 <OptionsMenuList
-                    onClickGoAttention={onClickGoAttention}
                     idAsignacion={dataInfo.id}
                 />
             }
@@ -120,7 +122,7 @@ const ViewList = ({ dataInfo = {}, index, onClickOpenChat, onClickGoAttention })
                             }}>
                                 <Tooltip placement="top" title="Asistente de SIISO">
                                     <IconButton
-                                        onClick={() => onClickOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nameEmpleado })}
+                                        onClick={() => onOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nameEmpleado })}
                                         sx={{
                                             bgcolor: 'white',
                                             boxShadow: '0 2px 6px rgba(0,0,0,0.15)',

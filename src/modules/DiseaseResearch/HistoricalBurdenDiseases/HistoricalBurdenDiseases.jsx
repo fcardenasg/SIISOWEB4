@@ -114,7 +114,7 @@ export default function FormUploadFileSisso() {
   const extractInformation = async (file) => {
     confirm.onTrue();
     let base64String = null;
-      let pdfBlob=null
+    let pdfBlob = null
 
     try {
       const responseSfdt = await ConvertirWordtoHtml(file);
@@ -130,7 +130,7 @@ export default function FormUploadFileSisso() {
       const responsePDF = await ConvertirWordtoPdf(file);
       if (responsePDF.data) {
         base64String = await convertToFileBase64(responsePDF.data);
-          pdfBlob = responsePDF.data;
+        pdfBlob = responsePDF.data;
       }
 
       setData((prev) => [
@@ -149,7 +149,6 @@ export default function FormUploadFileSisso() {
       confirm.onFalse();
       saveState.onFalse();
     } catch (err) {
-      console.log(err);
       toast.error(
         "Ha ocurrido un error al extraer la informaion por favor vuelva a intentarlo"
       );
@@ -174,7 +173,7 @@ export default function FormUploadFileSisso() {
       } else {
         saveState.onTrue();
       }
-    }else{
+    } else {
       saveState.onTrue();
     }
 
@@ -208,7 +207,6 @@ export default function FormUploadFileSisso() {
   };
 
   const handleView = async (file) => {
-    console.log("dataInvestigation", dataInvestigation);
     if (file) {
       const database = extractionDataBase(file);
 
@@ -235,7 +233,7 @@ export default function FormUploadFileSisso() {
         if (newFiles.length < files.length) {
           toast.error("Algunos archivos ya estaban en la lista");
         }
- 
+
         setCountProgress(1);
 
         return [...prev, ...newFiles];
@@ -244,18 +242,17 @@ export default function FormUploadFileSisso() {
     [archivoAdjunto]
   );
 
- 
+
   const handleViewDocx = async (file) => {
-    console.log("file", file);
     setMensaje("Generando vista previa del documento, por favor espere...");
     confirm.onTrue();
     const filterData = data.find((item) => item.filename === file.path);
-    
-    if(filterData && filterData.pdfBlob){
+
+    if (filterData && filterData.pdfBlob) {
       setFileView(file);
       const urlpdf = URL.createObjectURL(filterData.pdfBlob);
       setPdfUrl(urlpdf);
-      confirmModalDocx.onTrue();     
+      confirmModalDocx.onTrue();
     }
     confirm.onFalse();
   };
@@ -268,19 +265,18 @@ export default function FormUploadFileSisso() {
     };
   }, [pdfUrl]);
 
-  const handleExport = async () => { 
+  const handleExport = async () => {
     const filterData = data.find((item) => item.filename === fileView.path);
     const base64String = await convertToFileBase64(filterData.pdfBlob);
-    console.log("filterData", filterData);
-  
+
     const link = document.createElement('a');
     link.href = base64String;
-    link.download = filterData.nombres+".pdf";
+    link.download = filterData.nombres + ".pdf";
 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
- 
+
   };
 
   return (

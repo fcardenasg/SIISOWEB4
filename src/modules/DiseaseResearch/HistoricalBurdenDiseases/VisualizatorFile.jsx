@@ -341,9 +341,9 @@ const VisualizatorFile = ({ file, confirmExport }) => {
           officeEditor: true,
           extension: 'docx',
           enableOfficeEditing: true,
-           officeEditorOptions: {
-          initialEditMode: "editing",
-        },
+          officeEditorOptions: {
+            initialEditMode: "editing",
+          },
           type: "office",
         });
 
@@ -364,15 +364,10 @@ const VisualizatorFile = ({ file, confirmExport }) => {
         typeof instanceToDispose.dispose === "function"
       ) {
         instanceToDispose.dispose();
-        console.log("WebViewer ha sido completamente DISPUESTO (destruido).");
       } else if (instanceToDispose) {
-        console.warn(
-          "WV Instance capturada, pero dispose no es una función. Limpiando DOM."
-        );
+
       } else {
-        console.log(
-          "WV Instance no pudo ser dispuesta porque no estaba lista."
-        );
+
       }
 
       if (viewer.current) {

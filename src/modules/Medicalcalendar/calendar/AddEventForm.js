@@ -87,10 +87,7 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
 
     useEffect(() => {
         if (lsTipoAtencion.length > 0) {
-
-            console.log("TipoAtencion=>", lsTipoAtencion)
             setTipoAtencion(lsTipoAtencion[0].value);
-
         }
     }, [lsTipoAtencion]);
 
@@ -132,11 +129,8 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
 
     useEffect(() => {
         if (event) {
-            console.log("Evento editar:", event);
             setDocumento(event?.extendedProps?.empleado ?? '');
-
             getDocumento(event?.extendedProps?.empleado);
-
             setValue('message', event?.message ?? true);
             setValue('idempleado', event?.extendedProps?.empleado ?? null);
             setValue('prioridad', event?.extendedProps?.prioridad ?? 'alta');
@@ -148,10 +142,7 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
             setValue('whatsapp', event?.extendedProps?.whatsapp ?? false);
             setValue('email', event?.extendedProps?.email ?? false);
             setValue('fecha', event?.start ?? new Date());
-
-
         } else {
-            console.log("entro ==",new Date())
             setValue('fecha', chosenDate ?? new Date());
         }
     }, [event, chosenDate]);
@@ -161,7 +152,6 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
     useEffect(() => {
         if (values.fecha) {
             const filtro = listEvents.find((item) => item.fecha == values.fecha);
-            console.log(filtro);
         }
     }, [values.fecha]);
 
@@ -174,20 +164,17 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
 
         try {
             if (event) {
-              const response=await handleUpdate(event.id, datos);
+                const response = await handleUpdate(event.id, datos);
             } else {
-                const response=await handleCreate(datos);
+                const response = await handleCreate(datos);
             }
         } catch (error) {
-            console.error("Error", error);
         } finally {
-            console.log("error")
             setIsLoading(false);
         }
     });
 
     const handleClick = () => {
-        console.log('URL DEVICE');
         navigate(
             '/app/MedicalAdvice?appId=24620e849c55400aad51c1da9141ac46&channel=rubikapp&tokenend=U2FsdGVkX1%2BEshk%2BQl44xbCzoILa18dKxPle7uTLoTcvubnJ%2FbwATgedn0oGYS35'
         );
@@ -207,7 +194,6 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
             setTipoAsesoria(lsServerTipoAsesoria.data);
 
             const lsServerMotivo = await GetByTipoCatalogoCombo(CodCatalogo.MotivoMedica);
-            console.log("Motivo=>", lsServerMotivo)
             setLsMotivo(lsServerMotivo.data);
 
             setLsCodigoMotivo(lsServerMotivo.data);
@@ -301,7 +287,6 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
     }
 
     const handleDocumento = async (event) => {
-        console.log("documentacion =>", event.target.value)
         try {
             if (event?.target.value !== '') {
                 setDocumento(event?.target.value);
@@ -327,9 +312,8 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
         } catch (error) { }
     }
 
-    useEffect(()=>{
-        console.log("estado error:",isLoading)
-    },[isLoading])
+    useEffect(() => {
+    }, [isLoading])
 
 
     return (
@@ -351,7 +335,6 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     setDocumento(e.target.value);
-                                    console.log("Documento=>", e.target.value)
                                 }}
                                 lsEmployee={lsEmployee}
                                 handleDocumento={handleDocumento}
@@ -399,7 +382,7 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
                                         label="Fecha"
                                         value={field.value || new Date()}
                                         inputFormat="dd/MM/yyyy hh:mm a"
-                                        onChange={(date) => {             
+                                        onChange={(date) => {
                                             field.onChange(date);
                                         }}
                                         renderInput={(params) => (
@@ -538,7 +521,7 @@ const AddEventFrom = ({ event, listEvents, range, chosenDate, handleDelete, hand
                                 ) :
                                     <Button disabled={isLoading}
                                         onClick={onSubmit} type="submit" variant="contained" >
-                                      {isLoading ? "Guardando..." : event ? "Editar" : "Guardar"}
+                                        {isLoading ? "Guardando..." : event ? "Editar" : "Guardar"}
                                     </Button>
                                 }
                             </Stack>
