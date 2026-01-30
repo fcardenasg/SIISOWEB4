@@ -35,11 +35,11 @@ export const Url = {
     ConvertWordToHtml: 'api/CalendarioCitas/ConvertWordToHtml',
     ConvertWordToPdf: 'api/CalendarioCitas/ConvertWordToPdf',
 
-    InvestigacionEnfermedadLaboralFile:"api/InvestigacionEnfermedadLaboralFile",   
-    GetByIdPDF:"api/InvestigacionEnfermedadLaboralFile/GetByIdPDF",
-    
-    wordtexto:"api/InvestigacionEnfermedadLaboralFile/word-texto",
-    wordopenia:"api/InvestigacionEnfermedadLaboralFile/word-openia",
+    InvestigacionEnfermedadLaboralFile: "api/InvestigacionEnfermedadLaboralFile",
+    GetByIdPDF: "api/InvestigacionEnfermedadLaboralFile/GetByIdPDF",
+
+    wordtexto: "api/InvestigacionEnfermedadLaboralFile/word-texto",
+    wordopenia: "api/InvestigacionEnfermedadLaboralFile/word-openia",
 
 
     Investigacion: 'api/InvestigacionEnfermedadLaboral',

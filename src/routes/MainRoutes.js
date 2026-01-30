@@ -243,8 +243,6 @@ const HistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseRese
 const ListHistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/ListHistoricalBurdenDiseases')));
 const UpdateHistoricalBurdenDiseases = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/UpdateHistoricalBurdenDiseases')));
 
-const VisualizatorFile = Loadable(lazy(() => import('modules/DiseaseResearch/HistoricalBurdenDiseases/VisualizatorFile')));
-
 const AddSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/AddSingleWindow')));
 const UpdateSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/Form/UpdateSingleWindow')));
 const ListSingleWindow = Loadable(lazy(() => import('modules/SingleWindow/ListSingleWindow')));
@@ -267,12 +265,29 @@ const ViewIndividualOrders = Loadable(lazy(() => import('modules/OrderScheduling
 const ViewMassiveOrders = Loadable(lazy(() => import('modules/OrderScheduling/ViewMassiveOrders')));
 const OrderScheduling = Loadable(lazy(() => import('modules/OrderScheduling/OrderScheduling')));
 
-const ListAPTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/ListAPTPsychosocial')));
-const ListAPTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/ListAPTHygiene')));
-const APTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/APTHygiene')));
-const ViewAPT = Loadable(lazy(() => import('modules/DiseaseResearch/APT/ViewAPT')));
+const SubmenuAPT = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Menu/SubmenuAPT')));
+const SubmenuAPTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Menu/SubmenuAPTHygiene')));
+const SubmenuAPTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Menu/SubmenuAPTPsychosocial')));
+
+const ListAPTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Main/ListAPTPsychosocial')));
+const APTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Main/APTPsychosocial')));
+const UpdateAPTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Main/UpdateAPTPsychosocial')));
+
+const ListTemplatePsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Template/ListTemplatePsychosocial')));
+const TemplatePsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Template/TemplatePsychosocial')));
+const UpdateTemplatePsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Template/UpdateTemplatePsychosocial')));
+
+const ListAPTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Main/ListAPTHygiene')));
+const APTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Main/APTHygiene')));
+const UpdateAPTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Main/UpdateAPTHygiene')));
+
+const ListTemplateHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Template/ListTemplateHygiene')));
+const TemplateHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Template/TemplateHygiene')));
+const UpdateTemplateHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Template/UpdateTemplateHygiene')));
 
 const ListRehabilitationPlan = Loadable(lazy(() => import('modules/DiseaseResearch/RehabilitationPlan/ListRehabilitationPlan')));
+const RehabilitationPlan = Loadable(lazy(() => import('modules/DiseaseResearch/RehabilitationPlan/RehabilitationPlan')));
+const UpdateRehabilitationPlan = Loadable(lazy(() => import('modules/DiseaseResearch/RehabilitationPlan/UpdateRehabilitationPlan')));
 
 const MainRoutes = {
     path: '/',
@@ -1143,12 +1158,17 @@ const MainRoutes = {
         /* APT */
         {
             path: '/apt/view',
-            element: <ViewAPT />
+            element: <SubmenuAPT />
         },
         {
-            path: '/apt-psychosocial/list',
-            element: <ListAPTPsychosocial />
+            path: '/apt-hygiene/view',
+            element: <SubmenuAPTHygiene />
         },
+        {
+            path: '/apt-psychosocial/view',
+            element: <SubmenuAPTPsychosocial />
+        },
+        /* APT - Hygiene */
         {
             path: '/apt-hygiene/list',
             element: <ListAPTHygiene />
@@ -1158,8 +1178,60 @@ const MainRoutes = {
             element: <APTHygiene />
         },
         {
+            path: '/apt-hygiene/update/:id',
+            element: <UpdateAPTHygiene />
+        },
+        /* APT - Hygiene - Template */
+        {
+            path: '/apt-hygiene/template/list',
+            element: <ListTemplateHygiene />
+        },
+        {
+            path: '/apt-hygiene/template/add',
+            element: <TemplateHygiene />
+        },
+        {
+            path: '/apt-hygiene/template/update/:id',
+            element: <UpdateTemplateHygiene />
+        },
+        /* APT - Psychosocial - Template */
+        {
+            path: '/apt-psychosocial/template/list',
+            element: <ListTemplatePsychosocial />
+        },
+        {
+            path: '/apt-psychosocial/template/add',
+            element: <TemplatePsychosocial />
+        },
+        {
+            path: '/apt-psychosocial/template/update/:id',
+            element: <UpdateTemplatePsychosocial />
+        },
+        /* APT - Psychosocial */
+        {
+            path: '/apt-psychosocial/list',
+            element: <ListAPTPsychosocial />
+        },
+        {
+            path: '/apt-psychosocial/add',
+            element: <APTPsychosocial />
+        },
+        {
+            path: '/apt-psychosocial/update/:id',
+            element: <UpdateAPTPsychosocial />
+        },
+        /* Plan de Rehabilitación */
+        {
             path: '/rehabilitation-plan/list',
             element: <ListRehabilitationPlan />
+        },
+        {
+            path: '/rehabilitation-plan/add',
+            element: <RehabilitationPlan />
+        },
+        {
+            path: '/rehabilitation-plan/update/:id',
+            element: <UpdateRehabilitationPlan />
         },
     ]
 };

@@ -92,19 +92,25 @@ function generateReportSuministroepp(doc = new jsPDF(), lsDataReport = [], lsDat
 
   doc.line(5, 85, marXR, 85); /* HORI THREE */
 
-  doc.line(5, 65, 5, 95); /* LINEA VERTI ONE */
-  doc.line(41, 75, 41, 95); /* LINEA VERTI ONE */
-  doc.line(114, 75, 114, 95); /* LINEA VERTI ONE */
-  doc.line(162, 75, 162, 95); /* LINEA VERTI ONE */
-  doc.line(211, 65, marXR, 95); /* HORI ONE */
+  doc.line(5, 65, 5, 100); /* LINEA VERTI ONE */
+  doc.line(41, 75, 41, 100); /* LINEA VERTI ONE */
+  doc.line(114, 75, 114, 100); /* LINEA VERTI ONE */
+  doc.line(162, 75, 162, 100); /* LINEA VERTI ONE */
+  doc.line(211, 65, marXR, 100); /* HORI ONE */
 
   doc.text(`${lsDataReport.documento}`, 10, 91);
-  doc.text(`${lsDataReport.nameEmpleado}`, 42, 91);
+  const nameParts = lsDataReport.nameEmpleado.split(' ');
+  const formattedName = nameParts.length === 5
+    ? [nameParts.slice(0, 3).join(' '), nameParts.slice(3).join(' ')]
+    : nameParts.length === 4
+      ? [nameParts.slice(0, 2).join(' '), nameParts.slice(2).join(' ')]
+      : lsDataReport.nameEmpleado;
+  doc.text(formattedName, 45, 91);
 
   doc.text('Marco de seguridad', 118, 91);
   doc.text('24435', 184, 91);
 
-  doc.line(5, 95, marXR, 95); /* HORI THREE */
+  doc.line(5, 100, marXR, 100); /* HORI THREE */
 
   /* FIRMA */
   getFirma(doc, lsDataUser);
@@ -131,7 +137,6 @@ function generateReportInstalacioneppPageTwo(doc = new jsPDF(), lsDataReport = [
   doc.text('REF:', 7, 57);
   doc.text('INSTALACION DE LENTES', 50, 57);
 
-
   doc.text('SÍRVASE REALIZAR POR NUESTRA CUENTA AL SEÑOR(A)', 7, 71);
 
   doc.line(5, 65, marXR, 65); /* HORI ONE */
@@ -140,30 +145,29 @@ function generateReportInstalacioneppPageTwo(doc = new jsPDF(), lsDataReport = [
   doc.text('No. DOCUMENTO', 7, 81);
   doc.text('NOMBRE DEL EMPLEADO', 50, 81);
   doc.text('INSTALACION DE LENTES CORRECTIVOS EN', 107, 81);
-  doc.text('MARCOS DE SEGURIDAD SEGUN FORMULA ADJUNTA.', 107, 91);
-
+  doc.text('MARCOS DE SEGURIDAD SEGÚN\nFÓRMULA ADJUNTA.', 107, 91);
 
   doc.line(5, 85, marXR, 85); /* HORI THREE */
 
-  doc.line(5, 65, 5, 95); /* LINEA VERTI ONE */
-  doc.line(41, 75, 41, 95); /* LINEA VERTI ONE */
-  doc.line(105, 75, 105, 95); /* LINEA VERTI ONE */
-
-  doc.line(211, 65, marXR, 95); /* HORI ONE */
+  doc.line(5, 65, 5, 100); /* LINEA VERTI ONE */
+  doc.line(41, 75, 41, 100); /* LINEA VERTI ONE */
+  doc.line(105, 75, 105, 100); /* LINEA VERTI ONE */
+  doc.line(211, 65, marXR, 100); /* HORI ONE */
 
   doc.text(`${lsDataReport.documento}`, 10, 91);
-  doc.text(`${lsDataReport.nameEmpleado}`, 42, 91);
+  const nameParts = lsDataReport.nameEmpleado.split(' ');
+  const formattedName = nameParts.length === 5
+    ? [nameParts.slice(0, 3).join(' '), nameParts.slice(3).join(' ')]
+    : nameParts.length === 4
+      ? [nameParts.slice(0, 2).join(' '), nameParts.slice(2).join(' ')]
+      : lsDataReport.nameEmpleado;
+  doc.text(formattedName, 45, 91);
 
-
-
-  doc.line(5, 95, marXR, 95); /* HORI THREE */
+  doc.line(5, 100, marXR, 100); /* HORI THREE */
 
   /* FIRMA */
   getFirma(doc, lsDataUser);
   getFirmaEmployee(doc, lsDataReport);
-
-
-
 }
 
 export function generateReportOrderEPP(lsDataReport = [], lsDataUser = []) {

@@ -1,140 +1,214 @@
-import { Box, Divider, FormControl, FormHelperText, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { ContentState, convertToRaw, EditorState } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import { debounce } from 'lodash';
-import PropTypes from 'prop-types';
-import { useCallback, useState } from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { Controller } from 'react-hook-form';
+import { Box, FormHelperText, Grid, IconButton, InputLabel, Tooltip } from "@mui/material";
+import { ImproveTextAndWriting } from "api/clients/ServiceIAClient";
+import { AIProcessingStatus } from "components/controllers/ControlImproveText";
+import ControlVoiceDictation from "components/controllers/ControlVoiceDictation";
+import Iconify from "components/iconify/iconify";
+import { useBoolean } from "hooks/use-boolean";
+import { useMemo, useRef, useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import toast from "react-hot-toast";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import AnimateButton from "ui-component/extended/AnimateButton";
 
-const RichTextEditor = ({ value, onChange, error, label, placeholder, disabled, ...other }) => {
-    const theme = useTheme();
-    const [editorState, setEditorState] = useState(() => {
-        if (value) {
-            const contentBlock = htmlToDraft(value);
-            if (contentBlock) {
-                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-                return EditorState.createWithContent(contentState);
-            }
+const FULL_TOOLBAR_OPTIONS = [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ font: [] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ color: [] }, { background: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["image"],
+    ["blockquote"],
+];
+
+export default function InputTextEditor({ name, label, defaultValue = "", disabled = false }) {
+    const { control, setValue } = useFormContext();
+    const improvingText = useBoolean(false);
+    const quillRef = useRef(null);
+
+    const lastInterimLengthRef = useRef(0);
+    const [selectedRange, setSelectedRange] = useState(null);
+
+    const modules = useMemo(() => ({
+        toolbar: FULL_TOOLBAR_OPTIONS,
+    }), []);
+
+    const handleSelectionChange = (range) => {
+        if (range && range.length > 0) {
+            setSelectedRange(range);
+        } else {
+            setSelectedRange(null);
         }
-        return EditorState.createEmpty();
-    });
+    };
 
-    const debouncedOnChange = useCallback(
-        debounce((currentContent) => {
-            const html = draftToHtml(convertToRaw(currentContent));
-            onChange(html);
-        }, 500),
-        [onChange]
-    );
+    const handleVoiceResult = (transcript, isFinal) => {
+        const editor = quillRef.current.getEditor();
+        const selection = editor.getSelection() || { index: editor.getLength(), length: 0 };
+        const cursorIndex = selection.index;
 
-    const onEditorStateChange = (newEditorState) => {
-        if (disabled) return;
-        setEditorState(newEditorState);
-        debouncedOnChange(newEditorState.getCurrentContent());
+        if (lastInterimLengthRef.current > 0) {
+            editor.deleteText(cursorIndex - lastInterimLengthRef.current, lastInterimLengthRef.current);
+        }
+
+        const textToInsert = isFinal ? transcript + " " : transcript;
+        const newInsertIndex = cursorIndex - lastInterimLengthRef.current;
+        editor.insertText(newInsertIndex, textToInsert);
+        editor.setSelection(newInsertIndex + textToInsert.length);
+
+        if (isFinal) {
+            lastInterimLengthRef.current = 0;
+            setValue(name, editor.root.innerHTML, { shouldValidate: true, shouldDirty: true });
+        } else {
+            lastInterimLengthRef.current = textToInsert.length;
+        }
+    };
+
+    const handleImproveSelection = async () => {
+        if (!selectedRange || selectedRange.length === 0) return;
+
+        improvingText.onTrue();
+
+        try {
+            const editor = quillRef.current.getEditor();
+            const delta = editor.getContents(selectedRange.index, selectedRange.length);
+
+            const tempContainer = document.createElement('div');
+            const tempQuill = new ReactQuill.Quill(tempContainer);
+            tempQuill.setContents(delta);
+            const selectedHtml = tempQuill.root.innerHTML;
+
+            const prompt = `Instrucción: Eres un editor de texto enriquecido experto. Tu objetivo es mejorar la redacción, gramática y coherencia del texto, y además aplicar un estilo visual profesional.
+
+                REGLAS:
+                1. Mantén la estructura de etiquetas original, pero siéntete libre de añadir etiquetas <strong> para resaltar conceptos clave, <em> para énfasis y <span style="color: ..."> para dar un toque de color elegante a palabras importantes.
+                2. No apliques estilos a todo el texto; busca un equilibrio que mejore la legibilidad y el impacto visual.
+                3. Si detectas texto que represente una lista, asegúrate de usar el formato HTML correcto (<ul>, <ol>, <li>).
+                4. Si un <span> existente tiene un atributo 'style', mantenlo o mejóralo si es necesario para la coherencia visual.
+                5. Analiza el texto y añade saltos de línea o divisiones de párrafo siempre que lo consideres necesario para mejorar la legibilidad y estructura.
+                6. Devuelve EXCLUSIVAMENTE el HTML resultante. No incluyas explicaciones ni bloques de código markdown.
+
+                HTML a procesar:
+                ${selectedHtml}`;
+
+            const response = await ImproveTextAndWriting({ text: prompt });
+
+            if (response.data.exito) {
+                let improvedResult = response.data.datos;
+                improvedResult = improvedResult.replace(/^```html/, "").replace(/```$/, "").trim();
+
+                editor.deleteText(selectedRange.index, selectedRange.length);
+                editor.clipboard.dangerouslyPasteHTML(selectedRange.index, improvedResult);
+
+                toast.success("Redacción mejorada", {
+                    icon: '📝',
+                    style: { borderRadius: '10px', background: '#333', color: '#fff' },
+                });
+
+                setSelectedRange(null);
+            }
+        } catch (error) {
+            toast.error("Error al procesar la mejora");
+            console.error(error);
+        } finally {
+            setTimeout(() => improvingText.onFalse(), 300);
+        }
     };
 
     return (
-        <FormControl error={!!error} fullWidth disabled={disabled}>
+        <>
             {label && (
-                <Box sx={{ flex: 'column', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="h4" sx={{ mb: 1.5, color: disabled ? theme.palette.text.disabled : 'inherit' }}>{label}</Typography>
-                    <Divider />
-                </Box>
+                <InputLabel shrink sx={{ fontSize: "1.1rem", fontWeight: "bold", mb: 1, color: "text.primary", position: "static", transform: "none" }}>
+                    {label}
+                </InputLabel>
             )}
 
-            <Box
-                sx={{
-                    border: '1px solid',
-                    borderColor: disabled ? theme.palette.action.disabled : (error ? theme.palette.error.main : theme.palette.grey[400]),
-                    borderRadius: `${theme.shape.borderRadius}px`,
-                    '&:hover': {
-                        borderColor: disabled ? theme.palette.action.disabled : (error ? theme.palette.error.dark : theme.palette.primary.main),
-                    },
-                    '&:focus-within': {
-                        borderColor: disabled ? theme.palette.action.disabled : theme.palette.primary.main,
-                        boxShadow: disabled ? 'none' : `0 0 0 2px ${theme.palette.primary.light}`,
-                    },
-                    minHeight: '300px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    bgcolor: disabled ? theme.palette.action.hover : theme.palette.background.paper,
-                    cursor: disabled ? 'not-allowed' : 'default',
-                }}
-            >
-                <Editor
-                    editorState={editorState}
-                    onEditorStateChange={onEditorStateChange}
-                    readOnly={disabled}
-                    wrapperClassName="wrapper-class"
-                    editorClassName="editor-class"
-                    toolbarClassName="toolbar-class"
-                    placeholder={placeholder}
-                    toolbar={{
-                        options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'image', 'remove', 'history'],
-                        inline: { inDropdown: false },
-                        list: { inDropdown: false },
-                        textAlign: { inDropdown: false },
-                        link: { inDropdown: false },
-                        history: { inDropdown: false },
-                    }}
-                    editorStyle={{
-                        padding: '0 16px',
-                        minHeight: '100px',
-                    }}
-                    toolbarStyle={{
-                        border: 'none',
-                        borderBottom: `1px solid ${theme.palette.grey[300]}`,
-                        marginBottom: 0,
-                        backgroundColor: disabled ? theme.palette.action.disabledBackground : theme.palette.grey[50],
-                        display: disabled ? 'none' : 'flex'
-                    }}
-                    {...other}
-                />
-            </Box>
-            {error && <FormHelperText>{error.message}</FormHelperText>}
-        </FormControl>
+            <Controller
+                name={name}
+                control={control}
+                defaultValue={defaultValue}
+                render={({ field, fieldState: { error } }) => (
+                    <>
+                        <Box sx={{
+                            "& .ql-toolbar": {
+                                borderTopLeftRadius: "8px",
+                                borderTopRightRadius: "8px",
+                                borderColor: error ? "error.main" : "divider",
+                                backgroundColor: "#f8f9fa"
+                            },
+                            "& .ql-container": {
+                                borderBottomLeftRadius: "8px",
+                                borderBottomRightRadius: "8px",
+                                borderColor: error ? "error.main" : "divider",
+                                minHeight: "200px",
+                                fontSize: '16px'
+                            },
+                            "& .ql-editor": { minHeight: "180px" }
+                        }}>
+                            <ReactQuill
+                                ref={quillRef}
+                                theme="snow"
+                                value={field.value || ""}
+                                onChange={(content) => field.onChange(content)}
+                                onBlur={field.onBlur}
+                                onChangeSelection={handleSelectionChange}
+                                modules={modules}
+                                placeholder="Escribe aquí o usa el dictado por voz..."
+                                readOnly={disabled}
+                            />
+                        </Box>
+
+                        {error && <FormHelperText error sx={{ ml: 1, mt: 0.5 }}>{error.message}</FormHelperText>}
+                    </>
+                )}
+            />
+
+            {!disabled &&
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12}>
+                        <AIProcessingStatus isProcessing={improvingText.value} />
+                    </Grid>
+
+                    <Grid item>
+                        <AnimateButton>
+                            <Tooltip title={improvingText.value ? "Mejorando..." : "Mejorar Selección"} placement="top">
+                                <span>
+                                    <IconButton
+                                        disabled={!selectedRange || selectedRange.length === 0 || improvingText.value}
+                                        onClick={handleImproveSelection}
+                                        color="error"
+                                        sx={{
+                                            boxShadow: 3,
+                                            bgcolor: 'background.paper',
+                                            '&:hover': { bgcolor: 'background.paper', boxShadow: 8 },
+                                            ...(improvingText.value && {
+                                                animation: 'rotate 2s linear infinite',
+                                                '@keyframes rotate': {
+                                                    '0%': { transform: 'rotate(0deg)' },
+                                                    '100%': { transform: 'rotate(360deg)' }
+                                                }
+                                            })
+                                        }}
+                                    >
+                                        <Iconify
+                                            icon={improvingText.value ? "eos-icons:loading" : "fluent:draw-text-24-filled"}
+                                            width={24}
+                                        />
+                                    </IconButton>
+                                </span>
+                            </Tooltip>
+                        </AnimateButton>
+                    </Grid>
+
+                    <Grid item>
+                        <ControlVoiceDictation
+                            onTranscript={handleVoiceResult}
+                            disabled={selectedRange !== null || improvingText.value}
+                        />
+                    </Grid>
+                </Grid>
+            }
+        </>
     );
-};
-
-RichTextEditor.propTypes = {
-    value: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    error: PropTypes.object,
-    label: PropTypes.string,
-    placeholder: PropTypes.string,
-    disabled: PropTypes.bool,
-};
-
-const InputTextEditor = ({ name, label, defaultValue = "", disabled = false, ...other }) => {
-    return (
-        <Controller
-            name={name}
-            defaultValue={defaultValue}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <RichTextEditor
-                    value={value}
-                    onChange={onChange}
-                    error={error}
-                    label={label}
-                    placeholder="Digite el texto"
-                    disabled={disabled}
-                    {...other}
-                />
-            )}
-        />
-    );
-};
-
-InputTextEditor.propTypes = {
-    name: PropTypes.string.isRequired,
-    label: PropTypes.string,
-    defaultValue: PropTypes.string,
-    disabled: PropTypes.bool,
-};
-
-export default InputTextEditor;
+}

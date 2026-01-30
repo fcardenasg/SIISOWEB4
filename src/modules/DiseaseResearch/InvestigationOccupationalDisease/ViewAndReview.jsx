@@ -44,6 +44,7 @@ import {
     WorkHistoryDLTD,
     WorkHistoryOtherCompanies
 } from './OtherComponents';
+import { ChangeStatusAssignment } from 'api/clients/ResearchAssignmentClient';
 
 const FadeShell = ({ children }) => (
     <motion.div
@@ -77,6 +78,7 @@ const ViewAndReview = () => {
     const { setValue, watch } = methods;
     const idInvestigation = watch('id');
     const documento = watch('documento');
+    const listFirma = watch('listFirma');
 
     useEffect(() => {
         async function getData() {
@@ -196,6 +198,19 @@ const ViewAndReview = () => {
         }
     ];
 
+    const handleApprove = async () => {
+        try {
+            const result = await ChangeStatusAssignment(5, id);
+            if (result.data.exito) {
+                navigate(`/investigation-occupational-disease/view`);
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error("Error al cambiar el estado");
+        }
+    };
+
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
             <AnimatePresence mode="wait">
@@ -253,7 +268,20 @@ const ViewAndReview = () => {
                                             <Grid container spacing={2}>
                                                 <Grid item xs={6} md={4} lg={2}>
                                                     <AnimateButton>
-                                                        <Button disabled={!disabledButton.value} variant="contained" onClick={handleClickReturn} fullWidth>
+                                                        <Button
+                                                            disabled={listFirma?.some((item) => !item.firma || item.cambioRegistro) || dataModel.estadoInvestigacion === 5}
+                                                            variant="contained"
+                                                            fullWidth
+                                                            onClick={handleApprove}
+                                                        >
+                                                            Aprobar
+                                                        </Button>
+                                                    </AnimateButton>
+                                                </Grid>
+
+                                                <Grid item xs={6} md={4} lg={2}>
+                                                    <AnimateButton>
+                                                        <Button disabled={!disabledButton.value || dataModel.estadoInvestigacion === 5} variant="contained" onClick={handleClickReturn} fullWidth>
                                                             Devolver
                                                         </Button>
                                                     </AnimateButton>

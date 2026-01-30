@@ -1,7 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddIcon from '@mui/icons-material/Add';
+import IconSend from '@mui/icons-material/Send';
 import {
     Button,
+    CircularProgress,
     Divider,
     FormHelperText,
     Grid,
@@ -10,11 +12,15 @@ import {
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { DeleteDetailResearchAssignment, GetAllDetailResearchAssignment, GetByIdResearchAssignment, InsertDetailResearchAssignment, InsertResearchAssignment, UpdateResearchAssignments } from 'api/clients/ResearchAssignmentClient';
+import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
+import { DeleteDetailResearchAssignment, GetAllDetailResearchAssignment, GetByIdResearchAssignment, InsertDetailResearchAssignment, SendAssignmentNotificationForward, UpdateCloseResearchAssignment, UpdateResearchAssignments } from 'api/clients/ResearchAssignmentClient';
 import { GetAllComboAsesorInvestigacion } from 'api/clients/UserClient';
 import { ParamDelete } from 'components/alert/AlertAll';
+import RightDrawer from 'components/components/RightDrawer';
+import ControlModal from 'components/controllers/ControlModal';
 import {
     AccionMenu,
     CodCatalogo,
@@ -22,14 +28,14 @@ import {
     Modulo,
     TitleButton
 } from 'components/helpers/Enums';
-import { FormatDate } from 'components/helpers/Format';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 import InputOnChange from 'components/input/InputOnChange';
 import InputSelect from 'components/input/InputSelect';
+import UpdateSkeleton from 'components/Skeleton/UpdateSkeleton';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -40,10 +46,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
 import DetailRA from './DetailRA';
-import { GetAllSegmentoAgrupado, GetAllBySubsegment, GetAllBySegmentoAfectado } from 'api/clients/OthersClients';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import UpdateSkeleton from 'components/Skeleton/UpdateSkeleton';
-import ReasonAlert from './ReasonAlert';
+import ReasonAlert, { ReasonAlertModal } from './ReasonAlert';
 
 const buttonVariants = {
     hover: {
@@ -60,6 +63,7 @@ const validationSchema = yup.object().shape({
     fecha: yup.date().required("La fecha es requerida"),
     documento: yup.string().required("El documento es requerido"),
     investigador: yup.array().min(1, "Debe seleccionar al menos un investigador"),
+    asesorARL: yup.array().min(1, "Debe seleccionar al menos un asesor ARL"),
     listaDetalle: yup.array().required("Se requiere al menos un diagnóstico"),
 });
 
@@ -70,9 +74,14 @@ const UpdateResearchAssignment = () => {
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const loadingModulo = useBoolean(false);
     const timeWait = useBoolean(false);
+    const loadingSendNotification = useBoolean(false);
+    const openModalDevoluciones = useBoolean(false);
+    const openModalNotificacion = useBoolean(false);
 
+    const [updateCompleted, setUpdateCompleted] = useState(false);
     const [textDx, setTextDx] = useState("");
     const [modelEmployee, setModelEmployee] = useState([]);
+    const [lsUsuarioReenviarNotificacion, setLsUsuarioReenviarNotificacion] = useState([]);
     const [lsInvestigacion, setLsInvestigacion] = useState([]);
     const [lsAsesorARL, setLsAsesorARL] = useState([]);
     const [lsDx, setLsDx] = useState([]);
@@ -85,6 +94,7 @@ const UpdateResearchAssignment = () => {
     const [lsRegion, setLsRegion] = useState([]);
     const [lsResultadoOrigen, setLsResultadoOrigen] = useState([]);
     const [lsInvestigacionEL, setLsInvestigacionEL] = useState([]);
+    const [idsUsuario, setIdsUsuario] = useState([]);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
     const { handleSubmit, formState: { errors }, watch, setError, resetField, setValue } = methods;
@@ -96,6 +106,10 @@ const UpdateResearchAssignment = () => {
     const idSubsegmento = watch("idSubsegmento");
     const idRegion = watch("idRegion");
     const idLateralidad = watch("idLateralidad");
+    const usuarioReenviarNotificacion = watch("usuarioReenviarNotificacion");
+
+    const devolucionesCerradas = dataModel?.asignacionInvestigacionInvAses?.filter((item) => item.esDevolucion && item.cerroDevolucion);
+    const devolucionesAbiertas = dataModel?.asignacionInvestigacionInvAses?.filter((item) => item.esDevolucion && !item.cerroDevolucion);
 
     useEffect(() => {
         async function getCombo() {
@@ -105,6 +119,9 @@ const UpdateResearchAssignment = () => {
 
                 const lsServerAsesorARL = await GetAllComboAsesorInvestigacion(true);
                 setLsAsesorARL(lsServerAsesorARL.data);
+
+                const combinedUsers = [...lsServerInvestigacion.data, ...lsServerAsesorARL.data];
+                setLsUsuarioReenviarNotificacion(Array.from(new Map(combinedUsers.map((item) => [item.value, item])).values()));
 
                 const lsServerResultadoOrigen = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_RESULTADO_EN_ORIGEN);
                 setLsResultadoOrigen(lsServerResultadoOrigen.data);
@@ -144,6 +161,29 @@ const UpdateResearchAssignment = () => {
         getCombo();
     }, []);
 
+    useEffect(() => {
+        async function getData() {
+            try {
+                const lsServer = await GetByIdResearchAssignment(id);
+                if (lsServer.data.exito) {
+                    const datos = lsServer.data.datos;
+                    handleLoadingDocument({ target: { value: datos.documento } });
+                    setValue('id', datos.id);
+                    setDataModel(datos);
+                    setValue('documento', datos.documento);
+                    setValue('investigador', datos.investigador);
+                    setValue('asesorARL', datos.asesorARL);
+                    setIdsUsuario([...new Set([...datos.investigador, ...datos.asesorARL])]);
+                    setTimeout(timeWait.onTrue, 1500);
+                }
+            } catch (error) {
+                toast.error(error.message || "Error al cargar los datos");
+            }
+        }
+
+        getData();
+    }, [updateCompleted]);
+
     const handleLoadingDocument = async (idEmployee) => {
         try {
             var lsServerEmployee = await GetByIdEmployee(idEmployee.target.value);
@@ -159,28 +199,6 @@ const UpdateResearchAssignment = () => {
             toast.error(Message.ErrorDeDatos);
         }
     }
-
-    useEffect(() => {
-        async function getData() {
-            try {
-                const lsServer = await GetByIdResearchAssignment(id);
-                if (lsServer.data.datos) {
-                    const datos = lsServer.data.datos;
-                    setValue('id', datos.id);
-                    setDataModel(datos);
-                    setValue('documento', datos.documento);
-                    handleLoadingDocument({ target: { value: datos.documento } });
-                    setValue("investigador", datos.investigador);
-                    setValue("asesorARL", datos.asesorARL);
-                    setTimeout(timeWait.onTrue, 300);
-                }
-            } catch (error) {
-                toast.error(error.message || "Error al cargar los datos");
-            }
-        }
-
-        getData();
-    }, []);
 
     async function getDxEmployee() {
         try {
@@ -282,8 +300,10 @@ const UpdateResearchAssignment = () => {
     const handleClick = async (datos) => {
         try {
             const result = await UpdateResearchAssignments(datos);
-            if (result.data.exito)
+            if (result.data.exito) {
                 toast.success(result.data.mensaje);
+                setUpdateCompleted(!updateCompleted);
+            }
             else
                 toast.error(result.data.mensaje);
         } catch (error) {
@@ -291,18 +311,47 @@ const UpdateResearchAssignment = () => {
         }
     };
 
+    const handleClickClose = async (idInvAses) => {
+        try {
+            const result = await UpdateCloseResearchAssignment(idInvAses);
+            if (result.data.exito) {
+                setDataModel(prev => ({
+                    ...prev,
+                    asignacionInvestigacionInvAses: prev.asignacionInvestigacionInvAses.map(item =>
+                        item.id === idInvAses ? { ...item, cerroDevolucion: true } : item
+                    )
+                }));
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al cerrar la asignación de investigación");
+        }
+    };
+
+    const handleSendNotification = async () => {
+        try {
+            loadingSendNotification.onTrue();
+            const result = await SendAssignmentNotificationForward(usuarioReenviarNotificacion, id);
+            if (result.data.exito) {
+                setTimeout(() => {
+                    toast.success(result.data.mensaje, { autoClose: 6000 });
+                    loadingSendNotification.onFalse();
+                    openModalNotificacion.onFalse();
+                    resetField("usuarioReenviarNotificacion");
+                }, 500);
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al enviar la notificación");
+        }
+    };
+
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
-            {timeWait.value ?
-                <FormProvider {...methods}>
+            <FormProvider {...methods}>
+                {timeWait.value ?
                     <Grid container spacing={2}>
-                        {dataModel?.isDevolver &&
-                            <Grid item xs={12}>
-                                <ReasonAlert reason={dataModel?.nameMotivoDevolver} observation={dataModel?.observacionDevolver} />
-                            </Grid>
-                        }
-
-                        <Grid item xs={12} sx={{ mt: dataModel?.isDevolver && 2 }}>
+                        <Grid item xs={12}>
                             <ViewEmployee
                                 disabled
                                 errors={errors}
@@ -318,6 +367,24 @@ const UpdateResearchAssignment = () => {
                         <Grid item xs={12}>
                             <SubCard>
                                 <Grid container spacing={2}>
+                                    <Grid item xs={12} sx={{ mb: devolucionesAbiertas?.length > 0 && 2 }}>
+                                        <Grid container spacing={2}>
+                                            <AnimatePresence>
+                                                {devolucionesAbiertas?.map((item) => (
+                                                    <Grid item xs={12} key={item.id} component={motion.div} layout>
+                                                        <ReasonAlert
+                                                            reason={item.nombreMotivo}
+                                                            observation={item.observacion}
+                                                            date={new Date(item?.fechaModifico).toLocaleString()}
+                                                            user={item.usuarioModifico}
+                                                            onClose={() => handleClickClose(item.id)}
+                                                        />
+                                                    </Grid>
+                                                ))}
+                                            </AnimatePresence>
+                                        </Grid>
+                                    </Grid>
+
                                     <Grid item xs={12} md={6} lg={3}>
                                         <InputDatePicker
                                             label="Fecha"
@@ -539,9 +606,9 @@ const UpdateResearchAssignment = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} sx={{ mt: 2 }}>
                                         <Grid container spacing={2}>
-                                            <Grid item xs={2}>
+                                            <Grid item xs={6} md={4} lg={2}>
                                                 <AnimateButton>
                                                     <Button variant="contained" onClick={handleSubmit(handleClick)} fullWidth>
                                                         {TitleButton.Actualizar}
@@ -549,7 +616,23 @@ const UpdateResearchAssignment = () => {
                                                 </AnimateButton>
                                             </Grid>
 
-                                            <Grid item xs={2}>
+                                            <Grid item xs={6} md={4} lg={2}>
+                                                <AnimateButton>
+                                                    <Button variant="contained" onClick={openModalDevoluciones.onTrue} fullWidth disabled={devolucionesCerradas?.length === 0}>
+                                                        Devoluciones
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={6} md={4} lg={2}>
+                                                <AnimateButton>
+                                                    <Button variant="contained" onClick={openModalNotificacion.onTrue} fullWidth>
+                                                        Notificar
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={6} md={4} lg={2}>
                                                 <AnimateButton>
                                                     <Button variant="outlined" fullWidth onClick={() => navigate("/research-assignment/list")}>
                                                         {TitleButton.Cancelar}
@@ -561,9 +644,64 @@ const UpdateResearchAssignment = () => {
                                 </Grid>
                             </SubCard>
                         </Grid>
+                    </Grid> : <UpdateSkeleton />
+                }
+
+                <ControlModal
+                    open={openModalNotificacion.value}
+                    onClose={openModalNotificacion.onFalse}
+                    title="Reenvio de Notificación"
+                    width={500}
+                >
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <InputMultiselectTwo
+                                checkbox
+                                name="usuarioReenviarNotificacion"
+                                label="Usuario para reenvio de notificación"
+                                options={lsUsuarioReenviarNotificacion.filter((item) => idsUsuario.includes(item.value))}
+                            />
+                        </Grid>
+
+                        <Grid item>
+                            <AnimateButton>
+                                <Button
+                                    variant="contained"
+                                    fullWidth
+                                    size={matchesXS ? 'small' : 'medium'}
+                                    onClick={handleSendNotification}
+                                    endIcon={loadingSendNotification.value ? <CircularProgress size={20} color="inherit" /> : <IconSend />}
+                                    disabled={!usuarioReenviarNotificacion?.length || loadingSendNotification.value}
+                                >
+                                    Notificar por correo
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
                     </Grid>
-                </FormProvider> : <UpdateSkeleton />
-            }
+                </ControlModal>
+            </FormProvider>
+
+            <RightDrawer
+                open={openModalDevoluciones.value}
+                onClose={openModalDevoluciones.onFalse}
+                title="Devoluciones"
+                width={500}
+            >
+                <Grid container spacing={2}>
+                    <AnimatePresence>
+                        {devolucionesCerradas?.map((item) => (
+                            <Grid item xs={12} key={item.id} component={motion.div} layout>
+                                <ReasonAlertModal
+                                    reason={item.nombreMotivo}
+                                    observation={item.observacion}
+                                    date={new Date(item?.fechaModifico).toLocaleString()}
+                                    user={item.usuarioModifico}
+                                />
+                            </Grid>
+                        ))}
+                    </AnimatePresence>
+                </Grid>
+            </RightDrawer>
         </ValidateActionSkeleton>
     );
 };

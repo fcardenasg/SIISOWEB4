@@ -17,7 +17,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
     const methods = useForm();
     const navigate = useNavigate();
-    const { watch, setValue } = methods;
+    const { watch, setValue, resetField } = methods;
     const sectionComment = watch('sectionComment');
     const textImprove = watch('comentario');
 
@@ -57,7 +57,11 @@ const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
     };
 
     return (
-        <ControlModal open={open} onClose={handleClose} maxWidth="xl" title="Agregar comentario">
+        <ControlModal open={open} onClose={() => {
+            handleClose();
+            resetField("sectionComment");
+            resetField("comentario");
+        }} maxWidth="xl" title="Agregar comentario">
             <FormProvider {...methods}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6} lg={expanded ? 6 : 4} sx={gridTransition}>

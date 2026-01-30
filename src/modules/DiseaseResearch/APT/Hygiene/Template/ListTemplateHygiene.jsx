@@ -39,7 +39,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { DeleteResearchAssignment, GetAllResearchAssignment } from 'api/clients/ResearchAssignmentClient';
+import { DeleteResearchAssignment } from 'api/clients/ResearchAssignmentClient';
 import Cargando from 'components/loading/Cargando';
 import EmptyState from 'components/loading/EmptyState';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
@@ -204,7 +204,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListAPTPsychosocial = () => {
+const ListTemplateHygiene = () => {
     const navigate = useNavigate();
     const [lsModelData, setLsModelData] = useState([]);
     const [idCheck, setIdCheck] = useState('');
@@ -222,7 +222,7 @@ const ListAPTPsychosocial = () => {
     async function getAll() {
         try {
             setLoading(true);
-            const lsServer = await GetAllResearchAssignment();
+            /* const lsServer = await GetAllResearchAssignment();
             setTimeout(() => {
                 if (lsServer.data.exito) {
                     setLsModelData(lsServer.data.datos);
@@ -230,8 +230,9 @@ const ListAPTPsychosocial = () => {
                 } else {
                     toast.error(lsServer.data.mensaje);
                 }
-                setLoading(false);
-            }, 1000);
+            }, 1000); */
+
+            setLoading(false);
         } catch (error) {
             setLoading(false);
         }
@@ -335,7 +336,7 @@ const ListAPTPsychosocial = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsModelData.length) : 0;
 
     return (
-        <MainCard title={<>Lista de APT Psicosocial</>} content={false}>
+        <MainCard title={<>Lista de plantillas de APT Higiene</>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -359,7 +360,7 @@ const ListAPTPsychosocial = () => {
                             <Grid item xs={6}>
                                 <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={() => navigate("/research-assignment/add")}>
+                                        onClick={() => navigate("/apt-hygiene/template/add")}>
                                         {TitleButton.Agregar}
                                     </Button>
                                 </ValidateAction>
@@ -367,7 +368,7 @@ const ListAPTPsychosocial = () => {
 
                             <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/apt/view")}>
+                                    onClick={() => navigate("/apt-hygiene/view")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
@@ -519,7 +520,7 @@ const ListAPTPsychosocial = () => {
 
                                                 <TableCell align="center">
                                                     <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.AsignacionInvestigacion}>
-                                                        <Tooltip disableInteractive placement="top" title="Actualizar" onClick={() => navigate(`/research-assignment/update/${row.id}`)}>
+                                                        <Tooltip disableInteractive placement="top" title="Actualizar" onClick={() => navigate(`/apt-hygiene/template/update/${row.id}`)}>
                                                             <IconButton size="large">
                                                                 <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                             </IconButton>
@@ -561,4 +562,4 @@ const ListAPTPsychosocial = () => {
     );
 };
 
-export default ListAPTPsychosocial;
+export default ListTemplateHygiene;

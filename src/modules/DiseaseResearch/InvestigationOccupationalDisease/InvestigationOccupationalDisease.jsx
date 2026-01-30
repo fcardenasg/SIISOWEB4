@@ -18,7 +18,7 @@ import StickyActionBar from 'components/StickyActionBar/StickyActionBar';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -50,16 +50,11 @@ import { ColorDrummondltd } from 'themes/colors';
 
 const FadeShell = ({ children }) => (
     <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 8 }}
-        transition={{
-            duration: 0.28,
-            ease: [0.16, 1, 0.3, 1]
-        }}
-        style={{
-            willChange: "opacity, transform"
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.15, ease: "linear" }}
+        style={{ width: '100%' }}
     >
         {children}
     </motion.div>
@@ -80,6 +75,7 @@ const InvestigationOccupationalDisease = () => {
     const { handleSubmit, setValue, watch } = methods;
     const idInvestigation = watch('id');
     const documento = watch('documento');
+    const estadoInvestigacion = watch('estadoInvestigacion');
 
     useEffect(() => {
         async function getData() {
@@ -94,6 +90,7 @@ const InvestigationOccupationalDisease = () => {
 
                     setValue('idAsignacion', id);
                     setValue('documento', datos.documento);
+                    setValue('estadoInvestigacion', datos.estadoInvestigacion);
                     setDataModel(datos);
                     setTimeout(timeWait.onTrue, 200);
                 }
@@ -104,6 +101,16 @@ const InvestigationOccupationalDisease = () => {
 
         getData();
     }, []);
+
+    const [canRenderContent, setCanRenderContent] = useState(false);
+
+    useEffect(() => {
+        if (timeWait.value) {
+            // Esperamos a que la animación de entrada termine para renderizar los hijos pesados
+            const timer = setTimeout(() => setCanRenderContent(true), 100);
+            return () => clearTimeout(timer);
+        }
+    }, [timeWait.value]);
 
     const handleClick = async (datos) => {
         try {
@@ -124,7 +131,7 @@ const InvestigationOccupationalDisease = () => {
         }
     };
 
-    const ArrayAccordion = [
+    const ArrayAccordion = useMemo(() => [
         {
             title: { icon: "clarity:employee-line", text: "Datos de la empresa" },
             content: <CompanyDetails dataModel={dataModel} matchesXS={matchesXS} />
@@ -187,10 +194,15 @@ const InvestigationOccupationalDisease = () => {
             title: { icon: "covid:social-distancing-correct-3", text: "Acciones preventivas o correctivas" },
             content: <PreventiveActions methods={methods} />
         }
-    ];
+    ], [dataModel, matchesXS, documento, methods]);
 
     async function handleClose(estado) {
         try {
+            if (estadoInvestigacion === 3) {
+                navigate("/investigation-occupational-disease/view");
+                return;
+            }
+
             if (estado === 3) {
                 const { isConfirmed } = await Swal.fire({
                     title: 'Cerrar Caso',
@@ -212,7 +224,6 @@ const InvestigationOccupationalDisease = () => {
             } else {
                 toast.error(response.data.mensaje);
             }
-
         } catch (error) {
             toast.error(error.message || "Error al procesar la solicitud");
         }
@@ -221,13 +232,7 @@ const InvestigationOccupationalDisease = () => {
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.InvestigacionEnfermedadLaboral}>
             <AnimatePresence mode="wait">
-                {!timeWait.value && (
-                    <FadeShell key="loading-shell">
-                        <InvestigationSkeleton small />
-                    </FadeShell>
-                )}
-
-                {timeWait.value && (
+                {timeWait.value ? (
                     <FormProvider {...methods}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -242,7 +247,7 @@ const InvestigationOccupationalDisease = () => {
                                 <StickyActionBar
                                     onClickSave={handleSubmit(handleClick)}
                                     onClickUpdate={handleSubmit(handleClick)}
-                                    disabledUpdate={!disabledButton.value || disabledButtonSave.value}
+                                    disabledUpdate={!disabledButton.value || disabledButtonSave.value || estadoInvestigacion === 3}
                                     disabledSave={disabledButton.value || disabledButtonSave.value}
                                     showButton={false}
                                     threshold={325}
@@ -253,6 +258,7 @@ const InvestigationOccupationalDisease = () => {
                                         {ArrayAccordion.map((item, index) => (
                                             <Grid item xs={12} key={index}>
                                                 <Accordion
+                                                    slotProps={{ transition: { unmountOnExit: true } }}
                                                     disabled={disabledButtonSave.value}
                                                     title={
                                                         <>
@@ -263,7 +269,7 @@ const InvestigationOccupationalDisease = () => {
                                                         </>
                                                     }
                                                 >
-                                                    {item.content}
+                                                    {canRenderContent ? item.content : <CircularProgress size={20} sx={{ m: 2 }} />}
                                                 </Accordion>
                                             </Grid>
                                         ))}
@@ -288,7 +294,7 @@ const InvestigationOccupationalDisease = () => {
                                                         <Button
                                                             variant="outlined"
                                                             fullWidth
-                                                            disabled={disabledButtonSave.value}
+                                                            disabled={disabledButtonSave.value || !idInvestigation || estadoInvestigacion === 3}
                                                             onClick={() => handleClose(3)}
                                                         >
                                                             {TitleButton.Cancelar} Investigación
@@ -302,6 +308,10 @@ const InvestigationOccupationalDisease = () => {
                             </Grid>
                         </Grid>
                     </FormProvider>
+                ) : (
+                    <FadeShell key="loading-shell">
+                        <InvestigationSkeleton small />
+                    </FadeShell>
                 )}
             </AnimatePresence>
         </ValidateActionSkeleton>

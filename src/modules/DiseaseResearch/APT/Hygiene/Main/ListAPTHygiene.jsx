@@ -336,7 +336,7 @@ const ListAPTHygiene = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsModelData.length) : 0;
 
     return (
-        <MainCard title={<><Typography variant="h4">Lista de Plan de Rehabilitación</Typography></>} content={false}>
+        <MainCard title={<><Typography variant="h4">Lista de APT Higiene</Typography></>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -360,7 +360,7 @@ const ListAPTHygiene = () => {
                             <Grid item xs={6}>
                                 <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={() => navigate("/rehabilitation-plan/add")}>
+                                        onClick={() => navigate("/apt-hygiene/add")}>
                                         {TitleButton.Agregar}
                                     </Button>
                                 </ValidateAction>
@@ -368,7 +368,7 @@ const ListAPTHygiene = () => {
 
                             <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/disease-research/view")}>
+                                    onClick={() => navigate("/apt-hygiene/view")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>

@@ -13,7 +13,6 @@ import { ParamDelete } from 'components/alert/AlertAll';
 export const useInvestigationData = (viewMode) => {
     const navigate = useNavigate();
 
-    // Estados principales
     const [numStatus, setNumStatus] = useState(null);
     const [idAssignment, setIdAssignment] = useState(null);
     const [filter, setFilter] = useState(1);
@@ -27,7 +26,6 @@ export const useInvestigationData = (viewMode) => {
 
     const itemsPerPage = viewMode === 'list' ? 4 : 6;
 
-    // Validación inicial de filtros
     useEffect(() => {
         async function validate() {
             try {
@@ -42,7 +40,6 @@ export const useInvestigationData = (viewMode) => {
         validate();
     }, []);
 
-    // Obtención de datos según el filtro
     const getData = async () => {
         try {
             setLoading(true);
@@ -52,6 +49,7 @@ export const useInvestigationData = (viewMode) => {
             const result = await GetAllByDataResearcher(filter);
             if (result.data.exito) {
                 setDataModel(result.data.datos);
+                console.log(result.data.datos);
             } else if (result.data.mensaje !== 'NOPERMITIDO') {
                 setDataModel([]);
                 toast.error(result.data.mensaje);
@@ -69,7 +67,6 @@ export const useInvestigationData = (viewMode) => {
         getData();
     }, [filter]);
 
-    // Filtrado de datos por búsqueda
     const filteredData = useMemo(() => {
         if (!searchTerm) return dataModel;
         const term = searchTerm.toLowerCase();
@@ -80,14 +77,12 @@ export const useInvestigationData = (viewMode) => {
         );
     }, [dataModel, searchTerm]);
 
-    // Paginación
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const paginatedData = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         return filteredData.slice(startIndex, startIndex + itemsPerPage);
     }, [filteredData, currentPage, itemsPerPage]);
 
-    // Manejadores de acciones
     const handleFilter = (event) => {
         setFilter(event.target.value);
         setCurrentPage(1);
@@ -120,6 +115,12 @@ export const useInvestigationData = (viewMode) => {
 
     const handleGoAttention = async (idAsignacion) => {
         try {
+            const estadoInvestigacion = dataModel.find((item) => item.id === idAsignacion)?.estadoInvestigacion;
+            if (estadoInvestigacion === 3) {
+                navigate(`/investigation-occupational-disease/investigate/${idAsignacion}`);
+                return;
+            }
+
             const result = await ChangeStatusAssignment(2, idAsignacion);
             if (result.data.exito) {
                 navigate(`/investigation-occupational-disease/investigate/${idAsignacion}`);
@@ -132,7 +133,6 @@ export const useInvestigationData = (viewMode) => {
     };
 
     return {
-        // Estados
         numStatus,
         idAssignment,
         setIdAssignment,
@@ -150,7 +150,6 @@ export const useInvestigationData = (viewMode) => {
         filteredData,
         totalPages,
 
-        // Acciones
         getData,
         handleFilter,
         handlePageChange,

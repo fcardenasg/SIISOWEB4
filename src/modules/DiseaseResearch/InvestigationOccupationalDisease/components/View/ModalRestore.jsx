@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -12,6 +12,8 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { RestoreResearchAssignment } from 'api/clients/ResearchAssignmentClient';
 import toast from 'react-hot-toast';
+import { CodCatalogo } from 'components/helpers/Enums';
+import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -25,23 +27,31 @@ const ModalRestore = ({ open, onClose, idAssignment, getData }) => {
         },
     });
 
-    const returnReasons = [
-        { label: 'Ocupación incorrecta', value: 'OCUPACION_INCORRECTA' },
-        { label: 'Sobrecarga laboral', value: 'SOBRECARGA_LABORAL' },
-        { label: 'Falta de documentación soporte', value: 'FALTA_DOCUMENTACION' },
-        { label: 'Información inconsistente', value: 'INFORMACION_INCONSISTENTE' },
-        { label: 'Error en la asignación geográfica', value: 'ERROR_GEOGRAFICO' },
-        { label: 'Conflicto de intereses', value: 'CONFLICTO_INTERESES' },
-        { label: 'Otros', value: 'OTROS' },
-    ];
+    const [lsCombo, setLsCombo] = useState([]);
+
+    useEffect(() => {
+        const fetchCombo = async () => {
+            try {
+                const lsServer = await GetByTipoCatalogoCombo(CodCatalogo.IEL_MOTIVODEVOLUCION);
+                setLsCombo(lsServer.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        if (open) {
+            fetchCombo();
+        }
+    }, [open]);
+
 
     const handleSubmitForm = async (values) => {
         try {
-            values.id = idAssignment;
+            values.idAsignacionInvestigacion = idAssignment;
 
             const result = await RestoreResearchAssignment(values);
             if (result.data.exito) {
-                toast.success(result.data.mensaje);
+                toast.success("Se devolvió la asignación correctamente");
                 reset();
                 onClose();
                 getData();
@@ -67,7 +77,7 @@ const ModalRestore = ({ open, onClose, idAssignment, getData }) => {
             <DialogTitle sx={{ fontWeight: 600 }}>Devolver Asignación de Investigación</DialogTitle>
             <DialogContent dividers>
                 <Controller
-                    name="motivoDevolver"
+                    name="idMotivolDevolucion"
                     control={control}
                     rules={{ required: 'Por favor seleccione un motivo' }}
                     render={({ field, fieldState: { error } }) => (
@@ -80,7 +90,7 @@ const ModalRestore = ({ open, onClose, idAssignment, getData }) => {
                             helperText={error?.message}
                             margin="normal"
                         >
-                            {returnReasons.map((option) => (
+                            {lsCombo.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                 </MenuItem>
@@ -90,7 +100,7 @@ const ModalRestore = ({ open, onClose, idAssignment, getData }) => {
                 />
 
                 <Controller
-                    name="observacionDevolver"
+                    name="observacion"
                     control={control}
                     rules={{ required: 'Por favor ingrese la descripción' }}
                     render={({ field, fieldState: { error } }) => (

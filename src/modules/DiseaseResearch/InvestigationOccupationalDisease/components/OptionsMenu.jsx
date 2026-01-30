@@ -15,18 +15,9 @@ import {
 } from '@mui/material';
 import { useContext, useState } from 'react';
 import { InvestigationActionsContext } from '../contexts/InvestigationActionsContext';
-import { ProgrammingActionsContext } from 'modules/Programming/NewProgramming/contexts/ProgrammingActionsContext';
+import ValidateAction from 'components/ValidateAction/ValidateAction';
+import { AccionMenu, Modulo } from 'components/helpers/Enums';
 
-/**
- * Componente unificado de menú de opciones para investigaciones y programación
- * @param {Object} props
- * @param {string} props.idInvestigation - ID de la investigación (investigación)
- * @param {string} props.idAsignacion - ID de la asignación (programación)
- * @param {boolean} props.disabledRevisar - Si la opción de revisar está deshabilitada
- * @param {number} props.estadoInvestigacion - Estado actual de la investigación
- * @param {'list' | 'card'} props.variant - Variante de estilo (lista o tarjeta)
- * @param {Object} props.actions - Acciones pasadas por props (opcional, sobrescribe contexto)
- */
 const OptionsMenu = ({
     idInvestigation,
     idAsignacion,
@@ -35,11 +26,9 @@ const OptionsMenu = ({
     variant = 'list',
     actions: propsActions
 }) => {
-    // Obtenemos acciones de ambos contextos de forma segura (sin errores de hooks condicionales)
     const investigationActions = useContext(InvestigationActionsContext) || {};
-    const programmingActions = useContext(ProgrammingActionsContext) || {};
 
-    const actions = { ...investigationActions, ...programmingActions, ...propsActions };
+    const actions = { ...investigationActions, ...propsActions };
     const { onGoAttention, onDelete, onRestore, onReview, numStatus } = actions;
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -126,21 +115,21 @@ const OptionsMenu = ({
                     <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
                 </MenuItem>
 
-                {onDelete && <Divider sx={{ my: 0.5 }} />}
+                <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.InvestigacionEnfermedadLaboral}>
+                    {onDelete && <Divider sx={{ my: 0.5 }} />}
 
-                {onDelete &&
-                    <MenuItem onClick={() => { onDelete(id); handleClose(); }} sx={{ color: 'error.main' }}>
-                        <DeleteIcon sx={{ mr: 1.2 }} /> Eliminar
-                    </MenuItem>
-                }
+                    {onDelete &&
+                        <MenuItem onClick={() => { onDelete(id); handleClose(); }} sx={{ color: 'error.main' }}>
+                            <DeleteIcon sx={{ mr: 1.2 }} /> Eliminar
+                        </MenuItem>
+                    }
+                </ValidateAction>
             </Menu>
         </>
     );
 };
 
-// Aliases para compatibilidad hacia atrás
 export const OptionsMenuList = (props) => <OptionsMenu {...props} variant="list" />;
 export const OptionsMenuCard = (props) => <OptionsMenu {...props} variant="card" />;
 
 export default OptionsMenu;
-

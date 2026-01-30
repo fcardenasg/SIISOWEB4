@@ -38,17 +38,6 @@ import * as yup from 'yup';
 import { formatDateForInput } from '../InvestigationOccupationalDisease/components/methods';
 import DetailRA from './DetailRA';
 
-const buttonVariants = {
-    hover: {
-        rotate: 90,
-        transition: { duration: 0.2 },
-    },
-    tap: {
-        scale: 0.9,
-        transition: { duration: 0.2 },
-    },
-};
-
 const validationSchema = yup.object().shape({
     fecha: yup.date().required("La fecha es requerida"),
     documento: yup.string().required("El documento es requerido"),

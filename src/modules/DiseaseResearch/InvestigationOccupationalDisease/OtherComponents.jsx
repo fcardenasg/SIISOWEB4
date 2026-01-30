@@ -614,7 +614,7 @@ export const PreventiveActions = ({ methods, disabledControl }) => {
 }
 
 const ComponentSignatures = ({ index, title, nameCargo }) => {
-    const { setValue, watch, getValues } = useFormContext();
+    const { setValue, watch } = useFormContext();
     const [lsInvestigacion, setLsInvestigacion] = useState([]);
     const [loading, setLoading] = useState(false);
     const [userCache, setUserCache] = useState({});

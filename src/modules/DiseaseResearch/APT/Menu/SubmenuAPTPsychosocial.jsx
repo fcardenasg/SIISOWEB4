@@ -3,21 +3,21 @@ import HoverSocialCard from 'components/components/HoverSocialCard';
 import NavigationBar from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/NavigationBar';
 import { useNavigate } from 'react-router-dom';
 
-const ArraySubmenuDiseaseResearch = [
-    { title: "APT Psicosocial", url: "/apt-psychosocial/list", icono: "mdi:psychology", color: "#E31937" },
-    { title: "APT Higiene", url: "/apt-hygiene/list", icono: "mdi:hand-wash", color: "#E31937" }
+const ArraySubmenuDiseaseResearchPsychosocial = [
+    { title: "Plantilla", subtitle: "Banco de preventivos", url: "/apt-psychosocial/template/list", icono: "fluent:calendar-template-20-regular", color: "#E31937" },
+    { title: "APT", subtitle: "Análisis de calificación", url: "/apt-psychosocial/list", icono: "hugeicons:analysis-text-link", color: "#E31937" }
 ];
 
-const SubmenuDiseaseResearch = () => {
+const SubmenuAPTPsychosocial = () => {
     const navigate = useNavigate();
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <NavigationBar title="Análisis de puesto de trabajo (APT)" urlBack="/disease-research/view" />
+                <NavigationBar title="APT Psicosocial" urlBack="/apt/view" />
             </Grid>
 
-            {ArraySubmenuDiseaseResearch.map((item) => (
+            {ArraySubmenuDiseaseResearchPsychosocial.map((item) => (
                 <Grid item xs={12} md={6} lg={3} key={item.title}>
                     <HoverSocialCard
                         diferent={true}
@@ -25,6 +25,7 @@ const SubmenuDiseaseResearch = () => {
                         onClick={() => navigate(`${item.url}`)}
                         iconPrimary={item.icono}
                         color={item.color}
+                        primary={item.subtitle}
                     />
                 </Grid>
             ))}
@@ -32,4 +33,4 @@ const SubmenuDiseaseResearch = () => {
     );
 };
 
-export default SubmenuDiseaseResearch;
+export default SubmenuAPTPsychosocial;

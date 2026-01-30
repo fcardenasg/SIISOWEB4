@@ -14,14 +14,23 @@ const pulse = keyframes`
 
 const ControlImproveText = ({ textImprove, improvingText, nameControl, setValue, promptIsHtml }) => {
     async function serviceImproveText() {
+        console.log(textImprove);
+
+        if (textImprove == null || textImprove == "" || textImprove == "<p></p>\n") {
+            toast.error("Debe ingresar un texto para mejorar");
+            return;
+        }
         improvingText.onTrue();
 
         const prompt = `Actúa como un experto en redacción. Mejora la ortografía, gramática y signos de 
-        puntuación del siguiente texto: ${textImprove}. Devuelve únicamente el texto corregido, sin introducciones, 
-        conclusiones ni comentarios adicionales. ${promptIsHtml}`;
+        puntuación del siguiente texto: \n\n ${textImprove}.\n\nDevuelve únicamente el texto corregido, sin introducciones, 
+        conclusiones ni comentarios adicionales.\n\n${promptIsHtml}`;
+
+        console.log(prompt);
 
         try {
-            const aiText = await ImproveTextAndWriting(prompt);
+            const data = { text: prompt };
+            const aiText = await ImproveTextAndWriting(data);
             if (aiText.data.exito) {
                 setValue(nameControl, aiText.data.datos);
                 toast.success("Redacción mejorada correctamente", {
@@ -49,7 +58,7 @@ const ControlImproveText = ({ textImprove, improvingText, nameControl, setValue,
             <Tooltip title={!textImprove ? 'Ingrese un texto para mejorar' : 'Mejorar redacción y ortografía con IA'} placement="top" disableInteractive>
                 <span>
                     <IconButton
-                        disabled={!textImprove || improvingText.value}
+                        disabled={textImprove == null || textImprove == "<p></p>\n" || improvingText.value}
                         onClick={serviceImproveText}
                         color="error"
                         sx={{

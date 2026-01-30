@@ -204,7 +204,7 @@ EnhancedTableToolbar.propTypes = {
     onClick: PropTypes.func
 };
 
-const ListAPTHygiene = () => {
+const ListTemplatePsychosocial = () => {
     const navigate = useNavigate();
     const [lsModelData, setLsModelData] = useState([]);
     const [idCheck, setIdCheck] = useState('');
@@ -336,7 +336,7 @@ const ListAPTHygiene = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsModelData.length) : 0;
 
     return (
-        <MainCard title={<><Typography variant="h4">Lista de Plan de Rehabilitación</Typography></>} content={false}>
+        <MainCard title={<>Lista de plantillas de APT Psicosocial</>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -360,7 +360,7 @@ const ListAPTHygiene = () => {
                             <Grid item xs={6}>
                                 <ValidateAction idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
                                     <Button variant="contained" size="large" startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={() => navigate("/rehabilitation-plan/add")}>
+                                        onClick={() => navigate("/apt-psychosocial/template/add")}>
                                         {TitleButton.Agregar}
                                     </Button>
                                 </ValidateAction>
@@ -368,7 +368,7 @@ const ListAPTHygiene = () => {
 
                             <Grid item xs={6}>
                                 <Button variant="contained" size="large" startIcon={<ArrowBackIcon />}
-                                    onClick={() => navigate("/disease-research/view")}>
+                                    onClick={() => navigate("/apt-psychosocial/view")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </Grid>
@@ -520,7 +520,7 @@ const ListAPTHygiene = () => {
 
                                                 <TableCell align="center">
                                                     <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.AsignacionInvestigacion}>
-                                                        <Tooltip disableInteractive placement="top" title="Actualizar" onClick={() => navigate(`/apt-hygiene/update/${row.id}`)}>
+                                                        <Tooltip disableInteractive placement="top" title="Actualizar" onClick={() => navigate(`/apt-psychosocial/template/update/${row.id}`)}>
                                                             <IconButton size="large">
                                                                 <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                                                             </IconButton>
@@ -562,4 +562,4 @@ const ListAPTHygiene = () => {
     );
 };
 
-export default ListAPTHygiene;
+export default ListTemplatePsychosocial;

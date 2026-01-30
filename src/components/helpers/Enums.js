@@ -35,6 +35,7 @@ export const CodCatalogo = {
     IEL_CONTROL: 2017,
     IEL_TIPO_CONTROL: 2018,
     IEL_ASPCONSI: 2019,
+    IEL_MOTIVODEVOLUCION: 3001,
 
     OPCION_HABITO_INVESTIGACION: 3002,
     VentanillaTipoPeticion: 219,
