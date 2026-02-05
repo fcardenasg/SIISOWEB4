@@ -100,7 +100,7 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
-
+    
     return (
         <TableHead>
             <TableRow>
