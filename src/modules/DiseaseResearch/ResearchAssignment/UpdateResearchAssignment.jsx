@@ -16,7 +16,7 @@ import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import { DeleteDetailResearchAssignment, GetAllDetailResearchAssignment, GetByIdResearchAssignment, InsertDetailResearchAssignment, SendAssignmentNotificationForward, UpdateCloseResearchAssignment, UpdateResearchAssignments } from 'api/clients/ResearchAssignmentClient';
+import { DeleteDetailInvAse, DeleteDetailResearchAssignment, GetAllDetailResearchAssignment, GetByIdAssignDetailInvAse, GetByIdResearchAssignment, InsertDetailInvAse, InsertDetailResearchAssignment, SendAssignmentNotificationForward, UpdateCloseResearchAssignment, UpdateResearchAssignments } from 'api/clients/ResearchAssignmentClient';
 import { GetAllComboAsesorInvestigacion } from 'api/clients/UserClient';
 import { ParamDelete } from 'components/alert/AlertAll';
 import RightDrawer from 'components/components/RightDrawer';
@@ -37,7 +37,7 @@ import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkel
 import ViewEmployee from 'components/views/ViewEmployee';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -47,6 +47,9 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
 import DetailRA from './DetailRA';
 import ReasonAlert, { ReasonAlertModal } from './ReasonAlert';
+import DetailAseInv from './DetailAseInv';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { ArrayOptions } from '../methods';
 
 const buttonVariants = {
     hover: {
@@ -63,8 +66,8 @@ const validationSchema = yup.object().shape({
     fecha: yup.date().required("La fecha es requerida"),
     documento: yup.string().required("El documento es requerido"),
     investigador: yup.array().min(1, "Debe seleccionar al menos un investigador"),
-    asesorARL: yup.array().min(1, "Debe seleccionar al menos un asesor ARL"),
     listaDetalle: yup.array().required("Se requiere al menos un diagnóstico"),
+    asignacionInvestigacionInvAses: yup.array().required("Se requiere al menos un registro de ítems a investigar"),
 });
 
 const UpdateResearchAssignment = () => {
@@ -100,6 +103,9 @@ const UpdateResearchAssignment = () => {
     const { handleSubmit, formState: { errors }, watch, setError, resetField, setValue } = methods;
     const documento = watch("documento");
     const listaDetalle = watch("listaDetalle");
+    const asignacionInvestigacionInvAses = watch("asignacionInvestigacionInvAses");
+    const asesorARL = watch("asesorARL");
+    const itemInvestigacion = watch("itemInvestigacion");
     const dx = watch("dx");
     const idSegmentoAgrupado = watch("idSegmentoAgrupado");
     const idSegmentoAfectado = watch("idSegmentoAfectado");
@@ -110,6 +116,15 @@ const UpdateResearchAssignment = () => {
 
     const devolucionesCerradas = dataModel?.asignacionInvestigacionInvAses?.filter((item) => item.esDevolucion && item.cerroDevolucion);
     const devolucionesAbiertas = dataModel?.asignacionInvestigacionInvAses?.filter((item) => item.esDevolucion && !item.cerroDevolucion);
+
+    const assignedIds = useMemo(() => {
+        const currentDetails = Array.isArray(asignacionInvestigacionInvAses) ? asignacionInvestigacionInvAses : [];
+        return currentDetails.flatMap(detail => detail.itemInvestigacion || []);
+    }, [asignacionInvestigacionInvAses]);
+
+    const availableOptions = useMemo(() => {
+        return ArrayOptions.filter(option => !assignedIds.includes(option.value));
+    }, [assignedIds]);
 
     useEffect(() => {
         async function getCombo() {
@@ -172,7 +187,6 @@ const UpdateResearchAssignment = () => {
                     setDataModel(datos);
                     setValue('documento', datos.documento);
                     setValue('investigador', datos.investigador);
-                    setValue('asesorARL', datos.asesorARL);
                     setIdsUsuario([...new Set([...datos.investigador, ...datos.asesorARL])]);
                     setTimeout(timeWait.onTrue, 1500);
                 }
@@ -212,6 +226,31 @@ const UpdateResearchAssignment = () => {
 
     useEffect(() => {
         getDxEmployee();
+    }, []);
+
+    async function getDetailAssignDetailInvAse() {
+        try {
+            const service = await GetByIdAssignDetailInvAse(id);
+            if (service.data.exito) {
+                const datos = service.data.datos;
+                var mapperData = datos.map((item) => ({
+                    ...item,
+                    nameAsesorARL: item.usuario,
+                    listItemInvestigacion: item.itemInvestigacion.map((investigador) => ({
+                        value: investigador,
+                        label: ArrayOptions.find((option) => option.value === investigador)?.label
+                    })),
+                }));
+
+                setValue('asignacionInvestigacionInvAses', mapperData);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al cargar los datos");
+        }
+    }
+
+    useEffect(() => {
+        getDetailAssignDetailInvAse();
     }, []);
 
     const handleDx = async (event) => {
@@ -296,6 +335,57 @@ const UpdateResearchAssignment = () => {
             toast.error(error.message || "Error al eliminar el diagnóstico de la lista");
         }
     }
+
+    const handleClickInsertDetailAseInv = async () => {
+        try {
+            if (!asesorARL) {
+                toast.error('El asesor ARL es obligatorio');
+                return;
+            }
+
+            if (!itemInvestigacion || itemInvestigacion.length === 0) {
+                toast.error('Debe seleccionar al menos un ítem');
+                return;
+            }
+
+            const newDetail = {
+                idUsuario: asesorARL,
+                itemInvestigacion: itemInvestigacion,
+                idAsignacionInvestigacion: id
+            };
+
+            const result = await InsertDetailInvAse(newDetail);
+            if (result.data.exito) {
+                getDetailAssignDetailInvAse();
+                toast.success("Asesor ARL agregado correctamente");
+                resetField("asesorARL");
+                resetField("itemInvestigacion");
+                setUpdateCompleted(!updateCompleted);
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+        }
+    };
+
+    const handleClickRemoveDetailAseInv = (dataInvAse) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteDetailInvAse(dataInvAse.id);
+                    if (result.data.exito) {
+                        getDetailAssignDetailInvAse();
+                        toast.success("Ítem de investigación eliminado correctamente");
+                        setUpdateCompleted(!updateCompleted);
+                    } else {
+                        toast.error(result.data.mensaje);
+                    }
+                }
+            });
+        } catch (error) {
+            toast.error("Error al intentar eliminar el registro");
+        }
+    };
 
     const handleClick = async (datos) => {
         try {
@@ -545,9 +635,13 @@ const UpdateResearchAssignment = () => {
                                             </Grid>
                                         </SubCard>
                                     </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
 
-                                    <Grid item xs={12}><Divider /></Grid>
-
+                        <Grid item xs={12}>
+                            <SubCard>
+                                <Grid container spacing={2}>
                                     <Grid item xs={12} md={6} lg={3}>
                                         <InputSelect
                                             defaultValue={dataModel?.tipoInvestigacion}
@@ -597,13 +691,62 @@ const UpdateResearchAssignment = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} md={6}>
-                                        <InputMultiselectTwo
-                                            checkbox
-                                            name="asesorARL"
-                                            label="Asesor ARL"
-                                            options={lsAsesorARL}
-                                        />
+                                    <Grid item xs={12}><Divider /></Grid>
+
+                                    <Grid item xs={12}>
+                                        <SubCard title="Ítem a investigar">
+                                            <Grid container spacing={2} sx={{
+                                                borderColor: !!errors.asignacionInvestigacionInvAses && 'error.main',
+                                                borderStyle: !!errors.asignacionInvestigacionInvAses && 'dashed',
+                                                borderWidth: !!errors.asignacionInvestigacionInvAses && 1
+                                            }}>
+                                                <Grid item xs={12} md={3}>
+                                                    <InputSelect
+                                                        defaultValue=""
+                                                        name="asesorARL"
+                                                        label="Asesor ARL"
+                                                        options={lsAsesorARL}
+                                                        bug={errors.asesorARL}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={7}>
+                                                    <InputMultiselectTwo
+                                                        checkbox
+                                                        name="itemInvestigacion"
+                                                        label="Ítem a investigar"
+                                                        options={availableOptions}
+                                                        bug={errors.itemInvestigacion}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item xs={12} md={2}>
+                                                    <AnimateButton>
+                                                        <Button
+                                                            fullWidth
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={handleClickInsertDetailAseInv}
+                                                            size="large"
+                                                            startIcon={<AddCircleIcon />}
+                                                        >
+                                                            Agregar
+                                                        </Button>
+                                                    </AnimateButton>
+                                                </Grid>
+
+                                                <Grid item xs={12}>
+                                                    <SubCard content={false}>
+                                                        <DetailAseInv
+                                                            lsData={asignacionInvestigacionInvAses}
+                                                            onDelete={handleClickRemoveDetailAseInv}
+                                                        />
+                                                    </SubCard>
+                                                </Grid>
+
+                                                {!!errors.asignacionInvestigacionInvAses && <FormHelperText sx={{ margin: 1 }} error={!!errors.asignacionInvestigacionInvAses}>{errors?.asignacionInvestigacionInvAses.message}</FormHelperText>}
+                                            </Grid>
+                                        </SubCard>
                                     </Grid>
 
                                     <Grid item xs={12} sx={{ mt: 2 }}>

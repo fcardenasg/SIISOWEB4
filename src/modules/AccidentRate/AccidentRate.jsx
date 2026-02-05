@@ -98,7 +98,14 @@ const AccidentRate = () => {
 
     const methods = useForm();
     const { handleSubmit, reset, setValue, watch, formState: { errors } } = methods;
-    const values = watch();
+    const urlFile = watch("url");
+    const documento = watch("documento");
+    const diagnosticoInicial = watch("diagnosticoInicial");
+    const diagnosticoInicial2 = watch("diagnosticoInicial2");
+    const diagnosticoInicial3 = watch("diagnosticoInicial3");
+    const diagnosticoFinal = watch("diagnosticoFinal");
+    const diagnosticoFinal2 = watch("diagnosticoFinal2");
+    const diagnosticoFinal3 = watch("diagnosticoFinal3");
 
     const allowedFiles = ['application/pdf'];
     const handleFile = async (event) => {
@@ -193,7 +200,7 @@ const AccidentRate = () => {
         }
     };
 
-    async function downloadFileReplay() { DownloadFile(`${values.documento}accidentetrabajo${new Date().getTime()}.pdf`, values.url.replace("data:application/pdf;base64,", "")); }
+    async function downloadFileReplay() { DownloadFile(`${documento}accidentetrabajo${new Date().getTime()}.pdf`, urlFile.replace("data:application/pdf;base64,", "")); }
 
     useEffect(() => {
         async function getCombo() {
@@ -244,10 +251,30 @@ const AccidentRate = () => {
 
     const handleClick = async (datos) => {
         try {
+            datos.idClaseAT = datos.idClaseAT || null;
+            datos.idCausaAT = datos.idCausaAT || null;
+            datos.idSegmentoAgrupado = datos.idSegmentoAgrupado || null;
+            datos.idSubsegmento = datos.idSubsegmento || null;
+            datos.idSubTipoConsecuencia = datos.idSubTipoConsecuencia || null;
+            datos.diagnosticoInicial = datos.diagnosticoInicial || null;
+            datos.diagnosticoInicial2 = datos.diagnosticoInicial2 || null;
+            datos.diagnosticoInicial3 = datos.diagnosticoInicial3 || null;
+            datos.diagnosticoFinal = datos.diagnosticoFinal || null;
+            datos.diagnosticoFinal2 = datos.diagnosticoFinal2 || null;
+            datos.diagnosticoFinal3 = datos.diagnosticoFinal3 || null;
+            datos.idParaclinicos = datos.idParaclinicos || null;
+            datos.idConceptoActitudSFI = datos.idConceptoActitudSFI || null;
+            datos.idConceptoActitudSFF = datos.idConceptoActitudSFF || null;
+            datos.diasTw = datos.diasTw || null;
+            datos.diasIncapacidad = datos.diasIncapacidad || null;
+            datos.seguimiento = datos.seguimiento || null;
+            datos.idStatus = datos.idStatus || null;
+            datos.idRemitido = datos.idRemitido || null;
+
             const result = await InsertAccidentRate(datos);
             if (result.data.exito) {
                 toast.success(result.data.mensaje);
-                setResultData(result.data);
+                setResultData(result.data.datos);
                 reset();
             } else
                 toast.error(result.data.mensaje);
@@ -256,7 +283,51 @@ const AccidentRate = () => {
         }
     };
 
-    const isCumple = values.url ? false : true;
+    const isCumple = urlFile ? false : true;
+
+    useEffect(() => {
+        if (!diagnosticoInicial) {
+            setLsDxInicio1([]);
+            setTextDxInicio1('');
+        }
+
+        if (!diagnosticoInicial2) {
+            setLsDxInicio2([]);
+            setTextDxInicio2('');
+        }
+
+        if (!diagnosticoInicial3) {
+            setLsDxInicio3([]);
+            setTextDxInicio3('');
+        }
+
+        if (!diagnosticoFinal) {
+            setLsDxFinal1([]);
+            setTextDxFinal1('');
+        }
+
+        if (!diagnosticoFinal2) {
+            setLsDxFinal2([]);
+            setTextDxFinal2('');
+        }
+
+        if (!diagnosticoFinal3) {
+            setLsDxFinal3([]);
+            setTextDxFinal3('');
+        }
+
+        setValue('diagnosticoInicial', diagnosticoInicial);
+        setValue('diagnosticoInicial2', diagnosticoInicial2);
+        setValue('diagnosticoInicial3', diagnosticoInicial3);
+        setValue('diagnosticoFinal', diagnosticoFinal);
+        setValue('diagnosticoFinal2', diagnosticoFinal2);
+        setValue('diagnosticoFinal3', diagnosticoFinal3);
+
+    }, [
+        diagnosticoInicial, diagnosticoInicial2, diagnosticoInicial3,
+        diagnosticoFinal, diagnosticoFinal2, diagnosticoFinal3,
+        setValue
+    ]);
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Accidentedetrabajo}>
@@ -266,7 +337,7 @@ const AccidentRate = () => {
                         <ViewEmployee
                             title="Registrar accidente de trabajo"
                             key={lsEmployee?.documento}
-                            documento={values.documento}
+                            documento={documento}
                             onChange={(e) => setValue('documento', e.target.value)}
                             lsEmployee={lsEmployee}
                             handleDocumento={handleDocumento}
@@ -357,6 +428,7 @@ const AccidentRate = () => {
                                         options={lsDxInicio1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoInicial}
+                                        clearable
                                     />
                                 </Grid>
 
@@ -377,6 +449,7 @@ const AccidentRate = () => {
                                         options={lsDxInicio2}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoInicial2}
+                                        clearable
                                     />
                                 </Grid>
 
@@ -397,6 +470,7 @@ const AccidentRate = () => {
                                         options={lsDxInicio3}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoInicial3}
+                                        clearable
                                     />
                                 </Grid>
                             </Grid>
@@ -423,6 +497,7 @@ const AccidentRate = () => {
                                         options={lsDxFinal1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoFinal}
+                                        clearable
                                     />
                                 </Grid>
 
@@ -443,6 +518,7 @@ const AccidentRate = () => {
                                         options={lsDxFinal2}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoFinal2}
+                                        clearable
                                     />
                                 </Grid>
 
@@ -463,6 +539,7 @@ const AccidentRate = () => {
                                         options={lsDxFinal3}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoFinal3}
+                                        clearable
                                     />
                                 </Grid>
                             </Grid>
@@ -575,8 +652,8 @@ const AccidentRate = () => {
                                 <SubCard darkTitle title="Registro fotográfico" secondary={
                                     <ChipControl
                                         size="small"
-                                        label={values.url == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
-                                        chipcolor={values.url == null ? "error" : "success"}
+                                        label={urlFile == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
+                                        chipcolor={urlFile == null ? "error" : "success"}
                                         sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
                                     />
                                 }>
@@ -654,7 +731,7 @@ const AccidentRate = () => {
                     onClose={openModal.onFalse}
                     width={600}
                 >
-                    <ViewPDF dataPDF={values.url} height={570} width={550} />
+                    <ViewPDF dataPDF={urlFile} height={570} width={550} />
                 </RightDrawer>
 
                 <ControlModal

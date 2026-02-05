@@ -18,3 +18,9 @@ export const SendAssignmentNotificationForward = async (idsUser, idAsignacion) =
 export const GetAllDetailResearchAssignment = async (idDetalle, isInvestigacion) => await getData(`${Url.AsignacionInvestigacion}/detalle`, { idDetalle, isInvestigacion });
 export const InsertDetailResearchAssignment = async (detalle) => await postData(`${Url.AsignacionInvestigacion}/detalle`, detalle);
 export const DeleteDetailResearchAssignment = async (id) => await deleteData(`${Url.AsignacionInvestigacion}/detalle`, { id });
+
+/* Asesor ARL */
+export const GetByIdAssignDetailInvAse = async (idAsignacion) => await getData(`${Url.AsignacionInvestigacion}/inv-ase`, { idAsignacion });
+export const InsertDetailInvAse = async (input) => await postData(`${Url.AsignacionInvestigacion}/inv-ase`, input);
+export const UpdateDetailInvAse = async (input) => await putData(`${Url.AsignacionInvestigacion}/inv-ase`, input);
+export const DeleteDetailInvAse = async (id) => await deleteData(`${Url.AsignacionInvestigacion}/inv-ase`, { id });

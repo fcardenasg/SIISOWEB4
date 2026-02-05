@@ -4,11 +4,11 @@ import AnimateButton from "ui-component/extended/AnimateButton";
 import { useNavigate } from "react-router-dom";
 import { TitleButton } from "components/helpers/Enums";
 
-const RehabilitationPlan = () => {
+const TemplateHygiene = () => {
     const navigate = useNavigate();
 
     return (
-        <SubCard darkTitle title="Registrar plan de rehabilitación">
+        <SubCard darkTitle title="Registrar plantillas de higiene">
             <Grid container spacing={2}>
 
 
@@ -24,7 +24,7 @@ const RehabilitationPlan = () => {
 
                         <Grid item xs={2}>
                             <AnimateButton>
-                                <Button variant="outlined" fullWidth onClick={() => navigate("/rehabilitation-plan/list")}>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/apt-hygiene/template/list")}>
                                     {TitleButton.Cancelar}
                                 </Button>
                             </AnimateButton>
@@ -36,4 +36,4 @@ const RehabilitationPlan = () => {
     );
 };
 
-export default RehabilitationPlan;
+export default TemplateHygiene;
