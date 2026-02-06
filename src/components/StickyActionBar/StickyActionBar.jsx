@@ -24,8 +24,8 @@ function StickyActionBar({ children, mainTitle = 'Actualizar o Guardar', titleBu
                     <ElevationScroll {...others}>
                         <CardActions>
                             <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
-                                <Grid item>
-                                    <Typography variant="h4" sx={{ m: 0 }}>
+                                <Grid item xs={6}>
+                                    <Typography variant="h4">
                                         {mainTitle}
                                     </Typography>
                                 </Grid>

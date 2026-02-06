@@ -22,6 +22,7 @@ const validationSchema = Yup.object().shape({
   fechaIngreso: Yup.date().nullable().required("La fecha es requerida"),
 });
 
+<<<<<<< HEAD
 const RehabilitationPlan = () => {
   const navigate = useNavigate();
 
@@ -82,12 +83,21 @@ const handleDocumento = async (event) => {
             } else setModelEmployee([]);
         } catch (error) { }
     }
+=======
+const TemplateHygiene = () => {
+    const navigate = useNavigate();
+
+    return (
+        <SubCard darkTitle title="Registrar plantillas de higiene">
+            <Grid container spacing={2}>
+>>>>>>> 345957a4c238d6a899371a7bdbb9a750cf6dc7b2
 
 
   const onSubmit = (data) => {
     console.log("Datos enviados:", data);
   };
 
+<<<<<<< HEAD
 
 
   return (
@@ -148,6 +158,16 @@ const handleDocumento = async (event) => {
                       fullWidth
                     />
                   </Grid>
+=======
+                        <Grid item xs={2}>
+                            <AnimateButton>
+                                <Button variant="outlined" fullWidth onClick={() => navigate("/apt-hygiene/template/list")}>
+                                    {TitleButton.Cancelar}
+                                </Button>
+                            </AnimateButton>
+                        </Grid>
+                    </Grid>
+>>>>>>> 345957a4c238d6a899371a7bdbb9a750cf6dc7b2
                 </Grid>
               </SubCard>
             </Grid>
@@ -291,4 +311,8 @@ const handleDocumento = async (event) => {
   );
 };
 
+<<<<<<< HEAD
 export default RehabilitationPlan;
+=======
+export default TemplateHygiene;
+>>>>>>> 345957a4c238d6a899371a7bdbb9a750cf6dc7b2

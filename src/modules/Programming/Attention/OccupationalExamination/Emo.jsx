@@ -3338,7 +3338,6 @@ const Emo = ({
 
                                         <Grid item xs={2}>
                                             <InputOnChange
-                                                clearable
                                                 label="Dx 2"
                                                 onKeyDown={handleDx2}
                                                 onChange={(e) => setTextDx2(e.target.value)}

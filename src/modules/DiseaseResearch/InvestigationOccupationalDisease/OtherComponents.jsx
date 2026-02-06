@@ -150,15 +150,116 @@ export const CompanyDetails = ({ dataModel, matchesXS, disabledControl }) => {
     )
 }
 
-export const WorkHistoryDLTD = ({ methods, documento }) => {
+export const WorkHistoryDLTD = ({ methods, documento, disabledControl = false }) => {
     return (
-        <TableDLTD methods={methods} documento={documento} />
+        <Grid container spacing={2}>
+            {!disabledControl &&
+                <>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputDatePicker
+                            label="Fecha de ingreso"
+                            name="fechaIngreso"
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputSelect
+                            name="cargoInicial"
+                            label="Cargo inicial"
+                            defaultValue=""
+                            options={[]}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputSelect
+                            name="turno"
+                            label="Turno"
+                            defaultValue=""
+                            options={[]}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputText
+                            name="rotacion"
+                            label="Rotación"
+                            defaultValue=""
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputText
+                            name="anios"
+                            label="Años"
+                            defaultValue=""
+                            type="number"
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputText
+                            name="meses"
+                            label="Meses"
+                            defaultValue=""
+                            type="number"
+                        />
+                    </Grid>
+                </>
+            }
+
+            <Grid item xs={12}>
+                <TableDLTD methods={methods} documento={documento} />
+            </Grid>
+        </Grid>
     )
 }
 
-export const WorkHistoryOtherCompanies = ({ methods, documento }) => {
+export const WorkHistoryOtherCompanies = ({ methods, documento, disabledControl = false }) => {
     return (
-        <TableOtherCompanies methods={methods} documento={documento} />
+        <Grid container spacing={2}>
+            {!disabledControl &&
+                <>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputText
+                            name="empresa"
+                            label="Empresa"
+                            defaultValue=""
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        <InputText
+                            name="cargo"
+                            label="Cargo"
+                            defaultValue=""
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputText
+                            name="anios"
+                            label="Años"
+                            defaultValue=""
+                            type="number"
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputText
+                            name="meses"
+                            label="Meses"
+                            defaultValue=""
+                            type="number"
+                        />
+                    </Grid>
+                </>
+            }
+
+            <Grid item xs={12}>
+                <TableOtherCompanies methods={methods} documento={documento} />
+            </Grid>
+        </Grid>
     )
 }
 
