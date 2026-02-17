@@ -36,6 +36,7 @@ import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import {
     GetAntecedente,
+    GetAntecedenteEMO,
     GetByIdMedicalHistory,
     GetIdRegistroAtencionMedicalHistory,
     InsertMedicalHistory
@@ -153,7 +154,9 @@ const UpdateClinicHistory = () => {
 
     const methods = useForm();
     const { handleSubmit, watch, setValue } = methods;
-    const values = watch();
+    const documentoHook = watch("documento");
+    const idContingencia = watch("idContingencia");
+    const idHC = watch("id");
 
     const handleLoadingDocument = async (idEmployee) => {
         try {
@@ -243,14 +246,14 @@ const UpdateClinicHistory = () => {
                     setDataTriage(atencionData);
                     setDocumento(atencionData.documento);
                     setValue('idRegistroAtencion', Number(id));
-                    setValue('documento', atencionData.documento);
+                    setValue('documentoHook', atencionData.documento);
 
                     handleLoadingDocument({ target: { value: atencionData.documento } });
 
-                    const [antecedenteRes, registroRes, ultimoRegistroRes] = await Promise.all([
+                    const [antecedenteRes, registroRes, antecedenteEmo] = await Promise.all([
                         GetAntecedente(atencionData.documento),
                         GetIdRegistroAtencionMedicalHistory(id),
-                        GetLastRecordOccupationalExamination(atencionData.documento)
+                        GetAntecedenteEMO(atencionData.documento)
                     ]);
 
                     if (antecedenteRes.status === 200) {
@@ -264,22 +267,22 @@ const UpdateClinicHistory = () => {
                         setLsAtencion(datos);
                         setValue('id', datos.id);
 
-                        setLsDx1(datos.listDx1);
-                        setTextDx1(datos.dx1);
+                        setLsDx1(datos?.listDx1);
+                        setTextDx1(datos?.dx1);
 
-                        setLsDx2(datos.listDx2);
-                        setTextDx2(datos.dx2);
+                        setLsDx2(datos?.listDx2);
+                        setTextDx2(datos?.dx2);
 
-                        setLsDx3(datos.listDx3);
-                        setTextDx3(datos.dx3);
+                        setLsDx3(datos?.listDx3);
+                        setTextDx3(datos?.dx3);
                     } else {
                         setLsAtencion(atencionData);
                     }
 
                     setTimeout(timeWait.onTrue, 500);
 
-                    if (ultimoRegistroRes.status === 200) {
-                        setTextAntecedente(ultimoRegistroRes.data.especifiqueAP);
+                    if (antecedenteEmo.status === 200) {
+                        setTextAntecedente(antecedenteEmo.data);
                     }
                 }
             } catch (error) {
@@ -293,7 +296,7 @@ const UpdateClinicHistory = () => {
     const handleClickReport = async () => {
         try {
             openReport.onTrue();
-            const lsDataReport = await GetByIdMedicalHistory(values.id);
+            const lsDataReport = await GetByIdMedicalHistory(idHC);
             const lsDataUser = await GetByMail(user?.nameuser);
 
             const dataPDFTwo = generateReportClinicHistory(lsDataReport.data, lsDataUser.data, extenderDescripcion);
@@ -303,16 +306,22 @@ const UpdateClinicHistory = () => {
 
     const handleClick = async (datos) => {
         try {
-            const result = await InsertMedicalHistory(datos);
+            datos.documento = datos.documentoHook;
+
+            const datosProcesados = Object.fromEntries(
+                Object.entries(datos).map(([key, value]) => [key, value === "" ? null : value])
+            );
+
+            const result = await InsertMedicalHistory(datosProcesados);
             if (result.data.exito) {
                 disabledButton.onTrue();
                 setValue('id', result.data.datos);
                 toast.success(result.data.mensaje);
-            } else
+            } else {
                 toast.error(result.data.mensaje);
+            }
         } catch (error) {
             toast.error(Message.RegistroNoGuardado);
-
         }
     };
 
@@ -325,8 +334,8 @@ const UpdateClinicHistory = () => {
                             disabled
                             title="Historia clínica"
                             key={lsEmployee.documento}
-                            documento={values.documento}
-                            onChange={(e) => setValue('documento', e.target.value)}
+                            documento={documentoHook}
+                            onChange={(e) => setValue('documentoHook', e.target.value)}
                             lsEmployee={lsEmployee}
                             handleDocumento={handleLoadingDocument}
                         />
@@ -871,7 +880,7 @@ const UpdateClinicHistory = () => {
                 >
                     {newMedicalFormula ?
                         <MedicalFormula
-                            contingencia={values.idContingencia}
+                            contingencia={idContingencia}
                             setUpdateMedicalFormula={setUpdateMedicalFormula}
                             setListMedicalFormula={setListMedicalFormula}
                             setNewMedicalFormula={setNewMedicalFormula}
@@ -892,7 +901,7 @@ const UpdateClinicHistory = () => {
                             />
                             : updateMedicalFormula ?
                                 <UpdateMedicalFormula
-                                    contingencia={values.idContingencia}
+                                    contingencia={idContingencia}
                                     setListMedicalFormula={setListMedicalFormula}
                                     setNewMedicalFormula={setNewMedicalFormula}
                                     setUpdateMedicalFormula={setUpdateMedicalFormula}

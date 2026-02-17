@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Fade, IconButton, ListItemText, TablePagination, Tooltip, Typography } from '@mui/material';
+import { IconButton, ListItemText, TablePagination, Tooltip, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,7 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import Chip from 'ui-component/extended/Chip';
+import { EmptyState, MotionTableRow } from '../methods';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -46,6 +46,8 @@ const buttonVariants = {
 };
 
 export default function DetailAseInv({ lsData = [], onDelete }) {
+    const hasRecords = lsData && lsData.length > 0;
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);
 
@@ -59,7 +61,7 @@ export default function DetailAseInv({ lsData = [], onDelete }) {
     return (
         <>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700, mb: 7 }} aria-label="simple table">
+                <Table sx={{ minWidth: 700 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Asesor ARL</TableCell>
@@ -70,52 +72,67 @@ export default function DetailAseInv({ lsData = [], onDelete }) {
                     </TableHead>
 
                     <TableBody>
-                        {stableSort(lsData, getComparator('asc', 'nameAsesorARL', 'nameItemInvestigacion', 'bitacora'))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                                <TableRow key={index}>
-                                    <TableCell sx={{ textTransform: 'capitalize' }}>{row?.nameAsesorARL?.toLowerCase()}</TableCell>
-                                    <TableCell>
-                                        {row?.listItemInvestigacion?.map((item, index) => (
-                                            <Typography key={index} variant="caption" display="block">
-                                                {item.value}. {item.label}
-                                            </Typography>
-                                        ))}
-                                    </TableCell>
-                                    <TableCell>
-                                        <ListItemText
-                                            primary={row?.usuarioRegistro?.toUpperCase()}
-                                            secondary={new Date(row?.fechaRegistro).toLocaleString()}
-                                            primaryTypographyProps={{ typography: 'caption' }}
-                                            secondaryTypographyProps={{
-                                                mt: 0.5,
-                                                component: 'span',
-                                                typography: 'caption',
-                                            }}
-                                        />
-                                    </TableCell>
+                        {!hasRecords ? (
+                            <MotionTableRow
+                                key="empty-row"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <TableCell colSpan={4} sx={{ borderBottom: 0 }}>
+                                    <EmptyState
+                                        title="No hay registros"
+                                        description="Aún no hay registros cargados o agregados a la lista de ítem a investigar."
+                                    />
+                                </TableCell>
+                            </MotionTableRow>
+                        ) : (
+                            stableSort(lsData, getComparator('asc', 'nameAsesorARL', 'nameItemInvestigacion', 'bitacora'))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell sx={{ textTransform: 'capitalize' }}>{row?.nameAsesorARL?.toLowerCase()}</TableCell>
+                                        <TableCell>
+                                            {row?.listItemInvestigacion?.map((item, index) => (
+                                                <Typography key={index} variant="caption" display="block">
+                                                    {item.value}. {item.label}
+                                                </Typography>
+                                            ))}
+                                        </TableCell>
+                                        <TableCell>
+                                            <ListItemText
+                                                primary={row?.usuarioRegistro?.toUpperCase()}
+                                                secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                primaryTypographyProps={{ typography: 'caption' }}
+                                                secondaryTypographyProps={{
+                                                    mt: 0.5,
+                                                    component: 'span',
+                                                    typography: 'caption',
+                                                }}
+                                            />
+                                        </TableCell>
 
-                                    <TableCell>
-                                        <motion.button
-                                            variants={buttonVariants}
-                                            whileHover="hover"
-                                            whileTap="tap"
-                                            style={{
-                                                border: 'none',
-                                                background: 'transparent',
-                                                cursor: 'pointer',
-                                                outline: 'none',
-                                            }}
-                                        >
-                                            <Tooltip title="Eliminar" placement="top" onClick={() => onDelete(row)}>
-                                                <IconButton>
-                                                    <CloseIcon color="error" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </motion.button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        }
+                                        <TableCell>
+                                            <motion.button
+                                                variants={buttonVariants}
+                                                whileHover="hover"
+                                                whileTap="tap"
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'transparent',
+                                                    cursor: 'pointer',
+                                                    outline: 'none',
+                                                }}
+                                            >
+                                                <Tooltip title="Eliminar" placement="top" onClick={() => onDelete(row)}>
+                                                    <IconButton>
+                                                        <CloseIcon color="error" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </motion.button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

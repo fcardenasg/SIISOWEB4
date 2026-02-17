@@ -42,7 +42,7 @@ const CeldaSeccion = ({ title }) => (
 );
 
 export default function TableHealth({ dataModel, disabledControl }) {
-    const idExfumador = 15137;
+    const idExfumador = 11203;
     const { control } = useFormContext();
     const [lsOpcionHabito, setLsOpcionHabito] = useState([]);
     const [lsFrecuencia, setLsFrecuencia] = useState([]);

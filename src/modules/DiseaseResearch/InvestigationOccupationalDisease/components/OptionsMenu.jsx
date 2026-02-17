@@ -90,7 +90,7 @@ const OptionsMenu = ({
             >
                 <MenuItem
                     onClick={() => { onGoAttention && onGoAttention(id); handleClose(); }}
-                    disabled={estadoInvestigacion === 3 && numStatus === 2}
+                    disabled={((estadoInvestigacion === 3 || estadoInvestigacion === 5) && numStatus === 2) || (estadoInvestigacion === 5 && numStatus === 1)}
                 >
                     <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
                 </MenuItem>
@@ -107,13 +107,13 @@ const OptionsMenu = ({
                     </MenuItem>
                 }
 
-                <MenuItem>
+                {/* <MenuItem>
                     <DownloadIcon sx={{ mr: 1.2 }} /> Exportar PDF
                 </MenuItem>
 
                 <MenuItem>
                     <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
-                </MenuItem>
+                </MenuItem> */}
 
                 <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.InvestigacionEnfermedadLaboral}>
                     {onDelete && <Divider sx={{ my: 0.5 }} />}

@@ -48,7 +48,7 @@ const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWi
 
                             <Select
                                 {...field}
-                                value={field.value ?? ""}
+                                value={field.value ?? null}
                                 labelId={`select-label-${name}`}
                                 id={`select-${name}`}
                                 label={label}
@@ -80,7 +80,7 @@ const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWi
                                             <IconButton
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    field.onChange("");
+                                                    field.onChange(null);
                                                 }}
                                                 size="small"
                                             >

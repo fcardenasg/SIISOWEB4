@@ -1,6 +1,5 @@
 import { GetEdad } from "components/helpers/Format";
 import jsPDF from "jspdf";
-
 import config from "config";
 
 function getHeader(doc = new jsPDF()) {
@@ -227,6 +226,15 @@ function generateReportMedicalAdvicPageAntecedentes(doc = new jsPDF(), lsDataRep
 }
 
 export function generateReportClinicHistory(lsDataReport = [], lsDataUser, lsConfiguracion = false) {
+    // --- VALIDACIÓN DE DATOS ---
+    // Convierte cualquier valor null o undefined en "" para evitar errores en el PDF
+    Object.keys(lsDataReport).forEach(key => {
+        if (lsDataReport[key] === null || lsDataReport[key] === undefined) {
+            lsDataReport[key] = "";
+        }
+    });
+    // ---------------------------
+
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");

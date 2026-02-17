@@ -266,9 +266,9 @@ export const Url = {
     AccidentalidadExcel: 'api/Accidentalidad/excel',
     AccidentalidadId: 'api/Accidentalidad/id',
 
-     PlanRehabilitacion: 'api/PlanRehabilitacion',
-     PlanRehabilitacionExcel: 'api/PlanRehabilitacion/excel',
-     PlanRehabilitacionId: 'api/PlanRehabilitacion/id',
+    PlanRehabilitacion: 'api/PlanRehabilitacion',
+    PlanRehabilitacionExcel: 'api/PlanRehabilitacion/excel',
+    PlanRehabilitacionId: 'api/PlanRehabilitacion/id',
 
     HistoriaLaboral: 'api/HistoriaLaboral',
     HistoriaLaboralGetAllByDocument: 'api/HistoriaLaboral/GetAllByDocument',

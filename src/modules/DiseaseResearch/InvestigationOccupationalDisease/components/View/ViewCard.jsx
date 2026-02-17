@@ -207,7 +207,7 @@ const ViewCard = ({ dataInfo, index }) => {
                             </Typography>
                         </Box>
                         <Typography variant="body2" fontWeight="medium" noWrap>
-                            {ViewFormat(dataInfo.fecha)}
+                            {new Date(dataInfo.fechaRegistro).toLocaleString()}
                         </Typography>
                     </Grid>
 

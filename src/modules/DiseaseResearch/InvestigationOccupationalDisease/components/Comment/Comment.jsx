@@ -1,6 +1,7 @@
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import { Box, Button, Checkbox, Fade, FormControlLabel, Grid, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { InsertIELComentario } from 'api/clients/InvestigationClient';
+import { ChangeStatusAssignment } from 'api/clients/ResearchAssignmentClient';
 import ControlImproveText, { AIProcessingStatus } from 'components/controllers/ControlImproveText';
 import ControlModal from "components/controllers/ControlModal";
 import Iconify from 'components/iconify/iconify';
@@ -10,11 +11,12 @@ import { useBoolean } from 'hooks/use-boolean';
 import { useState } from 'react';
 import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SubCard from "ui-component/cards/SubCard";
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
+    const { id } = useParams();
     const methods = useForm();
     const navigate = useNavigate();
     const { watch, setValue, resetField } = methods;
@@ -35,11 +37,17 @@ const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
 
             const result = await InsertIELComentario(data);
             if (!result.data.exito) {
-                toast.error(result.data.mensaje)
+                toast.error("Error al guardar el comentario: " + result.data.mensaje);
                 return;
             }
 
-            toast.success("Comentario guardado");
+            const resultDevuelta = await ChangeStatusAssignment(4, id);
+            if (!resultDevuelta.data.exito) {
+                toast.error("Error al devolver la investigación: " + resultDevuelta.data.mensaje);
+                return;
+            }
+
+            toast.success("Comentario guardado e investigación devuelta", { duration: 10000 });
             handleClose();
             setTimeout(() => {
                 navigate("/investigation-occupational-disease/view");

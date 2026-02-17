@@ -115,7 +115,7 @@ const ViewList = ({ dataInfo, index }) => {
                 secondary={
                     <Box sx={{ mt: 1.2, display: 'flex', flexDirection: 'column', gap: 1.2 }}>
                         <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-                            <strong>Fecha:</strong> {ViewFormat(dataInfo.fecha)} • <strong>C.C.</strong> {dataInfo.documento} • <strong>Edad:</strong> {dataInfo.edad} años • <strong>Sexo:</strong> {dataInfo.nombreSexo}
+                            <strong>Fecha de registro:</strong> {new Date(dataInfo.fechaRegistro).toLocaleString()} • <strong>C.C.</strong> {dataInfo.documento} • <strong>Edad:</strong> {dataInfo.edad} años • <strong>Sexo:</strong> {dataInfo.nombreSexo}
                         </Typography>
 
                         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', fontSize: '0.92rem', color: '#555' }}>

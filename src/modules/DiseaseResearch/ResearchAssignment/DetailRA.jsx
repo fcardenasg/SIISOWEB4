@@ -1,15 +1,29 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Fade, IconButton, TablePagination, Tooltip, Typography } from '@mui/material';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import { motion } from 'framer-motion';
+import {
+    Close as CloseIcon,
+    InfoOutlined
+} from '@mui/icons-material';
+import {
+    Box,
+    Divider,
+    IconButton,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    Tooltip,
+    Typography,
+    styled,
+    tooltipClasses,
+} from '@mui/material';
+import { UpperFirstChar } from 'components/helpers/Format';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import Chip from 'ui-component/extended/Chip';
+import { EmptyState, MotionTableRow } from '../methods';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -45,9 +59,10 @@ const buttonVariants = {
     },
 };
 
-export default function DetailRA({ lsData = [], onDelete }) {
+export default function DetailRA({ lsData = [], onDelete, onEdit }) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);
+    const hasRecords = lsData && lsData.length > 0;
 
     const handleChangeRowsPerPage = (event) => {
         if (event?.target.value)
@@ -59,53 +74,66 @@ export default function DetailRA({ lsData = [], onDelete }) {
     return (
         <>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700, mb: 7 }} aria-label="simple table">
+                <Table sx={{ minWidth: 700 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Dx</TableCell>
-                            <TableCell>Segmento Agrupado</TableCell>
-                            <TableCell>Segmento Afectado</TableCell>
-                            <TableCell>Subsegmento</TableCell>
+                            <TableCell>Diagnóstico</TableCell>
+                            <TableCell>Otros</TableCell>
                             <TableCell />
                         </TableRow>
                     </TableHead>
 
                     <TableBody>
-                        {stableSort(lsData, getComparator('asc', 'dx', 'nombreSegmentoAgrupado', 'nombreSegmentoAfectado', 'nombreSubsegmento'))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>
-                                        <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={row?.nombreDx}>
-                                            <Typography textAlign="left">
-                                                <Chip label={row?.dx} size="small" chipcolor="success" sx={{ textAlign: 'left' }} />
-                                            </Typography>
-                                        </Tooltip>
+                        <AnimatePresence mode="popLayout">
+                            {!hasRecords ?
+                                <MotionTableRow
+                                    key="empty-row"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                >
+                                    <TableCell colSpan={4} sx={{ borderBottom: 0 }}>
+                                        <EmptyState
+                                            title="No hay registros"
+                                            description="Aún no hay registros cargados o agregados a la lista de diagnósticos de investigación."
+                                        />
                                     </TableCell>
-                                    <TableCell>{row?.nombreSegmentoAgrupado}</TableCell>
-                                    <TableCell>{row?.nombreSegmentoAfectado}</TableCell>
-                                    <TableCell>{row?.nombreSubsegmento}</TableCell>
-                                    <TableCell>
-                                        <motion.button
-                                            variants={buttonVariants}
-                                            whileHover="hover"
-                                            whileTap="tap"
-                                            style={{
-                                                border: 'none',
-                                                background: 'transparent',
-                                                cursor: 'pointer',
-                                                outline: 'none',
-                                            }}
-                                        >
-                                            <Tooltip title="Eliminar" placement="top" onClick={() => onDelete(row.modulo, row.dx)}>
-                                                <IconButton>
-                                                    <CloseIcon color="error" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </motion.button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        }
+                                </MotionTableRow>
+                                : <>
+                                    {stableSort(lsData, getComparator('asc', 'dx', 'nombreSegmentoAgrupado', 'nombreDx'))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                                            <TableRow key={index} hover onDoubleClick={() => onEdit(row)} style={{ cursor: 'pointer' }}>
+                                                <TableCell sx={{ userSelect: 'none' }}>{row?.dx}</TableCell>
+                                                <TableCell sx={{ userSelect: 'none' }}>{row?.nombreDx}</TableCell>
+                                                <TableCell sx={{ userSelect: 'none' }}>
+                                                    <DiagnosticoDetalleTooltip extraData={row} />
+                                                </TableCell>
+                                                <TableCell sx={{ userSelect: 'none' }}>
+                                                    <motion.button
+                                                        variants={buttonVariants}
+                                                        whileHover="hover"
+                                                        whileTap="tap"
+                                                        style={{
+                                                            border: 'none',
+                                                            background: 'transparent',
+                                                            cursor: 'pointer',
+                                                            outline: 'none',
+                                                        }}
+                                                    >
+                                                        <Tooltip title="Eliminar" placement="top" onClick={() => onDelete(row.modulo, row.dx)}>
+                                                            <IconButton>
+                                                                <CloseIcon color="error" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </motion.button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </>
+                            }
+                        </AnimatePresence>
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -126,3 +154,113 @@ export default function DetailRA({ lsData = [], onDelete }) {
         </>
     );
 }
+
+const StyledTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: '#ffffff',
+        color: theme.palette.text.primary,
+        minWidth: 350,
+        maxWidth: 400,
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow: '0px 8px 24px rgba(0,0,0,0.12)',
+        padding: '14px 18px',
+        borderRadius: '10px',
+    },
+    [`& .${tooltipClasses.arrow}`]: {
+        color: theme.palette.common.white,
+        "&::before": {
+            border: `1px solid ${theme.palette.divider}`,
+            backgroundColor: theme.palette.common.white,
+        },
+    },
+}));
+
+export const DiagnosticoDetalleTooltip = ({ extraData = {} }) => {
+    const displayData = [
+        { label: 'Segmento Agrupado', value: UpperFirstChar(extraData?.nombreSegmentoAgrupado) },
+        { label: 'Segmento Afectado', value: UpperFirstChar(extraData?.nombreSegmentoAfectado) },
+        { label: 'Subsegmento', value: UpperFirstChar(extraData?.nombreSubsegmento) },
+        { label: 'Lateralidad', value: UpperFirstChar(extraData?.nombreLateralidad) },
+        { label: 'Región', value: UpperFirstChar(extraData?.nombreRegion) }
+    ];
+
+    return (
+        <StyledTooltip
+            arrow
+            placement="top"
+            title={
+                <Box>
+                    <Typography variant="h5" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1, color: 'primary.main' }}>
+                        <InfoOutlined sx={{ fontSize: 18 }} />
+                        Otros datos del diagnóstico
+                    </Typography>
+                    <Divider sx={{ mb: 1.5, opacity: 0.6 }} />
+
+                    <Stack spacing={1.5} sx={{ my: 1 }}>
+                        {displayData.map((item, index) => (
+                            <Box
+                                key={index}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1.5
+                                }}
+                            >
+                                <Box sx={{
+                                    width: 6,
+                                    height: 6,
+                                    borderRadius: '50%',
+                                    bgcolor: 'primary.main',
+                                    flexShrink: 0
+                                }} />
+
+                                <Typography variant="body2" sx={{ fontSize: '0.8rem', lineHeight: 1.4, color: 'text.secondary' }}>
+                                    <Box component="span" sx={{ fontWeight: 800, color: 'text.primary' }}>
+                                        {item.label}:
+                                    </Box>
+                                    {' '}{item.value}
+                                </Typography>
+                            </Box>
+                        ))}
+                    </Stack>
+                </Box>
+            }
+        >
+            <Box
+                sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: '8px',
+                    border: '1px solid',
+                    borderColor: 'primary.light',
+                    boxShadow: '0px 2px 4px rgba(25, 118, 210, 0.1)',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                        bgcolor: 'primary.100',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0px 4px 8px rgba(25, 118, 210, 0.2)',
+                    }
+                }}
+            >
+                <Typography
+                    variant="subtitle2"
+                    color="primary.main"
+                    sx={{
+                        userSelect: 'none',
+                        pointerEvents: 'none',
+                        WebkitUserSelect: 'none',
+                        MozUserSelect: 'none',
+                        msUserSelect: 'none'
+                    }}
+                >
+                    Ver más...
+                </Typography>
+            </Box>
+        </StyledTooltip>
+    );
+};

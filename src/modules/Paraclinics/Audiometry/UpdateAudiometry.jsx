@@ -238,32 +238,52 @@ const UpdateAudiometry = () => {
 
     const handleClick = async (datos) => {
         try {
-            var savePdf = filePdf === null ? "" : filePdf;
+            const DataToUpdate = {
+                id: id,
+                fecha: datos.fecha || null,
+                idMotivo: datos.idMotivo || null,
+                idProveedor: datos.idProveedor || null,
 
-            const DataToUpdate = PutParaclinics(id, DefaultValue.PARACLINICO_AUDIOMETRIA, documento,
-                datos.fecha, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.idProveedor, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', false, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, '', datos.otalgiaAOP, datos.otorreaAOP, datos.otitisAOP, datos.acufenosAOP,
-                datos.cirugiaAOP, datos.vertigoAOP, datos.farmacologicosAOP, datos.luritoAOP, datos.familiaresAOP, datos.paralisisAOP,
-                datos.htaaop, datos.tipoAcusiaAOP, datos.diabetesAOP, datos.expoRuidoAOP, datos.anteceTraumaticosAOP,
-                datos.observacionAOP, datos.idEmpresaAO, datos.idCargoAO, datos.tiempoExpoAO, datos.idProteccionAuditivaAO,
-                datos.idSuministradaPorAO, datos.idUsoAO, datos.idOdcaeAUDIO, datos.idOdmtAUDIO, datos.idOicaeAUDIO, datos.idOimtAUDIO,
-                datos.idReposoAUDIO, datos.dxAUDIO, datos.idConductaAUDIO, datos.idCambioEPP, datos.observacionAUDIO,
-                savePdf, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                otalgiaAOP: datos.otalgiaAOP || false,
+                otorreaAOP: datos.otorreaAOP || false,
+                otitisAOP: datos.otitisAOP || false,
+                acufenosAOP: datos.acufenosAOP || false,
+                cirugiaAOP: datos.cirugiaAOP || false,
+                vertigoAOP: datos.vertigoAOP || false,
+                farmacologicosAOP: datos.farmacologicosAOP || false,
+                luritoAOP: datos.luritoAOP || false,
+                familiaresAOP: datos.familiaresAOP || false,
+                paralisisAOP: datos.paralisisAOP || false,
+                htaaop: datos.htaaop || false,
+                tipoAcusiaAOP: datos.tipoAcusiaAOP || false,
+                diabetesAOP: datos.diabetesAOP || false,
+                expoRuidoAOP: datos.expoRuidoAOP || false,
+                anteceTraumaticosAOP: datos.anteceTraumaticosAOP || false,
+                observacionAOP: datos.observacionAOP || "",
 
-            if (Object.keys(datos.length !== 0)) {
+                idEmpresaAO: datos.idEmpresaAO || null,
+                idCargoAO: datos.idCargoAO || null,
+                tiempoExpoAO: datos.tiempoExpoAO || "",
+                idProteccionAuditivaAO: datos.idProteccionAuditivaAO || null,
+                idSuministradaPorAO: datos.idSuministradaPorAO || null,
+                idUsoAO: datos.idUsoA || null,
+                idOdcaeAUDIO: datos.idOdcaeAUDIO || null,
+                idOdmtAUDIO: datos.idOdmtAUDIO || null,
+                idOicaeAUDIO: datos.idOicaeAUDIO || null,
+                idOimtAUDIO: datos.idOimtAUDIO || null,
+                idReposoAUDIO: datos.idReposoAUDIO || false,
+                dxAUDIO: datos.dxAUDIO || "",
+                idConductaAUDIO: datos.idConductaAUDIO || null,
+                idCambioEPP: datos.idCambioEPP || false,
+                observacionAUDIO: datos.observacionAUDIO || "",
 
-                const result = await UpdateParaclinicss(DataToUpdate);
-                if (result.status === 200) {
-                    setOpenUpdate(true);
-                }
+                url: filePdf === null ? "" : filePdf
+            };
+
+            const result = await UpdateParaclinicss(DataToUpdate);
+            if (result.status === 200) {
+                setOpenUpdate(true);
             }
-
         } catch (error) {
             setOpenError(true);
             setErrorMessage(Message.RegistroNoGuardado);

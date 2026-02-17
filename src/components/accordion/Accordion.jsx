@@ -36,7 +36,11 @@ const Accordion = ({ defaultExpandedId = null, title, defaultExpand, id, disable
             >
                 <MuiAccordionSummary
                     expandIcon={expandIcon || expandIcon === false ? expandIcon : <ExpandMoreIcon />}
-                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.500' : 'grey.800', fontWeight: 500 }}
+                    sx={{
+                        color: theme.palette.mode === 'dark' ? 'grey.500' : 'grey.800',
+                        fontWeight: 500,
+                        '& .MuiAccordionSummary-content': { alignItems: 'center' }
+                    }}
                 >
                     {title}
                 </MuiAccordionSummary>

@@ -1,5 +1,6 @@
 import {
     Button,
+    Divider,
     Grid,
     Tooltip,
     Typography,
@@ -273,6 +274,10 @@ const OccupationalMedicine = () => {
                     setValue("idInvestigadoPor", lsServerAtencion.data.idInvestigadoPor);
                     setValue("motivoIE", lsServerAtencion.data.motivoIE);
                     setValue("resultadoOrigen", lsServerAtencion.data.resultadoOrigen);
+
+                    setTimeout(() => {
+                        setTimeWait(true);
+                    }, 1000);
                 }
             } catch (error) { }
         }
@@ -361,13 +366,16 @@ const OccupationalMedicine = () => {
             datos.cedula = documento;
             datos.usuarioModifico = user?.nameuser;
             datos.sede = lsEmployee.sede;
+
             // Archivos y campos base
             datos.urlDocumento = filePdf || null;
             datos.pdfMinisterio = filePdfMin || null;
             datos.diferenciaDia = null;
 
-            // Fechas principales
-            const fechas = [
+            // --- LISTADO INTEGRAL DE CAMPOS ---
+            // Se incluyen fechas, IDs, strings y selectores.
+            const camposAValidar = [
+                // Fechas
                 "fechaCalificacionUltimaInstancia", "fechaInvestigacion", "fechaRetiro", "fechaEstimadaInicioCaso",
                 "fechaEntrega", "fechaEnvio", "fechaCalificacionEps", "fechaCalifiOrigenARL", "fechaCalificacionPclARL",
                 "fechaEstructuraARL", "fechaRecalificacionPclARL", "fechaEstructuraRecalificadaARL", "fechaCalificaOrigenJRC",
@@ -375,20 +383,42 @@ const OccupationalMedicine = () => {
                 "fechaEstructuracionJRC", "fechaCalificaOrigenJNC", "fechaCalificacionPclJNC", "fechaEstructuraJNC",
                 "fechaRecalificacionPclJNC", "fechaEstructuracionOrigenInstaFinal", "fechaCalificacionPclInstFinal",
                 "fechaEstructuracionPclInstFinal", "fechaPagoInstaFinal", "fechaEntregaMin", "fechaPagoRecalificadoInstaFinal",
-                "fechaRecibidoInstanciaFinal", "fechaCalificaOrigenAFP", "fechaCalificacionPclAFP", "fechaEstructuraAFP"
-            ];
-            fechas.forEach(f => { datos[f] = datos[f] || null; });
+                "fechaRecibidoInstanciaFinal", "fechaCalificaOrigenAFP", "fechaCalificacionPclAFP", "fechaEstructuraAFP",
 
-            // Investigación de origen de enfermedad laboral
-            const investigacion = [
-                "idInvestigadoPor", "origenInvestigacion", "motivoIE", "resultadoOrigen",
+                // Información del Caso y Segmentos
+                "resumenCaso", "situacionEmpleado", "codDx", "nroFurel", "segmentoAgrupado", "segmentoAfectado",
+                "subsegmento", "regionInfoLaboral", "lateralidad", "entidadQueMotivaEnvio", "entidadDondeEnvia",
+                "investigado", "observaciones", "aplica",
+
+                // EPS y ARL
+                "origenEps", "noSolicitudARL1", "noSolicitudARL2", "origenARL", "pclARL", "pclRecalificadaARL",
+
+                // JRC (Junta Regional)
+                "juntaCalifica", "noDictamenJRC", "origenJRC", "controversia", "conclusion", "noDictamenPclJRC",
+                "pclJRC", "noActaRecursoJRC", "noDictamenRecalificacionJRC", "juntaReCalificacionJRC", "pclRecalificadaJRC",
+
+                // JNC (Junta Nacional)
+                "noDictamenJNC", "origenJNC", "noDictamenPclJNC", "pclJNC", "noDictamenRecalificacionJNC",
+                "pclRecalificacionJNC", "pclInstaFinal", "salaCalificadoraJNC", "medicoCalificadorJNC",
+                "salaCalificadoraPCLJNC", "medicoCalificadorPCLJNC",
+
+                // AFP
+                "noDictamenAFP", "origenAFP", "noDictamenPclAFP", "pclAFP",
+
+                // Investigación de Origen
+                "idInvestigadoPor", "origenInvestigacion", "motivoIE", "resultadoOrigen", "aplica",
+
                 "invesOrigenExamenesEstudiosAdicionales", "invesOrigenRemisionEspecificar",
                 "invesOrigenNecesidadesFormacion", "invesOrigenRevisionEpp", "invesOrigenNormasTrabajo",
                 "invesOrigenEvaluacionMedicionRiesgo", "invesOrigenControlesAdministrativos",
                 "invesOrigenControlesAdicionales", "invesOrigenModificacionActividades",
-                "invesOrigenReubicacion", "invesOrigenOtras", "peligroAsociadoEnfermedad", "aplica"
+                "invesOrigenReubicacion", "invesOrigenOtras", "peligroAsociadoEnfermedad",
             ];
-            investigacion.forEach(f => { datos[f] = datos[f] || null; });
+
+            // Aplicar la lógica: Si el valor es falsy (vacío, undefined, 0, etc), poner null
+            camposAValidar.forEach(f => {
+                datos[f] = datos[f] || null;
+            });
 
             const result = await UpdateOccupationalMedicines(datos);
             if (result.status === 200) {
@@ -400,11 +430,6 @@ const OccupationalMedicine = () => {
         }
     };
 
-    setTimeout(() => {
-        if (lsOccupationalMedicine.length !== 0)
-            setTimeWait(true);
-    }, 500);
-
     useEffect(() => {
         if (valueAplica == 4006) {
             setValue("idInvestigadoPor", "");
@@ -413,19 +438,6 @@ const OccupationalMedicine = () => {
             setValue("fechaCalificacionUltimaInstancia", "");
             setValue("resultadoOrigen", "");
             setValue("fechaInvestigacion", "");
-            setValue("peligroAsociadoEnfermedad", "");
-
-            setValue("invesOrigenExamenesEstudiosAdicionales", "");
-            setValue("invesOrigenRemisionEspecificar", "");
-            setValue("invesOrigenNecesidadesFormacion", "");
-            setValue("invesOrigenRevisionEpp", "");
-            setValue("invesOrigenNormasTrabajo", "");
-            setValue("invesOrigenEvaluacionMedicionRiesgo", "");
-            setValue("invesOrigenControlesAdministrativos", "");
-            setValue("invesOrigenControlesAdicionales", "");
-            setValue("invesOrigenModificacionActividades", "");
-            setValue("invesOrigenReubicacion", "");
-            setValue("invesOrigenOtras", "");
 
             disabledInvestigacionEL.onTrue();
         } else {
@@ -480,7 +492,7 @@ const OccupationalMedicine = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} sx={{ my: 2 }}>
+                        <Grid item xs={12}>
                             <StickyActionBar
                                 mainTitle="Acciones"
                                 titleButtonOne={TitleButton.Actualizar}
@@ -490,9 +502,9 @@ const OccupationalMedicine = () => {
                                 disabledUpdate={false}
                                 disabledSave={false}
                                 showButton={false}
-                                threshold={550}
+                                threshold={465}
                             >
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconUser /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Información Laboral</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={3}>
@@ -671,7 +683,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconReportMedical /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación EPS</Typography></>}>
                                         <Grid container spacing={2} sx={{ my: 2 }}>
                                             <Grid item xs={12} md={6}>
@@ -695,7 +707,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconAlertTriangle /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Calificación ARL</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -793,7 +805,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JRC</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={3}>
@@ -960,7 +972,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">JNC</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1110,7 +1122,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconClipboardText /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">AFP</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1181,7 +1193,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconReportSearch /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Investigación de origen de enfermedad laboral</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1190,6 +1202,27 @@ const OccupationalMedicine = () => {
                                                     name="aplica"
                                                     label="Aplica"
                                                     options={lsInvestigado}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputSelect
+                                                    defaultValue=""
+                                                    disabled={disabledInvestigacionEL.value}
+                                                    name="motivoIE"
+                                                    label="Tipo de investigación"
+                                                    options={lsInvestigacionEL}
+                                                    size={matchesXS ? 'small' : 'medium'}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputSelect
+                                                    defaultValue=""
+                                                    name="idPrioridad"
+                                                    label="Prioridad"
+                                                    options={[]}
                                                     size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </Grid>
@@ -1217,33 +1250,11 @@ const OccupationalMedicine = () => {
                                             </Grid>
 
                                             <Grid item xs={12} md={6} lg={4}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    disabled={disabledInvestigacionEL.value}
-                                                    name="motivoIE"
-                                                    label="Tipo de investigación"
-                                                    options={lsInvestigacionEL}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6} lg={4}>
                                                 <InputDatePicker
                                                     disabled={disabledInvestigacionEL.value}
                                                     label="Fecha dictamen última instancia"
                                                     name="fechaCalificacionUltimaInstancia"
                                                     defaultValue={lsOccupationalMedicine.fechaCalificacionUltimaInstancia}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6} lg={4}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    disabled={disabledInvestigacionEL.value}
-                                                    name="resultadoOrigen"
-                                                    label="Resultado origen última instancia"
-                                                    options={lsResultadoOrigen}
-                                                    size={matchesXS ? 'small' : 'medium'}
                                                 />
                                             </Grid>
 
@@ -1256,164 +1267,22 @@ const OccupationalMedicine = () => {
                                                 />
                                             </Grid>
 
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenExamenesEstudiosAdicionales}
-                                                    name="invesOrigenExamenesEstudiosAdicionales"
-                                                    label="Exámenes o estudios adicionales"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenRemisionEspecificar}
-                                                    name="invesOrigenRemisionEspecificar"
-                                                    label="Remisión (especificar)"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenNecesidadesFormacion}
-                                                    name="invesOrigenNecesidadesFormacion"
-                                                    label="Necesidades de formación"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenRevisionEpp}
-                                                    name="invesOrigenRevisionEpp"
-                                                    label="Revisión de EPP"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenNormasTrabajo}
-                                                    name="invesOrigenNormasTrabajo"
-                                                    label="Normas de trabajo"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenEvaluacionMedicionRiesgo}
-                                                    name="invesOrigenEvaluacionMedicionRiesgo"
-                                                    label="Evaluación o medición del riesgo"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenControlesAdministrativos}
-                                                    name="invesOrigenControlesAdministrativos"
-                                                    label="Controles administrativos"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenControlesAdicionales}
-                                                    name="invesOrigenControlesAdicionales"
-                                                    label="Controles adicionales"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenModificacionActividades}
-                                                    name="invesOrigenModificacionActividades"
-                                                    label="Modificación de actividades"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenReubicacion}
-                                                    name="invesOrigenReubicacion"
-                                                    label="Reubicación"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <InputText
-                                                    fullWidth
-                                                    defaultValue={lsOccupationalMedicine?.invesOrigenOtras}
-                                                    name="invesOrigenOtras"
-                                                    label="Otras"
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    rows={2}
-                                                    multiline
-                                                    disabled={disabledInvestigacionEL.value}
-                                                />
-                                            </Grid>
-
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <InputSelect
-                                                    disabled={disabledInvestigacionEL.value}
-                                                    defaultValue={lsOccupationalMedicine?.peligroAsociadoEnfermedad}
-                                                    name="peligroAsociadoEnfermedad"
-                                                    label="Peligro asociado a la enfermedad"
-                                                    options={lsPeligroAsociado}
+                                                    defaultValue=""
+                                                    name="resultadoOrigen"
+                                                    label="Resultado origen última instancia"
+                                                    options={lsResultadoOrigen}
                                                     size={matchesXS ? 'small' : 'medium'}
+                                                    disabled
+                                                    helperText="El resultado es seleccionado desde investigación"
                                                 />
                                             </Grid>
                                         </Grid>
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconReport /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Instancia Final</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6} lg={4}>
@@ -1582,7 +1451,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconStatusChange /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Estado ARL</Typography></>}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12}>
@@ -1660,7 +1529,7 @@ const OccupationalMedicine = () => {
                                     </Accordion>
                                 </Grid>
 
-                                <Grid sx={{ my: 3 }} item xs={12}>
+                                <Grid item xs={12}>
                                     <Accordion title={<><IconReportAnalytics /><Typography sx={{ pl: 2 }} align='right' variant="h5" color="inherit">Resultado Investigación Laboral</Typography></>}>
                                         <Grid container spacing={2} sx={{ pb: 5 }}>
                                             <Grid item xs={6} md={4} lg={2}>

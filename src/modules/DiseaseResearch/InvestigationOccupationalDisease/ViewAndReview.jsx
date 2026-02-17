@@ -117,11 +117,17 @@ const ViewAndReview = () => {
                 cancelButtonText: 'Cancelar',
                 denyButtonText: 'No',
                 confirmButtonText: 'Sí',
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
                     openComment.onTrue();
                 } else if (result.isDenied) {
-                    toast.success("Operación cancelada");
+                    const result = await ChangeStatusAssignment(4, id);
+                    if (result.data.exito) {
+                        toast.success("Se devolvió la investigación correctamente");
+                        navigate(`/investigation-occupational-disease/view`);
+                    } else {
+                        toast.error("Error al devolver la investigación: " + result.data.mensaje);
+                    }
                 }
             });
 

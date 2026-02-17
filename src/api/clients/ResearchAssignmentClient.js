@@ -9,6 +9,7 @@ export const InsertResearchAssignment = async (asignacion) => await postData(Url
 export const GetAllByDataResearcher = async (filter) => await getData(`${Url.AsignacionInvestigacion}/investigation`, { filter });
 export const UpdateResearchAssignments = async (asignacion) => await putData(Url.AsignacionInvestigacion, asignacion);
 export const DeleteResearchAssignment = async (id) => await deleteData(Url.AsignacionInvestigacion, { id });
+export const GetDataOccupationalMedicine = async (documento) => await getData(`${Url.AsignacionInvestigacion}/dx-occumedicine`, { documento });
 
 export const RestoreResearchAssignment = async (asignacion) => await putData(`${Url.AsignacionInvestigacion}/action-restore`, asignacion);
 export const ChangeStatusAssignment = async (estado, idAsignacion) => await getData(`${Url.AsignacionInvestigacion}/change-status`, { estado, idAsignacion });

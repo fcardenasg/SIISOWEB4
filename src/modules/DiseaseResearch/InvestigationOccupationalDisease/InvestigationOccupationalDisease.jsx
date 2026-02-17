@@ -72,7 +72,7 @@ const InvestigationOccupationalDisease = () => {
     const disabledButtonSave = useBoolean(false);
     const disabledButton = useBoolean(false);
     const [dataModel, setDataModel] = useState(null);
-    const [allowedItems, setAllowedItems] = useState([]); // Estado para IDs permitidos
+    const [allowedItems, setAllowedItems] = useState([]);
 
     const methods = useForm();
     const { handleSubmit, setValue, watch } = methods;
@@ -193,7 +193,7 @@ const InvestigationOccupationalDisease = () => {
             },
             {
                 id: 10,
-                title: { icon: "fluent:task-list-square-person-20-regular", text: "Caracterización del ausentismo laboral por todas las causas" },
+                title: { icon: "fluent:task-list-square-person-20-regular", text: "Caracterización del ausentismo laboral" },
                 content: (disabled) => <CharacterizationAbsenteeism disabledControl={disabled} />
             },
             {

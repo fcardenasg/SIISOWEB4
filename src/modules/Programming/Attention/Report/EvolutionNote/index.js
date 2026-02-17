@@ -207,6 +207,14 @@ function generateReportMedicalAdviceExtendido(doc = new jsPDF(), lsDataReport = 
 }
 
 export function generateReportEvolutionNote(lsDataReport = [], lsDataUser, lsConfiguracion = false) {
+    // --- VALIDACIÓN DE DATOS ---
+    Object.keys(lsDataReport).forEach(key => {
+        if (lsDataReport[key] === null || lsDataReport[key] === undefined) {
+            lsDataReport[key] = "";
+        }
+    });
+    // ---------------------------
+
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");
