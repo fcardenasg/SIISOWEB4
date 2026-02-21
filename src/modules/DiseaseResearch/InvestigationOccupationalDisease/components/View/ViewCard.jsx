@@ -11,20 +11,18 @@ import {
     Card,
     CardContent,
     CardHeader,
-    Chip,
     Divider,
     Grid,
     IconButton,
     Tooltip,
     Typography
 } from '@mui/material';
-import { ViewFormat } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import InvestigationProgress from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/InvestigationProgress';
 import OptionsMenu from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
 import { StyledChip } from 'modules/Programming/NewProgramming/components/methods';
-import { getStatusConfig } from '../methods';
 import { useInvestigationActions } from '../../contexts/InvestigationActionsContext';
+import { getStatusConfig } from '../methods';
 
 const variants = {
     hidden: { opacity: 0, x: 40 },
@@ -70,7 +68,8 @@ const ViewCard = ({ dataInfo, index }) => {
                 )}
                 action={
                     <OptionsMenu
-                        idInvestigation={dataInfo.id}
+                        idInvestigation={dataInfo.idIEL}
+                        idAsignacion={dataInfo.id}
                         disabledRevisar={dataInfo.estadoInvestigacion !== 3}
                         estadoInvestigacion={dataInfo.estadoInvestigacion}
                         variant="card"

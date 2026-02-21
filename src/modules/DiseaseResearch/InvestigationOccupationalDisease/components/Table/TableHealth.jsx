@@ -79,12 +79,12 @@ export default function TableHealth({ dataModel, disabledControl }) {
                                             control={control}
                                             defaultValue={dataModel?.habiCigarrillo}
                                             render={({ field }) => (
-                                                <RadioGroup {...field} row onChange={(e) => field.onChange(parseInt(e.target.value))} disabled={disabledControl}>
+                                                <RadioGroup {...field} row onChange={(e) => field.onChange(parseInt(e.target.value))}>
                                                     {lsOpcionHabito.map(option => (
                                                         <FormControlLabel
                                                             key={option.value}
                                                             value={option.value}
-                                                            control={<Radio size="small" />}
+                                                            control={<Radio size="small" disabled={disabledControl} />}
                                                             label={UpperFirstChar(option.label)}
                                                         />
                                                     ))}
@@ -181,7 +181,7 @@ export default function TableHealth({ dataModel, disabledControl }) {
                                                         <FormControlLabel
                                                             key={option.value}
                                                             value={option.value}
-                                                            control={<Radio size="small" />}
+                                                            control={<Radio size="small" disabled={disabledControl} />}
                                                             label={UpperFirstChar(option.label)}
                                                         />
                                                     ))}
@@ -266,7 +266,7 @@ export default function TableHealth({ dataModel, disabledControl }) {
                                                         <FormControlLabel
                                                             key={option.value}
                                                             value={option.value}
-                                                            control={<Radio size="small" />}
+                                                            control={<Radio size="small" disabled={disabledControl} />}
                                                             label={UpperFirstChar(option.label)}
                                                         />
                                                     ))}

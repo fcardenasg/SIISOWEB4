@@ -9,6 +9,9 @@ import {
     ValidateResearchAssignment
 } from 'api/clients/ResearchAssignmentClient';
 import { ParamDelete } from 'components/alert/AlertAll';
+import { Url } from 'api/instances/AuthRoute';
+import axios from 'axios';
+import { useBoolean } from 'hooks/use-boolean';
 
 export const useInvestigationData = (viewMode) => {
     const navigate = useNavigate();
@@ -23,6 +26,9 @@ export const useInvestigationData = (viewMode) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [textError, setTextError] = useState('');
+    const [reportUrl, setReportUrl] = useState('');
+    const openReport = useBoolean(false);
+    const loadingReport = useBoolean(false);
 
     const itemsPerPage = viewMode === 'list' ? 4 : 6;
 
@@ -49,7 +55,6 @@ export const useInvestigationData = (viewMode) => {
             const result = await GetAllByDataResearcher(filter);
             if (result.data.exito) {
                 setDataModel(result.data.datos);
-                console.log(result.data.datos);
             } else if (result.data.mensaje !== 'NOPERMITIDO') {
                 setDataModel([]);
                 toast.error(result.data.mensaje);
@@ -132,6 +137,46 @@ export const useInvestigationData = (viewMode) => {
         }
     };
 
+    async function handleReport(idInvestigation) {
+        if (!idInvestigation) return;
+        loadingReport.onTrue();
+        openReport.onTrue();
+
+        try {
+            const response = await axios.get(`${Url.Base}${Url.Investigacion}/report/${idInvestigation}`, {
+                responseType: 'blob',
+                headers: {
+                    'Accept': 'application/pdf'
+                }
+            });
+
+            if (response.data.type !== 'application/pdf') {
+                throw new Error('El archivo recibido no es un PDF válido.');
+            }
+
+            const url = URL.createObjectURL(response.data);
+            setReportUrl(url);
+        } catch (err) {
+            if (err.response?.data instanceof Blob && err.response.data.type === 'application/json') {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const errorData = JSON.parse(reader.result);
+                    toast.error(errorData.message || 'Error al generar el reporte');
+                    openReport.onFalse();
+                };
+
+                reader.readAsText(err.response.data);
+            } else {
+                toast.error(err.message || 'No se pudo cargar el reporte.');
+                openReport.onFalse();
+            }
+        } finally {
+            setTimeout(() => {
+                loadingReport.onFalse();
+            }, 500);
+        }
+    }
+
     return {
         numStatus,
         idAssignment,
@@ -149,12 +194,16 @@ export const useInvestigationData = (viewMode) => {
         paginatedData,
         filteredData,
         totalPages,
+        loadingReport,
+        openReport,
+        reportUrl,
 
         getData,
         handleFilter,
         handlePageChange,
         handleOpenChat,
         handleDelete,
-        handleGoAttention
+        handleGoAttention,
+        handleReport
     };
 };

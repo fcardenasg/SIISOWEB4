@@ -31,25 +31,6 @@ function getFirma(doc = new jsPDF(), lsDataUser, my = 0) {
   );
 }
 
-function getFirmaEmployee(doc, lsDataReport, my = 0) {
-
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(128, 128, 128);
-  doc.line(
-    130,
-    doc.internal.pageSize.height - (48 - my),
-    195,
-    doc.internal.pageSize.height - (48 - my)
-  );
-  doc.setFontSize(8);
-  doc.text(
-    `${lsDataReport.nameEmpleado}`,
-    130,
-    doc.internal.pageSize.height - (44 - my)
-  );
-  doc.text(`FIRMA DEL ${lsDataReport.nameTipoContrato}`, 130, doc.internal.pageSize.height - (40 - my));
-}
-
 /* Encabezado */
 function getHeader(doc) {
   /* ENCABEZADO REPORTE */
@@ -121,15 +102,15 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
 
   /* CUADRO DATOS */
   doc.line(5, 40, 210, 40);
-  doc.line(5, 25, 5, 184);
+  doc.line(5, 25, 5, 225);
   doc.line(40, 40, 40, 74); /* LINEA ONE */
-  doc.line(210, 25, 210, 184);
+  doc.line(210, 25, 210, 225);
   doc.line(5, 74, 210, 74);
   doc.line(5, 82, 210, 82);
   doc.line(5, 91, 210, 91);
   doc.line(5, 115, 210, 115);
   doc.line(5, 125, 210, 125);
-  doc.line(5, 184, 210, 184);
+  doc.line(5, 225, 210, 225);
 
   /* TITULOS DE CONTENIDO */
   doc.text("CONSECUTIVO:", 42, 46);
@@ -178,13 +159,15 @@ function pageNursing(doc, lsDataReport = [], lsDataUser = []) {
     }), 40, 98, { maxWidth: 200, lineHeightFactor: 1.5 });
   }
 
+  doc.setFontSize(9);
   doc.text(`${lsDataReport.notaEnfermedad}`, 6, 130, {
     maxWidth: 190,
     lineHeightFactor: 1.0,
   });
 
   /* FIRMA */
-  getFirma(doc, lsDataUser);
+  doc.setFontSize(10);
+  getFirma(doc, lsDataUser, 20);
 }
 
 function pageNursingPuerto(doc, lsDataReport = [], lsDataUser = []) {

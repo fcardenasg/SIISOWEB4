@@ -200,14 +200,12 @@ function generateReportMedicalAdviceExtendido(doc = new jsPDF(), lsDataReport = 
     if (lsDataReport.dx3 !== "")
         doc.text(`Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`, 7, 55, { maxWidth: 200, lineHeightFactor: 1.5 });
 
-    /* DESCRIPCIONES DE TEXTO */
     doc.text(`${lsDataReport.planManejo}`, 7, 70, { maxWidth: 200, lineHeightFactor: 1.5 });
 
     getFirma(doc, lsDataUser, 20);
 }
 
 export function generateReportEvolutionNote(lsDataReport = [], lsDataUser, lsConfiguracion = false) {
-    // --- VALIDACIÓN DE DATOS ---
     Object.keys(lsDataReport).forEach(key => {
         if (lsDataReport[key] === null || lsDataReport[key] === undefined) {
             lsDataReport[key] = "";

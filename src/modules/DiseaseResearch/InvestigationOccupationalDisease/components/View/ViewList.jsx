@@ -47,7 +47,8 @@ const ViewList = ({ dataInfo, index }) => {
             }}
             secondaryAction={
                 <OptionsMenu
-                    idInvestigation={dataInfo.id}
+                    idInvestigation={dataInfo.idIEL}
+                    idAsignacion={dataInfo.id}
                     disabledRevisar={dataInfo.estadoInvestigacion !== 3}
                     estadoInvestigacion={dataInfo.estadoInvestigacion}
                 />

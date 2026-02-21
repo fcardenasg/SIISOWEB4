@@ -1,6 +1,5 @@
 import {
     Delete as DeleteIcon,
-    Download as DownloadIcon,
     Edit as EditIcon,
     HighlightOff as HighlightOffIcon,
     MoreVert as MoreVertIcon,
@@ -13,10 +12,15 @@ import {
     Menu,
     MenuItem
 } from '@mui/material';
-import { useContext, useState } from 'react';
-import { InvestigationActionsContext } from '../contexts/InvestigationActionsContext';
+import { Url } from 'api/instances/AuthRoute';
+import axios from 'axios';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import FullScreenModal from 'components/controllers/FullScreenModal';
 import { AccionMenu, Modulo } from 'components/helpers/Enums';
+import { useBoolean } from 'hooks/use-boolean';
+import { useContext, useState } from 'react';
+import toast from 'react-hot-toast';
+import { InvestigationActionsContext } from '../contexts/InvestigationActionsContext';
 
 const OptionsMenu = ({
     idInvestigation,
@@ -27,6 +31,9 @@ const OptionsMenu = ({
     actions: propsActions
 }) => {
     const investigationActions = useContext(InvestigationActionsContext) || {};
+    const [loading, setLoading] = useState(false);
+    const [reportUrl, setReportUrl] = useState(null);
+    const openReport = useBoolean(false);
 
     const actions = { ...investigationActions, ...propsActions };
     const { onGoAttention, onDelete, onRestore, onReview, numStatus } = actions;
@@ -38,10 +45,61 @@ const OptionsMenu = ({
     const handleClose = () => setAnchorEl(null);
 
     const isCard = variant === 'card';
-    const id = idInvestigation || idAsignacion;
+
+    async function handleReport() {
+        if (!idInvestigation) return;
+        setLoading(true);
+        handleClose();
+        openReport.onTrue();
+
+        try {
+            const response = await axios.get(`${Url.Base}${Url.Investigacion}/report/${idInvestigation}`, {
+                responseType: 'blob',
+                headers: {
+                    'Accept': 'application/pdf'
+                }
+            });
+
+            if (response.data.type !== 'application/pdf') {
+                throw new Error('El archivo recibido no es un PDF válido.');
+            }
+
+            const url = URL.createObjectURL(response.data);
+            setReportUrl(url);
+        } catch (err) {
+            if (err.response?.data instanceof Blob && err.response.data.type === 'application/json') {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const errorData = JSON.parse(reader.result);
+                    toast.error(errorData.message || 'Error al generar el reporte');
+                    openReport.onFalse();
+                };
+
+                reader.readAsText(err.response.data);
+            } else {
+                toast.error(err.message || 'No se pudo cargar el reporte.');
+                openReport.onFalse();
+            }
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
+        }
+    }
 
     return (
         <>
+            {openReport.value &&
+                <FullScreenModal onClose={openReport.onFalse} loading={loading}>
+                    <iframe
+                        src={`${reportUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                        style={{ width: '100%', height: '100%', border: 'none' }}
+                        title="Visualizador de Reporte"
+                        loading="lazy"
+                    />
+                </FullScreenModal>
+            }
+
             <IconButton
                 onClick={handleClick}
                 edge={!isCard ? "end" : undefined}
@@ -89,37 +147,33 @@ const OptionsMenu = ({
                 }}
             >
                 <MenuItem
-                    onClick={() => { onGoAttention && onGoAttention(id); handleClose(); }}
+                    onClick={() => { onGoAttention && onGoAttention(idAsignacion); handleClose(); }}
                     disabled={((estadoInvestigacion === 3 || estadoInvestigacion === 5) && numStatus === 2) || (estadoInvestigacion === 5 && numStatus === 1)}
                 >
                     <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
                 </MenuItem>
 
                 {onReview && (numStatus === 1 || numStatus === 3) &&
-                    <MenuItem onClick={() => { onReview(id); handleClose(); }} disabled={disabledRevisar}>
+                    <MenuItem onClick={() => { onReview(idAsignacion); handleClose(); }} disabled={disabledRevisar}>
                         <VisibilityIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Revisar
                     </MenuItem>
                 }
 
                 {onRestore &&
-                    <MenuItem onClick={() => { onRestore(id); handleClose(); }}>
+                    <MenuItem onClick={() => { onRestore(idAsignacion); handleClose(); }}>
                         <HighlightOffIcon sx={{ mr: 1.2, color: 'error.main' }} /> Devolver
                     </MenuItem>
                 }
 
-                {/* <MenuItem>
-                    <DownloadIcon sx={{ mr: 1.2 }} /> Exportar PDF
-                </MenuItem>
-
-                <MenuItem>
+                <MenuItem onClick={handleReport} disabled={!idInvestigation}>
                     <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
-                </MenuItem> */}
+                </MenuItem>
 
                 <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.InvestigacionEnfermedadLaboral}>
                     {onDelete && <Divider sx={{ my: 0.5 }} />}
 
                     {onDelete &&
-                        <MenuItem onClick={() => { onDelete(id); handleClose(); }} sx={{ color: 'error.main' }}>
+                        <MenuItem onClick={() => { onDelete(idAsignacion); handleClose(); }} sx={{ color: 'error.main' }}>
                             <DeleteIcon sx={{ mr: 1.2 }} /> Eliminar
                         </MenuItem>
                     }

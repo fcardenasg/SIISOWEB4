@@ -21,11 +21,10 @@ import {
 import { ViewFormat } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import { HtmlTooltip } from 'components/label/HtmlTooltip';
-import { motion } from 'framer-motion';
 import InvestigationProgress from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/InvestigationProgress';
 import { OptionsMenuCard } from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
-import { capitalizarTypeCare, getColorCard, getStatusConfig, StyledChip } from '../methods';
 import { useProgrammingActions } from 'modules/Programming/NewProgramming/contexts/ProgrammingActionsContext';
+import { capitalizarTypeCare, getColorCard, getStatusConfig, StyledChip } from '../methods';
 
 const variants = {
     hidden: { opacity: 0, x: 40 },
