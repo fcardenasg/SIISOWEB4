@@ -1,6 +1,5 @@
 import { AssignmentLateOutlined, AutoAwesomeOutlined } from '@mui/icons-material';
-import { Box, Stack, TableRow, Typography } from '@mui/material';
-import { motion } from 'framer-motion';
+import { Box, Stack, Typography } from '@mui/material';
 
 export const ArrayOptions = [
     { value: 1, label: "DATOS DE LA EMPRESA" },
@@ -100,4 +99,62 @@ export const EmptyState = ({ title, description }) => (
     </Box>
 );
 
-export const MotionTableRow = motion(TableRow);
+/* const LightTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .MuiTooltip-tooltip`]: {
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
+        borderRadius: '10px',
+        padding: '12px',
+        border: `1px solid ${theme.palette.divider}`,
+    },
+    [`& .MuiTooltip-arrow`]: {
+        color: theme.palette.background.paper,
+        "&::before": { border: `1px solid ${theme.palette.divider}` }
+    },
+}));
+
+export const LightTooltipExp = ({ listExpertos }) => {
+    const totalExpertos = listExpertos.length;
+
+    const renderExpertsTooltip = (expertos) => (
+        <Stack spacing={1} sx={{ minWidth: 160 }}>
+            <Typography variant="caption" sx={{ fontWeight: 800, color: 'secondary.main' }}>
+                Detalle de Asesores
+            </Typography>
+            <Divider />
+            {expertos.map((exp, idx) => (
+                <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 3 }}>
+                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'capitalize' }}>{exp.label?.toLowerCase()}</Typography>
+                    <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, bgcolor: 'grey.100', px: 0.8, borderRadius: 0.5 }}>
+                        {exp.value}
+                    </Typography>
+                </Box>
+            ))}
+        </Stack>
+    );
+
+    return (
+        <LightTooltip title={renderExpertsTooltip(listExpertos)} arrow placement="left">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{
+                    width: 22, height: 22, borderRadius: '50%',
+                    border: '1.5px solid',
+                    borderColor: totalExpertos > 0 ? (isSelected ? 'secondary.main' : 'primary.main') : 'grey.300',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: totalExpertos > 0 ? (isSelected ? 'secondary.main' : 'primary.main') : 'grey.400',
+                    fontSize: '0.65rem', fontWeight: 800,
+                    lineHeight: 0,
+                    transition: 'all 0.2s'
+                }}>
+                    {totalExpertos}
+                </Box>
+                <Typography variant="caption" sx={{ color: isSelected ? 'secondary.main' : 'text.secondary', fontWeight: isSelected ? 700 : 500 }}>
+                    {totalExpertos === 1 ? 'Asesor' : 'Asesores'}
+                </Typography>
+            </Box>
+        </LightTooltip>
+    )
+} */

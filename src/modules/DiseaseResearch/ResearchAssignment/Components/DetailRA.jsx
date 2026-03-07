@@ -23,7 +23,8 @@ import {
 import { UpperFirstChar } from 'components/helpers/Format';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { EmptyState, MotionTableRow } from '../methods';
+import { EmptyState, MotionTableRow } from '../../methods';
+import Iconify from 'components/iconify/iconify';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -74,59 +75,70 @@ export default function DetailRA({ lsData = [], onDelete, onEdit }) {
     return (
         <>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label="simple table">
+                <Table sx={{ minWidth: 700 }} aria-label="simple table" size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Dx</TableCell>
-                            <TableCell>Diagnóstico</TableCell>
-                            <TableCell>Otros</TableCell>
-                            <TableCell />
+                            <TableCell sx={{ py: 1.5, width: "10px", alignItems: "center" }} />
+                            {['Dx', 'Diagnóstico', 'Otros', ''].map((head) => (
+                                <TableCell key={head} sx={{ py: 1.5, fontWeight: 700, color: 'text.secondary', fontSize: '0.7rem' }}>
+                                    {head}
+                                </TableCell>
+                            ))}
                         </TableRow>
                     </TableHead>
 
                     <TableBody>
                         <AnimatePresence mode="popLayout">
                             {!hasRecords ?
-                                <MotionTableRow
-                                    key="empty-row"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                >
+                                <TableRow>
                                     <TableCell colSpan={4} sx={{ borderBottom: 0 }}>
                                         <EmptyState
                                             title="No hay registros"
                                             description="Aún no hay registros cargados o agregados a la lista de diagnósticos de investigación."
                                         />
                                     </TableCell>
-                                </MotionTableRow>
+                                </TableRow>
                                 : <>
                                     {stableSort(lsData, getComparator('asc', 'dx', 'nombreSegmentoAgrupado', 'nombreDx'))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                                             <TableRow key={index} hover onDoubleClick={() => onEdit(row)} style={{ cursor: 'pointer' }}>
+                                                <TableCell sx={{ userSelect: 'none' }}>
+                                                    {row?.idMedicinaLaboral &&
+                                                        <Tooltip
+                                                            title="Registro vinculado a Medicina Laboral"
+                                                            disableInteractive
+                                                            placement="top"
+                                                            slotProps={{ tooltip: { sx: { width: 120, }, }, }}
+                                                        >
+                                                            <Box component="span" sx={{ display: 'inline-flex' }}>
+                                                                <Iconify icon="mdi:drugs" width={24} sx={{ color: "secondary.main" }} />
+                                                            </Box>
+                                                        </Tooltip>
+                                                    }
+                                                </TableCell>
+
                                                 <TableCell sx={{ userSelect: 'none' }}>{row?.dx}</TableCell>
                                                 <TableCell sx={{ userSelect: 'none' }}>{row?.nombreDx}</TableCell>
                                                 <TableCell sx={{ userSelect: 'none' }}>
                                                     <DiagnosticoDetalleTooltip extraData={row} />
                                                 </TableCell>
                                                 <TableCell sx={{ userSelect: 'none' }}>
-                                                    <motion.button
+                                                    <motion.div
                                                         variants={buttonVariants}
                                                         whileHover="hover"
                                                         whileTap="tap"
-                                                        style={{
-                                                            border: 'none',
-                                                            background: 'transparent',
-                                                            cursor: 'pointer',
-                                                            outline: 'none',
-                                                        }}
+                                                        style={{ display: 'inline-block' }}
                                                     >
-                                                        <Tooltip title="Eliminar" placement="top" onClick={() => onDelete(row.modulo, row.dx)}>
-                                                            <IconButton>
+                                                        <Tooltip disableInteractive title="Eliminar" placement="top">
+                                                            <IconButton
+                                                                onClick={() => onDelete(row)}
+                                                                size="small"
+                                                                sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+                                                            >
                                                                 <CloseIcon color="error" />
                                                             </IconButton>
                                                         </Tooltip>
-                                                    </motion.button>
+                                                    </motion.div>
                                                 </TableCell>
                                             </TableRow>
                                         ))

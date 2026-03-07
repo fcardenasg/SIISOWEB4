@@ -23,8 +23,14 @@ const barProgress = keyframes`
 
 const FullScreenModal = ({ onClose, children, loading }) => {
     useEffect(() => {
-        document.body.style.overflow = "hidden";
+        document.documentElement.style.setProperty("overflow", "hidden", "important");
+        document.body.style.setProperty("overflow", "hidden", "important");
+
         return () => {
+            document.documentElement.style.removeProperty("overflow");
+            document.body.style.removeProperty("overflow");
+
+            document.documentElement.style.overflow = "auto";
             document.body.style.overflow = "auto";
         };
     }, []);
@@ -51,6 +57,11 @@ const FullScreenModal = ({ onClose, children, loading }) => {
                                     height: '100%',
                                     width: '100%',
                                     gap: 4,
+                                    backgroundColor: '#1a1a1a', // <-- Añade un fondo oscuro aquí para el loading
+                                    position: 'absolute',       // Para que cubra todo el contenedor
+                                    top: 0,
+                                    left: 0,
+                                    zIndex: 10
                                 }}
                             >
                                 <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -89,7 +100,7 @@ const FullScreenModal = ({ onClose, children, loading }) => {
                                             textShadow: '0px 0px 20px rgba(0,0,0,0.5)'
                                         }}
                                     >
-                                        PROCESANDO REPORTE
+                                        PROCESANDO REPORTE O ARCHIVO
                                     </Typography>
 
                                     <Box sx={{

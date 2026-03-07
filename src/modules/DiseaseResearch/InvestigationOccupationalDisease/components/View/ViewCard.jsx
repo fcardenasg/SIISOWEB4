@@ -133,7 +133,7 @@ const ViewCard = ({ dataInfo, index }) => {
                         },
                     }}
                 >
-                    <Tooltip placement="top" title="Asistente de SIISO">
+                    <Tooltip disableInteractive placement="top" title="Asistente de SIISO">
                         <IconButton
                             onClick={() => onOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
                             sx={{

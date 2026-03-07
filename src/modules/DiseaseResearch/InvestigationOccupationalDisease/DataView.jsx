@@ -15,12 +15,13 @@ import {
     useMediaQuery,
     useTheme
 } from '@mui/material';
+import FullScreenModal from 'components/controllers/FullScreenModal';
 import SelectOnChange from 'components/input/SelectOnChange';
 import UnauthorizedAccess from 'components/loading/UnauthorizedAccess';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
 import ChatIA from 'modules/Programming/NewProgramming/components/Chat/ChatIA';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ViewCardSkeleton from '../../../components/Skeleton/ViewCardSkeleton';
 import ViewListSkeleton from '../../../components/Skeleton/ViewListSkeleton';
@@ -65,7 +66,12 @@ const DataView = () => {
         handlePageChange,
         handleOpenChat,
         handleDelete,
-        handleGoAttention
+        handleGoAttention,
+
+        handleReport,
+        loadingReport,
+        openReport,
+        reportUrl
     } = useInvestigationData(viewMode);
 
     const handleViewChange = (event, newViewMode) => {
@@ -106,7 +112,19 @@ const DataView = () => {
             onRestore={handleRestore}
             onReview={(id) => navigate(`/investigation-occupational-disease/view-and-review/${id}`)}
             numStatus={numStatus}
+            onReport={handleReport}
         >
+            {openReport.value &&
+                <FullScreenModal onClose={openReport.onFalse} loading={loadingReport.value}>
+                    <iframe
+                        src={`${reportUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                        className="pdf-report-frame"
+                        title="Visualizador de Reporte"
+                        loading="lazy"
+                    />
+                </FullScreenModal>
+            }
+
             <AnimatePresence mode="wait">
                 <motion.div
                     initial={{ opacity: 0, filter: "blur(4px)" }}

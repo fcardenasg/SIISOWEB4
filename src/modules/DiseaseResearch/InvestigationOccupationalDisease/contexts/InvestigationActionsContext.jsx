@@ -9,6 +9,10 @@ export const InvestigationActionsProvider = ({
     onRestore,
     onReview,
     numStatus,
+    onReport,
+    loadingReport,
+    openReport,
+    reportUrl,
     children
 }) => {
     const value = {
@@ -17,7 +21,11 @@ export const InvestigationActionsProvider = ({
         onDelete,
         onRestore,
         onReview,
-        numStatus
+        numStatus,
+        onReport,
+        loadingReport,
+        openReport,
+        reportUrl
     };
 
     return (

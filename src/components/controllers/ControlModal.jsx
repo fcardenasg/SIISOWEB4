@@ -7,7 +7,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useTheme } from "@mui/styles";
 import { Message } from "components/helpers/Enums";
 import { UpperFirstChar } from "components/helpers/Format";
-import PropTypes from "prop-types";
 import AnimateButton from "ui-component/extended/AnimateButton";
 
 const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
@@ -53,11 +52,3 @@ const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
 };
 
 export default ControlModal;
-
-ControlModal.propTypes = {
-  open: PropTypes.bool,
-  title: PropTypes.string,
-  maxWidth: PropTypes.string,
-  onClose: PropTypes.func,
-  children: PropTypes.node,
-};

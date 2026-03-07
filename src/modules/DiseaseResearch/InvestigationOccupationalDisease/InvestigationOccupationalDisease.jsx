@@ -139,9 +139,6 @@ const InvestigationOccupationalDisease = () => {
     };
 
     const ArrayAccordion = useMemo(() => {
-        // Función auxiliar para determinar si un ID está deshabilitado
-        const isIdDisabled = (id) => !allowedItems.includes(id);
-
         return [
             {
                 id: 1,

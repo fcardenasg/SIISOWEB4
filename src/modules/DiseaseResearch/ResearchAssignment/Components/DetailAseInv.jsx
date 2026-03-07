@@ -9,7 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { EmptyState, MotionTableRow } from '../methods';
+import { EmptyState } from '../../methods';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -73,7 +73,7 @@ export default function DetailAseInv({ lsData = [], onDelete }) {
 
                     <TableBody>
                         {!hasRecords ? (
-                            <MotionTableRow
+                            <TableRow
                                 key="empty-row"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -85,7 +85,7 @@ export default function DetailAseInv({ lsData = [], onDelete }) {
                                         description="Aún no hay registros cargados o agregados a la lista de ítem a investigar."
                                     />
                                 </TableCell>
-                            </MotionTableRow>
+                            </TableRow>
                         ) : (
                             stableSort(lsData, getComparator('asc', 'nameAsesorARL', 'nameItemInvestigacion', 'bitacora'))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
@@ -123,7 +123,7 @@ export default function DetailAseInv({ lsData = [], onDelete }) {
                                                     outline: 'none',
                                                 }}
                                             >
-                                                <Tooltip title="Eliminar" placement="top" onClick={() => onDelete(row)}>
+                                                <Tooltip disableInteractive title="Eliminar" placement="top" onClick={() => onDelete(row)}>
                                                     <IconButton>
                                                         <CloseIcon color="error" />
                                                     </IconButton>

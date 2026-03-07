@@ -1,23 +1,25 @@
-import { Controller } from 'react-hook-form';
+import CloseIcon from '@mui/icons-material/Close';
 import {
+    FormControl,
     FormHelperText,
     Grid,
-    FormControl,
-    MenuItem,
-    InputLabel,
-    Select,
-    useTheme,
-    useMediaQuery,
     IconButton,
     InputAdornment,
-    Tooltip,
+    InputLabel,
+    MenuItem,
+    Select,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import Label from 'components/label';
+import { Controller } from 'react-hook-form';
 
 const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWidth, clearable = false, ...others }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
+
+    const finalSize = size ? size : (matchesXS ? 'small' : 'medium');
+    const isSmall = finalSize === 'small';
 
     return (
         <FormControl
@@ -41,6 +43,14 @@ const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWi
                                     fontSize: 14,
                                     maxWidth: maxWidth,
                                     backgroundColor: 'transparent',
+                                    ...(isSmall && {
+                                        '&:not(.MuiInputLabel-shrink)': {
+                                            transform: 'translate(14px, 9px) scale(1)',
+                                        },
+                                        '&.MuiInputLabel-shrink': {
+                                            transform: 'translate(14px, -9px) scale(0.75)',
+                                        }
+                                    })
                                 }}
                             >
                                 {label}
@@ -53,11 +63,13 @@ const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWi
                                 id={`select-${name}`}
                                 label={label}
                                 fullWidth
-                                size={matchesXS ? 'small' : 'medium'}
+                                size={finalSize}
                                 sx={{
                                     '& .MuiSelect-select': {
-                                        fontSize: size === 'small' ? '0.65rem' : 'inherit',
+                                        fontSize: isSmall ? '0.65rem' : 'inherit',
                                         pr: clearable && hasValue ? '65px !important' : 'inherit',
+                                        display: 'flex',
+                                        alignItems: 'center'
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
                                         legend: {
@@ -98,7 +110,7 @@ const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWi
                                         sx={{ whiteSpace: 'normal', maxWidth: maxWidth }}
                                     >
                                         <Grid container direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                                            <Grid item sx={{ fontSize: size === 'small' ? '0.65rem' : 'inherit' }}>
+                                            <Grid item sx={{ fontSize: isSmall ? '0.65rem' : 'inherit' }}>
                                                 {option?.label}
                                             </Grid>
                                             {(option?.codigo === 'CIE10' || option?.codigo === 'CIE11') && (

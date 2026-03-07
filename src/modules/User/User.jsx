@@ -126,7 +126,7 @@ const User = () => {
                 datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
                 datos.tarjetaProfesional, datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro,
                 datos.respondeVentanillaUnica, datos.registraTaxi, datos.puedeAdministrarPermisos,
-                datos.medicoRegistroAtencion, datos.asesorInvestigacion);
+                datos.medicoRegistroAtencion, datos.asesorARL, datos.investigador);
 
             const result = await InsertUser(DataToInsert);
             if (result.status === 200) {

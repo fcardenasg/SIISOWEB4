@@ -12,14 +12,9 @@ import {
     Menu,
     MenuItem
 } from '@mui/material';
-import { Url } from 'api/instances/AuthRoute';
-import axios from 'axios';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
-import FullScreenModal from 'components/controllers/FullScreenModal';
 import { AccionMenu, Modulo } from 'components/helpers/Enums';
-import { useBoolean } from 'hooks/use-boolean';
 import { useContext, useState } from 'react';
-import toast from 'react-hot-toast';
 import { InvestigationActionsContext } from '../contexts/InvestigationActionsContext';
 
 const OptionsMenu = ({
@@ -31,12 +26,9 @@ const OptionsMenu = ({
     actions: propsActions
 }) => {
     const investigationActions = useContext(InvestigationActionsContext) || {};
-    const [loading, setLoading] = useState(false);
-    const [reportUrl, setReportUrl] = useState(null);
-    const openReport = useBoolean(false);
 
     const actions = { ...investigationActions, ...propsActions };
-    const { onGoAttention, onDelete, onRestore, onReview, numStatus } = actions;
+    const { onGoAttention, onDelete, onRestore, onReview, numStatus, onReport } = actions;
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -46,60 +38,8 @@ const OptionsMenu = ({
 
     const isCard = variant === 'card';
 
-    async function handleReport() {
-        if (!idInvestigation) return;
-        setLoading(true);
-        handleClose();
-        openReport.onTrue();
-
-        try {
-            const response = await axios.get(`${Url.Base}${Url.Investigacion}/report/${idInvestigation}`, {
-                responseType: 'blob',
-                headers: {
-                    'Accept': 'application/pdf'
-                }
-            });
-
-            if (response.data.type !== 'application/pdf') {
-                throw new Error('El archivo recibido no es un PDF válido.');
-            }
-
-            const url = URL.createObjectURL(response.data);
-            setReportUrl(url);
-        } catch (err) {
-            if (err.response?.data instanceof Blob && err.response.data.type === 'application/json') {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const errorData = JSON.parse(reader.result);
-                    toast.error(errorData.message || 'Error al generar el reporte');
-                    openReport.onFalse();
-                };
-
-                reader.readAsText(err.response.data);
-            } else {
-                toast.error(err.message || 'No se pudo cargar el reporte.');
-                openReport.onFalse();
-            }
-        } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 500);
-        }
-    }
-
     return (
         <>
-            {openReport.value &&
-                <FullScreenModal onClose={openReport.onFalse} loading={loading}>
-                    <iframe
-                        src={`${reportUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-                        style={{ width: '100%', height: '100%', border: 'none' }}
-                        title="Visualizador de Reporte"
-                        loading="lazy"
-                    />
-                </FullScreenModal>
-            }
-
             <IconButton
                 onClick={handleClick}
                 edge={!isCard ? "end" : undefined}
@@ -165,7 +105,7 @@ const OptionsMenu = ({
                     </MenuItem>
                 }
 
-                <MenuItem onClick={handleReport} disabled={!idInvestigation}>
+                <MenuItem onClick={() => { onReport(idInvestigation); handleClose(); }} disabled={!idInvestigation}>
                     <PrintIcon sx={{ mr: 1.2 }} /> Imprimir
                 </MenuItem>
 

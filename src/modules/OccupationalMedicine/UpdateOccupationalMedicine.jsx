@@ -52,7 +52,7 @@ import { useBoolean } from 'hooks/use-boolean';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 
-const OccupationalMedicine = () => {
+const UpdateOccupationalMedicine = () => {
     const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
@@ -95,7 +95,6 @@ const OccupationalMedicine = () => {
     const [lsSituacionEmpleado, setLsSituacionEmpleado] = useState([]);
     const [lsEntidadInformaInstanciaFinal, setLsEntidadInformaInstanciaFinal] = useState([]);
     const [lsSalaCalificadora, setLsSalaCalificadora] = useState([]);
-    const [lsPeligroAsociado, setLsPeligroAsociado] = useState([]);
 
     const methods = useForm();
     const { handleSubmit, setValue, watch } = methods;
@@ -109,9 +108,6 @@ const OccupationalMedicine = () => {
             try {
                 const lsServerAsesorEl = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_ASESOREL);
                 setLsAsesorEL(lsServerAsesorEl.data);
-
-                const lsServerPeligroAsociado = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_PELIGRO_ASOCIADO);
-                setLsPeligroAsociado(lsServerPeligroAsociado.data);
 
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -1568,4 +1564,4 @@ const OccupationalMedicine = () => {
     );
 };
 
-export default OccupationalMedicine;
+export default UpdateOccupationalMedicine;

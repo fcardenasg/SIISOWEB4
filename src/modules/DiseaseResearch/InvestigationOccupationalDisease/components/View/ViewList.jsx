@@ -93,7 +93,7 @@ const ViewList = ({ dataInfo, index }) => {
                                     transform: 'scale(1.1)',
                                 }
                             }}>
-                                <Tooltip placement="top" title="Asistente de SIISO">
+                                <Tooltip disableInteractive placement="top" title="Asistente de SIISO">
                                     <IconButton
                                         onClick={() => onOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
                                         sx={{

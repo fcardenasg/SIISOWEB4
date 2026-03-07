@@ -1,14 +1,20 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ClearIcon from '@mui/icons-material/Clear';
+import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
 import IconSend from '@mui/icons-material/Send';
 import {
     Button,
     CircularProgress,
     Divider,
     FormHelperText,
+    InputAdornment,
     Grid,
-    IconButton,
-    Tooltip,
-    useMediaQuery
+    Pagination,
+    TextField,
+    useMediaQuery,
+    Box
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
@@ -19,9 +25,7 @@ import { DeleteDetailInvAse, DeleteDetailResearchAssignment, GetAllDetailResearc
 import { GetAllComboAsesorInvestigacion } from 'api/clients/UserClient';
 import { ParamDelete } from 'components/alert/AlertAll';
 import RightDrawer from 'components/components/RightDrawer';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import EditIcon from '@mui/icons-material/Edit';
-import ClearIcon from '@mui/icons-material/Clear';
+import CustomFullScreenModal from 'components/controllers/CustomFullScreenModal';
 import ControlModal from 'components/controllers/ControlModal';
 import {
     AccionMenu,
@@ -34,6 +38,7 @@ import InputDatePicker from 'components/input/InputDatePicker';
 import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 import InputOnChange from 'components/input/InputOnChange';
 import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
 import UpdateSkeleton from 'components/Skeleton/UpdateSkeleton';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewEmployee from 'components/views/ViewEmployee';
@@ -47,26 +52,16 @@ import swal from 'sweetalert';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
-import DetailRA from './DetailRA';
-import ReasonAlert, { ReasonAlertModal } from './ReasonAlert';
-import DetailAseInv from './DetailAseInv';
 import { ArrayOptions, ComponentNote } from '../methods';
-import InputText from 'components/input/InputText';
-import ListMedicine from './ListMedicine';
-
-const buttonVariants = {
-    hover: {
-        rotate: 90,
-        transition: { duration: 0.2 },
-    },
-    tap: {
-        scale: 0.9,
-        transition: { duration: 0.2 },
-    },
-};
+import DetailAseInv from './Components/DetailAseInv';
+import DetailRA from './Components/DetailRA';
+import ListMedicine from './Components/ListMedicine';
+import ReasonAlert, { ReasonAlertModal } from './Components/ReasonAlert';
+import DiagnosisDetail from './Components/DiagnosisDetail';
+import ReviewOccupationalMedicine from './Components/ReviewOccupationalMedicine';
+import Iconify from 'components/iconify/iconify';
 
 const validationSchema = yup.object().shape({
-    fecha: yup.date().required("La fecha es requerida"),
     documento: yup.string().required("El documento es requerido"),
     investigador: yup.array().min(1, "Debe seleccionar al menos un investigador"),
     listaDetalle: yup.array().required("Se requiere al menos un diagnóstico"),
@@ -83,8 +78,14 @@ const UpdateResearchAssignment = () => {
     const loadingSendNotification = useBoolean(false);
     const openModalDevoluciones = useBoolean(false);
     const openModalNotificacion = useBoolean(false);
+    const openEditOccupational = useBoolean(false);
 
+    const [page, setPage] = useState(1);
+    const rowsPerPage = 3;
+
+    const [medicinaLaboral, setMedicinaLaboral] = useState(null);
     const [textDx, setTextDx] = useState("");
+    const [search, setSearch] = useState("");
     const [modelEmployee, setModelEmployee] = useState([]);
     const [lsUsuarioReenviarNotificacion, setLsUsuarioReenviarNotificacion] = useState([]);
     const [lsInvestigacion, setLsInvestigacion] = useState([]);
@@ -111,6 +112,7 @@ const UpdateResearchAssignment = () => {
     const asignacionInvestigacionInvAses = watch("asignacionInvestigacionInvAses");
     const asesorARL = watch("asesorARL");
     const itemInvestigacion = watch("itemInvestigacion");
+    const idAsignacionDetalle = watch("idAsignacionDetalle");
     const dx = watch("dx");
     const idSegmentoAgrupado = watch("idSegmentoAgrupado");
     const idSegmentoAfectado = watch("idSegmentoAfectado");
@@ -196,7 +198,12 @@ const UpdateResearchAssignment = () => {
                     setDataModel(datos);
                     setValue('documento', datos.documento);
                     setValue('investigador', datos.investigador);
-                    setIdsUsuario([...new Set([...datos.investigador, ...datos.asesorARL])]);
+                    setIdsUsuario([...new Set([...datos.investigador, ...datos.asesorARLData])]);
+
+                    var lsServerDx = await GetDataOccupationalMedicine(datos.documento);
+                    if (lsServerDx?.data.exito)
+                        setLsMedicinaLaboralDx(lsServerDx.data.datos);
+
                     setTimeout(timeWait.onTrue, 1500);
                 }
             } catch (error) {
@@ -216,14 +223,8 @@ const UpdateResearchAssignment = () => {
                 setModelEmployee(lsServerEmployee?.data.data);
                 toast.error(lsServerEmployee?.data.message);
             }
-
-            var lsServerDx = await GetDataOccupationalMedicine(idEmployee.target.value);
-            if (lsServerDx?.data.exito) {
-                setLsMedicinaLaboralDx(lsServerDx.data.datos);
-            }
         } catch (error) {
             setModelEmployee([]);
-            setLsMedicinaLaboralDx([]);
             toast.error(Message.ErrorDeDatos);
         }
     }
@@ -293,14 +294,8 @@ const UpdateResearchAssignment = () => {
                 return;
             }
 
-            const currentDetails = Array.isArray(listaDetalle) ? listaDetalle : [];
-            const isDuplicate = currentDetails.some(detail => detail.dx === dx);
-            if (isDuplicate) {
-                setError('dx', { type: 'manual', message: 'El diagnóstico ya está en la lista' });
-                return;
-            }
-
             const newDetail = {
+                id: idAsignacionDetalle || 0,
                 idAsignacionInvestigacion: id,
                 dx,
                 idSegmentoAgrupado: idSegmentoAgrupado || null,
@@ -323,14 +318,11 @@ const UpdateResearchAssignment = () => {
         }
     };
 
-    const handleClickRemoveDetail = async (modulo, dx) => {
+    const handleClickRemoveDetail = async (dataDx) => {
         try {
-            const currentDetails = listaDetalle || [];
-            const dataModel = currentDetails.find(detail => detail.modulo === modulo && detail.dx === dx);
-
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteDetailResearchAssignment(dataModel.id);
+                    const result = await DeleteDetailResearchAssignment(dataDx.id);
                     if (result.data.exito) {
                         toast.success("Diagnóstico eliminado de la lista correctamente");
                         getDxEmployee();
@@ -397,6 +389,9 @@ const UpdateResearchAssignment = () => {
 
     const handleClick = async (datos) => {
         try {
+            datos.fechaDictamen = datos.fechaDictamen || null;
+            datos.fechaRadicado = datos.fechaRadicado || null;
+
             const result = await UpdateResearchAssignments(datos);
             if (result.data.exito) {
                 toast.success(result.data.mensaje);
@@ -460,12 +455,126 @@ const UpdateResearchAssignment = () => {
         setLsDx([{ value: row.dx, label: row.nombreDx }]);
         setTextDx(row.dx);
         setValue('dx', row.dx, { shouldValidate: true });
+        setValue('idAsignacionDetalle', row.id);
         setValue('idSegmentoAgrupado', row.idSegmentoAgrupado);
         setValue('idSegmentoAfectado', row.idSegmentoAfectado);
         setValue('idSubsegmento', row.idSubsegmento);
         setValue('idRegion', row.idRegion);
         setValue('idLateralidad', row.idLateralidad);
         setValue('isUpdateData', true);
+    };
+
+    const filteredDx = useMemo(() => {
+        let result = lsMedicinaLaboralDx;
+        if (search) {
+            const searchTerm = search.toLowerCase().trim();
+            result = lsMedicinaLaboralDx.filter((item) => {
+                return (
+                    item.dx?.toLowerCase().includes(searchTerm) ||
+                    item.nombreDx?.toLowerCase().includes(searchTerm) ||
+                    item.noDictamenJRC?.toLowerCase().includes(searchTerm) ||
+                    item.noDictamenJNC?.toLowerCase().includes(searchTerm) ||
+                    item.noDictamenAFP?.toLowerCase().includes(searchTerm)
+                );
+            });
+        }
+
+        return result.sort((a, b) => {
+            const indexA = selectedValues.indexOf(a.idMedicinaLaboral);
+            const indexB = selectedValues.indexOf(b.idMedicinaLaboral);
+            if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+            }
+            if (indexA !== -1) {
+                return -1;
+            }
+            if (indexB !== -1) {
+                return 1;
+            }
+            return 0;
+        });
+    }, [search, lsMedicinaLaboralDx, selectedValues, listaDetalle]);
+
+    const paginatedDx = useMemo(() => {
+        const startIndex = (page - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        return filteredDx.slice(startIndex, endIndex);
+    }, [page, filteredDx]);
+
+    const count = Math.ceil(filteredDx.length / rowsPerPage);
+
+    const handleOpenEdit = (medicinaLaboral) => {
+        setMedicinaLaboral(medicinaLaboral);
+        openEditOccupational.onTrue();
+    };
+
+    async function getDataMedicinaLaboral() {
+        try {
+            var lsServerDx = await GetDataOccupationalMedicine(documento);
+            if (lsServerDx?.data.exito) {
+                const list = lsServerDx.data.datos;
+                setLsMedicinaLaboralDx(list);
+                setMedicinaLaboral(prev => {
+                    const actualizado = list.find(fil => fil.idMedicinaLaboral === prev?.idMedicinaLaboral);
+                    return actualizado ?? prev;
+                });
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al obtener los datos de medicina laboral");
+        }
+    }
+
+    useEffect(() => {
+        getDataMedicinaLaboral();
+    }, []);
+
+    const handleToggleSelection = async (value) => {
+        try {
+            const isSelected = selectedValues.includes(value);
+            const selectedItem = lsMedicinaLaboralDx.find((item) => item.idMedicinaLaboral === value);
+
+            if (!isSelected) {
+                if (selectedItem) {
+                    const newDetail = {
+                        idMedicinaLaboral: selectedItem.idMedicinaLaboral,
+                        idAsignacionInvestigacion: id,
+                        dx: selectedItem.dx,
+                        idSegmentoAgrupado: selectedItem.idSegmentoAgrupado || null,
+                        idSegmentoAfectado: selectedItem.idSegmentoAfectado || null,
+                        idSubsegmento: selectedItem.idSubsegmento || null,
+                        idRegion: selectedItem.idRegion || null,
+                        idLateralidad: selectedItem.idLateralidad || null
+                    };
+
+                    const result = await InsertDetailResearchAssignment(newDetail);
+                    if (result.data.exito) {
+                        toast.success("Diagnóstico agregado correctamente");
+                        getDataMedicinaLaboral();
+                        getDxEmployee();
+                    } else {
+                        toast.error(result.data.mensaje);
+                    }
+                }
+            } else {
+                const idAEliminar = listaDetalle.find((item) => item.idMedicinaLaboral === value)?.id;
+                if (!idAEliminar) {
+                    toast.error("No se encontró el ID para eliminar este registro");
+                    return;
+                }
+
+                const result = await DeleteDetailResearchAssignment(idAEliminar);
+                if (result.data.exito) {
+                    toast.success("Diagnóstico eliminado correctamente");
+                    setSelectedValues(prevSelected => prevSelected.filter(item => item !== value));
+                    getDataMedicinaLaboral();
+                    getDxEmployee();
+                } else {
+                    toast.error(result.data.mensaje);
+                }
+            }
+        } catch (error) {
+
+        }
     };
 
     return (
@@ -511,14 +620,48 @@ const UpdateResearchAssignment = () => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <ComponentNote title={
-                                            <>Seleccione los registros de medicina laboral para vincularlos a esta investigación.
-                                                Los diagnósticos elegidos aparecerán automáticamente en la sección inferior
-                                                <strong> "Diagnósticos del empleado"</strong>.</>
+                                            <>Seleccione los registros de medicina laboral para vincularlos a "Diagnósticos del empleado".
+                                                Puede buscar por cualquier columna, ver los expertos según el Dx o editar la información haciendo
+                                                clic en el ícono del lápiz para abrir el modal de edición.</>
                                         } />
                                     </Grid>
 
+                                    <Grid item xs={12} md={4}>
+                                        <TextField
+                                            fullWidth
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <SearchIcon fontSize="small" />
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                                            placeholder="Buscar por todo"
+                                            value={search}
+                                            size="small"
+                                        />
+                                    </Grid>
+
+                                    {count > 0 && (
+                                        <Grid item xs={12} md={8} display="flex" justifyContent="flex-end">
+                                            <Pagination
+                                                count={count}
+                                                page={page}
+                                                onChange={(event, value) => setPage(value)}
+                                                color="primary"
+                                                shape="rounded"
+                                            />
+                                        </Grid>
+                                    )}
+
                                     <Grid item xs={12}>
-                                        <ListMedicine records={lsMedicinaLaboralDx} selectedValues={selectedValues} disabled={true} />
+                                        <ListMedicine
+                                            records={paginatedDx}
+                                            selectedValues={selectedValues}
+                                            handleToggleSelection={handleToggleSelection}
+                                            handleOpenEdit={handleOpenEdit}
+                                        />
                                     </Grid>
                                 </Grid>
                             </SubCard>
@@ -641,7 +784,27 @@ const UpdateResearchAssignment = () => {
                                     <Grid item xs={12}><Divider /></Grid>
 
                                     <Grid item xs={12}>
-                                        <ComponentNote title="Para editar un diagnóstico, haga doble clic sobre el registro; los campos se cargarán automáticamente para su modificación. Si desea realizar un nuevo registro o vaciar los campos, haga clic en el botón Limpiar." />
+                                        <ComponentNote
+                                            title={
+                                                <Box
+                                                    component="span"
+                                                    sx={{
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        verticalAlign: 'middle',
+                                                        gap: 0.5,
+                                                        fontSize: '0.75rem',
+                                                        ml: 0.5
+                                                    }}
+                                                >
+                                                    <Iconify icon="mdi:drugs" width={18} sx={{ color: "secondary.main" }} />
+                                                    <span>
+                                                        Registros con este icono están <strong>vinculados a Medicina Laboral</strong>.
+                                                        Para editar cualquier registro, haga <strong>doble clic</strong> o use <strong>Limpiar</strong> para uno nuevo.
+                                                    </span>
+                                                </Box>
+                                            }
+                                        />
                                     </Grid>
 
                                     <Grid item xs={12}>
@@ -685,7 +848,7 @@ const UpdateResearchAssignment = () => {
 
                                     <Grid item xs={12} md={6} lg={3}>
                                         <InputSelect
-                                            defaultValue=""
+                                            defaultValue={dataModel?.emitidoPor}
                                             name="emitidoPor"
                                             label="Emitido por"
                                             options={lsEmotidoPor}
@@ -772,7 +935,7 @@ const UpdateResearchAssignment = () => {
                                         </SubCard>
                                     </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
+                                    <Grid item xs={12} md={6} lg={2.4}>
                                         <InputDatePicker
                                             disabled
                                             label="Fecha de entrega"
@@ -783,7 +946,7 @@ const UpdateResearchAssignment = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
+                                    <Grid item xs={12} md={6} lg={2.4}>
                                         <InputDatePicker
                                             disabled
                                             label="Fecha de entrega"
@@ -794,7 +957,7 @@ const UpdateResearchAssignment = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
+                                    <Grid item xs={12} md={6} lg={2.4}>
                                         <InputDatePicker
                                             disabled
                                             label="Fecha de entrega"
@@ -805,7 +968,17 @@ const UpdateResearchAssignment = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} md={6} lg={3}>
+                                    <Grid item xs={12} md={6} lg={2.4}>
+                                        <InputDatePicker
+                                            label="Fecha de radicado"
+                                            name="fechaRadicado"
+                                            defaultValue={dataModel?.fechaRadicado}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            bug={errors.fechaRadicado}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={2.4}>
                                         <InputText
                                             defaultValue={dataModel?.numRadicado}
                                             name="numRadicado"
@@ -909,6 +1082,25 @@ const UpdateResearchAssignment = () => {
                     </AnimatePresence>
                 </Grid>
             </RightDrawer>
+
+            <CustomFullScreenModal
+                open={openEditOccupational.value}
+                onClose={openEditOccupational.onFalse}
+            >
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <DiagnosisDetail data={medicinaLaboral} />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <ReviewOccupationalMedicine
+                            openEditOccupational={openEditOccupational}
+                            medicinaLaboral={medicinaLaboral}
+                            handleRefresh={getDataMedicinaLaboral}
+                        />
+                    </Grid>
+                </Grid>
+            </CustomFullScreenModal>
         </ValidateActionSkeleton>
     );
 };

@@ -1,16 +1,16 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import SaveIcon from '@mui/icons-material/Save';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EditIcon from '@mui/icons-material/Edit';
 import {
     Alert,
     AlertTitle,
-    alpha,
     Box,
     Button,
     Card,
+    Chip,
     CircularProgress,
     Divider,
     Grid,
-    Skeleton,
     Stack,
     Typography,
     useMediaQuery
@@ -19,7 +19,6 @@ import { useTheme } from '@mui/styles';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetComboCompany } from 'api/clients/CompanyClient';
 import { DeleteIELMetodoControl, GetIELFirma, GetIELMetodoControl, InsertIELFirma, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
-import { GetAllComboAsesorInvestigacion, GetByIdUser } from 'api/clients/UserClient';
 import animation from 'assets/img/animation.json';
 import { ParamDelete } from 'components/alert/AlertAll';
 import { CodCatalogo } from 'components/helpers/Enums';
@@ -714,169 +713,175 @@ export const PreventiveActions = ({ methods, disabledControl }) => {
     );
 }
 
-const ComponentSignatures = ({ index, title, nameCargo }) => {
+const ComponentSignatures = ({ index, title, nameCargo, numFirma, refreshData }) => {
     const { setValue, watch } = useFormContext();
-    const [lsInvestigacion, setLsInvestigacion] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [userCache, setUserCache] = useState({});
     const currentUser = watch(`listFirma.${index}`);
 
-    useEffect(() => {
-        async function getCombo() {
-            const res = await GetAllComboAsesorInvestigacion(false);
-            setLsInvestigacion(res.data);
-        }
-        getCombo();
-    }, []);
+    const showFirmarButton = numFirma === 1 && !currentUser?.firmado;
+    const isSigned = currentUser?.firmado;
 
-    const onChangeCombo = async (e) => {
-        const idUsuario = e.target.value;
-        setValue(`listFirma.${index}.idUsuario`, idUsuario);
-        setValue(`listFirma.${index}.cambioRegistro`, true);
-
-        if (!idUsuario) return;
-
-        if (userCache[idUsuario]) {
-            fillData(userCache[idUsuario]);
-            return;
-        }
-
+    const handleFirmar = async () => {
         try {
             setLoading(true);
-            const dataUser = await GetByIdUser(idUsuario);
-            if (dataUser.status === 200) {
-                const u = dataUser.data;
-                setUserCache(prev => ({ ...prev, [idUsuario]: u }));
-                fillData(u);
+            const firmaData = {
+                id: currentUser.id,
+                idUsuario: 12
+            };
+
+            const result = await InsertIELFirma(firmaData);
+            if (result.data.exito) {
+                toast.success("Firma registrada correctamente");
+                setValue(`listFirma.${index}.firmado`, true);
+                refreshData();
+            } else {
+                toast.error(result.data.mensaje);
             }
         } catch (error) {
-            toast.error("Error cargando usuario");
+            toast.error("Error al registrar la firma");
         } finally {
             setLoading(false);
         }
     };
 
-    const fillData = (u) => {
-        setValue(`listFirma.${index}.nombre`, u.nombre);
-        setValue(`listFirma.${index}.especialidad`, u.nameEspecialidad);
-        setValue(`listFirma.${index}.registro`, u.registroMedico);
-        setValue(`listFirma.${index}.licencia`, u.licencia);
-        setValue(`listFirma.${index}.firma`, u.firma);
-    };
-
-    const handleSaveSingle = async () => {
-        try {
-            setLoading(true);
-
-            const firmaData = {
-                id: currentUser.id,
-                idUsuario: currentUser.idUsuario
-            };
-
-            const result = await InsertIELFirma(firmaData);
-            if (result.data.exito) {
-                toast.success("Firma actualizada correctamente");
-                setTimeout(() => { setValue(`listFirma.${index}.cambioRegistro`, false); }, 700);
-            } else {
-                toast.error(result.data.mensaje);
-            }
-        } catch (error) {
-            toast.error("Error al guardar la firma");
-        } finally {
-            setTimeout(() => setLoading(false), 700);
-        }
-    };
-
     return (
-        <Grid container spacing={2} sx={{ position: 'relative', mb: 2 }}>
-            <Grid item xs={12} md={4}>
-                <Card sx={{
-                    position: 'relative',
-                    border: (theme) => `dashed 1px ${alpha(theme.palette.grey[500], 0.3)}`,
-                    minHeight: '160px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    {loading && (
-                        <Box sx={{ position: 'absolute', zIndex: 10, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(2px)' }}>
-                            <CircularProgress size={40} />
-                        </Box>
-                    )}
-
-                    <UploadBox
-                        disabled
-                        size="100px"
-                        name={`listFirma.${index}.firma`}
-                        defaultValue={currentUser?.firma || null}
-                        placeholder={
-                            <Stack alignItems="center" sx={{ color: 'text.disabled' }}>
-                                <Box sx={{ alignContent: 'center', width: '150px', height: '150px', marginX: 'auto' }}>
-                                    <Lottie animationData={animation} />
+        <Box sx={{ width: '100%' }}>
+            <Card sx={{
+                p: 2.5,
+                border: '1px solid',
+                borderColor: isSigned ? 'success.light' : 'divider',
+                boxShadow: 'none',
+                position: 'relative',
+                transition: 'all 0.2s ease',
+                '&:hover': { boxShadow: '0 4px 12px rgba(0,0,0,0.05)' },
+                '&::before': isSigned ? {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: '4px',
+                    backgroundColor: 'success.main',
+                } : {}
+            }}>
+                <Grid container spacing={3} alignItems="center">
+                    <Grid item xs={12} md={3}>
+                        <Box sx={{
+                            position: 'relative',
+                            width: '100%',
+                            height: '120px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'grey.50',
+                            borderRadius: 1,
+                            border: '1px dashed',
+                            borderColor: 'divider',
+                            overflow: 'hidden'
+                        }}>
+                            {loading && (
+                                <Box sx={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    zIndex: 10,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    bgcolor: 'rgba(255,255,255,0.8)',
+                                    backdropFilter: 'blur(1px)'
+                                }}>
+                                    <CircularProgress size={24} />
                                 </Box>
-                            </Stack>
-                        }
-                        sx={{ width: 'auto', height: 'auto', borderRadius: 1.5 }}
-                    />
-                </Card>
-            </Grid>
-
-            <Grid item xs={12} md={8}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                        <InputSelect
-                            name={`listFirma.${index}.idUsuario`}
-                            label={title}
-                            options={lsInvestigacion}
-                            onChange={onChangeCombo}
-                            disabled={loading}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                        {currentUser?.cambioRegistro && (
-                            <AnimateButton>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleSaveSingle}
-                                    startIcon={<SaveIcon />}
-                                    disabled={loading}
-                                >
-                                    Guardar Firma
-                                </Button>
-                            </AnimateButton>
-                        )}
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <Stack spacing={0.5}>
-                            {loading ? (
-                                <><Skeleton width="80%" /><Skeleton width="50%" /><Skeleton width="90%" /><Skeleton width="70%" /></>
-                            ) : (
-                                <>
-                                    <Typography sx={{ fontSize: '0.9rem', textTransform: 'capitalize' }}>
-                                        <Box component="span" sx={{ fontWeight: 'bold' }}>Nombre: </Box>
-                                        {currentUser?.nombre?.toLowerCase() || '------'}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: '0.9rem', textTransform: 'capitalize' }}>
-                                        <Box component="span" sx={{ fontWeight: 'bold' }}>Especialidad: </Box>
-                                        {currentUser?.especialidad?.toLowerCase() || '------'}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: '0.9rem' }}>
-                                        <Box component="span" sx={{ fontWeight: 'bold' }}>Registro y licencia: </Box>
-                                        {currentUser?.registro || ''} {currentUser?.licencia || '------'}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: '0.9rem', color: 'primary.main', fontWeight: 'medium' }}>
-                                        {nameCargo}
-                                    </Typography>
-                                </>
                             )}
+
+                            <UploadBox
+                                disabled
+                                name={`listFirma.${index}.firma`}
+                                defaultValue={currentUser?.firma || null}
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    '& img': {
+                                        objectFit: 'contain',
+                                        width: '100%',
+                                        height: '100%',
+                                        p: 1
+                                    }
+                                }}
+                                placeholder={
+                                    <Stack alignItems="center" spacing={0.5}>
+                                        <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 500 }}>
+                                            {isSigned ? 'FIRMA ELECTRÓNICA' : 'PENDIENTE'}
+                                        </Typography>
+                                    </Stack>
+                                }
+                            />
+                        </Box>
+                    </Grid>
+
+                    {/* Columna Derecha - Info */}
+                    <Grid item xs={12} md={showFirmarButton ? 6 : 9}>
+                        <Stack spacing={0.5}>
+                            <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1.2 }}>
+                                {title}
+                            </Typography>
+
+                            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.primary', lineHeight: 1.2 }}>
+                                {currentUser?.nombre || 'Pendiente de asignar'}
+                            </Typography>
+
+                            <Grid container spacing={1} sx={{ mt: 0.5 }}>
+                                {[
+                                    { label: 'Especialidad', value: currentUser?.especialidad },
+                                    { label: 'Registro', value: currentUser?.registro },
+                                    { label: 'Licencia', value: currentUser?.licencia }
+                                ].map((item, i) => (
+                                    <Grid item key={i}>
+                                        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', display: 'flex', gap: 0.5 }}>
+                                            <Box component="span" sx={{ fontWeight: 600 }}>{item.label}:</Box>
+                                            {item.value || '---'}
+                                        </Typography>
+                                    </Grid>
+                                ))}
+                            </Grid>
+
+                            <Typography sx={{
+                                fontSize: '0.75rem',
+                                color: 'text.secondary',
+                                fontStyle: 'italic',
+                                mt: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5
+                            }}>
+                                {nameCargo}
+                                {isSigned && <CheckCircleIcon sx={{ fontSize: 14, color: 'success.main' }} />}
+                            </Typography>
                         </Stack>
                     </Grid>
+
+                    {showFirmarButton && (
+                        <Grid item xs={12} md={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <Button
+                                variant="contained"
+                                onClick={handleFirmar}
+                                startIcon={<EditIcon />}
+                                disabled={loading}
+                                sx={{
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    fontWeight: 600,
+                                    px: 3,
+                                    boxShadow: '0 4px 10px rgba(var(--mui-palette-primary-mainChannel), 0.2)'
+                                }}
+                            >
+                                {loading ? 'Firmando...' : 'Firmar'}
+                            </Button>
+                        </Grid>
+                    )}
                 </Grid>
-            </Grid>
-        </Grid>
+            </Card>
+        </Box>
     );
 };
 
@@ -891,37 +896,39 @@ export const Signatures = () => {
 
     const CARGOS_DEFAULT = [
         { title: "Realizado por", nameCargo: "Gerente Salud Ocupacional Drummond Ltd", numFirma: 1 },
-        { title: "Realizado por", nameCargo: "Ergonomista Drummond Ltd", numFirma: 2 },
-        { title: "Realizado por", nameCargo: "Supervisor higiene industrial Drummond Ltd", numFirma: 3 },
+        { nameCargo: "Ergonomista Drummond Ltd", numFirma: 2 },
+        { nameCargo: "Supervisor higiene industrial Drummond Ltd", numFirma: 3 },
         { title: "Asesorado por", nameCargo: "Asesor", numFirma: 4 },
     ];
 
-    useEffect(() => {
-        async function getData() {
-            if (!idIEL) return;
-            try {
-                const response = await GetIELFirma(idIEL);
-                if (response.data.exito) {
-                    const mappedData = CARGOS_DEFAULT.map((cargo) => {
-                        const serverData = response.data.datos.find(d => d.numFirma === cargo.numFirma);
-                        return {
-                            ...cargo,
-                            id: serverData?.id || null,
-                            idUsuario: serverData?.idUsuario || null,
-                            nombre: serverData?.nombre || null,
-                            especialidad: serverData?.especialidad || null,
-                            registro: serverData?.registro || null,
-                            licencia: serverData?.licencia || null,
-                            firma: serverData?.firma || null,
-                            cambioRegistro: false
-                        };
-                    });
-                    replace(mappedData);
-                }
-            } catch (error) {
-                toast.error("Error cargando firmas");
+    async function getData() {
+        if (!idIEL) return;
+        try {
+            const response = await GetIELFirma(idIEL);
+            if (response.data.exito) {
+                const mappedData = CARGOS_DEFAULT.map((cargo) => {
+                    const serverData = response.data.datos.find(d => d.numFirma === cargo.numFirma);
+                    return {
+                        ...cargo,
+                        id: serverData?.id || null,
+                        idUsuario: serverData?.idUsuario || null,
+                        nombre: serverData?.nombre || null,
+                        especialidad: serverData?.especialidad || null,
+                        registro: serverData?.registro || null,
+                        licencia: serverData?.licencia || null,
+                        firma: serverData?.firma || null,
+                        firmado: serverData?.firma !== null && serverData?.firma !== undefined
+                    };
+                });
+
+                replace(mappedData);
             }
+        } catch (error) {
+            toast.error("Error cargando firmas");
         }
+    }
+
+    useEffect(() => {
         getData();
     }, [idIEL, replace]);
 
@@ -935,13 +942,15 @@ export const Signatures = () => {
     }
 
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
             {fields.map((field, index) => (
                 <Grid item xs={12} key={field.id}>
                     <ComponentSignatures
                         index={index}
                         title={field.title}
                         nameCargo={field.nameCargo}
+                        numFirma={field.numFirma}
+                        refreshData={getData}
                     />
                 </Grid>
             ))}
