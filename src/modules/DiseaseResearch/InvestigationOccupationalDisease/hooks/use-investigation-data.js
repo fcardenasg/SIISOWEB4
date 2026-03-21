@@ -1,24 +1,22 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import swal from 'sweetalert';
 import {
-    GetAllByDataResearcher,
-    DeleteResearchAssignment,
     ChangeStatusAssignment,
-    ValidateResearchAssignment
+    DeleteResearchAssignment,
+    GetAllByDataResearcher
 } from 'api/clients/ResearchAssignmentClient';
-import { ParamDelete } from 'components/alert/AlertAll';
 import { Url } from 'api/instances/AuthRoute';
 import axios from 'axios';
+import { ParamDelete } from 'components/alert/AlertAll';
 import { useBoolean } from 'hooks/use-boolean';
+import { useEffect, useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';
 
 export const useInvestigationData = (viewMode) => {
     const navigate = useNavigate();
 
-    const [numStatus, setNumStatus] = useState(null);
     const [idAssignment, setIdAssignment] = useState(null);
-    const [filter, setFilter] = useState(1);
+    const [filter, setFilter] = useState(2);
     const [isOpen, setIsOpen] = useState(false);
     const [dataModel, setDataModel] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -31,20 +29,6 @@ export const useInvestigationData = (viewMode) => {
     const loadingReport = useBoolean(false);
 
     const itemsPerPage = viewMode === 'list' ? 4 : 6;
-
-    useEffect(() => {
-        async function validate() {
-            try {
-                const result = await ValidateResearchAssignment();
-                if (result.data.exito) {
-                    setNumStatus(result.data.datos);
-                }
-            } catch (error) {
-                toast.error('Error al validar el filtro');
-            }
-        }
-        validate();
-    }, []);
 
     const getData = async () => {
         try {
@@ -177,8 +161,13 @@ export const useInvestigationData = (viewMode) => {
         }
     }
 
+    useEffect(() => {
+        return () => {
+            if (reportUrl) URL.revokeObjectURL(reportUrl);
+        };
+    }, [reportUrl]);
+
     return {
-        numStatus,
         idAssignment,
         setIdAssignment,
         filter,

@@ -29,7 +29,7 @@ import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
 import { ParamDelete } from 'components/alert/AlertAll';
-import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
+import { AccionMenu, Message, Modulo, TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
 import Chip from 'ui-component/extended/Chip';
@@ -39,12 +39,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { DeleteResearchAssignment } from 'api/clients/ResearchAssignmentClient';
+import { DeleteRehabilitationPlan, GetAllRehabilitationPlan } from 'api/clients/RehabilitationPlanClient';
 import Cargando from 'components/loading/Cargando';
 import EmptyState from 'components/loading/EmptyState';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
 import toast from 'react-hot-toast';
-import { DeleteRehabilitationPlan, GetAllRehabilitationPlan } from 'api/clients/RehabilitationPlanClient';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -317,8 +316,8 @@ const ListAPTHygiene = () => {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
                     const result = await DeleteRehabilitationPlan(idCheck);
-                    if (result.data.exito) {
-                        toast.success(result.data.mensaje);
+                    if (result.status === 200) {
+                        toast.success(Message.Eliminar);
                         setSearch('');
                         setSelected([]);
                         getAll();
@@ -326,9 +325,7 @@ const ListAPTHygiene = () => {
                 } else
                     setSelected([]);
             });
-        } catch (error) {
-
-        }
+        } catch (error) { }
     }
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -478,7 +475,7 @@ const ListAPTHygiene = () => {
                                                         <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
                                                             <div>
                                                                 {row?.listDx?.map((item, index) => (
-                                                                    <div key={index}>{item.label}</div>
+                                                                    <div key={index}>{item.value} - {item.label}</div>
                                                                 ))}
                                                             </div>
                                                         }>

@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { GetByIdInvestigation, InsertInvestigation } from 'api/clients/InvestigationClient';
-import { ChangeStatusAssignment } from 'api/clients/ResearchAssignmentClient';
+import { ChangeStatusAssignment, ChangeStatusItemAssignment, GetInvAseDetalleAssignment } from 'api/clients/ResearchAssignmentClient';
 import {
     AccionMenu,
     Modulo,
@@ -73,6 +73,7 @@ const InvestigationOccupationalDisease = () => {
     const disabledButton = useBoolean(false);
     const [dataModel, setDataModel] = useState(null);
     const [allowedItems, setAllowedItems] = useState([]);
+    const [allowedItemsAll, setAllowedItemsAll] = useState([]);
 
     const methods = useForm();
     const { handleSubmit, setValue, watch } = methods;
@@ -91,11 +92,6 @@ const InvestigationOccupationalDisease = () => {
                         disabledButton.onTrue();
                     }
 
-                    // Guardamos los IDs permitidos (ej: [1, 2, 5...])
-                    if (datos.itemInvestigacion) {
-                        setAllowedItems(datos.itemInvestigacion);
-                    }
-
                     setValue('idAsignacion', id);
                     setValue('documento', datos.documento);
                     setValue('estadoInvestigacion', datos.estadoInvestigacion);
@@ -110,6 +106,23 @@ const InvestigationOccupationalDisease = () => {
         getData();
     }, [id]);
 
+    async function getInvAseDetalle() {
+        try {
+            const response = await GetInvAseDetalleAssignment(id);
+            if (response.data.exito) {
+                const items = response.data.datos;
+                setAllowedItems(items.map(item => item.intcodigo));
+                setAllowedItemsAll(items);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al procesar la solicitud");
+        }
+    }
+
+    useEffect(() => {
+        getInvAseDetalle();
+    }, []);
+
     const [canRenderContent, setCanRenderContent] = useState(false);
 
     useEffect(() => {
@@ -123,11 +136,12 @@ const InvestigationOccupationalDisease = () => {
         try {
             disabledButtonSave.onTrue();
             const result = await InsertInvestigation(datos);
-
             if (result.data.exito) {
                 disabledButton.onTrue();
                 setValue('id', result.data.datos);
                 toast.success(result.data.mensaje);
+
+                await getInvAseDetalle();
             } else {
                 toast.error(result.data.mensaje);
             }
@@ -148,12 +162,12 @@ const InvestigationOccupationalDisease = () => {
             {
                 id: 2,
                 title: { icon: "material-symbols-light:work-history-outline", text: "Historia laboral en DLTD" },
-                content: (disabled) => <WorkHistoryDLTD methods={methods} documento={documento} disabledControl={disabled} />
+                content: (disabled) => <WorkHistoryDLTD documento={documento} disabledControl={disabled} refreshDataState={getInvAseDetalle} />
             },
             {
                 id: 3,
                 title: { icon: "icon-park-twotone:history-query", text: "Historia laboral en otras empresas" },
-                content: (disabled) => <WorkHistoryOtherCompanies methods={methods} documento={documento} disabledControl={disabled} />
+                content: (disabled) => <WorkHistoryOtherCompanies methods={methods} documento={documento} disabledControl={disabled} refreshDataState={getInvAseDetalle} />
             },
             {
                 id: 4,
@@ -254,6 +268,26 @@ const InvestigationOccupationalDisease = () => {
         }
     }
 
+    async function handleUpdateStatus(idItem) {
+        try {
+            const itemDetalle = allowedItemsAll.find(item => item.intcodigo === idItem);
+            if (!itemDetalle) {
+                toast.error("Item no encontrado");
+                return;
+            }
+
+            const response = await ChangeStatusItemAssignment(itemDetalle.value, 3);
+            if (!response.data.exito) {
+                toast.error(response.data.mensaje);
+                return;
+            }
+
+            await getInvAseDetalle();
+        } catch (error) {
+            toast.error(error.message || "Error al procesar la solicitud");
+        }
+    }
+
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.InvestigacionEnfermedadLaboral}>
             <AnimatePresence mode="wait">
@@ -312,12 +346,17 @@ const InvestigationOccupationalDisease = () => {
 
                                         {ArrayAccordion.map((item) => {
                                             const isRestricted = !allowedItems.includes(item.id);
+                                            const statusColor = allowedItemsAll?.find(fil => fil.intcodigo == item.id)?.codigo;
 
                                             return (
-                                                <Grid item xs={12} key={item.id}>
+                                                <Grid item xs={12} key={`${item.id}-${statusColor}`}>
                                                     <AccordionStatus
-                                                        statusColor={1}
-                                                        slotProps={{ transition: { unmountOnExit: true } }}
+                                                        statusColor={parseInt(statusColor)}
+                                                        slotProps={{
+                                                            transition: {
+                                                                unmountOnExit: false
+                                                            }
+                                                        }}
                                                         disabled={disabledButtonSave.value}
                                                         title={
                                                             <Stack
@@ -346,7 +385,7 @@ const InvestigationOccupationalDisease = () => {
                                                                 </Typography>
                                                             </Stack>
                                                         }
-                                                        secondaryAction={!isRestricted ? <FinalizarBoton /> : <ReadOnlyChip />}
+                                                        secondaryAction={!isRestricted ? (parseInt(statusColor) === 1 || parseInt(statusColor) === 2 ? <FinalizarBoton onClick={() => handleUpdateStatus(item.id)} /> : null) : <ReadOnlyChip />}
                                                     >
                                                         {canRenderContent ? (item.content(isRestricted)) : (<CircularProgress size={20} sx={{ m: 2 }} />)}
                                                     </AccordionStatus>

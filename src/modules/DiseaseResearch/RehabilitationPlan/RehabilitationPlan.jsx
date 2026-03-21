@@ -21,6 +21,10 @@ import toast from "react-hot-toast";
 import SubCard from "ui-component/cards/SubCard";
 import AnimateButton from "ui-component/extended/AnimateButton";
 import { InsertRehabilitationPlan } from "api/clients/RehabilitationPlanClient";
+import axios from "axios";
+import FullScreenModal from "components/controllers/FullScreenModal";
+import { useBoolean } from "hooks/use-boolean";
+import { Url } from "api/instances/AuthRoute";
 
 const validationSchema = Yup.object().shape({
   documento: Yup.string().required("El documento es requerido")
@@ -28,6 +32,10 @@ const validationSchema = Yup.object().shape({
 
 const RehabilitationPlan = () => {
   const navigate = useNavigate();
+
+  const loadingReport = useBoolean(false);
+  const openReport = useBoolean(false);
+  const [reportUrl, setReportUrl] = useState('');
 
   const methods = useForm({
     resolver: yupResolver(validationSchema),
@@ -39,18 +47,18 @@ const RehabilitationPlan = () => {
       idCiudad: "",
       idMedico: "",
       idTipoContingencia: "",
-      sinisestroNumero: "",
+      siniestroNumero: "",
 
       // Diagnósticos y Comorbilidad
       dx1: "",
       dx2: "",
       dx3: "",
-      comorvilidad: "",
+      comorbilidad: "",
 
       // Detalles de Evolución
       resumenHistorico: "",
       evaluacion: "",
-      reabilitacionFuncional: "",
+      rehabilitacionFuncional: "",
       rehabilitacionLaboral: "",
       pronosticoInicial: "",
 
@@ -73,6 +81,7 @@ const RehabilitationPlan = () => {
   } = methods;
 
   const [modelEmployee, setModelEmployee] = useState([]);
+  const idRegistro = watch("idRegistro");
   const documento = watch("documento");
   const dx1 = watch("dx1");
   const dx2 = watch("dx2");
@@ -198,22 +207,67 @@ const RehabilitationPlan = () => {
     }
   };
 
+  async function handleClickReport() {
+    loadingReport.onTrue();
+    openReport.onTrue();
+
+    try {
+      const response = await axios.get(`${Url.Base}${Url.PlanRehabilitacion}/report/${idRegistro}`, {
+        responseType: 'blob',
+        headers: {
+          'Accept': 'application/pdf'
+        }
+      });
+
+      if (response.data.type !== 'application/pdf') {
+        throw new Error('El archivo recibido no es un PDF válido.');
+      }
+
+      const url = URL.createObjectURL(response.data);
+      setReportUrl(url);
+    } catch (err) {
+      if (err.response?.data instanceof Blob && err.response.data.type === 'application/json') {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const errorData = JSON.parse(reader.result);
+          toast.error(errorData.message || 'Error al generar el reporte');
+          openReport.onFalse();
+        };
+
+        reader.readAsText(err.response.data);
+      } else {
+        toast.error(err.message || 'No se pudo cargar el reporte.');
+        openReport.onFalse();
+      }
+    } finally {
+      setTimeout(() => {
+        loadingReport.onFalse();
+      }, 500);
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (reportUrl) URL.revokeObjectURL(reportUrl);
+    };
+  }, [reportUrl]);
+
   const onSubmit = async (datos) => {
     try {
       datos.fechaIngreso = datos.fechaIngreso || null;
       datos.idCiudad = datos.comboCiudad ? datos.comboCiudad.value : null;
       datos.idMedico = datos.idMedico || null;
       datos.idTipoContingencia = datos.idTipoContingencia || null;
-      datos.sinisestroNumero = datos.sinisestroNumero || null;
+      datos.siniestroNumero = datos.siniestroNumero || null;
 
       datos.dx1 = datos.dx1 || null;
       datos.dx2 = datos.dx2 || null;
       datos.dx3 = datos.dx3 || null;
-      datos.comorvilidad = datos.comorvilidad || null;
+      datos.comorbilidad = datos.comorbilidad || null;
 
       datos.resumenHistorico = datos.resumenHistorico || null;
       datos.evaluacion = datos.evaluacion || null;
-      datos.reabilitacionFuncional = datos.reabilitacionFuncional || null;
+      datos.rehabilitacionFuncional = datos.rehabilitacionFuncional || null;
       datos.rehabilitacionLaboral = datos.rehabilitacionLaboral || null;
       datos.pronosticoInicial = datos.pronosticoInicial || null;
 
@@ -228,10 +282,13 @@ const RehabilitationPlan = () => {
 
       const result = await InsertRehabilitationPlan(datos);
       if (result.status === 200) {
+        console.log(result.data);
         toast.success("Registro guardado con éxito");
         setValue("documento", "");
         setModelEmployee([]);
         reset();
+
+        setValue("idRegistro", result.data);
       } else
         toast.error("Error al guardar el registro");
     } catch (error) {
@@ -241,6 +298,17 @@ const RehabilitationPlan = () => {
 
   return (
     <FormProvider {...methods}>
+      {openReport.value &&
+        <FullScreenModal onClose={openReport.onFalse} loading={loadingReport.value}>
+          <iframe
+            src={`${reportUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+            className="pdf-report-frame"
+            title="Visualizador de Reporte"
+            loading="lazy"
+          />
+        </FullScreenModal>
+      }
+
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <ViewEmployee
@@ -269,13 +337,14 @@ const RehabilitationPlan = () => {
                   name="comboCiudad"
                   label="Ciudad"
                   options={lsCiudad}
+                  size="medium"
                 />
               </Grid>
 
               <Grid item xs={12} md={4}>
                 <InputSelect
                   name="idTipoContingencia"
-                  label="Tipo contingencia"
+                  label="Tipo de contingencia"
                   options={lsTipoContingencia}
                 />
               </Grid>
@@ -300,7 +369,7 @@ const RehabilitationPlan = () => {
 
               <Grid item xs={12} md={4}>
                 <InputText
-                  name="sinisestroNumero"
+                  name="siniestroNumero"
                   label="Número siniestro"
                 />
               </Grid>
@@ -367,10 +436,10 @@ const RehabilitationPlan = () => {
 
               <Grid item xs={12}>
                 <InputText
-                  name="comorvilidad"
+                  name="comorbilidad"
                   label="Comorbilidad"
                   fullWidth
-                  bug={errors.comorvilidad}
+                  bug={errors.comorbilidad}
                   multiline
                   rows={2}
                 />
@@ -389,7 +458,7 @@ const RehabilitationPlan = () => {
                 <InputText name="evaluacion" label="Evaluación de arcos de movimiento según la parte afectada" multiline rows={4} fullWidth bug={errors.evaluacion} />
               </Grid>
               <Grid item xs={12}>
-                <InputText name="reabilitacionFuncional" label="Rehabilitación funcional" multiline rows={4} fullWidth bug={errors.reabilitacionFuncional} />
+                <InputText name="rehabilitacionFuncional" label="Rehabilitación funcional" multiline rows={4} fullWidth bug={errors.rehabilitacionFuncional} />
               </Grid>
               <Grid item xs={12}>
                 <InputText name="rehabilitacionLaboral" label="Rehabilitación laboral" multiline rows={4} fullWidth bug={errors.rehabilitacionLaboral} />
@@ -452,6 +521,14 @@ const RehabilitationPlan = () => {
                     </AnimateButton>
                   </Grid>
 
+                  <Grid item xs={2}>
+                    <AnimateButton>
+                      <Button disabled={idRegistro ? false : true} variant="outlined" fullWidth onClick={handleClickReport}>
+                        {TitleButton.Imprimir}
+                      </Button>
+                    </AnimateButton>
+                  </Grid>
+
                   <Grid item xs={6} md={4} lg={2}>
                     <Button
                       fullWidth
@@ -459,7 +536,7 @@ const RehabilitationPlan = () => {
                       color="error"
                       onClick={() => navigate("/rehabilitation-plan/list")}
                     >
-                      Cancelar
+                      {TitleButton.Cancelar}
                     </Button>
                   </Grid>
                 </Grid>
@@ -467,8 +544,8 @@ const RehabilitationPlan = () => {
             </Grid>
           </SubCard>
         </Grid>
-      </Grid>
-    </FormProvider>
+      </Grid >
+    </FormProvider >
   );
 };
 

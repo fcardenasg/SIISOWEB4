@@ -1,4 +1,6 @@
-import { Button, Checkbox, FormControlLabel, TextField, Tooltip } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Checkbox, FormControlLabel, TextField, Tooltip } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -6,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import { GetIELAccionPreventivaCorrectiva, GetIELCalificacion, GetIELHistoriaLaboralDLTD, GetIELHistoriaLaboralOtrosEmpresas } from 'api/clients/InvestigationClient';
+import { GetIELAccionPreventivaCorrectiva, GetIELCalificacion, GetIELHistoriaLaboralOtrosEmpresas } from 'api/clients/InvestigationClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import { UpperFirstChar, ViewFormat } from 'components/helpers/Format';
 import EmptyState from 'components/loading/EmptyState';
@@ -14,43 +16,10 @@ import { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import SubCard from 'ui-component/cards/SubCard';
-import { StyledTableCell, StyledTableRow } from './methods';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { StyledTableCell, StyledTableRow } from './methods';
 
-export function TableDLTD({ documento }) {
-  const [listHL, setListHL] = useState([]);
-  const idIEL = useFormContext().getValues('id');
-
-  useEffect(() => {
-    async function getData() {
-      try {
-        if (documento) {
-          const statusData = Boolean(idIEL);
-          const response = await GetIELHistoriaLaboralDLTD(documento, statusData);
-          if (response.data.exito) {
-            const mappedData = (response.data.datos || []).map((item) => ({
-              id: item.id,
-              fecha: item.fecha,
-              cargo: item.nameCargo,
-              turno: item.nameTurno,
-              rotacion: item.nameRotacion,
-              anios: item.anio,
-              meses: item.meses
-            }));
-
-            setListHL(mappedData);
-          }
-        }
-      } catch (error) {
-        toast.error("Error al cargar la historia laboral DLTD");
-      }
-    }
-
-    getData();
-  }, [documento, idIEL]);
-
+export function TableDLTD({ listData }) {
   return (
     <SubCard content={false}>
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
@@ -65,8 +34,8 @@ export function TableDLTD({ documento }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listHL.length > 0 ? (
-              listHL.map((item) => (
+            {listData.length > 0 ? (
+              listData.map((item) => (
                 <StyledTableRow key={item.id}>
                   <StyledTableCell>{ViewFormat(item.fecha)}</StyledTableCell>
                   <StyledTableCell>{item.cargo}</StyledTableCell>
@@ -89,36 +58,7 @@ export function TableDLTD({ documento }) {
   );
 }
 
-export function TableOtherCompanies({ documento }) {
-  const [listHLOE, setListHLOE] = useState([]);
-  const idIEL = useFormContext().getValues('id');
-
-  useEffect(() => {
-    async function getData() {
-      try {
-        if (documento) {
-          const statusData = Boolean(idIEL);
-          const response = await GetIELHistoriaLaboralOtrosEmpresas(documento, statusData);
-          if (response.data.exito) {
-            const mappedData = response.data.datos.map((item) => ({
-              id: item.id,
-              empresa: item.empresa,
-              cargo: item.cargo,
-              anios: item.anio,
-              meses: item.meses
-            }));
-
-            setListHLOE(mappedData);
-          }
-        }
-      } catch (error) {
-        toast.error("Error al cargar la historia laboral de otras empresas");
-      }
-    }
-
-    getData();
-  }, [documento, idIEL]);
-
+export function TableOtherCompanies({ listData }) {
   return (
     <SubCard content={false}>
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
@@ -131,20 +71,20 @@ export function TableOtherCompanies({ documento }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listHLOE.length > 0 ? (
-              listHLOE.map((item) => (
+            {listData.length > 0 ? (
+              listData.map((item) => (
                 <StyledTableRow key={item.id}>
                   <StyledTableCell>{item.empresa}</StyledTableCell>
                   <StyledTableCell>{item.cargo}</StyledTableCell>
                   <StyledTableCell>
-                    {`${item.anios} año(s) / ${item.meses} mes(es)`}
+                    {`${item.anio} año(s) / ${item.meses} mes(es)`}
                   </StyledTableCell>
                 </StyledTableRow>
               ))
             ) : (
               <StyledTableRow>
-                <StyledTableCell colSpan={3} align="center">
-                  No hay registros
+                <StyledTableCell colSpan={5} align="center">
+                  <EmptyState seeSubtitle={false} title="No hay registros" />
                 </StyledTableCell>
               </StyledTableRow>
             )}

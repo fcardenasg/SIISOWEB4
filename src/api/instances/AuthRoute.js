@@ -267,7 +267,6 @@ export const Url = {
     AccidentalidadId: 'api/Accidentalidad/id',
 
     PlanRehabilitacion: 'api/PlanRehabilitacion',
-    PlanRehabilitacionExcel: 'api/PlanRehabilitacion/excel',
     PlanRehabilitacionId: 'api/PlanRehabilitacion/id',
 
     HistoriaLaboral: 'api/HistoriaLaboral',

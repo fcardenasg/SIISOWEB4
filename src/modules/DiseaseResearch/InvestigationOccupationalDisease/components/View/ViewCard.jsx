@@ -113,12 +113,14 @@ const ViewCard = ({ dataInfo, index }) => {
                             width: '100%',
                             height: '100%',
                             fontSize: '2rem',
-                            border: '2px solid white',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                             borderRadius: '16px',
+                            border: dataInfo.foto && '2px solid white',
+                            boxShadow: dataInfo.foto && '0 4px 12px rgba(0,0,0,0.15)',
+                            bgcolor: dataInfo.foto && 'background.paper',
+                            color: 'text.secondary',
                         }}
                     >
-                        {dataInfo.nombreEmpleado?.charAt(0)}
+                        {!dataInfo.foto && dataInfo.nombreEmpleado?.charAt(0).toUpperCase()}
                     </Avatar>
                 </Box>
 

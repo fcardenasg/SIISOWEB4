@@ -1,5 +1,27 @@
 import { AssignmentLateOutlined, AutoAwesomeOutlined } from '@mui/icons-material';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Card, Divider, Grid, Paper, Stack, Typography } from '@mui/material';
+import Iconify from 'components/iconify/iconify';
+import { motion } from 'framer-motion';
+
+export const DownloadFileBlob = (data, fileName = 'Reporte') => {
+    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const urlDownload = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = urlDownload;
+    const fullFileName = `${fileName}${new Date().getTime()}.xlsx`;
+    link.setAttribute('download', fullFileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(urlDownload);
+};
+
+export const OptionSearch = [
+    { value: 1, label: "TODOS" },
+    { value: 2, label: "SI" },
+    { value: 3, label: "NO" },
+    { value: 4, label: "VACÍO" },
+]
 
 export const ArrayOptions = [
     { value: 1, label: "DATOS DE LA EMPRESA" },
@@ -99,62 +121,166 @@ export const EmptyState = ({ title, description }) => (
     </Box>
 );
 
-/* const LightTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-    [`& .MuiTooltip-tooltip`]: {
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary,
-        boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
-        borderRadius: '10px',
-        padding: '12px',
-        border: `1px solid ${theme.palette.divider}`,
-    },
-    [`& .MuiTooltip-arrow`]: {
-        color: theme.palette.background.paper,
-        "&::before": { border: `1px solid ${theme.palette.divider}` }
-    },
-}));
+export const RankingAdvisors = ({ data = [] }) => {
+    const normalAdvisors = data.filter(item => item.codigo !== 'yes');
+    const othersRecord = data.find(item => item.codigo === 'yes');
 
-export const LightTooltipExp = ({ listExpertos }) => {
-    const totalExpertos = listExpertos.length;
+    const topThree = [...normalAdvisors]
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 3);
 
-    const renderExpertsTooltip = (expertos) => (
-        <Stack spacing={1} sx={{ minWidth: 160 }}>
-            <Typography variant="caption" sx={{ fontWeight: 800, color: 'secondary.main' }}>
-                Detalle de Asesores
-            </Typography>
-            <Divider />
-            {expertos.map((exp, idx) => (
-                <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 3 }}>
-                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'capitalize' }}>{exp.label?.toLowerCase()}</Typography>
-                    <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, bgcolor: 'grey.100', px: 0.8, borderRadius: 0.5 }}>
-                        {exp.value}
-                    </Typography>
-                </Box>
-            ))}
-        </Stack>
-    );
+    if (topThree.length === 0 && !othersRecord) return null;
+
+    const getRankStyle = (index) => {
+        const styles = [
+            { color: '#EAB308', border: '#EAB308', icon: 'solar:crown-bold-duotone' },
+            { color: '#64748B', border: '#94A3B8', icon: 'solar:medal-ribbons-star-bold-duotone' },
+            { color: '#92400E', border: '#D97706', icon: 'solar:medal-ribbon-bold-duotone' },
+        ];
+        return styles[index] || styles[2];
+    };
 
     return (
-        <LightTooltip title={renderExpertsTooltip(listExpertos)} arrow placement="left">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box sx={{
-                    width: 22, height: 22, borderRadius: '50%',
-                    border: '1.5px solid',
-                    borderColor: totalExpertos > 0 ? (isSelected ? 'secondary.main' : 'primary.main') : 'grey.300',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: totalExpertos > 0 ? (isSelected ? 'secondary.main' : 'primary.main') : 'grey.400',
-                    fontSize: '0.65rem', fontWeight: 800,
-                    lineHeight: 0,
-                    transition: 'all 0.2s'
-                }}>
-                    {totalExpertos}
-                </Box>
-                <Typography variant="caption" sx={{ color: isSelected ? 'secondary.main' : 'text.secondary', fontWeight: isSelected ? 700 : 500 }}>
-                    {totalExpertos === 1 ? 'Asesor' : 'Asesores'}
-                </Typography>
-            </Box>
-        </LightTooltip>
-    )
-} */
+        <Grid container spacing={1.5} alignItems="stretch">
+            {topThree.map((asesor, index) => {
+                const style = getRankStyle(index);
+                return (
+                    <Grid item xs={12} sm={6} md={4} lg={othersRecord ? 3 : 4} key={index}>
+                        <RankCard
+                            label={asesor.label}
+                            value={asesor.value}
+                            style={style}
+                        />
+                    </Grid>
+                );
+            })}
+
+            {othersRecord && (
+                <Grid item xs={12} sm={6} md={4} lg={3}>
+                    <Box sx={{ display: 'flex', height: '100%', alignItems: 'center' }}>
+                        <Divider
+                            orientation="vertical"
+                            flexItem
+                            sx={{
+                                display: { xs: 'none', lg: 'block' },
+                                mr: 1.5,
+                                borderStyle: 'dashed'
+                            }}
+                        />
+                        <RankCard
+                            label={othersRecord.label}
+                            value={othersRecord.value}
+                            isSpecial
+                            style={{
+                                color: '#475569',
+                                border: '#CBD5E1',
+                                icon: 'solar:user-block-bold-duotone'
+                            }}
+                        />
+                    </Box>
+                </Grid>
+            )}
+        </Grid>
+    );
+};
+
+const RankCard = ({ label, value, style, isSpecial = false }) => (
+    <Paper
+        elevation={0}
+        component={motion.div}
+        whileHover={{ y: -3 }}
+        sx={{
+            display: 'flex',
+            alignItems: 'center',
+            p: '8px 12px',
+            height: '100%',
+            borderRadius: '10px',
+            bgcolor: isSpecial ? '#F1F5F9' : 'white',
+            border: '1px solid',
+            borderColor: '#E2E8F0',
+            borderLeft: `4px solid ${style.border}`,
+            boxShadow: isSpecial ? 'none' : '0 2px 4px rgba(0,0,0,0.02)',
+        }}
+    >
+        <Iconify
+            icon={style.icon}
+            width={22}
+            sx={{ color: style.color, mr: 1.5, flexShrink: 0 }}
+        />
+        <Box sx={{ minWidth: 0 }}>
+            <Typography
+                noWrap
+                sx={{
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    color: isSpecial ? '#64748B' : '#1E293B',
+                    lineHeight: 1.2,
+                    textTransform: 'capitalize'
+                }}
+            >
+                {label?.toLowerCase()}
+            </Typography>
+            <Typography
+                sx={{
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    color: style.color,
+                }}
+            >
+                {value} {value === 1 ? 'asesoría' : 'asesorías'}
+            </Typography>
+        </Box>
+    </Paper>
+);
+
+export const getSimilarity = (s1, s2) => {
+    let longer = s1.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    let shorter = s2.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+    if (longer.length < shorter.length) {
+        let tmp = longer;
+        longer = shorter;
+        shorter = tmp;
+    }
+
+    let longerLength = longer.length;
+    if (longerLength === 0) return 1.0;
+
+    const editDistance = (s1, s2) => {
+        let costs = [];
+        for (let i = 0; i <= s1.length; i++) {
+            let lastValue = i;
+            for (let j = 0; j <= s2.length; j++) {
+                if (i === 0) costs[j] = j;
+                else if (j > 0) {
+                    let newValue = costs[j - 1];
+                    if (s1.charAt(i - 1) !== s2.charAt(j - 1))
+                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                    costs[j - 1] = lastValue;
+                    lastValue = newValue;
+                }
+            }
+            if (i > 0) costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+    };
+
+    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+};
+
+export const findBestMatch = (list, targetLabel) => {
+    if (!list || !targetLabel) return null;
+
+    let bestMatch = null;
+    let highestScore = -1;
+
+    list.forEach((item) => {
+        const score = getSimilarity(item.label, targetLabel);
+        if (score > highestScore) {
+            highestScore = score;
+            bestMatch = item;
+        }
+    });
+
+    return highestScore > 0.5 ? bestMatch : null;
+};

@@ -10,10 +10,13 @@ export const GetAllByDataResearcher = async (filter) => await getData(`${Url.Asi
 export const UpdateResearchAssignments = async (asignacion) => await putData(Url.AsignacionInvestigacion, asignacion);
 export const DeleteResearchAssignment = async (id) => await deleteData(Url.AsignacionInvestigacion, { id });
 export const GetDataOccupationalMedicine = async (documento) => await getData(`${Url.AsignacionInvestigacion}/dx-occumedicine`, { documento });
+export const ComboNotifyResearchAssignment = async (idAsignacion) => await getData(`${Url.AsignacionInvestigacion}/combo-notify`, { idAsignacion });
 
 export const RestoreResearchAssignment = async (asignacion) => await putData(`${Url.AsignacionInvestigacion}/action-restore`, asignacion);
 export const ChangeStatusAssignment = async (estado, idAsignacion) => await getData(`${Url.AsignacionInvestigacion}/change-status`, { estado, idAsignacion });
 export const SendAssignmentNotificationForward = async (idsUser, idAsignacion) => await postData(`${Url.AsignacionInvestigacion}/forward-assignment/${idAsignacion}`, idsUser);
+export const ChangeStatusItemAssignment = async (id, estado) => await getData(`${Url.AsignacionInvestigacion}/update-state`, { id, estado });
+export const GetInvAseDetalleAssignment = async (idAsignacion) => await getData(`${Url.AsignacionInvestigacion}/InvAseDetalle`, { idAsignacion });
 
 /* Detalle de la asignacion */
 export const GetAllDetailResearchAssignment = async (idDetalle, isInvestigacion) => await getData(`${Url.AsignacionInvestigacion}/detalle`, { idDetalle, isInvestigacion });

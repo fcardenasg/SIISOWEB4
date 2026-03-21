@@ -1,122 +1,141 @@
-import {
-    Box, Checkbox, Chip, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Typography, Tooltip, Stack, Paper, IconButton,
-    Divider
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { AnimatePresence } from 'framer-motion';
-import { EmptyState } from '../../methods';
+import React from 'react';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import {
+    Box, Checkbox, Chip, IconButton, Paper,
+    Table, TableBody, TableCell, TableContainer,
+    TableHead, TableRow, Tooltip, Typography
+} from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
+import { EmptyState } from '../../methods';
 
-const LightTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-    [`& .MuiTooltip-tooltip`]: {
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary,
-        boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
-        borderRadius: '10px',
-        padding: '12px',
-        border: `1px solid ${theme.palette.divider}`,
-    },
-    [`& .MuiTooltip-arrow`]: {
-        color: theme.palette.background.paper,
-        "&::before": { border: `1px solid ${theme.palette.divider}` }
-    },
-}));
+const cellStyle = (isSelected) => ({
+    fontSize: '0.8rem',
+    py: 1.5,
+    color: isSelected ? 'secondary.main' : 'text.primary',
+    fontWeight: isSelected ? 600 : 400,
+    transition: 'all 0.2s ease'
+});
 
 const ListMedicine = ({ records = [], selectedValues = [], handleToggleSelection, handleOpenEdit }) => {
     const hasRecords = records && records.length > 0;
 
-    const renderExpertsTooltip = (expertos) => (
-        <Stack spacing={1} sx={{ minWidth: 160 }}>
-            <Typography variant="caption" sx={{ fontWeight: 800, color: 'secondary.main' }}>
-                Detalle de Asesores
-            </Typography>
-            <Divider />
-            {expertos.map((exp, idx) => (
-                <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 3 }}>
-                    <Typography sx={{ fontSize: '0.75rem', textTransform: 'capitalize' }}>{exp.label?.toLowerCase()}</Typography>
-                    <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, bgcolor: 'grey.100', px: 0.8, borderRadius: 0.5 }}>
-                        {exp.value}
-                    </Typography>
-                </Box>
-            ))}
-        </Stack>
-    );
-
     return (
         <Box sx={{ width: '100%' }}>
-            <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '12px' }}>
-                <Table size="small">
-                    <TableHead sx={{ bgcolor: '#F8FAFC' }}>
+            <TableContainer
+                component={Paper}
+                elevation={0}
+                sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '12px', overflow: 'hidden' }}
+            >
+                <Table size="small" stickyHeader>
+                    <TableHead>
                         <TableRow>
-                            <TableCell padding="checkbox" />
-                            {['Código', 'Diagnóstico', 'Inv.', 'JRC', 'JNC', 'AFP', 'Asesor ARL', ''].map((head) => (
-                                <TableCell key={head} sx={{ py: 1.5, fontWeight: 700, color: 'text.secondary', fontSize: '0.7rem' }}>
+                            <TableCell padding="checkbox" sx={{ bgcolor: '#F8FAFC' }} />
+                            {['Dx', 'Diagnóstico', 'Inv.', 'JRC', 'JNC', 'AFP', 'Asesor ARL', ''].map((head) => (
+                                <TableCell
+                                    key={head}
+                                    sx={{
+                                        bgcolor: '#F8FAFC',
+                                        py: 1.5,
+                                        fontWeight: 800,
+                                        color: 'text.secondary',
+                                        fontSize: '0.65rem',
+                                        letterSpacing: '0.05rem'
+                                    }}
+                                >
                                     {head}
                                 </TableCell>
                             ))}
                         </TableRow>
                     </TableHead>
-                    <TableBody sx={{ position: 'relative' }}>
-                        <AnimatePresence mode="popLayout" initial={false}>
+                    <TableBody>
+                        <AnimatePresence mode="popLayout">
                             {!hasRecords ? (
                                 <TableRow>
-                                    <TableCell colSpan={8}>
+                                    <TableCell colSpan={9} sx={{ py: 10 }}>
                                         <EmptyState
                                             title="Lista de diagnósticos vacía"
-                                            description="Aún no hay registros cargados. Los verás aquí detallados una vez realices la búsqueda."
+                                            description="Realiza una búsqueda para visualizar los registros aquí detallados."
                                         />
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                records.map((record, index) => {
+                                records.map((record) => {
                                     const isSelected = selectedValues.includes(record.idMedicinaLaboral);
 
                                     return (
-                                        <TableRow sx={{ cursor: "pointer" }}>
+                                        <TableRow
+                                            key={record.idMedicinaLaboral}
+                                            component={motion.tr}
+                                            layout
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            hover
+                                            sx={{
+                                                cursor: "pointer",
+                                                bgcolor: isSelected ? 'rgba(156, 39, 176, 0.04)' : 'transparent',
+                                                '&:hover': { bgcolor: isSelected ? 'rgba(156, 39, 176, 0.08) !important' : 'rgba(0,0,0,0.02)' }
+                                            }}
+                                        >
                                             <TableCell padding="checkbox" onClick={() => handleToggleSelection(record.idMedicinaLaboral)}>
                                                 <Checkbox
                                                     checked={isSelected}
                                                     size="small"
-                                                    sx={{ '&.Mui-checked': { color: 'secondary.main' } }}
+                                                    sx={{ color: 'divider', '&.Mui-checked': { color: 'secondary.main' } }}
                                                 />
                                             </TableCell>
+
                                             <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)}>
                                                 <Chip
                                                     label={record.dx}
                                                     size="small"
                                                     sx={{
-                                                        fontWeight: 800,
-                                                        fontSize: '0.65rem',
-                                                        borderRadius: '6px',
-                                                        bgcolor: isSelected ? 'secondary.main' : 'grey.100',
+                                                        fontWeight: 900,
+                                                        fontSize: '0.6rem',
+                                                        borderRadius: '4px',
+                                                        bgcolor: isSelected ? 'secondary.main' : 'grey.200',
                                                         color: isSelected ? 'white' : 'text.primary',
-                                                        transition: 'all 0.2s'
+                                                        height: 20
                                                     }}
                                                 />
                                             </TableCell>
-                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ fontSize: '0.8rem', fontWeight: isSelected ? 600 : 400, color: isSelected ? 'secondary.main' : 'inherit' }}>
-                                                {record.nombreDx}
+
+                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ maxWidth: 400 }}>
+                                                <Typography sx={{ ...cellStyle(isSelected), noWrap: true, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                    {record.nombreDx}
+                                                </Typography>
                                             </TableCell>
-                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ fontSize: '0.8rem', fontWeight: isSelected ? 600 : 400, color: isSelected ? 'secondary.main' : 'inherit' }}>
-                                                {record.investigado || "NO"}
+
+                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)}>
+                                                <Typography sx={{
+                                                    ...cellStyle(isSelected),
+                                                    color: record.investigado === 'SI' ? 'success.main' : isSelected ? 'secondary.main' : 'text.secondary',
+                                                    fontWeight: 700
+                                                }}>
+                                                    {record.investigado}
+                                                </Typography>
                                             </TableCell>
-                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ fontSize: '0.8rem' }}>{record.noDictamenJRC || '-'}</TableCell>
-                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ fontSize: '0.8rem' }}>{record.noDictamenJNC || '-'}</TableCell>
-                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ fontSize: '0.8rem' }}>{record.noDictamenAFP || '-'}</TableCell>
-                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ textTransform: 'capitalize' }}>
+
+                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={cellStyle(isSelected)}>{record.noDictamenJRC || '-'}</TableCell>
+                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={cellStyle(isSelected)}>{record.noDictamenJNC || '-'}</TableCell>
+                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={cellStyle(isSelected)}>{record.noDictamenAFP || '-'}</TableCell>
+
+                                            <TableCell onClick={() => handleToggleSelection(record.idMedicinaLaboral)} sx={{ ...cellStyle(isSelected), textTransform: 'capitalize' }}>
                                                 {record?.asesorARL?.toLowerCase()}
                                             </TableCell>
-                                            <TableCell align="center">
-                                                <Tooltip
-                                                    disableInteractive
-                                                    placement="top"
-                                                    title="Ir a Medicina Laboral"
-                                                >
-                                                    <IconButton size="large" onClick={() => handleOpenEdit(record)}>
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem', color: 'primary.main' }} />
+
+                                            <TableCell align="center" sx={{ maxWidth: 50 }}>
+                                                <Tooltip arrow title="Editar Medicina Laboral" placement="left">
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={(e) => { e.stopPropagation(); handleOpenEdit(record); }}
+                                                        sx={{
+                                                            bgcolor: 'primary.lighter',
+                                                            color: 'primary.main',
+                                                            '&:hover': { bgcolor: 'primary.main', color: 'white' }
+                                                        }}
+                                                    >
+                                                        <EditTwoToneIcon sx={{ fontSize: '1.1rem' }} />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>

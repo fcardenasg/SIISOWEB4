@@ -5,7 +5,7 @@ import {
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { GetByIdInvestigation } from 'api/clients/InvestigationClient';
+import { GetByIdInvestigation, InsertIELComentario } from 'api/clients/InvestigationClient';
 import Accordion from 'components/accordion/Accordion';
 import {
     AccionMenu,
@@ -121,13 +121,22 @@ const ViewAndReview = () => {
                 if (result.isConfirmed) {
                     openComment.onTrue();
                 } else if (result.isDenied) {
-                    const result = await ChangeStatusAssignment(4, id);
-                    if (result.data.exito) {
-                        toast.success("Se devolvió la investigación correctamente");
-                        navigate(`/investigation-occupational-disease/view`);
-                    } else {
-                        toast.error("Error al devolver la investigación: " + result.data.mensaje);
+                    const data = { idInvestigacion: idInvestigation }
+
+                    const resultComment = await InsertIELComentario(data);
+                    if (!resultComment.data.exito) {
+                        toast.error("Error al enviar la notificación: " + resultComment.data.mensaje);
+                        return;
                     }
+
+                    const result = await ChangeStatusAssignment(4, id);
+                    if (!result.data.exito) {
+                        toast.error("Error al devolver la investigación: " + result.data.mensaje);
+                        return;
+                    }
+
+                    toast.success("Se devolvió la investigación correctamente", { duration: 10000 });
+                    navigate(`/investigation-occupational-disease/view`);
                 }
             });
 

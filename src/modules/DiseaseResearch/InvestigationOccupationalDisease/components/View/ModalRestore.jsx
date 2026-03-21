@@ -77,7 +77,7 @@ const ModalRestore = ({ open, onClose, idAssignment, getData }) => {
             <DialogTitle sx={{ fontWeight: 600 }}>Devolver Asignación de Investigación</DialogTitle>
             <DialogContent dividers>
                 <Controller
-                    name="idMotivolDevolucion"
+                    name="idMotivoDevolucion"
                     control={control}
                     rules={{ required: 'Por favor seleccione un motivo' }}
                     render={({ field, fieldState: { error } }) => (

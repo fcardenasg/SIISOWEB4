@@ -1,11 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, CircularProgress, Grid } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import { GetAllByCodeOrName } from "api/clients/CIE11Client";
 import { GetByIdEmployee } from "api/clients/EmployeeClient";
 import { GetByIdRehabilitationPlan, UpdateRehabilitationPlans } from "api/clients/RehabilitationPlanClient";
-import { GetAllComboUser, GetAllUser } from "api/clients/UserClient";
+import { GetAllUser } from "api/clients/UserClient";
+import { Url } from "api/instances/AuthRoute";
+import axios from "axios";
+import FullScreenModal from "components/controllers/FullScreenModal";
 import { CodCatalogo, TitleButton } from "components/helpers/Enums";
 import InputDatePicker from "components/input/InputDatePicker";
 import InputOnChange from "components/input/InputOnChange";
@@ -29,9 +31,11 @@ const validationSchema = Yup.object().shape({
 
 const UpdateRehabilitationPlan = () => {
     const { id } = useParams();
-    const theme = useTheme();
     const navigate = useNavigate();
     const loadingData = useBoolean(true);
+    const loadingReport = useBoolean(false);
+    const openReport = useBoolean(false);
+    const [reportUrl, setReportUrl] = useState('');
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -117,7 +121,7 @@ const UpdateRehabilitationPlan = () => {
 
                     setDataModel(datos);
                     setValue("documento", datos.documento);
-                    setValue("especialidad", datos?.especialidad);
+                    setValue("especialidad", datos?.especialidad || "");
 
                     if (datos.documento) {
                         await handleLoadingDocument(datos.documento);
@@ -179,7 +183,7 @@ const UpdateRehabilitationPlan = () => {
         setValue("idMedico", event.target.value);
         const medico = lsMedico.find((item) => item.value === event.target.value);
         if (medico) {
-            setValue("especialidad", medico?.especialidad?.toUpperCase());
+            setValue("especialidad", medico?.especialidad?.toUpperCase(), { shouldValidate: true });
         }
     };
 
@@ -214,15 +218,15 @@ const UpdateRehabilitationPlan = () => {
                 idCiudad: formData.comboCiudad ? formData.comboCiudad.value : (dataModel?.idCiudad || null),
                 idMedico: formData.idMedico || null,
                 idTipoContingencia: formData.idTipoContingencia || null,
-                sinisestroNumero: formData.sinisestroNumero || null,
+                siniestroNumero: formData.siniestroNumero || null,
                 especialidad: formData.especialidad || null,
                 dx1: formData.dx1 || null,
                 dx2: formData.dx2 || null,
                 dx3: formData.dx3 || null,
-                comorvilidad: formData.comorvilidad || null,
+                comorbilidad: formData.comorbilidad || null,
                 resumenHistorico: formData.resumenHistorico || null,
                 evaluacion: formData.evaluacion || null,
-                reabilitacionFuncional: formData.reabilitacionFuncional || null,
+                rehabilitacionFuncional: formData.rehabilitacionFuncional || null,
                 rehabilitacionLaboral: formData.rehabilitacionLaboral || null,
                 pronosticoInicial: formData.pronosticoInicial || null,
                 objetivosPR: formData.objetivosPR || null,
@@ -246,12 +250,68 @@ const UpdateRehabilitationPlan = () => {
         }
     };
 
+    async function handleClickReport() {
+        loadingReport.onTrue();
+        openReport.onTrue();
+
+        try {
+            const response = await axios.get(`${Url.Base}${Url.PlanRehabilitacion}/report/${id}`, {
+                responseType: 'blob',
+                headers: {
+                    'Accept': 'application/pdf'
+                }
+            });
+
+            if (response.data.type !== 'application/pdf') {
+                throw new Error('El archivo recibido no es un PDF válido.');
+            }
+
+            const url = URL.createObjectURL(response.data);
+            setReportUrl(url);
+        } catch (err) {
+            if (err.response?.data instanceof Blob && err.response.data.type === 'application/json') {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const errorData = JSON.parse(reader.result);
+                    toast.error(errorData.message || 'Error al generar el reporte');
+                    openReport.onFalse();
+                };
+
+                reader.readAsText(err.response.data);
+            } else {
+                toast.error(err.message || 'No se pudo cargar el reporte.');
+                openReport.onFalse();
+            }
+        } finally {
+            setTimeout(() => {
+                loadingReport.onFalse();
+            }, 500);
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            if (reportUrl) URL.revokeObjectURL(reportUrl);
+        };
+    }, [reportUrl]);
+
     if (loadingData.value) {
         return <UpdateSkeleton />;
     }
 
     return (
         <FormProvider {...methods}>
+            {openReport.value &&
+                <FullScreenModal onClose={openReport.onFalse} loading={loadingReport.value}>
+                    <iframe
+                        src={`${reportUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                        className="pdf-report-frame"
+                        title="Visualizador de Reporte"
+                        loading="lazy"
+                    />
+                </FullScreenModal>
+            }
+
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <ViewEmployee
@@ -282,6 +342,7 @@ const UpdateRehabilitationPlan = () => {
                                     label="Ciudad"
                                     options={lsCiudad}
                                     defaultValue={lsCiudad.find(opt => opt.value === dataModel?.idCiudad) || null}
+                                    size="medium"
                                 />
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -305,15 +366,15 @@ const UpdateRehabilitationPlan = () => {
                                 <InputText
                                     name="especialidad"
                                     label="Especialidad"
-                                    defaultValue={dataModel?.especialidad}
+                                    defaultValue={dataModel?.especialidad || ""}
                                     disabled
                                 />
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <InputText
-                                    name="sinisestroNumero"
+                                    name="siniestroNumero"
                                     label="Número siniestro"
-                                    defaultValue={dataModel?.sinisestroNumero}
+                                    defaultValue={dataModel?.siniestroNumero}
                                 />
                             </Grid>
                         </Grid>
@@ -379,12 +440,12 @@ const UpdateRehabilitationPlan = () => {
 
                             <Grid item xs={12}>
                                 <InputText
-                                    name="comorvilidad"
+                                    name="comorbilidad"
                                     label="Comorbilidad"
                                     fullWidth
                                     multiline
                                     rows={2}
-                                    defaultValue={dataModel?.comorvilidad}
+                                    defaultValue={dataModel?.comorbilidad}
                                 />
                             </Grid>
                         </Grid>
@@ -416,12 +477,12 @@ const UpdateRehabilitationPlan = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <InputText
-                                    name="reabilitacionFuncional"
+                                    name="rehabilitacionFuncional"
                                     label="Rehabilitación funcional"
                                     multiline
                                     rows={4}
                                     fullWidth
-                                    defaultValue={dataModel?.reabilitacionFuncional}
+                                    defaultValue={dataModel?.rehabilitacionFuncional}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -540,6 +601,15 @@ const UpdateRehabilitationPlan = () => {
                                             </Button>
                                         </AnimateButton>
                                     </Grid>
+
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
                                     <Grid item xs={6} md={4} lg={2}>
                                         <Button
                                             fullWidth

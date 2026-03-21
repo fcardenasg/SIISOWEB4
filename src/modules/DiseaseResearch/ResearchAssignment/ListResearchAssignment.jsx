@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -41,9 +41,10 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
 import { DeleteResearchAssignment, GetAllResearchAssignment } from 'api/clients/ResearchAssignmentClient';
 import Cargando from 'components/loading/Cargando';
+import EmptyState from 'components/loading/EmptyState';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
 import toast from 'react-hot-toast';
-import EmptyState from 'components/loading/EmptyState';
+import { getStatusConfig } from '../InvestigationOccupationalDisease/components/methods';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -70,6 +71,11 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
+        id: 'estadoInvestigacion',
+        label: '',
+        align: 'center'
+    },
+    {
         id: 'documento',
         label: 'Documento',
         align: 'left'
@@ -85,8 +91,8 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'investigador',
-        label: 'Investigadores',
+        id: 'asesorARL',
+        label: 'Asesor ARL',
         align: 'left'
     },
     {
@@ -424,6 +430,25 @@ const ListResearchAssignment = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
+                                                <Tooltip title={getStatusConfig(row.estadoInvestigacion).label} disableInteractive placement="top">
+                                                    <span>
+                                                        {React.cloneElement(getStatusConfig(row.estadoInvestigacion).icon, {
+                                                            sx: {
+                                                                color: getStatusConfig(row.estadoInvestigacion).color,
+                                                                fontSize: '1.25rem'
+                                                            },
+                                                        })}
+                                                    </span>
+                                                </Tooltip>
+                                            </TableCell>
+
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
@@ -477,20 +502,12 @@ const ListResearchAssignment = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
-                                                    <div>
-                                                        {row?.nombreAsesor.map((item, index) => (
-                                                            <div key={index}>{item}</div>
-                                                        ))}
-                                                    </div>
-                                                }>
-                                                    <Typography
-                                                        variant="subtitle1"
-                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                    >
-                                                        <Chip label={`${row?.nombreAsesor?.length} Investigador(es)`} size="small" chipcolor="success" />
-                                                    </Typography>
-                                                </Tooltip>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900', textTransform: 'capitalize' }}
+                                                >
+                                                    {row.nombreAsesor?.toLowerCase()}
+                                                </Typography>
                                             </TableCell>
 
                                             <TableCell

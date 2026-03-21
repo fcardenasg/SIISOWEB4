@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material/styles';
 import { FormatDate } from 'components/helpers/Format';
 import { Controller } from 'react-hook-form';
 
-const InputDatePicker = ({ label, name, defaultValue, noWriting = false, bug, ...others }) => {
+const InputDatePicker = ({ label, name, defaultValue, noWriting = false, size, bug, ...others }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -23,7 +23,7 @@ const InputDatePicker = ({ label, name, defaultValue, noWriting = false, bug, ..
                         id="fecha"
                         label={label}
                         type="date"
-                        size={matchesXS ? 'small' : 'medium'}
+                        size={size ?? matchesXS ? 'small' : 'medium'}
                         InputLabelProps={{
                             shrink: true,
                             className: bug ? 'required-label' : '',

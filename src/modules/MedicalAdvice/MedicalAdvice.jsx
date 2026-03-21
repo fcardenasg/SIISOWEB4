@@ -1,87 +1,78 @@
-import { useState, Fragment, useEffect, useMemo, useRef } from "react";
-import { useTheme } from "@mui/material/styles";
 import {
-  Button,
-  Grid,
-  useMediaQuery,
-  Typography,
-  Tooltip,
-  FormControl,
   Box,
+  Button,
+  FormControl,
   FormControlLabel,
+  Grid,
   Switch,
-  TextField,
-  InputAdornment,
+  Tooltip,
+  Typography,
+  useMediaQuery
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-import BiotechIcon from "@mui/icons-material/Biotech";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import BiotechIcon from "@mui/icons-material/Biotech";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import ImageIcon from "@mui/icons-material/Image";
 
+import { ColorDrummondltd } from "themes/colors";
 import ListMedicalFormula from "../Programming/Attention/OccupationalExamination/MedicalOrder/ListMedicalFormula";
 import MedicalFormula from "../Programming/Attention/OccupationalExamination/MedicalOrder/MedicalFormula";
 import UpdateMedicalFormula from "../Programming/Attention/OccupationalExamination/MedicalOrder/UpdateMedicalFormula";
 import DialogFormula from "../Programming/Attention/OccupationalExamination/Modal/DialogFormula";
-import { ColorDrummondltd } from "themes/colors";
 
-import { MessageSuccess, MessageError } from "components/alert/AlertAll";
-import useAuth from "hooks/useAuth";
-import InputText from "components/input/InputText";
-import InputDatePicker from "components/input/InputDatePicker";
-import ViewEmployee from "components/views/ViewEmployee";
-import ControllerListen from "components/controllers/ControllerListen";
-import ControlModal from "components/controllers/ControlModal";
-import FullScreenDialog from "components/controllers/FullScreenDialog";
-import ListPlantillaAll from "components/template/ListPlantillaAll";
-import DetailedIcon from "components/controllers/DetailedIcon";
-import { FormatDate } from "components/helpers/Format";
+import ListAltSharpIcon from "@mui/icons-material/ListAltSharp";
+import NoteAltIcon from "@mui/icons-material/NoteAlt";
+import SettingsVoiceIcon from "@mui/icons-material/SettingsVoice";
+import VideoCallIcon from "@mui/icons-material/VideoCall";
 import { GetByIdAdvice, SaveAdvice } from "api/clients/AdviceClient";
 import {
   GetAllBySubTipoCatalogo,
   GetByTipoCatalogoCombo,
 } from "api/clients/CatalogClient";
-import InputSelect from "components/input/InputSelect";
+import { GetByIdEmployee } from "api/clients/EmployeeClient";
+import { GetByMail } from "api/clients/UserClient";
+import { MessageError, MessageSuccess } from "components/alert/AlertAll";
+import ViewPDF from "components/components/ViewPDF";
+import ControlModal from "components/controllers/ControlModal";
+import DetailedIcon from "components/controllers/DetailedIcon";
+import FullScreenDialog from "components/controllers/FullScreenDialog";
 import {
+  AccionMenu,
   CodCatalogo,
-  Message,
-  TitleButton,
   DefaultData,
   DefaultValue,
-  ValidationMessage,
-  AccionMenu,
+  Message,
   Modulo,
+  TitleButton,
+  ValidationMessage,
 } from "components/helpers/Enums";
-import AnimateButton from "ui-component/extended/AnimateButton";
-import { PutMedicalAdvice } from "formatdata/MedicalAdviceForm";
-import ListAltSharpIcon from "@mui/icons-material/ListAltSharp";
-import NoteAltIcon from "@mui/icons-material/NoteAlt";
-import SubCard from "ui-component/cards/SubCard";
-import SettingsVoiceIcon from "@mui/icons-material/SettingsVoice";
-import { GetByIdEmployee } from "api/clients/EmployeeClient";
-import ViewPDF from "components/components/ViewPDF";
-import { generateReport } from "../Programming/Attention/Report/MedicalAdvice";
-import { GetByMail } from "api/clients/UserClient";
-import VideoCallIcon from "@mui/icons-material/VideoCall";
+import InputCheck from "components/input/InputCheck";
+import InputDatePickerTime from "components/input/InputDatePickerTime";
+import InputSelect from "components/input/InputSelect";
+import InputText from "components/input/InputText";
 import SelectOnChange from "components/input/SelectOnChange";
+import StickyActionBar from "components/StickyActionBar/StickyActionBar";
 import ListPersonalNotesAll from "components/template/ListPersonalNotesAll";
+import ListPlantillaAll from "components/template/ListPlantillaAll";
+import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
+import ViewEmployee from "components/views/ViewEmployee";
+import { PutMedicalAdvice } from "formatdata/MedicalAdviceForm";
+import useAuth from "hooks/useAuth";
+import { linkAgorapaciente } from "modules/Medicalcalendar/service-calendar/agora";
 import UpdateAttMedicalAdvice from "modules/Programming/Attention/AttentionMedicalAdvice/UpdateAttMedicalAdvice";
 import HoverSocialCard from "modules/Programming/Attention/OccupationalExamination/Framingham/HoverSocialCard";
-import InputCheck from "components/input/InputCheck";
-import StickyActionBar from "components/StickyActionBar/StickyActionBar";
+import SubCard from "ui-component/cards/SubCard";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import { generateReport } from "../Programming/Attention/Report/MedicalAdvice";
 import ExampleAudio from "./ExampleAudio";
-import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
-import { linkAgorapaciente } from "modules/Medicalcalendar/service-calendar/agora";
-import {
-  LocalizationProvider,
-  MobileDateTimePicker,
-} from "@mui/x-date-pickers";
-import InputDatePickerTime from "components/input/InputDatePickerTime";
 
 const validationSchema = yup.object().shape({
   idSubmotivo: yup.string().required(ValidationMessage.Requerido),

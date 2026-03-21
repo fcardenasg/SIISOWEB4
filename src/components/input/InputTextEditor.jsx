@@ -1,8 +1,9 @@
-import { Box, FormHelperText, Grid, IconButton, InputLabel, Tooltip } from "@mui/material";
+import { Box, FormHelperText, Grid, IconButton, InputLabel, Stack, Tooltip } from "@mui/material";
 import { ImproveTextAndWriting } from "api/clients/ServiceIAClient";
 import { AIProcessingStatus } from "components/controllers/ControlImproveText";
 import ControlVoiceDictation from "components/controllers/ControlVoiceDictation";
 import Iconify from "components/iconify/iconify";
+import config from "config";
 import { useBoolean } from "hooks/use-boolean";
 import { useMemo, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -24,12 +25,20 @@ const FULL_TOOLBAR_OPTIONS = [
 ];
 
 export default function InputTextEditor({ name, label, defaultValue = "", disabled = false }) {
-    const { control, setValue } = useFormContext();
+    const { control, setValue, watch } = useFormContext();
     const improvingText = useBoolean(false);
+    const isSpeaking = useBoolean(false);
     const quillRef = useRef(null);
+    const audioRef = useRef(null);
 
     const lastInterimLengthRef = useRef(0);
     const [selectedRange, setSelectedRange] = useState(null);
+
+    const currentContent = watch(name);
+    const hasPlainText = useMemo(() => {
+        const contentToVerify = currentContent || defaultValue || "";
+        return contentToVerify.replace(/<[^>]*>/g, '').trim().length > 0;
+    }, [currentContent, defaultValue]);
 
     const modules = useMemo(() => ({
         toolbar: FULL_TOOLBAR_OPTIONS,
@@ -40,6 +49,74 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
             setSelectedRange(range);
         } else {
             setSelectedRange(null);
+        }
+    };
+
+    const handleSpeak = async () => {
+        if (isSpeaking.value) {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+            }
+            isSpeaking.onFalse();
+            return;
+        }
+
+        const editor = quillRef.current?.getEditor();
+        if (!editor) return;
+
+        const plainText = editor.getText().trim();
+        if (!plainText) return;
+
+        isSpeaking.onTrue();
+
+        try {
+            const API_KEY = config.apiKeySpeech.elevenlabs;
+            const VOICE_ID = "W1hAcdh0RNsPYUA7fkJh";
+            const MODEL_ID = "eleven_multilingual_v2";
+
+            const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'xi-api-key': API_KEY,
+                },
+                body: JSON.stringify({
+                    text: plainText,
+                    model_id: MODEL_ID,
+                    voice_settings: {
+                        stability: 0.45,
+                        similarity_boost: 0.55,
+                    }
+                }),
+            });
+
+            if (!response.ok) throw new Error('Error en ElevenLabs');
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            const audio = new Audio(url);
+            audioRef.current = audio;
+
+            audio.onended = () => {
+                isSpeaking.onFalse();
+                audioRef.current = null;
+                URL.revokeObjectURL(url);
+            };
+
+            audio.onerror = () => {
+                isSpeaking.onFalse();
+                audioRef.current = null;
+                toast.error("Error al reproducir audio");
+            };
+
+            audio.play();
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Error al generar audio");
+            isSpeaking.onFalse();
         }
     };
 
@@ -67,50 +144,26 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
 
     const handleImproveSelection = async () => {
         if (!selectedRange || selectedRange.length === 0) return;
-
         improvingText.onTrue();
-
         try {
             const editor = quillRef.current.getEditor();
             const delta = editor.getContents(selectedRange.index, selectedRange.length);
-
             const tempContainer = document.createElement('div');
             const tempQuill = new ReactQuill.Quill(tempContainer);
             tempQuill.setContents(delta);
             const selectedHtml = tempQuill.root.innerHTML;
-
-            const prompt = `Instrucción: Eres un editor de texto enriquecido experto. Tu objetivo es mejorar la redacción, gramática y coherencia del texto, y además aplicar un estilo visual profesional.
-
-                REGLAS:
-                1. Mantén la estructura de etiquetas original, pero siéntete libre de añadir etiquetas <strong> para resaltar conceptos clave, <em> para énfasis y <span style="color: ..."> para dar un toque de color elegante a palabras importantes.
-                2. No apliques estilos a todo el texto; busca un equilibrio que mejore la legibilidad y el impacto visual.
-                3. Si detectas texto que represente una lista, asegúrate de usar el formato HTML correcto (<ul>, <ol>, <li>).
-                4. Si un <span> existente tiene un atributo 'style', mantenlo o mejóralo si es necesario para la coherencia visual.
-                5. Analiza el texto y añade saltos de línea o divisiones de párrafo siempre que lo consideres necesario para mejorar la legibilidad y estructura.
-                6. Devuelve EXCLUSIVAMENTE el HTML resultante. No incluyas explicaciones ni bloques de código markdown.
-
-                HTML a procesar:
-                ${selectedHtml}`;
-
+            const prompt = `Instrucción: Eres un editor de texto enriquecido experto... HTML a procesar: ${selectedHtml}`;
             const response = await ImproveTextAndWriting({ text: prompt });
-
             if (response.data.exito) {
                 let improvedResult = response.data.datos;
                 improvedResult = improvedResult.replace(/^```html/, "").replace(/```$/, "").trim();
-
                 editor.deleteText(selectedRange.index, selectedRange.length);
                 editor.clipboard.dangerouslyPasteHTML(selectedRange.index, improvedResult);
-
-                toast.success("Redacción mejorada", {
-                    icon: '📝',
-                    style: { borderRadius: '10px', background: '#333', color: '#fff' },
-                });
-
+                toast.success("Redacción mejorada", { icon: '📝' });
                 setSelectedRange(null);
             }
         } catch (error) {
             toast.error("Error al procesar la mejora");
-            console.error(error);
         } finally {
             setTimeout(() => improvingText.onFalse(), 300);
         }
@@ -132,17 +185,14 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
                     <>
                         <Box sx={{
                             "& .ql-toolbar": {
-                                borderTopLeftRadius: "8px",
-                                borderTopRightRadius: "8px",
+                                borderTopLeftRadius: "8px", borderTopRightRadius: "8px",
                                 borderColor: error ? "error.main" : "divider",
                                 backgroundColor: "#f8f9fa"
                             },
                             "& .ql-container": {
-                                borderBottomLeftRadius: "8px",
-                                borderBottomRightRadius: "8px",
+                                borderBottomLeftRadius: "8px", borderBottomRightRadius: "8px",
                                 borderColor: error ? "error.main" : "divider",
-                                minHeight: "200px",
-                                fontSize: '16px'
+                                minHeight: "200px", fontSize: '16px'
                             },
                             "& .ql-editor": { minHeight: "180px" }
                         }}>
@@ -155,60 +205,100 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
                                 onChangeSelection={handleSelectionChange}
                                 modules={modules}
                                 placeholder="Escribe aquí o usa el dictado por voz..."
-                                readOnly={disabled}
+                                readOnly={disabled || improvingText.value}
                             />
                         </Box>
-
                         {error && <FormHelperText error sx={{ ml: 1, mt: 0.5 }}>{error.message}</FormHelperText>}
                     </>
                 )}
             />
 
-            {!disabled &&
-                <Grid container spacing={2} alignItems="center">
+            {!disabled && (
+                <Grid container spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
                     <Grid item xs={12}>
                         <AIProcessingStatus isProcessing={improvingText.value} />
                     </Grid>
 
                     <Grid item>
-                        <AnimateButton>
-                            <Tooltip title={improvingText.value ? "Mejorando..." : "Mejorar Selección"} placement="top">
-                                <span>
-                                    <IconButton
-                                        disabled={!selectedRange || selectedRange.length === 0 || improvingText.value}
-                                        onClick={handleImproveSelection}
-                                        color="error"
-                                        sx={{
-                                            boxShadow: 3,
-                                            bgcolor: 'background.paper',
-                                            '&:hover': { bgcolor: 'background.paper', boxShadow: 8 },
-                                            ...(improvingText.value && {
-                                                animation: 'rotate 2s linear infinite',
-                                                '@keyframes rotate': {
-                                                    '0%': { transform: 'rotate(0deg)' },
-                                                    '100%': { transform: 'rotate(360deg)' }
-                                                }
-                                            })
-                                        }}
-                                    >
-                                        <Iconify
-                                            icon={improvingText.value ? "eos-icons:loading" : "fluent:draw-text-24-filled"}
-                                            width={24}
-                                        />
-                                    </IconButton>
-                                </span>
-                            </Tooltip>
-                        </AnimateButton>
-                    </Grid>
+                        <Stack direction="row" spacing={1.5}>
+                            <AnimateButton>
+                                <Tooltip
+                                    title={isSpeaking.value ? "Detener audio" : (hasPlainText ? "Escuchar texto" : "No hay texto")}
+                                    placement="top"
+                                >
+                                    <span>
+                                        <IconButton
+                                            onClick={handleSpeak}
+                                            // SE AJUSTA AQUÍ: 
+                                            // Se deshabilita solo si la IA está trabajando 
+                                            // O si no hay texto y NO se está reproduciendo audio actualmente.
+                                            disabled={improvingText.value || (!hasPlainText && !isSpeaking.value)}
+                                            sx={{
+                                                width: 42,
+                                                height: 42,
+                                                boxShadow: 3,
+                                                transition: 'all 0.3s ease',
+                                                bgcolor: isSpeaking.value ? 'primary.main' : 'background.paper',
+                                                color: isSpeaking.value ? 'white' : 'primary.main',
+                                                '&:hover': {
+                                                    bgcolor: isSpeaking.value ? 'primary.dark' : 'background.paper',
+                                                    boxShadow: 8
+                                                },
+                                                ...(isSpeaking.value && {
+                                                    animation: 'pulse-blue 1.5s infinite',
+                                                    '@keyframes pulse-blue': {
+                                                        '0%': { boxShadow: '0 0 0 0px rgba(33, 150, 243, 0.7)' },
+                                                        '70%': { boxShadow: '0 0 0 12px rgba(33, 150, 243, 0)' },
+                                                        '100%': { boxShadow: '0 0 0 0px rgba(33, 150, 243, 0)' }
+                                                    }
+                                                })
+                                            }}
+                                        >
+                                            <Iconify
+                                                icon={isSpeaking.value ? "solar:stop-circle-bold" : "solar:volume-loud-bold-duotone"}
+                                                width={24}
+                                            />
+                                        </IconButton>
+                                    </span>
+                                </Tooltip>
+                            </AnimateButton>
 
-                    <Grid item>
-                        <ControlVoiceDictation
-                            onTranscript={handleVoiceResult}
-                            disabled={selectedRange !== null || improvingText.value}
-                        />
+                            <AnimateButton>
+                                <Tooltip title={improvingText.value ? "Mejorando..." : "Mejorar Selección"} placement="top">
+                                    <span>
+                                        <IconButton
+                                            disabled={!selectedRange || selectedRange.length === 0 || improvingText.value || isSpeaking.value}
+                                            onClick={handleImproveSelection}
+                                            color="error"
+                                            sx={{
+                                                width: 42, height: 42, boxShadow: 3, bgcolor: 'background.paper',
+                                                '&:hover': { bgcolor: 'background.paper', boxShadow: 8 },
+                                                ...(improvingText.value && {
+                                                    animation: 'rotate 2s linear infinite',
+                                                    '@keyframes rotate': {
+                                                        '0%': { transform: 'rotate(0deg)' },
+                                                        '100%': { transform: 'rotate(360deg)' }
+                                                    }
+                                                })
+                                            }}
+                                        >
+                                            <Iconify
+                                                icon={improvingText.value ? "eos-icons:loading" : "fluent:draw-text-24-filled"}
+                                                width={24}
+                                            />
+                                        </IconButton>
+                                    </span>
+                                </Tooltip>
+                            </AnimateButton>
+
+                            <ControlVoiceDictation
+                                onTranscript={handleVoiceResult}
+                                disabled={selectedRange !== null || improvingText.value || isSpeaking.value}
+                            />
+                        </Stack>
                     </Grid>
                 </Grid>
-            }
+            )}
         </>
     );
 }

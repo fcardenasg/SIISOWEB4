@@ -45,7 +45,6 @@ const DataView = () => {
     });
 
     const {
-        numStatus,
         idAssignment,
         setIdAssignment,
         filter,
@@ -111,7 +110,6 @@ const DataView = () => {
             onDelete={handleDelete}
             onRestore={handleRestore}
             onReview={(id) => navigate(`/investigation-occupational-disease/view-and-review/${id}`)}
-            numStatus={numStatus}
             onReport={handleReport}
         >
             {openReport.value &&
@@ -169,20 +167,18 @@ const DataView = () => {
                                 />
 
                                 <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                                    {(numStatus == 1 || numStatus == 3) &&
-                                        <SelectOnChange
-                                            size="small"
-                                            sx={{ width: { xs: '100%', sm: 250 } }}
-                                            label="Filtrar por"
-                                            value={filter}
-                                            onChange={handleFilter}
-                                            options={[
-                                                { value: 1, label: "Todas las investigaciones".toUpperCase() },
-                                                { value: 2, label: "Investigaciones asignadas".toUpperCase() },
-                                                { value: 3, label: "Asesorías ARL asignadas".toUpperCase() }
-                                            ]}
-                                        />
-                                    }
+                                    <SelectOnChange
+                                        size="small"
+                                        sx={{ width: { xs: '100%', sm: 300 } }}
+                                        label="Filtrar por"
+                                        value={filter}
+                                        onChange={handleFilter}
+                                        options={[
+                                            { value: 1, label: "Todas las investigaciones".toUpperCase() },
+                                            { value: 2, label: "Investigaciones en proceso".toUpperCase() },
+                                            { value: 3, label: "Investigaciones aprobadas".toUpperCase() }
+                                        ]}
+                                    />
 
                                     <ToggleButtonGroup
                                         value={viewMode}

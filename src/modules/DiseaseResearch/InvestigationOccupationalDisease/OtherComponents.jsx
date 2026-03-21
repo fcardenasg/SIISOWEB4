@@ -7,7 +7,6 @@ import {
     Box,
     Button,
     Card,
-    Chip,
     CircularProgress,
     Divider,
     Grid,
@@ -18,22 +17,21 @@ import {
 import { useTheme } from '@mui/styles';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetComboCompany } from 'api/clients/CompanyClient';
-import { DeleteIELMetodoControl, GetIELFirma, GetIELMetodoControl, InsertIELFirma, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
-import animation from 'assets/img/animation.json';
+import { DeleteIELMetodoControl, GetIELFirma, GetIELHistoriaLaboralDLTD, GetIELHistoriaLaboralOtrosEmpresas, GetIELMetodoControl, InsertIELFirma, InsertIELHistoriaLaboralDLTD, InsertIELHistoriaLaboralOE, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
 import { ParamDelete } from 'components/alert/AlertAll';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import InputTextEditor from 'components/input/InputTextEditor';
 import { UploadBox } from 'components/upload';
-import Lottie from 'lottie-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import swal from 'sweetalert';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
 import {
     TableCharacterizationAbsenteeism,
     TableControlMethods,
@@ -44,6 +42,8 @@ import {
 } from './components/Table';
 import TableDiagnosis from './components/Table/TableDiagnosis';
 import TableHealth from './components/Table/TableHealth';
+import { yupResolver } from '@hookform/resolvers/yup';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
 
 export const CompanyDetails = ({ dataModel, matchesXS, disabledControl }) => {
     const [lsSede, setLsSede] = useState([]);
@@ -149,114 +149,329 @@ export const CompanyDetails = ({ dataModel, matchesXS, disabledControl }) => {
     )
 }
 
-export const WorkHistoryDLTD = ({ methods, documento, disabledControl = false }) => {
+const validationWHDLTD = yup.object().shape({
+    fecha: yup.date().nullable().typeError(ValidationMessage.Requerido).required(ValidationMessage.Requerido),
+    cargoInicial: yup.object().nullable().required(ValidationMessage.Requerido),
+    turnoControl: yup.string().required(ValidationMessage.Requerido),
+    rotacion: yup.string().required(ValidationMessage.Requerido),
+    anios: yup.string().required(ValidationMessage.Requerido),
+    meses: yup.string().required(ValidationMessage.Requerido),
+});
+
+export const WorkHistoryDLTD = ({ documento, disabledControl = false, refreshDataState }) => {
+    const methodsDLTD = useForm({ resolver: yupResolver(validationWHDLTD) });
+    const { formState: { errors, isSubmitting }, handleSubmit, reset, setValue } = methodsDLTD;
+
+    const [listHL, setListHL] = useState([]);
+    const idIEL = useFormContext().getValues('id');
+
+    const [lsRosterPosition, setLsRosterPosition] = useState([]);
+    const [lsTurno, setLsTurno] = useState([]);
+
+    useEffect(() => {
+        async function getCombo() {
+            try {
+                const lsServerRosterPosition = await GetByTipoCatalogoCombo(CodCatalogo.RosterPosition);
+                setLsRosterPosition(lsServerRosterPosition.data);
+
+                const lsServerTurno = await GetByTipoCatalogoCombo(CodCatalogo.Turno);
+                setLsTurno(lsServerTurno.data);
+            } catch (error) { }
+        }
+
+        getCombo();
+    }, []);
+
+    async function getData() {
+        try {
+            if (documento) {
+                const statusData = Boolean(idIEL);
+                const response = await GetIELHistoriaLaboralDLTD(documento, statusData);
+                if (response.data.exito) {
+                    const mappedData = (response.data.datos || []).map((item) => ({
+                        id: item.id,
+                        fecha: item.fecha,
+                        cargo: item.nameCargo,
+                        turno: item.nameTurno,
+                        rotacion: item.nameRotacion,
+                        anios: item.anio,
+                        meses: item.meses
+                    }));
+
+                    setListHL(mappedData);
+                }
+            }
+        } catch (error) {
+            toast.error("Error al cargar la historia laboral DLTD");
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, [documento, idIEL]);
+
+    const handleClick = async (datos) => {
+        try {
+            datos.idInvestigacion = idIEL;
+            datos.cargo = datos.cargoInicial.label;
+            datos.turno = lsTurno.find((item) => item.value === parseInt(datos.turnoControl)).label;
+            datos.idCargo = datos.cargoInicial.value;
+
+            const result = await InsertIELHistoriaLaboralDLTD(datos);
+            if (result.data.exito) {
+                toast.success(result.data.mensaje);
+                reset();
+                setValue("fecha", "");
+
+                if (listHL.length === 0) {
+                    refreshDataState();
+                }
+
+                getData();
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al procesar la investigación");
+        }
+    }
+
     return (
         <Grid container spacing={2}>
             {!disabledControl &&
-                <>
-                    <Grid item xs={12} md={6} lg={4}>
+                <FormProvider {...methodsDLTD}>
+                    {!idIEL && (
+                        <>
+                            <Grid item xs={12}>
+                                <Alert severity="info" variant="outlined">
+                                    <AlertTitle>Acción requerida</AlertTitle>
+                                    Para comenzar a agregar historia laboral en DLTD, <strong>primero debe guardar la información general</strong> de la investigación.
+                                </Alert>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ my: 1 }}><Divider /></Grid>
+                        </>
+                    )}
+
+                    <Grid item xs={12} md={6} lg={2}>
                         <InputDatePicker
+                            defaultValue=""
                             label="Fecha de ingreso"
-                            name="fechaIngreso"
+                            name="fecha"
+                            size="small"
+                            bug={errors.fecha}
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputSelect
+                    <Grid item xs={12} md={6} lg={2.5}>
+                        <InputSelectAutocomplete
+                            defaultValue={null}
                             name="cargoInicial"
                             label="Cargo inicial"
-                            defaultValue=""
-                            options={[]}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputSelect
-                            name="turno"
-                            label="Turno"
-                            defaultValue=""
-                            options={[]}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        <InputText
-                            name="rotacion"
-                            label="Rotación"
-                            defaultValue=""
+                            options={lsRosterPosition}
+                            size="small"
                         />
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={2}>
+                        <InputSelect
+                            name="turnoControl"
+                            label="Turno"
+                            defaultValue=""
+                            options={lsTurno}
+                            size="small"
+                            bug={errors.turnoControl}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputText
+                            name="rotacion"
+                            label="Rotación"
+                            defaultValue=""
+                            size="small"
+                            bug={errors.rotacion}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={1}>
                         <InputText
                             name="anios"
                             label="Años"
                             defaultValue=""
                             type="number"
+                            size="small"
+                            bug={errors.anios}
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={2}>
+                    <Grid item xs={12} md={6} lg={1}>
                         <InputText
                             name="meses"
                             label="Meses"
                             defaultValue=""
                             type="number"
+                            size="small"
+                            bug={errors.meses}
                         />
                     </Grid>
-                </>
+
+                    <Grid item xs={6} md={4} lg={1.5} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <AnimateButton>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit(handleClick)}
+                                disabled={isSubmitting || disabledControl || !idIEL}
+                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <AddCircleIcon />}
+                                sx={{ minWidth: '110px' }}
+                            >
+                                {isSubmitting ? 'Guardando...' : 'Agregar'}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                </FormProvider>
             }
 
             <Grid item xs={12}>
-                <TableDLTD methods={methods} documento={documento} />
+                <TableDLTD listData={listHL} />
             </Grid>
         </Grid>
     )
 }
 
-export const WorkHistoryOtherCompanies = ({ methods, documento, disabledControl = false }) => {
+const validationWHDLTDOther = yup.object().shape({
+    empresa: yup.string().required(ValidationMessage.Requerido),
+    cargo: yup.string().required(ValidationMessage.Requerido),
+    anios: yup.string().required(ValidationMessage.Requerido),
+    meses: yup.string().required(ValidationMessage.Requerido),
+});
+
+export const WorkHistoryOtherCompanies = ({ documento, disabledControl = false, refreshDataState }) => {
+    const methodsOtherCompanies = useForm({ resolver: yupResolver(validationWHDLTDOther) });
+    const { formState: { errors, isSubmitting }, handleSubmit, reset } = methodsOtherCompanies;
+
+    const [listHLOE, setListHLOE] = useState([]);
+    const idIEL = useFormContext().getValues('id');
+
+    async function getData() {
+        try {
+            if (documento) {
+                const statusData = Boolean(idIEL);
+                const response = await GetIELHistoriaLaboralOtrosEmpresas(documento, statusData);
+                if (response.data.exito) {
+                    setListHLOE(response.data.datos);
+                }
+            }
+        } catch (error) {
+            toast.error("Error al cargar la historia laboral de otras empresas");
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, [documento, idIEL]);
+
+    const handleClick = async (datos) => {
+        try {
+            datos.idInvestigacion = idIEL;
+
+            const result = await InsertIELHistoriaLaboralOE(datos);
+            if (result.data.exito) {
+                toast.success(result.data.mensaje);
+                reset();
+
+                if (listHLOE.length === 0) {
+                    refreshDataState();
+                }
+
+                getData();
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al procesar la investigación");
+        }
+    }
+
     return (
         <Grid container spacing={2}>
             {!disabledControl &&
-                <>
-                    <Grid item xs={12} md={6} lg={4}>
+                <FormProvider {...methodsOtherCompanies}>
+                    {!idIEL && (
+                        <>
+                            <Grid item xs={12}>
+                                <Alert severity="info" variant="outlined">
+                                    <AlertTitle>Acción requerida</AlertTitle>
+                                    Para comenzar a agregar historia laboral en otras empresas, <strong>primero debe guardar la información general</strong> de la investigación.
+                                </Alert>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ my: 1 }}><Divider /></Grid>
+                        </>
+                    )}
+
+                    <Grid item xs={12} md={6} lg={3.5}>
                         <InputText
                             name="empresa"
                             label="Empresa"
                             defaultValue=""
+                            size="small"
+                            bug={errors.empresa}
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={3.5}>
                         <InputText
                             name="cargo"
                             label="Cargo"
                             defaultValue=""
+                            size="small"
+                            bug={errors.cargo}
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={2}>
+                    <Grid item xs={12} md={6} lg={1.5}>
                         <InputText
                             name="anios"
                             label="Años"
                             defaultValue=""
                             type="number"
+                            size="small"
+                            bug={errors.anios}
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={2}>
+                    <Grid item xs={12} md={6} lg={1.5}>
                         <InputText
                             name="meses"
                             label="Meses"
                             defaultValue=""
                             type="number"
+                            size="small"
+                            bug={errors.meses}
                         />
                     </Grid>
-                </>
+
+                    <Grid item xs={6} md={4} lg={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <AnimateButton>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit(handleClick)}
+                                disabled={isSubmitting || disabledControl || !idIEL}
+                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <AddCircleIcon />}
+                                sx={{ minWidth: '110px' }}
+                            >
+                                {isSubmitting ? 'Guardando...' : 'Agregar'}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                </FormProvider>
             }
 
             <Grid item xs={12}>
-                <TableOtherCompanies methods={methods} documento={documento} />
+                <TableOtherCompanies listData={listHLOE} />
             </Grid>
         </Grid>
     )
@@ -333,7 +548,6 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     label="Fecha del FUREL"
                     defaultValue={dataModel?.fechaFurel}
                     disabled={disabledControl}
-                    size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
 
@@ -343,7 +557,6 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     label="Fecha de estructuración de origen"
                     defaultValue={dataModel?.fechaEstructuracionOrigen}
                     disabled={disabledControl}
-                    size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
 

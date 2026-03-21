@@ -1,14 +1,11 @@
 import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
-import { Box, Button, Checkbox, Fade, FormControlLabel, Grid, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Fade, Grid, Stack, Typography } from "@mui/material";
 import { InsertIELComentario } from 'api/clients/InvestigationClient';
 import { ChangeStatusAssignment } from 'api/clients/ResearchAssignmentClient';
-import ControlImproveText, { AIProcessingStatus } from 'components/controllers/ControlImproveText';
 import ControlModal from "components/controllers/ControlModal";
-import Iconify from 'components/iconify/iconify';
 import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 import InputText from "components/input/InputText";
 import { useBoolean } from 'hooks/use-boolean';
-import { useState } from 'react';
 import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,11 +16,9 @@ const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
     const { id } = useParams();
     const methods = useForm();
     const navigate = useNavigate();
-    const { watch, setValue, resetField } = methods;
+    const { watch, resetField } = methods;
     const sectionComment = watch('sectionComment');
     const textImprove = watch('comentario');
-
-    const [expanded, setExpanded] = useState(false);
     const improvingText = useBoolean(false);
 
     const activeContents = sectionComment?.map((id) => arrayCompartments[id - 1]?.content) || [];
@@ -65,14 +60,19 @@ const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
     };
 
     return (
-        <ControlModal open={open} onClose={() => {
-            handleClose();
-            resetField("sectionComment");
-            resetField("comentario");
-        }} maxWidth="xl" title="Agregar comentario">
+        <ControlModal
+            open={open}
+            onClose={() => {
+                handleClose();
+                resetField("sectionComment");
+                resetField("comentario");
+            }}
+            maxWidth="xl"
+            title="Agregar comentario"
+        >
             <FormProvider {...methods}>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={expanded ? 6 : 4} sx={gridTransition}>
+                    <Grid item xs={12} md={6} lg={4} sx={gridTransition}>
                         <Stack spacing={0}>
                             <Box sx={{ mb: 2 }}>
                                 <InputMultiselectTwo
@@ -98,54 +98,25 @@ const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
                                     name="comentario"
                                     label="Agregar comentario"
                                     multiline
-                                    rows={10}
+                                    rows={window.innerHeight > 800 ? 18 : 15}
+                                    showVoice
+                                    showAI
                                 />
                             </Box>
 
-                            <AIProcessingStatus isProcessing={improvingText.value} />
-
-                            <Stack direction="row" spacing={1} justifyContent="space-between" sx={{ mt: 2 }}>
-                                <Stack direction="row" spacing={2} alignItems="center">
-                                    <ControlImproveText
-                                        textImprove={textImprove}
-                                        nameControl="comentario"
-                                        improvingText={improvingText}
-                                        setValue={setValue}
-                                    />
-
-                                    <AnimateButton>
-                                        <Tooltip title="Redactar con voz" placement="top">
-                                            <IconButton
-                                                color="error"
-                                                sx={{
-                                                    boxShadow: 3,
-                                                    bgcolor: 'background.paper',
-                                                    '&:hover': { bgcolor: 'background.paper', boxShadow: 8 }
-                                                }}
-                                            >
-                                                <Iconify icon="iconoir:microphone-solid" width={24} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </AnimateButton>
-
-                                    <FormControlLabel
-                                        control={<Checkbox color="error" checked={expanded} onChange={(e) => setExpanded(e.target.checked)} />}
-                                        label="Ampliar..."
-                                    />
-                                </Stack>
-
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
                                 <AnimateButton>
                                     <Button disabled={!textImprove} variant="contained" onClick={handleSubmitComment}>
                                         Guardar
                                     </Button>
                                 </AnimateButton>
-                            </Stack>
+                            </Box>
                         </Stack>
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={expanded ? 6 : 8} sx={gridTransition}>
-                        <Box sx={{ height: 400, overflowY: 'auto', pr: 1 }}>
-                            <SubCard>
+                    <Grid item xs={12} md={6} lg={8} sx={gridTransition}>
+                        <Box sx={{ height: 'calc(100vh - 200px)', overflowY: 'auto', pr: 1 }}>
+                            <SubCard sx={{ minHeight: '100%' }}>
                                 <Fade in={true} key={sectionComment?.length || 'empty'} timeout={500}>
                                     <Box>
                                         {activeContents.length > 0 ? (
@@ -169,8 +140,6 @@ const Comment = ({ idInvestigation, open, handleClose, arrayCompartments }) => {
 }
 
 export default Comment;
-
-
 
 const EmptyContent = () => {
     return (

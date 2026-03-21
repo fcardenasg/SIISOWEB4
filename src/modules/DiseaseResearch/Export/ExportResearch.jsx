@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
+import { Url } from "api/instances/AuthRoute";
+import axios from "axios";
+import { MessageError } from "components/alert/AlertAll";
 import { ArrayTodaSede } from "components/Arrays";
 import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
 import InputDatePick from "components/input/InputDatePick";
-import SelectOnChange from "components/input/SelectOnChange";
-import AnimateButton from "ui-component/extended/AnimateButton";
-import { Fragment } from "react";
-import { MessageError } from "components/alert/AlertAll";
-import LoadingGenerate from "components/loading/LoadingGenerate";
-import { DownloadFile } from "components/helpers/ConvertToBytes";
 import InputOnChange from "components/input/InputOnChange";
-import { GetExcelOccupationalMedicine } from 'api/clients/OccupationalMedicineClient';
+import SelectOnChange from "components/input/SelectOnChange";
+import LoadingGenerate from "components/loading/LoadingGenerate";
+import { Fragment, useEffect, useState } from "react";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import { DownloadFileBlob } from "../methods";
 
-const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede, setDocumento, documento, parametroConsulta, tipoExcelAusentismo,
-    setFechaInicio, fechaInicio, setFechaFin, fechaFin, lsBusqueda, lsTipoExcelAusentismo, setTipoExcelAusentismo }) => {
+const ExportResearch = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede,
+    setDocumento, documento, setFechaInicio, fechaInicio, setFechaFin, fechaFin, lsBusqueda }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -45,25 +45,29 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin,
                 documento: documento,
-                opcionBusqueda: opcionBusqueda,
-                tipoExcelAusentismo: tipoExcelAusentismo
+                opcionBusqueda: opcionBusqueda
+            };
+
+            const response = await axios.post(`${Url.Base}${Url.Investigacion}/excel`, parametros,
+                {
+                    responseType: 'blob',
+                    headers: {
+                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                }
+            );
+
+            if (response.data) {
+                DownloadFileBlob(response.data, 'InvestigacionEnfermedadLaboral');
             }
 
-            const lsServerExcel = await GetExcelOccupationalMedicine(parametros);
-
-            if (lsServerExcel.status === 200) {
-                DownloadFile(lsServerExcel.data.nombre, lsServerExcel.data.base64);
-
-                setTimeout(() => {
-                    setLoading(false);
-                }, 500);
-            }
-
-        } catch (error) {
             setLoading(false);
 
+        } catch (error) {
+            console.error("Error exportando excel:", error);
+            setLoading(false);
             setOpenError(true);
-            setErrorMessage(Message.ErrorExcel);
+            setErrorMessage(Message.ErrorExcel || "Error al generar el archivo Excel");
         }
     }
 
@@ -82,20 +86,7 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
                     />
                 </Grid>
 
-                {parametroConsulta === 'AUSENTI' ?
-                    <Grid item xs={12}>
-                        <SelectOnChange
-                            name="busqueda"
-                            label="Tipo De Excel"
-                            value={tipoExcelAusentismo}
-                            options={lsTipoExcelAusentismo}
-                            onChange={(e) => setTipoExcelAusentismo(e.target.value)}
-                            size={matchesXS ? 'small' : 'medium'}
-                        />
-                    </Grid> : null
-                }
-
-                {opcionBusqueda === 0 ?
+                {opcionBusqueda === 0 &&
                     <Grid item xs={12}>
                         <InputOnChange
                             fullWidth
@@ -105,9 +96,10 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
                             value={documento}
                             size={matchesXS ? 'small' : 'medium'}
                         />
-                    </Grid> : null}
+                    </Grid>
+                }
 
-                {opcionBusqueda === 1 ?
+                {opcionBusqueda === 1 &&
                     <Grid item xs={12}>
                         <SelectOnChange
                             name="sede"
@@ -117,9 +109,10 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
                             onChange={(e) => setSede(e.target.value)}
                             size={matchesXS ? 'small' : 'medium'}
                         />
-                    </Grid> : null}
+                    </Grid>
+                }
 
-                {opcionBusqueda === 2 ?
+                {opcionBusqueda === 2 &&
                     <Fragment>
                         <Grid item xs={12}>
                             <SelectOnChange
@@ -149,7 +142,8 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
                                 size={matchesXS ? 'small' : 'medium'}
                             />
                         </Grid>
-                    </Fragment> : null}
+                    </Fragment>
+                }
 
                 <Grid item xs={12}>
                     <AnimateButton>
@@ -169,4 +163,4 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
     );
 }
 
-export default MedicionaLaboralExport;
+export default ExportResearch;

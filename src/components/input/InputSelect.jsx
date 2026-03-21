@@ -113,6 +113,7 @@ const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWi
                                             <Grid item sx={{ fontSize: isSmall ? '0.65rem' : 'inherit' }}>
                                                 {option?.label}
                                             </Grid>
+
                                             {(option?.codigo === 'CIE10' || option?.codigo === 'CIE11') && (
                                                 <Grid item>
                                                     <Label

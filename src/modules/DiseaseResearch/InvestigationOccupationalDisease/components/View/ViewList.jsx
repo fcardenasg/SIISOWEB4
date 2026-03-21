@@ -16,14 +16,13 @@ import {
     Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { ViewFormat } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import InvestigationProgress from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/InvestigationProgress';
 import OptionsMenu from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
-import { StyledChip } from 'modules/Programming/NewProgramming/components/methods';
-import { getStatusConfig } from '../methods';
 import AnimatedTimeDisplay from 'modules/Programming/NewProgramming/components/AnimatedTimeDisplay';
+import { StyledChip } from 'modules/Programming/NewProgramming/components/methods';
 import { useInvestigationActions } from '../../contexts/InvestigationActionsContext';
+import { getStatusConfig } from '../methods';
 
 const ViewList = ({ dataInfo, index }) => {
     const theme = useTheme();
@@ -63,11 +62,16 @@ const ViewList = ({ dataInfo, index }) => {
                         height: 120,
                         mr: 2,
                         borderRadius: '12px',
-                        border: '2px solid #f8f8f8',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                        border: dataInfo.foto && '2px solid #f8f8f8',
+                        boxShadow: dataInfo.foto && '0 4px 12px rgba(0,0,0,0.08)',
+                        bgcolor: dataInfo.foto && 'grey.200',
+                        color: 'text.primary',
+                        '& .MuiAvatar-img': {
+                            display: dataInfo.foto && 'block',
+                        }
                     }}
                 >
-                    {dataInfo.nombreEmpleado.charAt(0).toUpperCase()}
+                    {!dataInfo.foto && dataInfo.nombreEmpleado.charAt(0).toUpperCase()}
                 </Avatar>
             </ListItemAvatar>
 
