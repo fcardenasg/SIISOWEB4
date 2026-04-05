@@ -45,6 +45,7 @@ const DataView = () => {
     });
 
     const {
+        numStatus,
         idAssignment,
         setIdAssignment,
         filter,
@@ -111,6 +112,7 @@ const DataView = () => {
             onRestore={handleRestore}
             onReview={(id) => navigate(`/investigation-occupational-disease/view-and-review/${id}`)}
             onReport={handleReport}
+            numStatus={numStatus}
         >
             {openReport.value &&
                 <FullScreenModal onClose={openReport.onFalse} loading={loadingReport.value}>

@@ -12,6 +12,7 @@ export const InvestigationActionsProvider = ({
     loadingReport,
     openReport,
     reportUrl,
+    numStatus,
     children
 }) => {
     const value = {
@@ -23,7 +24,8 @@ export const InvestigationActionsProvider = ({
         onReport,
         loadingReport,
         openReport,
-        reportUrl
+        reportUrl,
+        numStatus
     };
 
     return (

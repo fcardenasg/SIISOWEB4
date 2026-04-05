@@ -14,19 +14,16 @@ const pulse = keyframes`
 
 const ControlImproveText = ({ textImprove, improvingText, nameControl, setValue, promptIsHtml }) => {
     async function serviceImproveText() {
-        console.log(textImprove);
-
         if (textImprove == null || textImprove == "" || textImprove == "<p></p>\n") {
             toast.error("Debe ingresar un texto para mejorar");
             return;
         }
+
         improvingText.onTrue();
 
         const prompt = `Actúa como un experto en redacción. Mejora la ortografía, gramática y signos de 
         puntuación del siguiente texto: \n\n ${textImprove}.\n\nDevuelve únicamente el texto corregido, sin introducciones, 
         conclusiones ni comentarios adicionales.\n\n${promptIsHtml}`;
-
-        console.log(prompt);
 
         try {
             const data = { text: prompt };

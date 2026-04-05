@@ -282,7 +282,6 @@ const RehabilitationPlan = () => {
 
       const result = await InsertRehabilitationPlan(datos);
       if (result.status === 200) {
-        console.log(result.data);
         toast.success("Registro guardado con éxito");
         setValue("documento", "");
         setModelEmployee([]);

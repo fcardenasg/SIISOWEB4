@@ -88,7 +88,7 @@ const OptionsMenu = ({
             >
                 <MenuItem
                     onClick={() => { onGoAttention && onGoAttention(idAsignacion); handleClose(); }}
-                    disabled={((estadoInvestigacion === 3 || estadoInvestigacion === 5) && numStatus === 2) || (estadoInvestigacion === 5 && numStatus === 1)}
+                    disabled={((estadoInvestigacion === 3 || estadoInvestigacion === 5) && numStatus === 2) || (estadoInvestigacion === 5 && numStatus === 2)}
                 >
                     <EditIcon sx={{ mr: 1.2, color: 'primary.main' }} /> Atender
                 </MenuItem>

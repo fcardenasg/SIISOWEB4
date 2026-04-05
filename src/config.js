@@ -8,7 +8,7 @@ const rutaLtd = 'https://siiso.drummondltd.com:44347/';
 
 const config = {
     typeDashboard: 'DLTD', //ENERGY - DLTD
-    rutaApi: rutaLtd,
+    rutaApi: rutaLocal,
     logotipo: LogoReportLtd,
     logotipoblanco: LogoWhiteLtd,
 
@@ -33,7 +33,7 @@ const config = {
         openia: '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'
     },
     apiKeySpeech: {
-        elevenlabs: 'sk_253881ad52f4025c1c0ee93b49cff9dfbe0ebd8db2976487'
+        elevenlabs: 'sk_9d5e743ac59bbd876e288c8304de64fed98d8a9c289ff373'
     }
 };
 

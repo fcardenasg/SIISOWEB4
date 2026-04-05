@@ -1,7 +1,8 @@
 import {
     ChangeStatusAssignment,
     DeleteResearchAssignment,
-    GetAllByDataResearcher
+    GetAllByDataResearcher,
+    ValidateResearchAssignment
 } from 'api/clients/ResearchAssignmentClient';
 import { Url } from 'api/instances/AuthRoute';
 import axios from 'axios';
@@ -27,8 +28,23 @@ export const useInvestigationData = (viewMode) => {
     const [reportUrl, setReportUrl] = useState('');
     const openReport = useBoolean(false);
     const loadingReport = useBoolean(false);
+    const [numStatus, setNumStatus] = useState(null);
 
     const itemsPerPage = viewMode === 'list' ? 4 : 6;
+
+    useEffect(() => {
+        async function validate() {
+            try {
+                const result = await ValidateResearchAssignment();
+                if (result.data.exito) {
+                    setNumStatus(result.data.datos);
+                }
+            } catch (error) {
+                toast.error('Error al validar el filtro');
+            }
+        }
+        validate();
+    }, []);
 
     const getData = async () => {
         try {
@@ -168,6 +184,7 @@ export const useInvestigationData = (viewMode) => {
     }, [reportUrl]);
 
     return {
+        numStatus,
         idAssignment,
         setIdAssignment,
         filter,

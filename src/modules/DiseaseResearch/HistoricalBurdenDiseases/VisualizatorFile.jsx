@@ -48,7 +48,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
       },
       viewer.current
     ).then((instance) => {
-      console.log("elemento", instance.UI);
 
       setInstance(instance);
 
@@ -332,8 +331,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
       instance.UI.importModularComponents(configUI);
 
       if (file) {
-        console.log("🔥 CARGA INICIAL DIFERIDA EN MONTAJE:", file.name);
-
         const objectUrl = URL.createObjectURL(file);
 
         instance.Core.documentViewer.loadDocument(objectUrl, {
@@ -383,7 +380,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
   };
 
   useEffect(() => {
-    console.log("exportar");
     if (!instance) return;
 
     exportarPDF();
@@ -405,11 +401,8 @@ const VisualizatorFile = ({ file, confirmExport }) => {
   //     // 1. Accede a la instancia viva desde la referencia
   //     const instance = wvInstanceRef.current;
 
-  //     console.log("file", file);
-  //     console.log("instance", instance); // <-- Aquí debe ser el objeto WebViewer
 
   //     if (file && instance) {
-  //         console.log("🚚 CARGANDO NUEVO ARCHIVO DESDE PROP:", file.name);
 
   //         instance.Core.documentViewer.loadDocument(file, {
   //             filename: file.name,
@@ -428,7 +421,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
   //     const instance = wvInstanceRef.current;
 
   //     if (file && instance) {
-  //         console.log("🚚 CARGANDO NUEVO ARCHIVO DESDE PROP:", file.name);
 
   //         // Desestructurar Core desde la instancia
   //         const { Core } = instance;

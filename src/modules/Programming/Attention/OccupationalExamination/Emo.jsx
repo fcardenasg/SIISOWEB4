@@ -458,8 +458,6 @@ const Emo = ({
     const dx2 = watch("dx2");
     const dx3 = watch("dx3");
 
-    console.log(dx1, dx2, dx3);
-
     useEffect(() => {
         if (!dx1) {
             setLsDx1([]);

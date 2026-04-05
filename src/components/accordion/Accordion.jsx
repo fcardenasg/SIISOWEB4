@@ -46,6 +46,7 @@ const Accordion = ({ defaultExpandedId = null, title, defaultExpand, id, disable
                 </MuiAccordionSummary>
                 <MuiAccordionDetails>{children}</MuiAccordionDetails>
             </MuiAccordion>
+
             <Divider />
         </Box>
     );

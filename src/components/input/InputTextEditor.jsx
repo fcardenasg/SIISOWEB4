@@ -5,7 +5,7 @@ import ControlVoiceDictation from "components/controllers/ControlVoiceDictation"
 import Iconify from "components/iconify/iconify";
 import config from "config";
 import { useBoolean } from "hooks/use-boolean";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useCallback } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
 import ReactQuill from "react-quill";
@@ -25,24 +25,32 @@ const FULL_TOOLBAR_OPTIONS = [
 ];
 
 export default function InputTextEditor({ name, label, defaultValue = "", disabled = false }) {
-    const { control, setValue, watch } = useFormContext();
+    const { control, setValue } = useFormContext();
     const improvingText = useBoolean(false);
     const isSpeaking = useBoolean(false);
+
     const quillRef = useRef(null);
     const audioRef = useRef(null);
-
     const lastInterimLengthRef = useRef(0);
+
     const [selectedRange, setSelectedRange] = useState(null);
 
-    const currentContent = watch(name);
-    const hasPlainText = useMemo(() => {
-        const contentToVerify = currentContent || defaultValue || "";
-        return contentToVerify.replace(/<[^>]*>/g, '').trim().length > 0;
-    }, [currentContent, defaultValue]);
+    const [hasPlainText, setHasPlainText] = useState(() => {
+        const safeValue = defaultValue || "";
+        return !!safeValue.replace(/<[^>]*>/g, '').trim().length;
+    });
 
     const modules = useMemo(() => ({
         toolbar: FULL_TOOLBAR_OPTIONS,
     }), []);
+
+    const updateHasTextState = useCallback((content) => {
+        const safeContent = content || "";
+        const isCurrentlyEmpty = safeContent.replace(/<[^>]*>/g, '').trim().length === 0;
+        if (hasPlainText === isCurrentlyEmpty) {
+            setHasPlainText(!isCurrentlyEmpty);
+        }
+    }, [hasPlainText]);
 
     const handleSelectionChange = (range) => {
         if (range && range.length > 0) {
@@ -73,7 +81,7 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
         try {
             const API_KEY = config.apiKeySpeech.elevenlabs;
             const VOICE_ID = "W1hAcdh0RNsPYUA7fkJh";
-            const MODEL_ID = "eleven_multilingual_v2";
+            const MODEL_ID = "eleven_flash_v2_5";
 
             const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
                 method: 'POST',
@@ -84,10 +92,7 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
                 body: JSON.stringify({
                     text: plainText,
                     model_id: MODEL_ID,
-                    voice_settings: {
-                        stability: 0.45,
-                        similarity_boost: 0.55,
-                    }
+                    voice_settings: { stability: 0.45, similarity_boost: 0.55 }
                 }),
             });
 
@@ -95,7 +100,6 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
 
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
-
             const audio = new Audio(url);
             audioRef.current = audio;
 
@@ -112,7 +116,6 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
             };
 
             audio.play();
-
         } catch (error) {
             console.error(error);
             toast.error("Error al generar audio");
@@ -136,7 +139,9 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
 
         if (isFinal) {
             lastInterimLengthRef.current = 0;
-            setValue(name, editor.root.innerHTML, { shouldValidate: true, shouldDirty: true });
+            const content = editor.root.innerHTML;
+            setValue(name, content, { shouldValidate: true, shouldDirty: true });
+            updateHasTextState(content);
         } else {
             lastInterimLengthRef.current = textToInsert.length;
         }
@@ -145,6 +150,7 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
     const handleImproveSelection = async () => {
         if (!selectedRange || selectedRange.length === 0) return;
         improvingText.onTrue();
+
         try {
             const editor = quillRef.current.getEditor();
             const delta = editor.getContents(selectedRange.index, selectedRange.length);
@@ -152,17 +158,40 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
             const tempQuill = new ReactQuill.Quill(tempContainer);
             tempQuill.setContents(delta);
             const selectedHtml = tempQuill.root.innerHTML;
-            const prompt = `Instrucción: Eres un editor de texto enriquecido experto... HTML a procesar: ${selectedHtml}`;
+
+            const prompt = `Instrucción: Eres un editor de texto técnico. 
+                Tu UNICA tarea es mejorar la redacción y ortografía del HTML proporcionado.
+                REGLAS ESTRICTAS:
+                - Retorna UNICAMENTE el código HTML mejorado.
+                - NO incluyas introducciones (ej. "Aquí tienes...").
+                - NO incluyas explicaciones de cambios ni bloques de Markdown (\`\`\`html).
+                - Mantén las etiquetas HTML originales.
+                
+                HTML a procesar: ${selectedHtml}`;
+
             const response = await ImproveTextAndWriting({ text: prompt });
+
             if (response.data.exito) {
                 let improvedResult = response.data.datos;
-                improvedResult = improvedResult.replace(/^```html/, "").replace(/```$/, "").trim();
+
+                improvedResult = improvedResult
+                    .replace(/```html/gi, "")
+                    .replace(/```/g, "")
+                    .split(/###|Cambios realizados|Explicación/i)[0]
+                    .trim();
+
                 editor.deleteText(selectedRange.index, selectedRange.length);
                 editor.clipboard.dangerouslyPasteHTML(selectedRange.index, improvedResult);
+
+                const fullContent = editor.root.innerHTML;
+                setValue(name, fullContent, { shouldValidate: true, shouldDirty: true });
+                updateHasTextState(fullContent);
+
                 toast.success("Redacción mejorada", { icon: '📝' });
                 setSelectedRange(null);
             }
         } catch (error) {
+            console.error(error);
             toast.error("Error al procesar la mejora");
         } finally {
             setTimeout(() => improvingText.onFalse(), 300);
@@ -200,7 +229,10 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
                                 ref={quillRef}
                                 theme="snow"
                                 value={field.value || ""}
-                                onChange={(content) => field.onChange(content)}
+                                onChange={(content) => {
+                                    field.onChange(content);
+                                    updateHasTextState(content);
+                                }}
                                 onBlur={field.onBlur}
                                 onChangeSelection={handleSelectionChange}
                                 modules={modules}
@@ -229,21 +261,12 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
                                     <span>
                                         <IconButton
                                             onClick={handleSpeak}
-                                            // SE AJUSTA AQUÍ: 
-                                            // Se deshabilita solo si la IA está trabajando 
-                                            // O si no hay texto y NO se está reproduciendo audio actualmente.
                                             disabled={improvingText.value || (!hasPlainText && !isSpeaking.value)}
                                             sx={{
-                                                width: 42,
-                                                height: 42,
-                                                boxShadow: 3,
-                                                transition: 'all 0.3s ease',
+                                                width: 42, height: 42, boxShadow: 3, transition: 'all 0.3s ease',
                                                 bgcolor: isSpeaking.value ? 'primary.main' : 'background.paper',
                                                 color: isSpeaking.value ? 'white' : 'primary.main',
-                                                '&:hover': {
-                                                    bgcolor: isSpeaking.value ? 'primary.dark' : 'background.paper',
-                                                    boxShadow: 8
-                                                },
+                                                '&:hover': { bgcolor: isSpeaking.value ? 'primary.dark' : 'background.paper', boxShadow: 8 },
                                                 ...(isSpeaking.value && {
                                                     animation: 'pulse-blue 1.5s infinite',
                                                     '@keyframes pulse-blue': {
