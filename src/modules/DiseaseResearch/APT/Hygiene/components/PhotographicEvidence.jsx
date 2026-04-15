@@ -3,12 +3,14 @@ import { Box, Button, Dialog, DialogContent, Fade, Grid, IconButton, Paper, Stac
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import { DeleteAPTHPImage, GetAllAPTHPImage, SaveAPTHPImage } from 'api/clients/APTHigienePlantillaClient';
+import toast from 'react-hot-toast';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const PhotographicEvidence = ({ name }) => {
+const PhotographicEvidence = ({ name, objImage }) => {
     const { control } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
@@ -20,6 +22,31 @@ const PhotographicEvidence = ({ name }) => {
     const [tempImage, setTempImage] = useState(null);
     const fileInputRef = useRef(null);
 
+    useEffect(() => {
+        if (objImage?.idAPT && objImage?.idItemAcordeon && objImage?.idSegundarioModulo) {
+            async function loadImages() {
+                try {
+                    const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo);
+                    if (response.data.exito && response.data.datos?.length > 0) {
+                        response.data.datos.forEach((imageData) => {
+                            const newEvidence = {
+                                titulo: imageData.titulo || `Imagen ${fields.length + 1}`,
+                                foto: null,
+                                fechaSubida: imageData.fechaSubida || new Date().toISOString(),
+                                preview: imageData.ruta,
+                                serverId: imageData.id
+                            };
+                            append(newEvidence);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error cargando imágenes:", error);
+                }
+            }
+            loadImages();
+        }
+    }, [objImage?.idAPT, objImage?.idItemAcordeon, objImage?.idSegundarioModulo]);
+
     const handleOpenModal = (field) => {
         setTempImage(field);
         setSelectedId(field.id);
@@ -29,19 +56,48 @@ const PhotographicEvidence = ({ name }) => {
         setTempImage(null);
     };
 
-    const handleFileSelect = (e) => {
+    const handleFileSelect = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            const newEvidence = {
-                titulo: titulo.trim() || file.name,
-                foto: file,
-                fechaSubida: new Date().toISOString(),
-                preview: URL.createObjectURL(file)
-            };
-            append(newEvidence);
+            try {
+                const formData = new FormData();
+                formData.append('Archivo', file);
+                formData.append('IdAPT', objImage.idAPT);
+                formData.append('IdItemAcordeon', objImage.idItemAcordeon);
+                formData.append('IdSegundarioModulo', objImage.idSegundarioModulo);
+
+                const response = await SaveAPTHPImage(formData, true);
+                if (response.data.exito) {
+                    const newEvidence = {
+                        titulo: titulo.trim() || file.name,
+                        foto: file,
+                        fechaSubida: new Date().toISOString(),
+                        preview: URL.createObjectURL(file),
+                        serverId: response.data.datos?.[0]?.id
+                    };
+                    append(newEvidence);
+                    toast.success("Imagen guardada correctamente");
+                }
+            } catch (error) {
+                toast.error("Error al guardar la imagen");
+            }
             setTitulo('');
             e.target.value = null;
         }
+    };
+
+    const handleDeleteImage = async (index, field) => {
+        try {
+            if (field.serverId) {
+                const response = await DeleteAPTHPImage(field.serverId);
+                if (response.data.exito) {
+                    toast.success("Imagen eliminada correctamente");
+                }
+            }
+        } catch (error) {
+            toast.error("Error al eliminar la imagen");
+        }
+        remove(index);
     };
 
     useEffect(() => {
@@ -144,15 +200,15 @@ const PhotographicEvidence = ({ name }) => {
                                     <IconButton
                                         className="delete-btn"
                                         size="medium"
-                                        onClick={(e) => { e.stopPropagation(); remove(index); }}
+                                        onClick={(e) => { e.stopPropagation(); handleDeleteImage(index, field); }}
                                         sx={{
                                             opacity: 0,
                                             transition: 'all 0.2s',
-                                            bgcolor: 'rgba(211, 47, 47, 0.05)',
-                                            '&:hover': { color: 'error.main', bgcolor: 'rgba(211, 47, 47, 0.1)' }
+                                            bgcolor: 'secondary.main',
+                                            '&:hover': { color: 'secondary.dark', bgcolor: 'secondary.main' }
                                         }}
                                     >
-                                        <DeleteOutline fontSize="medium" />
+                                        <DeleteOutline fontSize="medium" sx={{ color: 'white' }} />
                                     </IconButton>
                                 </Paper>
                             </Grid>
@@ -202,11 +258,11 @@ const PhotographicEvidence = ({ name }) => {
                         onClick={() => setSelectedId(null)}
                         sx={{
                             position: 'absolute', top: 20, right: 20, zIndex: 10,
-                            bgcolor: 'rgba(0, 0, 0, 0.4)', color: 'white', backdropFilter: 'blur(10px)',
-                            '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.8)', transform: 'rotate(90deg)' }
+                            bgcolor: 'secondary.main', color: 'white', backdropFilter: 'blur(10px)',
+                            '&:hover': { bgcolor: 'secondary.dark', transform: 'rotate(90deg)' }
                         }}
                     >
-                        <Close />
+                        <Close sx={{ color: 'white' }} />
                     </IconButton>
                 </Fade>
 

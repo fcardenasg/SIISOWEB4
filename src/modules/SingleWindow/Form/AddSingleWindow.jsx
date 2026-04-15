@@ -295,25 +295,25 @@ const AddSingleWindow = () => {
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Indexacion}>
-            <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+            <FormProvider {...methods}>
+                <MessageSuccess message={errorMessage} open={openSuccess} onClose={() => setOpenSuccess(false)} />
+                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
-            <ControlModal
-                title={Message.VistaArchivo}
-                open={openViewArchivo}
-                onClose={() => setOpenViewArchivo(false)}
-                maxWidth="md"
-            >
-                <ViewPDF dataPDF={archivoAdjunto} />
-            </ControlModal>
+                <ControlModal
+                    title={Message.VistaArchivo}
+                    open={openViewArchivo}
+                    onClose={() => setOpenViewArchivo(false)}
+                    maxWidth="md"
+                >
+                    <ViewPDF dataPDF={archivoAdjunto} />
+                </ControlModal>
 
-            <SubCard title={<Typography variant='h4'>Indexación de documentos recibidos</Typography>}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <SubCard title={<Typography variant="h4">Información de la solicitud</Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <FormProvider {...methods}>
+                <SubCard title={<Typography variant='h4'>Indexación de documentos recibidos</Typography>}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <SubCard title={<Typography variant="h4">Información de la solicitud</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <InputSelect
                                             defaultValue=""
                                             name="idCondicion"
@@ -322,11 +322,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idCondicion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <InputSelect
                                             defaultValue=""
                                             name="idTipo"
@@ -335,13 +333,10 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idTipo}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <InputText
-                                            disabled
                                             defaultValue=""
                                             type="number"
                                             fullWidth
@@ -350,11 +345,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.tiempoRespuesta}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6} lg={3}>
                                         <InputText
                                             disabled
                                             defaultValue=""
@@ -364,11 +357,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.numRadicado}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <InputSelect
                                             defaultValue=""
                                             name="idMedioIngreso"
@@ -377,11 +368,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idMedioIngreso}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <InputSelect
                                             defaultValue=""
                                             name="idImportancia"
@@ -390,11 +379,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idImportancia}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6} lg={4}>
                                         <InputText
                                             defaultValue=""
                                             type="number"
@@ -404,26 +391,22 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.folios}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
+                                    <Grid item xs={12}>
+                                        <Divider />
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputDatePicker
                                             defaultValue=""
                                             name="fechaRecibido"
                                             label="Fecha recibido"
                                             bug={errors.fechaRecibido}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputDatePicker
                                             disabled
                                             defaultValue=""
@@ -431,11 +414,9 @@ const AddSingleWindow = () => {
                                             name="fechaLimiteRespuesta"
                                             size={matchesXS ? 'small' : 'medium'}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputSelect
                                             defaultValue=""
                                             name="recibidoPor"
@@ -444,11 +425,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.recibidoPor}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -457,11 +436,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.nombreRecibe}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -470,21 +447,19 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.correoRecibe}
                                         />
-                                    </FormProvider>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                            </SubCard>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <SubCard title={<Typography variant="h4">Información del solicitante</Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Typography variant="body1">Entidad que solicita</Typography>
-                                </Grid>
+                        <Grid item xs={12}>
+                            <SubCard title={<Typography variant="h4">Información del solicitante</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <Typography variant="body1">Entidad que solicita</Typography>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -493,11 +468,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.solicitadoPor}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -506,11 +479,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.correoSolicitante}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -519,11 +490,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.direccionSolicitante}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -532,11 +501,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.telefonoNotificion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -545,29 +512,27 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.ciudadEnvio}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <Divider />
-                                </Grid>
+                                    <Grid item xs={12}>
+                                        <Divider />
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <Typography variant="body1">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
-                                </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography variant="body1">Por favor ingrese el número de documento, luego dar la tecla Enter para buscar la información del empleado solicitante</Typography>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <InputOnChange
-                                        label="Documento / Nit"
-                                        onKeyDown={handleDocumento}
-                                        onChange={(e) => setDocumento(e.target.value)}
-                                        value={documento}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <InputOnChange
+                                            label="Documento / Nit"
+                                            onKeyDown={handleDocumento}
+                                            onChange={(e) => setDocumento(e.target.value)}
+                                            value={documento}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -576,11 +541,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.nombre}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -589,11 +552,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.telefono}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputSelect
                                             defaultValue=""
                                             name="idMunicipio"
@@ -602,11 +563,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idMunicipio}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -615,11 +574,9 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.direccion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12} md={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12} md={6}>
                                         <InputText
                                             defaultValue=""
                                             fullWidth
@@ -628,96 +585,96 @@ const AddSingleWindow = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.correo}
                                         />
-                                    </FormProvider>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <SubCard title={<Typography variant="h4">Cargar archivo</Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Upload files={archivoAdjunto} onDrop={handleDrop} />
-                                </Grid>
-
-                                <Grid item xs={6} md={4} lg={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" onClick={downloadFile} disabled={archivoAdjunto === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
-                                            Descargar
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={6} md={4} lg={2}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" color="error" onClick={() => setArchivoAdjunto(null)} disabled={archivoAdjunto === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
-                                            Eliminar
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-
-                    {idResult !== 0 ?
-                        <Grid item xs={12}>
-                            <SubCard title={<Typography variant="h4">Distribución del tipo de solicitud</Typography>}>
-                                <Grid container spacing={2}>
-                                    <ListAddSingleWindow documento={documento} idResult={idResult} />
+                                    </Grid>
                                 </Grid>
                             </SubCard>
-                        </Grid> :
-                        <Grid item xs={12}>
-                            <Typography variant="body1"><b>Nota:</b> Al guardar el registro se habilitará la opción para agregar los tipos de solicitudes que el empleado solicito</Typography>
                         </Grid>
-                    }
 
-                    <Grid item xs={12} sx={{ mt: 2 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6} md={1.8}>
-                                <AnimateButton>
-                                    <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                        {idResult === 0 ? "Registrar" : TitleButton.Actualizar}
-                                    </Button>
-                                </AnimateButton>
+                        <Grid item xs={12}>
+                            <SubCard title={<Typography variant="h4">Cargar archivo</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <Upload files={archivoAdjunto} onDrop={handleDrop} />
+                                    </Grid>
+
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" onClick={downloadFile} disabled={archivoAdjunto === null ? true : false} startIcon={<DownloadIcon fontSize="large" />} fullWidth>
+                                                Descargar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={4} lg={2}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" color="error" onClick={() => setArchivoAdjunto(null)} disabled={archivoAdjunto === null ? true : false} startIcon={<ClearIcon fontSize="large" />} fullWidth>
+                                                Eliminar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </Grid>
+                            </SubCard>
+                        </Grid>
+
+                        {idResult !== 0 ?
+                            <Grid item xs={12}>
+                                <SubCard title={<Typography variant="h4">Distribución del tipo de solicitud</Typography>}>
+                                    <Grid container spacing={2}>
+                                        <ListAddSingleWindow documento={documento} idResult={idResult} />
+                                    </Grid>
+                                </SubCard>
+                            </Grid> :
+                            <Grid item xs={12}>
+                                <Typography variant="body1"><b>Nota:</b> Al guardar el registro se habilitará la opción para agregar los tipos de solicitudes que el empleado solicito</Typography>
                             </Grid>
+                        }
 
-                            <Grid item xs={6} md={1.8}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={handleClear}>
-                                        Limpiar
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                        <Grid item xs={12} sx={{ mt: 2 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6} md={1.8}>
+                                    <AnimateButton>
+                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                            {idResult === 0 ? "Registrar" : TitleButton.Actualizar}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                            <Grid item xs={6} md={1.8}>
-                                <AnimateButton>
-                                    <Button variant="outlined" fullWidth onClick={() => navigate("/single-window/index")}>
-                                        Cerrar
-                                    </Button>
-                                </AnimateButton>
-                            </Grid>
+                                <Grid item xs={6} md={1.8}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={handleClear}>
+                                            Limpiar
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
 
-                            <Grid item xs={12} md={3}>
-                                <AnimateButton>
-                                    <LoadingButton
-                                        fullWidth
-                                        disabled={idResult === 0 ? true : false}
-                                        onClick={handleNotifi}
-                                        loading={loading}
-                                        loadingPosition="end"
-                                        endIcon={<SendIcon />}
-                                        variant="outlined"
-                                    >
-                                        Enviar Notificación
-                                    </LoadingButton>
-                                </AnimateButton>
+                                <Grid item xs={6} md={1.8}>
+                                    <AnimateButton>
+                                        <Button variant="outlined" fullWidth onClick={() => navigate("/single-window/index")}>
+                                            Cerrar
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={12} md={3}>
+                                    <AnimateButton>
+                                        <LoadingButton
+                                            fullWidth
+                                            disabled={idResult === 0 ? true : false}
+                                            onClick={handleNotifi}
+                                            loading={loading}
+                                            loadingPosition="end"
+                                            endIcon={<SendIcon />}
+                                            variant="outlined"
+                                        >
+                                            Enviar Notificación
+                                        </LoadingButton>
+                                    </AnimateButton>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </SubCard>
+                </SubCard>
+            </FormProvider>
         </ValidateActionSkeleton>
     );
 };

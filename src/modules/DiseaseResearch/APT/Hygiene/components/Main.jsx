@@ -1,7 +1,8 @@
-import { Divider, Grid } from "@mui/material";
+import { Divider, Grid, Typography } from "@mui/material";
+import { motion } from 'framer-motion';
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
-import { GetComboCompany } from "api/clients/CompanyClient";
-import { CodCatalogo } from "components/helpers/Enums";
+import { GetByIdCompany, GetComboCompany } from "api/clients/CompanyClient";
+import { CodCatalogo, DefaultData } from "components/helpers/Enums";
 import InputSelect from "components/input/InputSelect";
 import InputText from "components/input/InputText";
 import InputTextEditor from "components/input/InputTextEditor";
@@ -13,9 +14,10 @@ import PhotographicEvidence from "./PhotographicEvidence";
 import { CategoryTableSegment, OrganizationalFactorTable, TableControlMethods, TableReferenceValuesSegment } from "./TableAPT";
 import BiomechanicalRiskAssessment from "./BiomechanicalRiskAssessment";
 import ImageDropzone from "./ImageDropzone";
+import InputSelectAutocomplete from "components/input/InputSelectAutocomplete";
 
 export const CompanyInformation = ({ dataModel }) => {
-    const { setValue } = useFormContext();
+    const { setValue, formState: { errors } } = useFormContext();
 
     const [lsCompany, setLsCompany] = useState([]);
     const [lsSede, setLsSede] = useState([]);
@@ -25,10 +27,13 @@ export const CompanyInformation = ({ dataModel }) => {
 
     useEffect(() => {
         async function getData() {
-            const lsServerCompany = await GetComboCompany();
-            setLsCompany(lsServerCompany.data);
+            const lsServerCompany = await GetByIdCompany(DefaultData.EmpresaDrummond);
+            const lsCompany = [{ value: lsServerCompany.data?.codigo, label: lsServerCompany.data?.descripcionSpa, codigo: lsServerCompany.data?.actividadEconomica }];
+            setLsCompany(lsCompany);
+            setValue('actividadEconomica', lsServerCompany.data?.actividadEconomica || '');
+            setValue('empresa', lsServerCompany.data?.codigo || '');
 
-            const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
+            const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_SEDE);
             setLsSede(lsServerSede.data);
 
             const lsServerArea = await GetByTipoCatalogoCombo(CodCatalogo.Area);
@@ -44,107 +49,128 @@ export const CompanyInformation = ({ dataModel }) => {
         getData();
     }, []);
 
-    const handleEmpresaChange = (event) => {
-        setValue('empresa', event.target.value);
-        setValue('actividadEconomica', lsCompany.find((item) => item.value === event.target.value).codigo);
-    };
-
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
-                <InputSelect
-                    name="empresa"
-                    label="Empresa"
-                    defaultValue={dataModel?.empresa}
-                    options={lsCompany}
-                    onChange={handleEmpresaChange}
-                />
-            </Grid>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+        >
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputSelect
+                        disabled
+                        name="empresa"
+                        label="Empresa"
+                        defaultValue={dataModel?.empresa}
+                        options={lsCompany}
+                    />
+                </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
-                <InputText
-                    defaultValue={dataModel?.actividadEconomica}
-                    fullWidth
-                    name="actividadEconomica"
-                    label="Actividad económica"
-                />
-            </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputText
+                        disabled
+                        defaultValue={dataModel?.actividadEconomica}
+                        fullWidth
+                        name="actividadEconomica"
+                        label="Actividad económica"
+                    />
+                </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
-                <InputSelect
-                    name="sede"
-                    label="Sede"
-                    defaultValue={dataModel?.sede}
-                    options={lsSede}
-                />
-            </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputSelect
+                        name="sede"
+                        label="Sede"
+                        defaultValue={dataModel?.sede || ""}
+                        options={lsSede}
+                        bug={errors.sede}
+                    />
+                </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
-                <InputSelect
-                    name="departamento"
-                    label="Departamento"
-                    defaultValue={dataModel?.departamento}
-                    options={lsDepartamento}
-                />
-            </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputSelectAutocomplete
+                        defaultValue={dataModel?.departamento}
+                        name="departamentoAuto"
+                        label="Departamento"
+                        options={lsDepartamento}
+                    />
+                </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
-                <InputSelect
-                    name="area"
-                    label="Área"
-                    defaultValue={dataModel?.area}
-                    options={lsArea}
-                />
-            </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputSelectAutocomplete
+                        defaultValue={dataModel?.area}
+                        name="areaAuto"
+                        label="Área"
+                        options={lsArea}
+                    />
+                </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
-                <InputSelect
-                    name="cargo"
-                    label="Cargo"
-                    defaultValue={dataModel?.cargo}
-                    options={lsCargo}
-                />
+                <Grid item xs={12} md={6} lg={4}>
+                    <InputSelectAutocomplete
+                        defaultValue={dataModel?.cargo}
+                        name="cargoAuto"
+                        label="Cargo"
+                        options={lsCargo}
+                    />
+                </Grid>
             </Grid>
-        </Grid>
+        </motion.div>
     )
 }
 
 export const OrganizationalAspects = ({ dataModel }) => {
+    const [lsTurno, setLsTurno] = useState([]);
+    const [lsCategoriaCargo, setLsCategoriaCargo] = useState([]);
+    const [lsJornadaTrabajo, setLsJornadaTrabajo] = useState([]);
+
+    useEffect(() => {
+        async function getData() {
+            const lsServerTurno = await GetByTipoCatalogoCombo(CodCatalogo.Turno);
+            setLsTurno(lsServerTurno.data);
+
+            const lsServerCategoriaCargo = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_CATEGORIA_CARGO);
+            setLsCategoriaCargo(lsServerCategoriaCargo.data);
+
+            const lsServerJornadaTrabajo = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_JORNADATRABAJO);
+            setLsJornadaTrabajo(lsServerJornadaTrabajo.data);
+        }
+
+        getData();
+    }, []);
+
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
-                <InputText
-                    name="jornadaLaboralHoras"
-                    label="Jornada de trabajo (horas)"
-                    type="number"
-                    defaultValue={dataModel?.jornadaLaboralHoras}
-                    fullWidth
+            <Grid item xs={12} md={6} lg={3}>
+                <InputSelect
+                    name="jornadaLaboral"
+                    label="Jornada de trabajo"
+                    defaultValue={dataModel?.jornadaLaboral || null}
+                    options={lsJornadaTrabajo}
                 />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={3}>
                 <InputSelect
                     name="turno"
                     label="Turno"
-                    defaultValue={dataModel?.turno}
-                    options={[]}
+                    defaultValue={dataModel?.turno || null}
+                    options={lsTurno}
                 />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={3}>
                 <InputText
                     name="rotaciones"
                     label="Rotaciones"
-                    defaultValue={dataModel?.rotaciones}
+                    defaultValue={dataModel?.rotaciones || null}
                     fullWidth
                 />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={3}>
                 <InputText
                     name="ritmoTrabajo"
                     label="Ritmo de trabajo"
-                    defaultValue={dataModel?.ritmoTrabajo}
+                    defaultValue={dataModel?.ritmoTrabajo || null}
                     fullWidth
                 />
             </Grid>
@@ -153,7 +179,7 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputText
                     name="tiempoPausa"
                     label="Tiempos de pausa"
-                    defaultValue={dataModel?.tiempoPausa}
+                    defaultValue={dataModel?.tiempoPausa || null}
                     fullWidth
                     multiline
                     minRows={3}
@@ -167,16 +193,34 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="categoriaCargo"
                     label="Categoría del cargo"
-                    defaultValue={dataModel?.categoriaCargo}
-                    options={[]}
+                    defaultValue={dataModel?.categoriaCargo || null}
+                    options={lsCategoriaCargo}
                 />
             </Grid>
 
-            <Grid item xs={12} md={12} lg={12}>
+            <Grid item xs={12}>
+                <Typography variant="h4">Organización del trabajo</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
                 <InputText
-                    name="organizacionTrabajo"
-                    label="Organización del trabajo"
-                    defaultValue={dataModel?.organizacionTrabajo}
+                    name="organizacionTrabajoIndividual"
+                    label="Individual"
+                    defaultValue={dataModel?.organizacionTrabajoIndividual || null}
+                    fullWidth
+                    multiline
+                    minRows={3}
+                    maxRows={5}
+                    showAI
+                    showVoice
+                />
+            </Grid>
+
+            <Grid item xs={12}>
+                <InputText
+                    name="organizacionTrabajoEquipo"
+                    label="Equipo"
+                    defaultValue={dataModel?.organizacionTrabajoEquipo || null}
                     fullWidth
                     multiline
                     minRows={3}
@@ -190,58 +234,73 @@ export const OrganizationalAspects = ({ dataModel }) => {
 }
 
 export const WorkActivity = ({ dataModel }) => {
+    const { watch: watchMain } = useFormContext();
+    const idAPT = watchMain("idAPTHigienePlantilla");
+
+    const disenoObjImage = { idAPT, idItemAcordeon: 2, idSegundarioModulo: 1 };
+    const mobiliariorObjImage = { idAPT, idItemAcordeon: 2, idSegundarioModulo: 2 };
+
     return (
         <Grid container spacing={3}>
             <Grid item xs={12}>
-                <InputTextEditor label="Objetivo del cargo" name="objetivoCargo" defaultValue={dataModel?.objetivoCargo} />
+                <InputTextEditor label="Objetivo del cargo" name="objetivoCargo" defaultValue={dataModel?.objetivoCargo || null} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Descripción del lugar donde se realiza la labor" name="descripcionLugar" defaultValue={dataModel?.descripcionLugar} />
+                <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" defaultValue={dataModel?.caracteristicasDisenoPuesto || null} />
             </Grid>
-        </Grid>
-    )
-}
 
-export const JobDescription = ({ dataModel }) => {
-    return (
-        <Grid container spacing={3}>
             <Grid item xs={12}>
-                <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" defaultValue={dataModel?.caracteristicasDisenoPuesto} />
+                <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" defaultValue={dataModel?.caracteristicasDisenoPuesto || null} />
             </Grid>
 
             <Grid item xs={12}>
                 <SubCard darkTitle title="Evidencias fotográficas de las características de diseño del puesto de trabajo">
-                    <PhotographicEvidence name="fotosCaracteristicasDisenoPuesto" />
+                    <PhotographicEvidence name="fotosCaracteristicasDisenoPuesto" objImage={disenoObjImage} />
                 </SubCard>
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Mobiliario" name="mobiliario" defaultValue={dataModel?.mobiliario} />
+                <InputTextEditor label="Mobiliario" name="mobiliario" defaultValue={dataModel?.mobiliario || null} />
             </Grid>
 
             <Grid item xs={12}>
                 <SubCard darkTitle title="Evidencias fotográficas del mobiliario">
-                    <PhotographicEvidence name="fotosMobiliario" />
+                    <PhotographicEvidence name="fotosMobiliario" objImage={mobiliariorObjImage} />
                 </SubCard>
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Herramientas, equipos y materiales" name="herramientasEquipos" defaultValue={dataModel?.herramientasEquipos} />
+                <InputTextEditor label="Herramientas, equipos y materiales" name="herramientasEquipos" defaultValue={dataModel?.herramientasEquipos || null} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Ayudas mecánicas" name="ayudasMecanicas" defaultValue={dataModel?.ayudasMecanicas} />
+                <InputTextEditor label="Ayudas mecánicas" name="ayudasMecanicas" defaultValue={dataModel?.ayudasMecanicas || null} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Elementos de confort" name="elementosConfort" defaultValue={dataModel?.elementosConfort} />
+                <InputTextEditor label="Elementos de confort" name="elementosConfort" defaultValue={dataModel?.elementosConfort || null} />
             </Grid>
         </Grid>
     )
 }
 
 export const EnvironmentalAspects = ({ dataModel }) => {
+    const [lsAgenteBiologico, setLsAgenteBiologico] = useState([]);
+    const [lsAgenteQuimico, setLsAgenteQuimico] = useState([]);
+
+    useEffect(() => {
+        async function getData() {
+            const lsServerAgenteBiologico = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_AGENTE_BIOLOGICO);
+            setLsAgenteBiologico(lsServerAgenteBiologico.data);
+
+            const lsServerAgenteQuimico = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_AGENTE_QUIMICO);
+            setLsAgenteQuimico(lsServerAgenteQuimico.data);
+        }
+
+        getData();
+    }, []);
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -250,7 +309,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Condiciones de orden y aseo"
                     multiline
                     rows={2}
-                    defaultValue={dataModel?.condicionesOrdenAseo}
+                    defaultValue={dataModel?.condicionesOrdenAseo || null}
                     fullWidth
                 />
             </Grid>
@@ -259,8 +318,8 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="agentesBiologicos"
                     label="Agentes biológicos"
-                    defaultValue={dataModel?.agentesBiologicos}
-                    options={[]}
+                    defaultValue={dataModel?.agentesBiologicos || null}
+                    options={lsAgenteBiologico}
                 />
             </Grid>
 
@@ -268,8 +327,8 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="agentesQuimicos"
                     label="Agentes químicos"
-                    defaultValue={dataModel?.agentesQuimicos}
-                    options={[]}
+                    defaultValue={dataModel?.agentesQuimicos || null}
+                    options={lsAgenteQuimico}
                 />
             </Grid>
 
@@ -279,7 +338,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Iluminación"
                     multiline
                     rows={2}
-                    defaultValue={dataModel?.iluminacion}
+                    defaultValue={dataModel?.iluminacion || null}
                     fullWidth
                 />
             </Grid>
@@ -290,7 +349,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Material particulado"
                     multiline
                     rows={2}
-                    defaultValue={dataModel?.materialParticulado}
+                    defaultValue={dataModel?.materialParticulado || null}
                     fullWidth
                 />
             </Grid>
@@ -301,7 +360,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Ruido"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.ruido}
+                    defaultValue={dataModel?.ruido || null}
                     fullWidth
                 />
             </Grid>
@@ -312,7 +371,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Temperatura"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.temperatura}
+                    defaultValue={dataModel?.temperatura || null}
                     fullWidth
                 />
             </Grid>
@@ -323,7 +382,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Ventilación"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.ventilacion}
+                    defaultValue={dataModel?.ventilacion || null}
                     fullWidth
                 />
             </Grid>
@@ -334,7 +393,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Vibración"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.vibracion}
+                    defaultValue={dataModel?.vibracion || null}
                     fullWidth
                 />
             </Grid>
@@ -346,16 +405,16 @@ export const WorkActivityTwo = ({ dataModel }) => {
     return (
         <Grid container spacing={3}>
             <Grid item xs={12}>
-                <InputTextEditor label="Descripción general del cargo" name="descripcionGeneralCargo" defaultValue={dataModel?.descripcionGeneralCargo} />
+                <InputTextEditor label="Descripción general del cargo" name="descripcionGeneralCargo" defaultValue={dataModel?.descripcionGeneralCargo || null} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Rotaciones establecidas para el cargo" name="rotacionesCargo" defaultValue={dataModel?.rotacionesCargo} />
+                <InputTextEditor label="Rotaciones establecidas para el cargo" name="rotacionesCargo" defaultValue={dataModel?.rotacionesCargo || null} />
             </Grid>
 
             <Grid item xs={12}>
                 <SubCard darkTitle title="Ciclo de trabajo">
-                    Pendiente de revisar si existe alguna libreria para integrar un paint o algo parecido.
+                    Pendiente de revisar si existe alguna biblioteca para integrar un paint o algo parecido.
                 </SubCard>
             </Grid>
 
@@ -370,9 +429,7 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
     return (
         <Grid container spacing={3}>
             <Grid item xs={12}>
-                <SubCard darkTitle title="Aplicación del método OWAS">
-                    <CategoryTableSegment />
-                </SubCard>
+                <CategoryTableSegment />
             </Grid>
 
             <Grid item xs={12}>
@@ -399,7 +456,7 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <InputTextEditor label="Observación de los resultados" name="observacionResultados" defaultValue={dataModel?.observacionResultados} />
+                            <InputTextEditor label="Observación de los resultados" name="observacionResultadosValoracion" defaultValue={dataModel?.observacionResultados || null} />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -415,7 +472,12 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
 }
 
 export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
-    const { control } = useFormContext();
+    const { watch: watchMain, control } = useFormContext();
+    const idAPT = watchMain("idAPTHigienePlantilla");
+
+    const vibrationObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 1 };
+    const noiseObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 2 };
+    const particulateObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 3 };
 
     return (
         <Grid container spacing={2}>
@@ -423,11 +485,11 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                 <SubCard darkTitle title="Exposición a vibración">
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <ImageDropzone name="vibrationImage" control={control} />
+                            <ImageDropzone name="vibrationImage" control={control} objImage={vibrationObjImage} />
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="vibrationInterpretation" defaultValue={dataModel?.vibrationInterpretation} />
+                            <InputTextEditor label="Interpretación" name="interpretacionVibracion" defaultValue={dataModel?.interpretacionVibracion || null} />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -437,11 +499,11 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                 <SubCard darkTitle title="Exposición a ruido">
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <ImageDropzone name="noiseImage" control={control} />
+                            <ImageDropzone name="noiseImage" control={control} objImage={noiseObjImage} />
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="noiseInterpretation" defaultValue={dataModel?.noiseInterpretation} />
+                            <InputTextEditor label="Interpretación" name="interpretacionRuido" defaultValue={dataModel?.interpretacionRuido || null} />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -451,11 +513,11 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                 <SubCard darkTitle title="Exposición a material particulado">
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <ImageDropzone name="particulateImage" control={control} />
+                            <ImageDropzone name="particulateImage" control={control} objImage={particulateObjImage} />
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="particulateInterpretation" defaultValue={dataModel?.particulateInterpretation} />
+                            <InputTextEditor label="Interpretación" name="interpretacionMaterialParticulado" defaultValue={dataModel?.interpretacionMaterialParticulado || null} />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -474,11 +536,11 @@ export const ConclusionAndSource = ({ dataModel }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Conclusiones" name="conclusiones" defaultValue={dataModel?.conclusiones} />
+                <InputTextEditor label="Conclusiones" name="conclusion" defaultValue={dataModel?.conclusion || null} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Fuentes de información" name="fuentesInformacion" defaultValue={dataModel?.fuentesInformacion} />
+                <InputTextEditor label="Fuentes de información" name="fuenteInformacion" defaultValue={dataModel?.fuenteInformacion || null} />
             </Grid>
         </Grid>
     )

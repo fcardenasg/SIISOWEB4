@@ -14,8 +14,7 @@ import { TitleButton } from 'components/helpers/Enums';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 function StickyActionBar({ children, mainTitle = 'Actualizar o Guardar', titleButtonOne = TitleButton.Guardar, titleButtonTwo = TitleButton.Actualizar,
-    onClickSave, onClickReport, onClickOrderMedical, onClickUpdate,
-    showButton = false, disabledSave, disabledReport, disabledUpdate, ...others }) {
+    onClickSave, onClickReport, onClickOrderMedical, onClickUpdate, showButton = false, disabledSave, disabledReport, disabledUpdate, othersButton, ...others }) {
 
     return (
         <Grid container spacing={2}>
@@ -32,20 +31,27 @@ function StickyActionBar({ children, mainTitle = 'Actualizar o Guardar', titleBu
 
                                 <Grid item xs={6}>
                                     <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
-                                        <Grid item xs={6} md={4}>
-                                            <AnimateButton>
-                                                <Button variant="contained" disabled={disabledSave} onClick={onClickSave} fullWidth>
-                                                    {titleButtonOne}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
-                                        <Grid item xs={6} md={4}>
-                                            <AnimateButton>
-                                                <Button variant="outlined" disabled={disabledUpdate} color="error" onClick={onClickUpdate} fullWidth>
-                                                    {titleButtonTwo}
-                                                </Button>
-                                            </AnimateButton>
-                                        </Grid>
+                                        {onClickSave &&
+                                            <Grid item xs={6} md={4} lg={3}>
+                                                <AnimateButton>
+                                                    <Button variant="contained" disabled={disabledSave} onClick={onClickSave} fullWidth>
+                                                        {titleButtonOne}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+                                        }
+
+                                        {onClickUpdate &&
+                                            <Grid item xs={6} md={4} lg={3}>
+                                                <AnimateButton>
+                                                    <Button variant="outlined" disabled={disabledUpdate} color="error" onClick={onClickUpdate} fullWidth>
+                                                        {titleButtonTwo}
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+                                        }
+
+                                        {othersButton}
                                     </Grid>
                                 </Grid>
                             </Grid>

@@ -4,8 +4,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useController } from 'react-hook-form';
 import Lottie from 'lottie-react';
 import animation from 'assets/img/animation.json';
+import { DeleteAPTHPImage, GetAllAPTHPImage, SaveAPTHPImage } from 'api/clients/APTHigienePlantillaClient';
+import toast from 'react-hot-toast';
 
-export default function ImageDropzone({ name, control, rules }) {
+export default function ImageDropzone({ name, control, rules, objImage }) {
     const {
         field: { onChange, value },
         fieldState: { error }
@@ -13,7 +15,27 @@ export default function ImageDropzone({ name, control, rules }) {
 
     const [isDragging, setIsDragging] = useState(false);
     const [preview, setPreview] = useState(null);
+    const [serverImageId, setServerImageId] = useState(null);
     const fileInputRef = useRef(null);
+
+    useEffect(() => {
+        if (objImage?.idAPT && objImage?.idItemAcordeon && objImage?.idSegundarioModulo) {
+            async function loadImage() {
+                try {
+                    const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo);
+                    if (response.data.exito && response.data.datos?.length > 0) {
+                        const imageData = response.data.datos[0];
+                        setServerImageId(imageData.id);
+                        setPreview(imageData.ruta);
+                        onChange(imageData.ruta);
+                    }
+                } catch (error) {
+                    console.error("Error cargando imagen:", error);
+                }
+            }
+            loadImage();
+        }
+    }, [objImage?.idAPT, objImage?.idItemAcordeon, objImage?.idSegundarioModulo]);
 
     useEffect(() => {
         if (value && value instanceof File) {
@@ -42,19 +64,58 @@ export default function ImageDropzone({ name, control, rules }) {
         setIsDragging(false);
         const files = e.dataTransfer.files;
         if (files && files.length > 0 && files[0].type.startsWith('image/')) {
-            onChange(files[0]);
+            handleFileUpload(files[0]);
         }
     };
 
     const handleFileChange = (e) => {
         const files = e.target.files;
         if (files && files.length > 0) {
-            onChange(files[0]);
+            handleFileUpload(files[0]);
         }
     };
 
-    const handleRemoveImage = (e) => {
+    const handleFileUpload = async (file) => {
+        try {
+            const formData = new FormData();
+            formData.append('Archivo', file);
+            formData.append('IdAPT', objImage.idAPT);
+            formData.append('IdItemAcordeon', objImage.idItemAcordeon);
+            formData.append('IdSegundarioModulo', objImage.idSegundarioModulo);
+
+            const response = await SaveAPTHPImage(formData, true);
+            if (response.data.exito) {
+                onChange(file);
+                toast.success("Imagen guardada correctamente");
+            } else {
+                onChange(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+                toast.error(response.data.mensaje || "Error al guardar la imagen");
+            }
+        } catch (error) {
+            onChange(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+            toast.error("Error al guardar la imagen");
+        }
+    };
+
+    const handleRemoveImage = async (e) => {
         e.stopPropagation();
+        try {
+            if (serverImageId) {
+                const response = await DeleteAPTHPImage(serverImageId);
+                if (response.data.exito) {
+                    toast.success("Imagen eliminada correctamente");
+                }
+            }
+        } catch (error) {
+            toast.error("Error al eliminar la imagen");
+        }
+        setServerImageId(null);
         onChange(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = '';

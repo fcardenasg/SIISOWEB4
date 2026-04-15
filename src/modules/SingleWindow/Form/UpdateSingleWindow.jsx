@@ -345,7 +345,6 @@ const UpdateSingleWindow = () => {
                                     <Grid item xs={12} md={6} lg={3}>
                                         <FormProvider {...methods}>
                                             <InputText
-                                                disabled
                                                 defaultValue={dataSingle.tiempoRespuesta}
                                                 type="number"
                                                 fullWidth

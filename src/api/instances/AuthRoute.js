@@ -35,6 +35,8 @@ export const Url = {
     ConvertWordToHtml: 'api/CalendarioCitas/ConvertWordToHtml',
     ConvertWordToPdf: 'api/CalendarioCitas/ConvertWordToPdf',
 
+    APTHigienePlantilla: 'api/APTHigienePlantilla',
+
     InvestigacionEnfermedadLaboralFile: "api/InvestigacionEnfermedadLaboralFile",
     GetByIdPDF: "api/InvestigacionEnfermedadLaboralFile/GetByIdPDF",
 

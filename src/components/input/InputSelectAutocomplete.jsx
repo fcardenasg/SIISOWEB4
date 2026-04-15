@@ -76,7 +76,7 @@ export default function InputSelectAutocomplete({
                             })
                         }}
                         renderOption={(props, option) => (
-                            <li {...props} key={option.value} style={{ fontSize: isSmall ? '0.75rem' : '1rem' }}>
+                            <li {...props} key={option.value} style={{ fontSize: isSmall ? '0.75rem' : '0.9rem' }}>
                                 {option?.label}
                             </li>
                         )}

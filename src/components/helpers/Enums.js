@@ -30,6 +30,15 @@ export const CodCatalogo = {
     TIPO_RIESGO: 3001,
     PARAMETRO_ESPIRO: 2001,
 
+    /* APT HIGIENE */
+    APTPH_CATEGORIA_CARGO: 3003,
+    APTPH_AGENTE_BIOLOGICO: 3004,
+    APTPH_AGENTE_QUIMICO: 3005,
+    APTPH_TIPO_TRABAJO: 3006,
+    APTPH_SEDE: 3007,
+    APTPH_JORNADATRABAJO: 3008,
+    APTHIGIENE_EXIGENCIA_BIOMECANICA: 3002,
+
     /* IEL */
     IEL_CALIFICACION: 2016,
     IEL_CONTROL: 2017,
@@ -38,7 +47,6 @@ export const CodCatalogo = {
     IEL_MOTIVODEVOLUCION: 2020,
 
     PR_ESTADO_CASO: 2021,
-    APTHIGIENE_EXIGENCIA_BIOMECANICA: 3002,
 
     OPCION_HABITO_INVESTIGACION: 2015,
     VentanillaTipoPeticion: 219,
@@ -231,6 +239,7 @@ export const DefaultData = {
     AsesoriaPsicologica: 3909,
     ASESORIA_MEDICA: 3911,
     SinRegistro: 1,
+    EmpresaDrummond: 1401,
 }
 
 export const IdUser = {

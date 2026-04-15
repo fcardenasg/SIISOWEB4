@@ -1,20 +1,31 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { SaveAPTHP } from "api/clients/APTHigienePlantillaClient";
 import Accordion from 'components/accordion/Accordion';
 import { AccionMenu, Modulo } from "components/helpers/Enums";
 import Iconify from "components/iconify/iconify";
 import StickyActionBar from "components/StickyActionBar/StickyActionBar";
 import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
 import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { ApplicableEnvironmentalMeasurements, AssessmentPhysicalLoad, AvailableControlMethods, CompanyInformation, ConclusionAndSource, EnvironmentalAspects, JobDescription, OrganizationalAspects, WorkActivity, WorkActivityTwo } from "../components/Main";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import * as yup from 'yup';
+import InitialInfoAlert from '../components/InitialInfoAlert';
+import { ApplicableEnvironmentalMeasurements, AssessmentPhysicalLoad, AvailableControlMethods, CompanyInformation, ConclusionAndSource, EnvironmentalAspects, OrganizationalAspects, WorkActivity, WorkActivityTwo } from "../components/Main";
+
+const validationSchema = yup.object().shape({
+    sede: yup.string().nullable().required('La sede es requerida'),
+    departamentoAuto: yup.object().nullable().required('El departamento es requerido'),
+    areaAuto: yup.object().nullable().required('El área es requerida'),
+    cargoAuto: yup.object().nullable().required('El cargo es requerido'),
+});
 
 const TemplateHygiene = () => {
     const navigate = useNavigate();
-    const methods = useForm();
-    const { handleSubmit, getValues, formState: { errors }, setValue } = methods;
-
-    const handleClick = (datos) => {
-    };
+    const methods = useForm({ resolver: yupResolver(validationSchema) });
+    const { handleSubmit, watch, formState: { isSubmitting }, setValue, reset } = methods;
+    const idAPTHigienePlantilla = watch("idAPTHigienePlantilla");
 
     const ArrayAccordion = [
         {
@@ -24,10 +35,6 @@ const TemplateHygiene = () => {
         {
             title: { icon: "solar:user-id-linear", text: "Actividad laboral" },
             content: <WorkActivity />
-        },
-        {
-            title: { icon: "lucide:id-card", text: "Descripción del puesto de trabajo" },
-            content: <JobDescription />
         },
         {
             title: { icon: "solar:leaf-linear", text: "Aspectos ambientales" },
@@ -55,45 +62,95 @@ const TemplateHygiene = () => {
         },
     ];
 
+    const handleClick = async (datos) => {
+        try {
+            datos.id = datos.idAPTHigienePlantilla || 0;
+            datos.departamento = datos.departamentoAuto?.value || null;
+            datos.area = datos.areaAuto?.value || null;
+            datos.cargo = datos.cargoAuto?.value || null;
+
+            const [result] = await Promise.all([
+                SaveAPTHP(datos),
+                new Promise(resolve => setTimeout(resolve, 1000))
+            ]);
+
+            if (result.data.exito) {
+                setValue("idAPTHigienePlantilla", result.data.datos);
+                toast.success(result.data.mensaje);
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al registrar la plantilla de APT");
+        }
+    };
+
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
             <FormProvider {...methods}>
                 <StickyActionBar
-                    mainTitle="Registrar plantillas de higiene"
-                    onClickSave={handleSubmit(handleClick)}
-                    onClickUpdate={handleSubmit(handleClick)}
-                    /* disabledUpdate={!disabledButton.value}
-                    disabledSave={disabledButton.value} */
+                    mainTitle="Registrar plantilla de análisis de puesto de trabajo (APT)"
                     showButton={false}
                     threshold={27}
+                    othersButton={
+                        <>
+                            <Grid item xs={6} md={4} lg={3}>
+                                <AnimateButton>
+                                    <Button
+                                        fullWidth
+                                        color="primary"
+                                        variant="contained"
+                                        onClick={handleSubmit(handleClick)}
+                                        disabled={isSubmitting}
+                                        startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                                    >
+                                        {isSubmitting
+                                            ? "Guardando..."
+                                            : (idAPTHigienePlantilla ? "Actualizar" : "Guardar")
+                                        }
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+
+                            <Grid item xs={6} md={4} lg={3}>
+                                <AnimateButton>
+                                    <Button fullWidth color="primary" variant="outlined" onClick={() => navigate("/apt-hygiene/template/list")}>
+                                        Cerrar
+                                    </Button>
+                                </AnimateButton>
+                            </Grid>
+                        </>
+                    }
                 >
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <CompanyInformation />
                         </Grid>
 
-                        {ArrayAccordion.map((item, index) => (
-                            <Grid item xs={12} key={index}>
-                                <Accordion
-                                    title={
-                                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                                            <Iconify width={25} icon={item.title.icon} />
-                                            <Typography sx={{ ml: 2 }} variant="h5">
-                                                {item.title.text}
-                                            </Typography>
-                                        </Box>
-                                    }
-                                >
-                                    {item.content}
-                                </Accordion>
+                        {idAPTHigienePlantilla && (
+                            <Grid item xs={12} sx={{ mt: 2 }}>
+                                <InitialInfoAlert />
                             </Grid>
-                        ))}
+                        )}
 
-                        <Grid item xs={6} md={4} lg={2}>
-                            <Button fullWidth color="primary" variant="outlined" onClick={() => navigate("/apt-hygiene/list")}>
-                                Cerrar
-                            </Button>
-                        </Grid>
+                        {!idAPTHigienePlantilla &&
+                            ArrayAccordion.map((item, index) => (
+                                <Grid item xs={12} key={index}>
+                                    <Accordion
+                                        title={
+                                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                                <Iconify width={25} icon={item.title.icon} />
+                                                <Typography sx={{ ml: 2 }} variant="h5">
+                                                    {item.title.text}
+                                                </Typography>
+                                            </Box>
+                                        }
+                                    >
+                                        {item.content}
+                                    </Accordion>
+                                </Grid>
+                            ))
+                        }
                     </Grid>
                 </StickyActionBar>
             </FormProvider>

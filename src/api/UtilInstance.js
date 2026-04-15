@@ -9,8 +9,8 @@ export async function postData(url = '', datos = {}, headersVali = false) {
             data: datos
         };
 
-        if (headersVali) {
-            config.headers = { 'Content-Type': 'multipart/form-data' };
+        if (!headersVali) {
+            config.headers = { 'Content-Type': 'application/json' };
         }
 
         const respuesta = await axios(config);

@@ -22,6 +22,8 @@ import {
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
 import { UpperFirstChar } from 'components/helpers/Format';
+import InputCheckBox from 'components/input/InputCheckBox';
+import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
@@ -85,6 +87,39 @@ const schema = yup.object().shape({
     descripcion: yup.string().required('La descripción es requerida'),
 });
 
+const ExigenciaRow = ({ index }) => {
+    const { watch, setValue } = useFormContext();
+    const aplica = watch(`listaExigenciaBiomecanica.${index}.exigenciaAplica`);
+    const nameExigencia = watch(`listaExigenciaBiomecanica.${index}.nameExigencia`);
+
+    useEffect(() => {
+        if (!aplica) {
+            setValue(`listaExigenciaBiomecanica.${index}.descripcion`, '');
+        }
+    }, [aplica, index, setValue]);
+
+    return (
+        <>
+            <Grid item xs={12} md={4} lg={2.5} sx={{ display: 'flex', alignItems: 'center' }}>
+                <InputCheckBox name={`listaExigenciaBiomecanica.${index}.exigenciaAplica`} defaultValue={false} label="" />
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                    {nameExigencia}
+                </Typography>
+            </Grid>
+
+            <Grid item xs={12} md={8} lg={9.5}>
+                <InputText
+                    name={`listaExigenciaBiomecanica.${index}.descripcion`}
+                    label="Descripción"
+                    multiline
+                    fullWidth
+                    disabled={!aplica}
+                />
+            </Grid>
+        </>
+    );
+};
+
 const ActivityFormModal = ({ open, onClose, onSave }) => {
     const methods = useForm({ resolver: yupResolver(schema) });
     const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = methods;
@@ -97,9 +132,10 @@ const ActivityFormModal = ({ open, onClose, onSave }) => {
                 const sortedData = lsServerArea.data.sort((a, b) => a.value - b.value);
 
                 const initialExigencias = sortedData.map(item => ({
-                    idBiomecanica: item.value,
+                    idExigenciaBiomecanica: item.value,
                     nameExigencia: UpperFirstChar(item.label),
-                    descripcionExigencia: ''
+                    descripcion: '',
+                    exigenciaAplica: false
                 }));
 
                 reset({
@@ -172,7 +208,7 @@ const ActivityFormModal = ({ open, onClose, onSave }) => {
                     }}>
                         <Grid container spacing={2} sx={{ mt: 0 }}>
                             <Grid item xs={12} md={9} lg={10}>
-                                <InputText name="actividad" label="Actividad o subactividad" bug={errors.actividad} />
+                                <InputSelect options={[]} name="actividad" label="Actividad o subactividad" defaultValue="" />
                             </Grid>
 
                             <Grid item xs={12} md={3} lg={2}>
@@ -187,22 +223,7 @@ const ActivityFormModal = ({ open, onClose, onSave }) => {
                                 <SubCard darkTitle title="Registrar exigencias biomecánicas de la actividad">
                                     <Grid container spacing={2}>
                                         {fields.map((field, index) => (
-                                            <>
-                                                <Grid item xs={12} md={4} lg={1.5}>
-                                                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                                                        {watch(`listaExigenciaBiomecanica.${index}.nameExigencia`)}
-                                                    </Typography>
-                                                </Grid>
-
-                                                <Grid item xs={12} md={8} lg={10.5}>
-                                                    <InputText
-                                                        name={`listaExigenciaBiomecanica.${index}.descripcionExigencia`}
-                                                        label="Descripción"
-                                                        multiline
-                                                        fullWidth
-                                                    />
-                                                </Grid>
-                                            </>
+                                            <ExigenciaRow key={field.id} index={index} />
                                         ))}
                                     </Grid>
                                 </SubCard>
