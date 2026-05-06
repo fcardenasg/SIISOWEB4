@@ -1,7 +1,7 @@
 import { AddPhotoAlternateOutlined, Close, DeleteOutline, PhotoLibraryOutlined } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogContent, Fade, Grid, IconButton, Paper, Stack, TextField, Typography, Slide } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState, useCallback } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { DeleteAPTHPImage, GetAllAPTHPImage, SaveAPTHPImage } from 'api/clients/APTHigienePlantillaClient';
 import toast from 'react-hot-toast';
@@ -12,7 +12,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 const PhotographicEvidence = ({ name, objImage }) => {
     const { control } = useFormContext();
-    const { fields, append, remove } = useFieldArray({
+    const { fields, remove, replace } = useFieldArray({
         control,
         name
     });
@@ -22,30 +22,26 @@ const PhotographicEvidence = ({ name, objImage }) => {
     const [tempImage, setTempImage] = useState(null);
     const fileInputRef = useRef(null);
 
-    useEffect(() => {
-        if (objImage?.idAPT && objImage?.idItemAcordeon && objImage?.idSegundarioModulo) {
-            async function loadImages() {
-                try {
-                    const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo);
-                    if (response.data.exito && response.data.datos?.length > 0) {
-                        response.data.datos.forEach((imageData) => {
-                            const newEvidence = {
-                                titulo: imageData.titulo || `Imagen ${fields.length + 1}`,
-                                foto: null,
-                                fechaSubida: imageData.fechaSubida || new Date().toISOString(),
-                                preview: imageData.ruta,
-                                serverId: imageData.id
-                            };
-                            append(newEvidence);
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error cargando imágenes:", error);
-                }
+    const loadImages = useCallback(async () => {
+        if (!objImage?.idAPT || !objImage?.idItemAcordeon || !objImage?.idSegundarioModulo) return;
+        try {
+            const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo);
+            if (response.data.exito && response.data.datos) {
+                const newEvidences = response.data.datos.map((imageData, index) => ({
+                    titulo: imageData.titulo || imageData.nombre,
+                    fechaSubida: new Date(imageData.fechaRegistro).toISOString() || new Date().toISOString(),
+                    preview: imageData.urlServidor,
+                    serverId: imageData.id
+                }));
+                replace(newEvidences);
             }
-            loadImages();
+        } catch (error) {
         }
-    }, [objImage?.idAPT, objImage?.idItemAcordeon, objImage?.idSegundarioModulo]);
+    }, [objImage?.idAPT, objImage?.idItemAcordeon, objImage?.idSegundarioModulo, replace]);
+
+    useEffect(() => {
+        loadImages();
+    }, [loadImages]);
 
     const handleOpenModal = (field) => {
         setTempImage(field);
@@ -65,17 +61,14 @@ const PhotographicEvidence = ({ name, objImage }) => {
                 formData.append('IdAPT', objImage.idAPT);
                 formData.append('IdItemAcordeon', objImage.idItemAcordeon);
                 formData.append('IdSegundarioModulo', objImage.idSegundarioModulo);
+                formData.append('ThisRecordIsNotValidated', objImage.thisRecordIsNotValidated === true);
+                if (titulo.trim()) {
+                    formData.append('Titulo', titulo.trim());
+                }
 
                 const response = await SaveAPTHPImage(formData, true);
                 if (response.data.exito) {
-                    const newEvidence = {
-                        titulo: titulo.trim() || file.name,
-                        foto: file,
-                        fechaSubida: new Date().toISOString(),
-                        preview: URL.createObjectURL(file),
-                        serverId: response.data.datos?.[0]?.id
-                    };
-                    append(newEvidence);
+                    await loadImages();
                     toast.success("Imagen guardada correctamente");
                 }
             } catch (error) {
@@ -92,12 +85,16 @@ const PhotographicEvidence = ({ name, objImage }) => {
                 const response = await DeleteAPTHPImage(field.serverId);
                 if (response.data.exito) {
                     toast.success("Imagen eliminada correctamente");
+                    await loadImages();
+                } else {
+                    toast.error(response.data.mensaje || "Error al eliminar la imagen");
                 }
+            } else {
+                remove(index);
             }
         } catch (error) {
             toast.error("Error al eliminar la imagen");
         }
-        remove(index);
     };
 
     useEffect(() => {

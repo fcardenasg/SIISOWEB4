@@ -12,11 +12,6 @@ export const GetAllAPTHPActivity = async (idAPT) => await getData(`${Url.APTHigi
 export const SaveAPTHPActivity = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPActividad`, obj);
 export const DeleteAPTHPActivity = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPActividad`, { id });
 
-// --- APTHP Categoria Segmento ---
-export const GetAllAPTHPCategorySegment = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPCategoriaSegmento`, { idAPT });
-export const SaveAPTHPCategorySegment = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPCategoriaSegmento`, obj);
-export const DeleteAPTHPCategorySegment = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPCategoriaSegmento`, { id });
-
 // --- APTHP Factor Organizacional ---
 export const GetAllAPTHPOrganizationalFactor = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional`, { idAPT });
 export const SaveAPTHPOrganizationalFactor = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional`, obj);
@@ -36,3 +31,11 @@ export const DeleteAPTHPValorRefeSegmento = async (id) => await deleteData(`${Ur
 export const GetAllAPTHPImage = async (idAPT, idItemAcordeon, idSegundarioModulo) => await getData(`${Url.APTHigienePlantilla}/APTHPImagen`, { idAPT, idItemAcordeon, idSegundarioModulo });
 export const SaveAPTHPImage = async (obj, headersVali) => await postData(`${Url.APTHigienePlantilla}/APTHPImagen`, obj, headersVali);
 export const DeleteAPTHPImage = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPImagen`, { id });
+
+// --- APTHP Metodo OWAS ---
+export const GetAllAPTHPMetodoOWAS = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPMetodoOWAS`, { idAPT });
+export const SaveAPTHPMetodoOWAS = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPMetodoOWAS`, obj);
+
+// --- APTHP Valoracion ---
+export const GetDataTableAPTHPValoracion = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPValoracion-TableData`, { idAPT });
+export const SaveAPTHPValoracion = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPValoracion`, obj);

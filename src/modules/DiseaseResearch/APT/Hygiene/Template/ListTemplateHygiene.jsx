@@ -32,14 +32,13 @@ import { ParamDelete } from 'components/alert/AlertAll';
 import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-import Chip from 'ui-component/extended/Chip';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { DeleteResearchAssignment } from 'api/clients/ResearchAssignmentClient';
+import { GetAllAPTHP, DeleteAPTHP } from 'api/clients/APTHigienePlantillaClient';
 import Cargando from 'components/loading/Cargando';
 import EmptyState from 'components/loading/EmptyState';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
@@ -70,23 +69,23 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {
-        id: 'documento',
-        label: 'Documento',
+        id: 'nameSede',
+        label: 'Sede',
         align: 'left'
     },
     {
-        id: 'nombreEmpleado',
-        label: 'Nombre',
+        id: 'nameDepartamento',
+        label: 'Departamento',
         align: 'left'
     },
     {
-        id: 'nombreDx',
-        label: 'Diagnósticos',
+        id: 'nameArea',
+        label: 'Área',
         align: 'left'
     },
     {
-        id: 'investigador',
-        label: 'Investigadores',
+        id: 'nameCargo',
+        label: 'Cargo',
         align: 'left'
     },
     {
@@ -111,12 +110,12 @@ function EnhancedTableHead({ onClick, onSelectAllClick, order, orderBy, numSelec
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{
-                            'aria-label': 'select all desserts'
+                            'aria-label': 'select all records'
                         }}
                     />
                 </TableCell>
                 {numSelected > 0 && (
-                    <TableCell padding="none" colSpan={8}>
+                    <TableCell padding="none" colSpan={headCells.length + 1}>
                         <EnhancedTableToolbar numSelected={selected.length} onClick={onClick} />
                     </TableCell>
                 )}
@@ -222,19 +221,17 @@ const ListTemplateHygiene = () => {
     async function getAll() {
         try {
             setLoading(true);
-            /* const lsServer = await GetAllResearchAssignment();
-            setTimeout(() => {
-                if (lsServer.data.exito) {
-                    setLsModelData(lsServer.data.datos);
-                    setRows(lsServer.data.datos);
-                } else {
-                    toast.error(lsServer.data.mensaje);
-                }
-            }, 1000); */
-
+            const lsServer = await GetAllAPTHP();
+            if (lsServer?.data?.exito) {
+                setLsModelData(lsServer.data.datos || []);
+                setRows(lsServer.data.datos || []);
+            } else {
+                toast.error(lsServer?.data?.mensaje || "Error al obtener datos");
+            }
             setLoading(false);
         } catch (error) {
             setLoading(false);
+            toast.error("Error obteniendo los registros");
         }
     }
 
@@ -249,7 +246,7 @@ const ListTemplateHygiene = () => {
         if (newString) {
             const newRows = rows.filter((row) => {
                 let matches = true;
-                const properties = ['id', 'documento', 'nombreEmpleado'];
+                const properties = ['empresa', 'nameSede', 'nameDepartamento', 'nameArea', 'nameCargo'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -317,18 +314,20 @@ const ListTemplateHygiene = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteResearchAssignment(idCheck);
+                    const result = await DeleteAPTHP(idCheck);
                     if (result.data.exito) {
                         toast.success(result.data.mensaje);
                         setSearch('');
                         setSelected([]);
                         getAll();
+                    } else {
+                        toast.error(result.data.mensaje);
                     }
                 } else
                     setSelected([]);
             });
         } catch (error) {
-
+            toast.error("Ocurrió un error al eliminar");
         }
     }
 
@@ -434,7 +433,7 @@ const ListTemplateHygiene = () => {
                                                         variant="subtitle1"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        {row.documento}
+                                                        {row.nameSede || '-'}
                                                     </Typography>
                                                 </TableCell>
 
@@ -449,7 +448,7 @@ const ListTemplateHygiene = () => {
                                                         variant="subtitle1"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        {row.nombreEmpleado}
+                                                        {row.nameDepartamento || '-'}
                                                     </Typography>
                                                 </TableCell>
 
@@ -460,20 +459,12 @@ const ListTemplateHygiene = () => {
                                                     onClick={(event) => handleClick(event, row.id)}
                                                     sx={{ cursor: 'pointer' }}
                                                 >
-                                                    <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
-                                                        <div>
-                                                            {row?.nombreDx.map((item, index) => (
-                                                                <div key={index}>{item}</div>
-                                                            ))}
-                                                        </div>
-                                                    }>
-                                                        <Typography
-                                                            variant="subtitle1"
-                                                            sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                        >
-                                                            <Chip label={`${row?.nombreDx?.length} Diagnóstico(s)`} size="small" chipcolor="success" />
-                                                        </Typography>
-                                                    </Tooltip>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.nameArea || '-'}
+                                                    </Typography>
                                                 </TableCell>
 
                                                 <TableCell
@@ -483,20 +474,12 @@ const ListTemplateHygiene = () => {
                                                     onClick={(event) => handleClick(event, row.id)}
                                                     sx={{ cursor: 'pointer' }}
                                                 >
-                                                    <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
-                                                        <div>
-                                                            {row?.nombreAsesor.map((item, index) => (
-                                                                <div key={index}>{item}</div>
-                                                            ))}
-                                                        </div>
-                                                    }>
-                                                        <Typography
-                                                            variant="subtitle1"
-                                                            sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                        >
-                                                            <Chip label={`${row?.nombreInvestigador?.length} Investigador(es)`} size="small" chipcolor="success" />
-                                                        </Typography>
-                                                    </Tooltip>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.nameCargo || '-'}
+                                                    </Typography>
                                                 </TableCell>
 
                                                 <TableCell
@@ -507,8 +490,8 @@ const ListTemplateHygiene = () => {
                                                     sx={{ cursor: 'pointer' }}
                                                 >
                                                     <ListItemText
-                                                        primary={row?.usuarioRegistro?.toUpperCase()}
-                                                        secondary={new Date(row?.fechaRegistro).toLocaleString()}
+                                                        primary={row?.usuarioRegistro?.toUpperCase() || '-'}
+                                                        secondary={row?.fechaRegistro ? new Date(row.fechaRegistro).toLocaleString() : '-'}
                                                         primaryTypographyProps={{ typography: 'caption' }}
                                                         secondaryTypographyProps={{
                                                             mt: 0.5,
@@ -536,7 +519,7 @@ const ListTemplateHygiene = () => {
                                             height: 53 * emptyRows
                                         }}
                                     >
-                                        <TableCell colSpan={6} />
+                                        <TableCell colSpan={8} />
                                     </TableRow>
                                 )}
                             </TableBody>

@@ -1,7 +1,12 @@
-import Autocomplete from '@mui/material/Autocomplete';
+import AddIcon from '@mui/icons-material/Add';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { Box, Divider, useMediaQuery, useTheme } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
+
+const ADD_SENTINEL = '__add__';
+
+const baseFilter = createFilterOptions();
 
 export default function InputSelectAutocomplete({
     name,
@@ -12,6 +17,7 @@ export default function InputSelectAutocomplete({
     size,
     bug,
     maxWidth,
+    onAddClick,
     ...other
 }) {
     const { control, setValue } = useFormContext();
@@ -75,11 +81,46 @@ export default function InputSelectAutocomplete({
                                 }
                             })
                         }}
-                        renderOption={(props, option) => (
-                            <li {...props} key={option.value} style={{ fontSize: isSmall ? '0.75rem' : '0.9rem' }}>
-                                {option?.label}
-                            </li>
-                        )}
+                        filterOptions={(opts, state) => {
+                            const filtered = baseFilter(opts, state);
+                            if (onAddClick) filtered.push({ value: ADD_SENTINEL, label: 'Agregar', __isAdd: true });
+                            return filtered;
+                        }}
+                        getOptionDisabled={(option) => option.__isAdd === true ? false : undefined}
+                        renderOption={(props, option) => {
+                            if (option.__isAdd) {
+                                return (
+                                    <Box component="span" key={ADD_SENTINEL}>
+                                        <Divider />
+                                        <Box
+                                            component="li"
+                                            {...props}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onAddClick();
+                                            }}
+                                            sx={{
+                                                color: 'primary.main',
+                                                fontWeight: 600,
+                                                fontSize: isSmall ? '0.75rem' : '0.875rem',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 1,
+                                                '&:hover': { bgcolor: 'primary.lighter' }
+                                            }}
+                                        >
+                                            <AddIcon fontSize="small" />
+                                            Agregar
+                                        </Box>
+                                    </Box>
+                                );
+                            }
+                            return (
+                                <li {...props} key={option.value} style={{ fontSize: isSmall ? '0.75rem' : '0.9rem' }}>
+                                    {option?.label}
+                                </li>
+                            );
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

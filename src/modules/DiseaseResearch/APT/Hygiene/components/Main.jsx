@@ -1,20 +1,28 @@
-import { Divider, Grid, Typography } from "@mui/material";
+import ReactDOM from "react-dom";
+import { Alert, Divider, Grid, Box, Typography, Paper, Button } from "@mui/material";
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
 import { motion } from 'framer-motion';
+import Lottie from 'lottie-react';
+import animation from 'assets/img/animation.json';
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import { GetByIdCompany, GetComboCompany } from "api/clients/CompanyClient";
 import { CodCatalogo, DefaultData } from "components/helpers/Enums";
+import InputCheckBox from "components/input/InputCheckBox";
 import InputSelect from "components/input/InputSelect";
 import InputText from "components/input/InputText";
 import InputTextEditor from "components/input/InputTextEditor";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import SubCard from "ui-component/cards/SubCard";
 import ActivityTable from "./ActivityTable";
 import PhotographicEvidence from "./PhotographicEvidence";
-import { CategoryTableSegment, OrganizationalFactorTable, TableControlMethods, TableReferenceValuesSegment } from "./TableAPT";
+import { OWASMethodTables, OrganizationalFactorTable, TableControlMethods, TableReferenceValuesSegment } from "./TableAPT";
 import BiomechanicalRiskAssessment from "./BiomechanicalRiskAssessment";
 import ImageDropzone from "./ImageDropzone";
 import InputSelectAutocomplete from "components/input/InputSelectAutocomplete";
+import ViewExcalidraw from "./ViewExcalidraw";
+import TableValues from "./TableValues";
 
 export const CompanyInformation = ({ dataModel }) => {
     const { setValue, formState: { errors } } = useFormContext();
@@ -50,77 +58,70 @@ export const CompanyInformation = ({ dataModel }) => {
     }, []);
 
     return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
-        >
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputSelect
-                        disabled
-                        name="empresa"
-                        label="Empresa"
-                        defaultValue={dataModel?.empresa}
-                        options={lsCompany}
-                    />
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputText
-                        disabled
-                        defaultValue={dataModel?.actividadEconomica}
-                        fullWidth
-                        name="actividadEconomica"
-                        label="Actividad económica"
-                    />
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputSelect
-                        name="sede"
-                        label="Sede"
-                        defaultValue={dataModel?.sede || ""}
-                        options={lsSede}
-                        bug={errors.sede}
-                    />
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputSelectAutocomplete
-                        defaultValue={dataModel?.departamento}
-                        name="departamentoAuto"
-                        label="Departamento"
-                        options={lsDepartamento}
-                    />
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputSelectAutocomplete
-                        defaultValue={dataModel?.area}
-                        name="areaAuto"
-                        label="Área"
-                        options={lsArea}
-                    />
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                    <InputSelectAutocomplete
-                        defaultValue={dataModel?.cargo}
-                        name="cargoAuto"
-                        label="Cargo"
-                        options={lsCargo}
-                    />
-                </Grid>
+        <Grid container spacing={2}>
+            <Grid item xs={12} md={6} lg={4}>
+                <InputSelect
+                    disabled
+                    name="empresa"
+                    label="Empresa"
+                    defaultValue={dataModel?.empresa}
+                    options={lsCompany}
+                />
             </Grid>
-        </motion.div>
+
+            <Grid item xs={12} md={6} lg={4}>
+                <InputText
+                    disabled
+                    defaultValue={dataModel?.actividadEconomica}
+                    fullWidth
+                    name="actividadEconomica"
+                    label="Actividad económica"
+                />
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+                <InputSelect
+                    name="sede"
+                    label="Sede"
+                    defaultValue={dataModel?.sede || ""}
+                    options={lsSede}
+                    bug={errors.sede}
+                />
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+                <InputSelectAutocomplete
+                    defaultValue={dataModel?.departamento}
+                    name="departamentoAuto"
+                    label="Departamento"
+                    options={lsDepartamento}
+                />
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+                <InputSelectAutocomplete
+                    defaultValue={dataModel?.area}
+                    name="areaAuto"
+                    label="Área"
+                    options={lsArea}
+                />
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+                <InputSelectAutocomplete
+                    defaultValue={dataModel?.cargo}
+                    name="cargoAuto"
+                    label="Cargo"
+                    options={lsCargo}
+                />
+            </Grid>
+        </Grid>
     )
 }
 
 export const OrganizationalAspects = ({ dataModel }) => {
     const [lsTurno, setLsTurno] = useState([]);
     const [lsCategoriaCargo, setLsCategoriaCargo] = useState([]);
-    const [lsJornadaTrabajo, setLsJornadaTrabajo] = useState([]);
 
     useEffect(() => {
         async function getData() {
@@ -131,7 +132,7 @@ export const OrganizationalAspects = ({ dataModel }) => {
             setLsCategoriaCargo(lsServerCategoriaCargo.data);
 
             const lsServerJornadaTrabajo = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_JORNADATRABAJO);
-            setLsJornadaTrabajo(lsServerJornadaTrabajo.data);
+            setLsCategoriaCargo(lsServerJornadaTrabajo.data);
         }
 
         getData();
@@ -140,11 +141,12 @@ export const OrganizationalAspects = ({ dataModel }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
-                <InputSelect
-                    name="jornadaLaboral"
-                    label="Jornada de trabajo"
-                    defaultValue={dataModel?.jornadaLaboral || null}
-                    options={lsJornadaTrabajo}
+                <InputText
+                    name="jornadaLaboralHoras"
+                    label="Jornada de trabajo (horas)"
+                    type="number"
+                    defaultValue={dataModel?.jornadaLaboralHoras || null}
+                    fullWidth
                 />
             </Grid>
 
@@ -198,29 +200,11 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 />
             </Grid>
 
-            <Grid item xs={12}>
-                <Typography variant="h4">Organización del trabajo</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
+            <Grid item xs={12} md={12} lg={12}>
                 <InputText
-                    name="organizacionTrabajoIndividual"
-                    label="Individual"
-                    defaultValue={dataModel?.organizacionTrabajoIndividual || null}
-                    fullWidth
-                    multiline
-                    minRows={3}
-                    maxRows={5}
-                    showAI
-                    showVoice
-                />
-            </Grid>
-
-            <Grid item xs={12}>
-                <InputText
-                    name="organizacionTrabajoEquipo"
-                    label="Equipo"
-                    defaultValue={dataModel?.organizacionTrabajoEquipo || null}
+                    name="organizacionTrabajo"
+                    label="Organización del trabajo"
+                    defaultValue={dataModel?.organizacionTrabajo || null}
                     fullWidth
                     multiline
                     minRows={3}
@@ -234,22 +218,28 @@ export const OrganizationalAspects = ({ dataModel }) => {
 }
 
 export const WorkActivity = ({ dataModel }) => {
-    const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
-
-    const disenoObjImage = { idAPT, idItemAcordeon: 2, idSegundarioModulo: 1 };
-    const mobiliariorObjImage = { idAPT, idItemAcordeon: 2, idSegundarioModulo: 2 };
-
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
             <Grid item xs={12}>
                 <InputTextEditor label="Objetivo del cargo" name="objetivoCargo" defaultValue={dataModel?.objetivoCargo || null} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" defaultValue={dataModel?.caracteristicasDisenoPuesto || null} />
+                <InputTextEditor label="Descripción del lugar donde se realiza la labor" name="descripcionLugar" defaultValue={dataModel?.descripcionLugar || null} />
             </Grid>
+        </Grid>
+    )
+}
 
+export const JobDescription = ({ dataModel }) => {
+    const { watch: watchMain } = useFormContext();
+    const idAPT = watchMain("idAPTHigienePlantilla");
+
+    const disenoObjImage = { idAPT, idItemAcordeon: 3, idSegundarioModulo: 1 };
+    const mobiliariorObjImage = { idAPT, idItemAcordeon: 3, idSegundarioModulo: 2 };
+
+    return (
+        <Grid container spacing={2}>
             <Grid item xs={12}>
                 <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" defaultValue={dataModel?.caracteristicasDisenoPuesto || null} />
             </Grid>
@@ -402,8 +392,38 @@ export const EnvironmentalAspects = ({ dataModel }) => {
 }
 
 export const WorkActivityTwo = ({ dataModel }) => {
+    const { setValue } = useFormContext();
+
+    const handleOpenPopup = () => {
+        const width = window.screen.availWidth;
+        const height = window.screen.availHeight;
+        const popupWindow = window.open('', '_blank', `width=${width},height=${height},left=0,top=0`);
+        if (popupWindow) {
+            popupWindow.document.title = "Ciclo de trabajo";
+            popupWindow.document.body.innerHTML = '<div id="popup-root"></div>';
+            popupWindow.document.body.style.margin = '0';
+
+            const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+            styles.forEach(styleNode => {
+                popupWindow.document.head.appendChild(styleNode.cloneNode(true));
+            });
+
+            const popupCache = createCache({
+                key: 'popup-mui-excalidraw',
+                container: popupWindow.document.head,
+            });
+
+            ReactDOM.render(
+                <CacheProvider value={popupCache}>
+                    <ViewExcalidraw />
+                </CacheProvider>,
+                popupWindow.document.getElementById('popup-root')
+            );
+        }
+    };
+
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
             <Grid item xs={12}>
                 <InputTextEditor label="Descripción general del cargo" name="descripcionGeneralCargo" defaultValue={dataModel?.descripcionGeneralCargo || null} />
             </Grid>
@@ -414,7 +434,46 @@ export const WorkActivityTwo = ({ dataModel }) => {
 
             <Grid item xs={12}>
                 <SubCard darkTitle title="Ciclo de trabajo">
-                    Pendiente de revisar si existe alguna biblioteca para integrar un paint o algo parecido.
+                    <Paper
+                        variant="outlined"
+                        onClick={handleOpenPopup}
+                        sx={{
+                            height: 400,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderStyle: 'dashed',
+                            borderWidth: 2,
+                            borderColor: '#e0e0e0',
+                            backgroundColor: '#fcfcfc',
+                            cursor: 'pointer',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            borderRadius: 4,
+                            p: 1.5,
+                            transition: 'border-color 0.2s, background-color 0.2s',
+                            '&:hover': {
+                                borderColor: 'primary.main',
+                                backgroundColor: 'rgba(25, 118, 210, 0.02)'
+                            }
+                        }}
+                    >
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                            <Box sx={{ width: 220, height: 220 }}>
+                                <Lottie
+                                    animationData={animation}
+                                    loop={true}
+                                    style={{ width: '100%', height: '100%' }}
+                                />
+                            </Box>
+                            <Typography variant="h5" color="text.primary" sx={{ mt: 2, fontWeight: 600 }}>
+                                Aún no se ha creado o cargado un ciclo de trabajo
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Haz clic aquí para abrir el área de trabajo
+                            </Typography>
+                        </Box>
+                    </Paper>
                 </SubCard>
             </Grid>
 
@@ -426,15 +485,56 @@ export const WorkActivityTwo = ({ dataModel }) => {
 }
 
 export const AssessmentPhysicalLoad = ({ dataModel }) => {
+    const { watch: watchMain } = useFormContext();
+    const idAPT = watchMain("idAPTHigienePlantilla");
+    const valoresPopupRef = useRef(null);
+
+    const handleOpenPopup = () => {
+        // Si la ventana ya existe y no ha sido cerrada, solo traerla al frente
+        if (valoresPopupRef.current && !valoresPopupRef.current.closed) {
+            valoresPopupRef.current.focus();
+            return;
+        }
+
+        const width = window.screen.availWidth;
+        const height = window.screen.availHeight;
+        const popupWindow = window.open('', '_blank', `width=${width},height=${height},left=0,top=0`);
+        if (popupWindow) {
+            valoresPopupRef.current = popupWindow;
+            popupWindow.document.title = "Valoración";
+            popupWindow.document.body.innerHTML = '<div id="popup-root-valores"></div>';
+            popupWindow.document.body.style.margin = '0';
+
+            // Copiar los estilos del documento principal a la nueva ventana para los estilos globales base
+            const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+            styles.forEach(styleNode => {
+                popupWindow.document.head.appendChild(styleNode.cloneNode(true));
+            });
+
+            // Crear un caché de Emotion específico para la nueva ventana, para que Material UI inyecte los estilos dinámicos aquí
+            const popupCache = createCache({
+                key: 'popup-mui',
+                container: popupWindow.document.head,
+            });
+
+            ReactDOM.render(
+                <CacheProvider value={popupCache}>
+                    <TableValues idAPT={idAPT} />
+                </CacheProvider>,
+                popupWindow.document.getElementById('popup-root-valores')
+            );
+        }
+    };
+
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
             <Grid item xs={12}>
-                <CategoryTableSegment />
+                <OWASMethodTables />
             </Grid>
 
             <Grid item xs={12}>
                 <SubCard darkTitle title="Aplicación de la metodología ANSI">
-                    <Grid container spacing={3}>
+                    <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <OrganizationalFactorTable />
                         </Grid>
@@ -452,7 +552,12 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
                 <SubCard darkTitle title="Valoración">
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            Pendiente de realizar
+                            <Button
+                                variant="outlined"
+                                onClick={handleOpenPopup}
+                            >
+                                Ver tablas de valoración
+                            </Button>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -475,6 +580,10 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
     const { watch: watchMain, control } = useFormContext();
     const idAPT = watchMain("idAPTHigienePlantilla");
 
+    const habilitadoVibracion = watchMain("habilitadoVibracion");
+    const habilitadoRuido = watchMain("habilitadoRuido");
+    const habilitadoMateriaParticulado = watchMain("habilitadoMateriaParticulado");
+
     const vibrationObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 1 };
     const noiseObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 2 };
     const particulateObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 3 };
@@ -482,42 +591,57 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <SubCard darkTitle title="Exposición a vibración">
+                <SubCard darkTitle title="Exposición a vibración" secondary={<InputCheckBox name="habilitadoVibracion" label="Habilitar exposición" defaultValue={false} />}>
+                    {!habilitadoVibracion && (
+                        <Grid item xs={12} sx={{ mb: 2 }}>
+                            <Alert severity="warning">Para registrar la exposición a vibración debe habilitarla dando en el check, de lo contrario se interpretará como no aplica.</Alert>
+                        </Grid>
+                    )}
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <ImageDropzone name="vibrationImage" control={control} objImage={vibrationObjImage} />
+                            <ImageDropzone name="vibrationImage" control={control} objImage={vibrationObjImage} disabled={!habilitadoVibracion} exposureType="vibración" targetInput="interpretacionVibracion" />
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="interpretacionVibracion" defaultValue={dataModel?.interpretacionVibracion || null} />
+                            <InputTextEditor label="Interpretación" name="interpretacionVibracion" defaultValue={dataModel?.interpretacionVibracion || null} disabled={!habilitadoVibracion} />
                         </Grid>
                     </Grid>
                 </SubCard>
             </Grid>
 
             <Grid item xs={12}>
-                <SubCard darkTitle title="Exposición a ruido">
+                <SubCard darkTitle title="Exposición a ruido" secondary={<InputCheckBox name="habilitadoRuido" label="Habilitar exposición" defaultValue={false} />}>
+                    {!habilitadoRuido && (
+                        <Grid item xs={12} sx={{ mb: 2 }}>
+                            <Alert severity="warning">Para registrar la exposición a ruido debe habilitarla dando en el check, de lo contrario se interpretará como no aplica.</Alert>
+                        </Grid>
+                    )}
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <ImageDropzone name="noiseImage" control={control} objImage={noiseObjImage} />
+                            <ImageDropzone name="ruidoImage" control={control} objImage={noiseObjImage} disabled={!habilitadoRuido} exposureType="ruido" targetInput="interpretacionRuido" />
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="interpretacionRuido" defaultValue={dataModel?.interpretacionRuido || null} />
+                            <InputTextEditor label="Interpretación" name="interpretacionRuido" defaultValue={dataModel?.interpretacionRuido || null} disabled={!habilitadoRuido} />
                         </Grid>
                     </Grid>
                 </SubCard>
             </Grid>
 
             <Grid item xs={12}>
-                <SubCard darkTitle title="Exposición a material particulado">
+                <SubCard darkTitle title="Exposición a material particulado" secondary={<InputCheckBox name="habilitadoMateriaParticulado" label="Habilitar exposición" defaultValue={false} />}>
+                    {!habilitadoMateriaParticulado && (
+                        <Grid item xs={12} sx={{ mb: 2 }}>
+                            <Alert severity="warning">Para registrar la exposición a material particulado debe habilitarla dando en el check, de lo contrario se interpretará como no aplica.</Alert>
+                        </Grid>
+                    )}
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <ImageDropzone name="particulateImage" control={control} objImage={particulateObjImage} />
+                            <ImageDropzone name="particulateImage" control={control} objImage={particulateObjImage} disabled={!habilitadoMateriaParticulado} exposureType="material particulado" targetInput="interpretacionMaterialParticulado" />
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="interpretacionMaterialParticulado" defaultValue={dataModel?.interpretacionMaterialParticulado || null} />
+                            <InputTextEditor label="Interpretación" name="interpretacionMaterialParticulado" defaultValue={dataModel?.interpretacionMaterialParticulado || null} disabled={!habilitadoMateriaParticulado} />
                         </Grid>
                     </Grid>
                 </SubCard>

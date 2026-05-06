@@ -1,79 +1,38 @@
-import { Box, Button, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
-import { GetComboCompany } from "api/clients/CompanyClient";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { SaveAPTHygiene } from "api/clients/APTHygieneClient";
+import { GetByIdEmployee } from "api/clients/EmployeeClient";
 import Accordion from 'components/accordion/Accordion';
-import { AccionMenu, CodCatalogo, Modulo } from "components/helpers/Enums";
+import { AccionMenu, Modulo } from "components/helpers/Enums";
 import Iconify from "components/iconify/iconify";
-import InputSelect from "components/input/InputSelect";
-import InputText from 'components/input/InputText';
 import StickyActionBar from "components/StickyActionBar/StickyActionBar";
 import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
-import { useBoolean } from "hooks/use-boolean";
-import { useEffect, useState } from "react";
-import { FormProvider, useForm } from 'react-hook-form';
+import ViewEmployee from "components/views/ViewEmployee";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { ActivityPercentageDistribution, EnvironmentalAspects, JobDescription, NonRoutineActivities, OrganizationalAspects, PhotographicRecord, WorkActivity, WorkCycle } from "./OthersHygiene";
-import TableHygiene from "./TableHygiene";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import * as yup from 'yup';
+import InitialInfoAlert from '../components/InitialInfoAlert';
+import { ApplicableEnvironmentalMeasurements, AssessmentPhysicalLoad, AvailableControlMethods, CompanyInformation, ConclusionAndSource, EnvironmentalAspects, OrganizationalAspects, WorkActivity, WorkActivityTwo } from "../components/Main";
+
+const validationSchema = yup.object().shape({
+    documento: yup.string().required("El documento es requerido"),
+    sede: yup.string().nullable().required('La sede es requerida'),
+    departamentoAuto: yup.object().nullable().required('El departamento es requerido'),
+    areaAuto: yup.object().nullable().required('El área es requerida'),
+    cargoAuto: yup.object().nullable().required('El cargo es requerido'),
+});
 
 const APTHygiene = () => {
-    const theme = useTheme();
-    const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const methods = useForm({ resolver: yupResolver(validationSchema) });
+    const { handleSubmit, watch, formState: { isSubmitting, errors }, setValue, reset } = methods;
+    const idAPTHigiene = watch("idAPTHigiene");
+    const documento = watch("documento");
 
-    const methods = useForm();
-    const { handleSubmit, getValues, formState: { errors }, setValue } = methods;
-
-    const disabledButton = useBoolean(false);
-
-    const listaArchivo = getValues("listaArchivo");
-
-    const [lsCompany, setLsCompany] = useState([]);
-    const [lsSede, setLsSede] = useState([]);
-    const [lsArea, setLsArea] = useState([]);
-    const [lsDepartamento, setLsDepartamento] = useState([]);
-    const [lsCargo, setLsCargo] = useState([]);
-    const [lsTurno, setLsTurno] = useState([]);
-    const [lsCategoria, setLsCategoria] = useState([]);
-    const [lsRitmoTrabajo, setLsRitmoTrabajo] = useState([]);
-
-    useEffect(() => {
-        async function getData() {
-            const lsServerCompany = await GetComboCompany();
-            setLsCompany(lsServerCompany.data);
-
-            const lsServerSede = await GetByTipoCatalogoCombo(CodCatalogo.Sede);
-            setLsSede(lsServerSede.data);
-
-            const lsServerArea = await GetByTipoCatalogoCombo(CodCatalogo.Area);
-            setLsArea(lsServerArea.data);
-
-            const lsServerDepartamento = await GetByTipoCatalogoCombo(CodCatalogo.DepartEmpresa);
-            setLsDepartamento(lsServerDepartamento.data);
-
-            const lsServerCargo = await GetByTipoCatalogoCombo(CodCatalogo.RosterPosition);
-            setLsCargo(lsServerCargo.data);
-
-            const lsServerTurno = await GetByTipoCatalogoCombo(CodCatalogo.Turno);
-            setLsTurno(lsServerTurno.data);
-
-            /* Agregar info y otros datos */
-            const lsServerCategoria = await GetByTipoCatalogoCombo(CodCatalogo.Turno);
-            setLsCategoria(lsServerCategoria.data);
-
-            const lsServerRitmoTrabajo = await GetByTipoCatalogoCombo(CodCatalogo.Turno);
-            setLsRitmoTrabajo(lsServerRitmoTrabajo.data);
-        }
-
-        getData();
-    }, []);
-
-    const handleEmpresaChange = (event) => {
-        setValue('empresa', event.target.value);
-        setValue('actividadEconomica', lsCompany.find((item) => item.value === event.target.value).codigo);
-    };
-
-    const handleClick = () => {
-    };
+    const [modelEmployee, setModelEmployee] = useState([]);
 
     const ArrayAccordion = [
         {
@@ -81,177 +40,161 @@ const APTHygiene = () => {
             content: <OrganizationalAspects />
         },
         {
-            title: { icon: "lucide:id-card", text: "Descripción del puesto de trabajo" },
-            content: <JobDescription />
+            title: { icon: "solar:user-id-linear", text: "Actividad laboral" },
+            content: <WorkActivity />
         },
         {
             title: { icon: "solar:leaf-linear", text: "Aspectos ambientales" },
             content: <EnvironmentalAspects />
         },
         {
-            title: { icon: "solar:user-id-linear", text: "Actividad laboral" },
-            content: <WorkActivity />
+            title: { icon: "hugeicons:permanent-job", text: "Actividad laboral" },
+            content: <WorkActivityTwo />
         },
         {
-            title: { icon: "solar:refresh-linear", text: "Ciclo de trabajo" },
-            content: <WorkCycle />
+            title: { icon: "hugeicons:weight-scale", text: "Valoración de la carga física" },
+            content: <AssessmentPhysicalLoad />
         },
         {
-            title: { icon: "lucide:pie-chart", text: "Distribución porcentual de las actividades" },
-            content: <ActivityPercentageDistribution />
+            title: { icon: "arcticons:atmospherelogger", text: "Mediciones ambientales aplicables" },
+            content: <ApplicableEnvironmentalMeasurements />
         },
         {
-            title: { icon: "hugeicons:computer-activity", text: "Descripción biomecánica de la actividad" },
-            content: <TableHygiene />
+            title: { icon: "carbon:ibm-webmethods-hybrid-integration", text: "Métodos de control disponibles" },
+            content: <AvailableControlMethods />
         },
         {
-            title: { icon: "solar:danger-triangle-linear", text: "Actividades no rutinarias" },
-            content: <NonRoutineActivities />
+            title: { icon: "pepicons-print:file", text: "Conclusiones y fuentes de información" },
+            content: <ConclusionAndSource />
         },
-        {
-            title: { icon: "solar:camera-linear", text: "Registro fotográfico" },
-            content: <PhotographicRecord />
-        },
-        {
-            title: { icon: "solar:shield-warning-linear", text: "Valoración del riesgo" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:file-check-linear", text: "Aplicación de la metodología (ANSI)" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:list-check-linear", text: "Análisis de las tareas por segmento" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:file-check-linear", text: "Aplicación de la metodología (OWAS)" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:ranking-linear", text: "Calificación por segmento" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:flag-linear", text: "Conclusiones" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:settings-linear", text: "Métodos de control disponibles" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:book-linear", text: "Fuentes de información" },
-            content: <></>
-        },
-        {
-            title: { icon: "solar:users-group-rounded-linear", text: "Participantes" },
-            content: <></>
-        }
     ];
+
+    const handleDocumento = async (event) => {
+        try {
+            const document = event?.target.value;
+            setValue("documento", document, { shouldValidate: true });
+
+            if (document !== '') {
+                if (event.key === 'Enter' || event.type === 'blur') {
+                    var lsServerEmployee = await GetByIdEmployee(document);
+                    if (lsServerEmployee?.data.status === 200) {
+                        setModelEmployee(lsServerEmployee.data.data);
+                    } else {
+                        setModelEmployee([]);
+                        toast.error(lsServerEmployee?.data.message || "Empleado no encontrado");
+                    }
+                }
+            } else setModelEmployee([]);
+        } catch (error) { }
+    };
+
+    const handleClick = async (datos) => {
+        try {
+            datos.id = datos.idAPTHigiene || 0;
+            datos.departamento = datos.departamentoAuto?.value || null;
+            datos.area = datos.areaAuto?.value || null;
+            datos.cargo = datos.cargoAuto?.value || null;
+
+            const [result] = await Promise.all([
+                SaveAPTHygiene(datos),
+                new Promise(resolve => setTimeout(resolve, 1000))
+            ]);
+
+            if (result.data.exito) {
+                setValue("idAPTHigiene", result.data.datos);
+                toast.success(result.data.mensaje);
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al registrar el APT de Higiene");
+        }
+    };
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
             <FormProvider {...methods}>
-                <StickyActionBar
-                    mainTitle="Registrar APT - Higiene"
-                    onClickSave={handleSubmit(handleClick)}
-                    onClickUpdate={handleSubmit(handleClick)}
-                    disabledUpdate={!disabledButton.value}
-                    disabledSave={disabledButton.value}
-                    showButton={false}
-                    threshold={27}
-                >
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sx={{ mb: 1.5 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        name="empresa"
-                                        label="Empresa"
-                                        defaultValue=""
-                                        options={lsCompany}
-                                        onChange={handleEmpresaChange}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputText
-                                        defaultValue=""
-                                        fullWidth
-                                        name="actividadEconomica"
-                                        label="Actividad económica"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        name="sede"
-                                        label="Sede"
-                                        defaultValue=""
-                                        options={lsSede}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        name="departamento"
-                                        label="Departamento"
-                                        defaultValue=""
-                                        options={lsDepartamento}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        name="area"
-                                        label="Área"
-                                        defaultValue=""
-                                        options={lsArea}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6} lg={4}>
-                                    <InputSelect
-                                        name="cargo"
-                                        label="Cargo"
-                                        defaultValue=""
-                                        options={lsCargo}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        {ArrayAccordion.map((item, index) => (
-                            <Grid item xs={12} key={index}>
-                                <Accordion
-                                    title={
-                                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                                            <Iconify width={25} icon={item.title.icon} />
-                                            <Typography sx={{ ml: 2 }} variant="h5">
-                                                {item.title.text}
-                                            </Typography>
-                                        </Box>
-                                    }
-                                >
-                                    {item.content}
-                                </Accordion>
-                            </Grid>
-                        ))}
-
-                        <Grid item xs={6} md={4} lg={2}>
-                            <Button fullWidth color="primary" variant="outlined" onClick={() => navigate("/apt-hygiene/list")}>
-                                Cerrar
-                            </Button>
-                        </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            errors={errors}
+                            title="Registrar análisis de puesto de trabajo (APT) - Higiene"
+                            key={modelEmployee?.documento}
+                            documento={documento}
+                            onChange={(e) => setValue("documento", e.target.value)}
+                            lsEmployee={modelEmployee}
+                            handleDocumento={handleDocumento}
+                        />
                     </Grid>
-                </StickyActionBar>
+
+                    <Grid item xs={12}>
+                        <StickyActionBar
+                            mainTitle="Acciones"
+                            showButton={false}
+                            threshold={455}
+                            othersButton={
+                                <>
+                                    <Grid item xs={6} md={4} lg={3}>
+                                        <AnimateButton>
+                                            <Button
+                                                fullWidth
+                                                color="primary"
+                                                variant="contained"
+                                                onClick={handleSubmit(handleClick)}
+                                                disabled={isSubmitting}
+                                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                                            >
+                                                {isSubmitting
+                                                    ? "Guardando..."
+                                                    : (idAPTHigiene ? "Actualizar" : "Guardar")
+                                                }
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={4} lg={3}>
+                                        <AnimateButton>
+                                            <Button fullWidth color="primary" variant="outlined" onClick={() => navigate("/apt-hygiene/list")}>
+                                                Cerrar
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+                                </>
+                            }
+                        >
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <CompanyInformation />
+                                </Grid>
+
+                                {idAPTHigiene && (
+                                    <Grid item xs={12} sx={{ mt: 2 }}>
+                                        <InitialInfoAlert />
+                                    </Grid>
+                                )}
+
+                                {!idAPTHigiene &&
+                                    ArrayAccordion.map((item, index) => (
+                                        <Grid item xs={12} key={index}>
+                                            <Accordion
+                                                title={
+                                                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                                                        <Iconify width={25} icon={item.title.icon} />
+                                                        <Typography sx={{ ml: 2 }} variant="h5">
+                                                            {item.title.text}
+                                                        </Typography>
+                                                    </Box>
+                                                }
+                                            >
+                                                {item.content}
+                                            </Accordion>
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                        </StickyActionBar>
+                    </Grid>
+                </Grid>
             </FormProvider>
         </ValidateActionSkeleton>
     );

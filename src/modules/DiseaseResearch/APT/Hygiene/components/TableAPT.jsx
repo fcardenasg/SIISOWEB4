@@ -1,55 +1,57 @@
-import React, { useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Add, AddCircle, ClearAll, Close, Edit } from '@mui/icons-material';
 import {
+    Box,
+    Button,
+    Card,
+    CardMedia,
+    Checkbox,
+    CircularProgress,
+    Grid,
+    IconButton,
+    Paper,
+    Stack,
+    styled,
     Table,
     TableBody,
     TableCell,
+    tableCellClasses,
     TableContainer,
     TableHead,
-    TableRow,
-    Paper,
-    Typography,
-    Box,
-    Stack,
-    Grid,
-    Button,
-    CircularProgress,
-    Tooltip,
-    styled,
-    IconButton,
-    Divider,
-    tableCellClasses,
     TablePagination,
-    Checkbox
+    TableRow,
+    TextField,
+    Tooltip,
+    Typography
 } from '@mui/material';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import InputSelect from 'components/input/InputSelect';
-import InputText from 'components/input/InputText';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { AddCircle, ClearAll, Close, Edit } from '@mui/icons-material';
-import EmptyState from 'components/loading/EmptyState';
-import InputRadioGroup from 'components/input/InputRadioGroup';
-import InputTextEditor from 'components/input/InputTextEditor';
 import {
-    DeleteAPTHPCategorySegment,
-    DeleteAPTHPOrganizationalFactor,
     DeleteAPTHPMetodoControl,
+    DeleteAPTHPOrganizationalFactor,
     DeleteAPTHPValorRefeSegmento,
-    GetAllAPTHPCategorySegment,
-    GetAllAPTHPOrganizationalFactor,
     GetAllAPTHPMetodoControl,
+    GetAllAPTHPMetodoOWAS,
+    GetAllAPTHPOrganizationalFactor,
     GetAllAPTHPValorRefeSegmento,
-    SaveAPTHPCategorySegment,
-    SaveAPTHPOrganizationalFactor,
     SaveAPTHPMetodoControl,
+    SaveAPTHPMetodoOWAS,
+    SaveAPTHPOrganizationalFactor,
     SaveAPTHPValorRefeSegmento
 } from 'api/clients/APTHigienePlantillaClient';
-import toast from 'react-hot-toast';
-import { useEffect } from 'react';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { GetByTipoCatalogoCombo, InsertCatalog } from 'api/clients/CatalogClient';
 import { CodCatalogo } from 'components/helpers/Enums';
+import { UpperFirstChar } from 'components/helpers/Format';
+import Iconify from 'components/iconify/iconify';
+import InputSelect from 'components/input/InputSelect';
+import InputTextEditor from 'components/input/InputTextEditor';
+import EmptyState from 'components/loading/EmptyState';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
+import { formatearResultado, posturasErgonomicasOWAS } from './ArrayAPT';
+import ControlModal from 'components/controllers/ControlModal';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -84,201 +86,432 @@ const StyledTableRow = styled(TableRow)(({ theme, isselected }) => ({
     },
 }));
 
-const validationCategory = yup.object().shape({
-    idSegmento: yup.string().required("El segmento es requerido"),
-    calificacion: yup.string().required("La calificación es requerida"),
-    categoriaAccion: yup.string().required("La categoría de acción es requerida")
-});
-
 const ExcelTableCell = styled(StyledTableCell)(() => ({
     border: '1px solid #bdbdbd',
 }));
 
-export const CategoryTableSegment = () => {
+const StyledNumberInput = styled('input')({
+    width: '80px',
+    textAlign: 'center',
+    color: 'red',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    padding: '4px',
+    outline: 'none',
+    display: 'block',
+    margin: '0 auto',
+    '&[type=number]': {
+        MozAppearance: 'textfield',
+    },
+    '&::-webkit-outer-spin-button': {
+        WebkitAppearance: 'none',
+        margin: 0,
+    },
+    '&::-webkit-inner-spin-button': {
+        WebkitAppearance: 'none',
+        margin: 0,
+    },
+});
+
+const PostureCard = ({ item, onClick }) => (
+    <Card
+        onClick={onClick}
+        sx={{
+            display: 'flex',
+            mb: 2,
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            border: '1px solid #eef2f6',
+            borderRadius: '16px', // Bordes más suaves
+            overflow: 'hidden',
+            background: '#ffffff',
+            '&:hover': {
+                transform: 'scale(1.02)',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                borderColor: 'primary.main',
+                '& .code-badge': {
+                    bgcolor: 'primary.main',
+                    color: '#fff'
+                }
+            }
+        }}
+    >
+        <Box sx={{
+            width: 110,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: '#fcfcfc',
+            borderRight: '1px solid #f0f0f0'
+        }}>
+            <CardMedia
+                component="img"
+                sx={{
+                    width: '80%',
+                    height: '80%',
+                    objectFit: 'contain',
+                    filter: 'drop-shadow(0px 4px 4px rgba(0,0,0,0.1))'
+                }}
+                image={item.imagen}
+                alt={item.nombre}
+            />
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, p: 2, position: 'relative' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#2d3436', lineHeight: 1.2 }}>
+                {item.nombre}
+            </Typography>
+
+            {item.descripcion && (
+                <Typography variant="caption" sx={{ color: 'text.secondary', mt: 1, lineHeight: 1.4 }}>
+                    {item.descripcion}
+                </Typography>
+            )}
+
+            <Box sx={{ mt: 1.5, display: 'flex', alignItems: 'center' }}>
+                <Typography
+                    className="code-badge"
+                    variant="caption"
+                    sx={{
+                        fontWeight: 900,
+                        bgcolor: '#f1f2f6',
+                        color: 'primary.main',
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: '8px',
+                        transition: 'all 0.3s'
+                    }}
+                >
+                    Código: {item.codigo}
+                </Typography>
+            </Box>
+        </Box>
+    </Card>
+);
+
+export const OWASMethodTables = () => {
     const { watch: watchMain } = useFormContext();
     const idAPT = watchMain("idAPTHigienePlantilla");
 
-    const methods = useForm({
-        resolver: yupResolver(validationCategory),
-        defaultValues: { isUpdateRegister: false, idSegmento: '', calificacion: '', categoriaAccion: '' }
-    });
-    const { handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue } = methods;
-    const isUpdateRegister = watch('isUpdateRegister');
-
     const [lsCategorySegment, setLsCategorySegment] = useState([]);
-    const [lsSegmento, setLsSegmento] = useState([]);
-    const [selectedId, setSelectedId] = useState(null);
+    const [lsMetodoOWAS, setLsMetodoOWAS] = useState([]);
+    const [lsPosturasOWAS, setLsPosturasOWAS] = useState([]);
+    const [openTooltip, setOpenTooltip] = useState({ id: null, category: null });
+
+    const totalTiempo = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.tiempoPromedio) || 0), 0);
+    const totalEspalda = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.idEspalda) || 0), 0);
+    const totalMSS = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.idMiembroSuperior) || 0), 0);
+    const totalMSI = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.idMiembroInferiores) || 0), 0);
+    const totalPeso = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.idPeso) || 0), 0);
+    const totalCategoria = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.resultadoCateAccion) || 0), 0);
 
     const getData = async () => {
         try {
-            const response = await GetAllAPTHPCategorySegment(idAPT);
-            setLsCategorySegment(response.data.datos || []);
+            const response = await GetAllAPTHPMetodoOWAS(idAPT);
+            const metodosOWAS = response.data.datos?.metodosOWAS || [];
+            const categoriasSegmento = response.data.datos?.categoriasSegmento || [];
+
+            setLsMetodoOWAS(metodosOWAS);
+            setLsCategorySegment(categoriasSegmento);
+            setLsPosturasOWAS(posturasErgonomicasOWAS);
         } catch (error) {
-            toast.error("Error al cargar las categorías por segmento");
+            toast.error("Error al cargar los datos del método OWAS");
             setLsCategorySegment([]);
+            setLsMetodoOWAS([]);
         }
     };
 
-    useEffect(() => {
-        async function getCatalog() {
-            const lsServerSegmento = await GetByTipoCatalogoCombo(CodCatalogo.PANO_RIESGO); // Supongamos que es este catálogo o similar
-            setLsSegmento(lsServerSegmento.data);
+    const handleSavePostura = async (row, postureId, category) => {
+        try {
+            const payload = {
+                id: row.id,
+                idEspalda: category.toLowerCase() === 'espalda' ? postureId : null,
+                idMiembroSuperior: category.toLowerCase() === 'brazos' ? postureId : null,
+                idMiembroInferiores: category.toLowerCase() === 'piernas' ? postureId : null,
+                idPeso: category.toLowerCase() === 'fuerza' ? postureId : null,
+            };
+
+            const response = await SaveAPTHPMetodoOWAS(payload);
+            if (response.data.exito) {
+                toast.success(`Código de postura registrado para ${category}`);
+                getData();
+                setOpenTooltip({ id: null, category: null });
+            } else {
+                toast.error(response.data.mensaje);
+            }
+        } catch (error) {
+            toast.error("Error al guardar la postura");
         }
-        getCatalog();
-    }, []);
+    };
+
+    const renderPostureTooltip = (category, row) => {
+        const filtered = lsPosturasOWAS.filter(p => p.categoria?.toLowerCase() === category.toLowerCase());
+
+        return (
+            <Box sx={{
+                p: 2,
+                maxWidth: 380,
+                maxHeight: 450,
+                overflowY: 'auto',
+                borderRadius: '20px',
+                position: 'relative',
+                '&::-webkit-scrollbar': { width: '6px' },
+                '&::-webkit-scrollbar-track': { background: 'transparent' },
+                '&::-webkit-scrollbar-thumb': {
+                    background: 'rgba(255,255,255,0.2)',
+                    borderRadius: '10px'
+                },
+                '&::-webkit-scrollbar-thumb:hover': { background: 'rgba(255,255,255,0.3)' }
+            }}>
+                <IconButton
+                    size="small"
+                    onClick={() => setOpenTooltip({ id: null, category: null })}
+                    sx={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        color: '#fff',
+                        '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+                    }}
+                >
+                    <Close fontSize="small" />
+                </IconButton>
+                <Typography variant="h6" sx={{
+                    mb: 2.5,
+                    fontWeight: 800,
+                    textAlign: 'center',
+                    color: '#fff',
+                    letterSpacing: 1,
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    pb: 1,
+                    pr: 4
+                }}>
+                    Postura: {category}
+                </Typography>
+
+                {filtered.map((item, idx) => (
+                    <PostureCard
+                        key={idx}
+                        item={item}
+                        onClick={() => handleSavePostura(row, item.codigo, category)}
+                    />
+                ))}
+            </Box>
+        );
+    };
+
+    useEffect(() => {
+        const handleRefresh = () => {
+            if (idAPT) getData();
+        };
+
+        window.addEventListener('refresh-owas-table', handleRefresh);
+        return () => window.removeEventListener('refresh-owas-table', handleRefresh);
+    }, [idAPT]);
 
     useEffect(() => {
         if (idAPT) getData();
     }, [idAPT]);
 
-    const handleClear = () => {
-        reset({ idSegmento: '', calificacion: '', categoriaAccion: '', isUpdateRegister: false });
-        setSelectedId(null);
-    };
-
-    const handleDoubleClick = (item) => {
-        setValue('idSegmento', item.idSegmento, { shouldValidate: true });
-        setValue('calificacion', item.calificacion, { shouldValidate: true });
-        setValue('categoriaAccion', item.categoriaAccion, { shouldValidate: true });
-        setValue('isUpdateRegister', true);
-        setSelectedId(item.id);
-    };
-
-    const handleClick = async (datos) => {
-        try {
-            const payload = {
-                ...datos,
-                id: isUpdateRegister ? selectedId : 0,
-                idAPT: idAPT
-            };
-
-            const response = await SaveAPTHPCategorySegment(payload);
-            if (response.data.exito) {
-                toast.success(response.data.mensaje);
-                getData();
-                handleClear();
-            } else {
-                toast.error(response.data.mensaje);
-            }
-        } catch (error) {
-            toast.error("Error al guardar la categoría por segmento");
-        }
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            const response = await DeleteAPTHPCategorySegment(id);
-            if (response.data.exito) {
-                toast.success(response.data.mensaje);
-                getData();
-                if (selectedId === id) handleClear();
-            } else {
-                toast.error(response.data.mensaje);
-            }
-        } catch (error) {
-            toast.error("Error al eliminar la categoría por segmento");
-        }
-    };
-
     return (
-        <SubCard darkTitle title="Aplicación del método OWAS" secondary={
-            <AnimateButton>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    /* onClick={handleSubmit(handleClick)} */
-                    disabled={isSubmitting}
-                    startIcon={isSubmitting && <CircularProgress size={20} color="inherit" />}
-                    sx={{ minWidth: '110px' }}
-                >
-                    {isSubmitting ? 'Guardando...' : 'Guardar'}
-                </Button>
-            </AnimateButton>
-        }>
-            <FormProvider {...methods}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <TableContainer component={Paper} sx={{ overflowX: 'auto', elevation: 0, border: '1px solid #bdbdbd', borderRadius: '4px' }}>
-                            <Table sx={{ minWidth: 650, borderCollapse: 'collapse' }} size="small" aria-label="tabla de segmentos">
-                                <TableHead>
-                                    <TableRow>
-                                        <ExcelTableCell rowSpan={2} sx={{ backgroundColor: '#f0f0f0' }}>Actividades Diarias Realizadas</ExcelTableCell>
-                                        <ExcelTableCell rowSpan={2} align="center" sx={{ backgroundColor: '#f0f0f0' }}>% Del Tiempo</ExcelTableCell>
-                                        <ExcelTableCell colSpan={5} align="center" sx={{ backgroundColor: '#f0f0f0' }}>Calificación</ExcelTableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Espalda</ExcelTableCell>
-                                        <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Miembros superiores</ExcelTableCell>
-                                        <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Miembros inferiores</ExcelTableCell>
-                                        <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Peso</ExcelTableCell>
-                                        <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Categoría de acción</ExcelTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {Array.isArray(lsCategorySegment) && lsCategorySegment.length > 0 ? (
-                                        lsCategorySegment.map((item, index) => (
-                                            <StyledTableRow key={index} onDoubleClick={() => handleDoubleClick(item)} isselected={selectedId === item.id ? 1 : 0}>
-                                                <ExcelTableCell>{item.actividadesDiariasRealizadas || item.nameSegmento?.toUpperCase() || item.idSegmento}</ExcelTableCell>
-                                                <ExcelTableCell align="center">{item.porcentajeTiempo || '-'}</ExcelTableCell>
-                                                <ExcelTableCell align="center">{item.espalda || item.calificacion?.toString().charAt(0) || '-'}</ExcelTableCell>
-                                                <ExcelTableCell align="center">{item.miembrosSuperiores || item.calificacion?.toString().charAt(1) || '-'}</ExcelTableCell>
-                                                <ExcelTableCell align="center">{item.miembrosInferiores || item.calificacion?.toString().charAt(2) || '-'}</ExcelTableCell>
-                                                <ExcelTableCell align="center">{item.peso || item.calificacion?.toString().charAt(3) || '-'}</ExcelTableCell>
+        <SubCard darkTitle title="Aplicación del método OWAS">
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <TableContainer component={Paper} sx={{ overflowX: 'auto', elevation: 0, border: '1px solid #bdbdbd', borderRadius: '4px' }}>
+                        <Table sx={{ minWidth: 650, borderCollapse: 'collapse' }} size="small" aria-label="tabla de segmentos">
+                            <TableHead>
+                                <TableRow>
+                                    <ExcelTableCell rowSpan={2} sx={{ backgroundColor: '#f0f0f0' }}>Actividades Diarias Realizadas</ExcelTableCell>
+                                    <ExcelTableCell rowSpan={2} align="center" sx={{ backgroundColor: '#f0f0f0' }}>% Del Tiempo</ExcelTableCell>
+                                    <ExcelTableCell colSpan={5} align="center" sx={{ backgroundColor: '#f0f0f0' }}>Calificación</ExcelTableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Espalda</ExcelTableCell>
+                                    <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Miembros superiores</ExcelTableCell>
+                                    <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Miembros inferiores</ExcelTableCell>
+                                    <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Peso</ExcelTableCell>
+                                    <ExcelTableCell align="center" sx={{ top: 0, backgroundColor: '#f5f5f5' }}>Categoría de acción</ExcelTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {Array.isArray(lsMetodoOWAS) && lsMetodoOWAS.length > 0 ? (
+                                    <>
+                                        {lsMetodoOWAS.map((item, index) => (
+                                            <StyledTableRow key={index}>
+                                                <ExcelTableCell>{UpperFirstChar(item.nameActividad)}</ExcelTableCell>
+                                                <ExcelTableCell align="center">{item.porcentajeTiempo}</ExcelTableCell>
+                                                <ExcelTableCell align="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                                                        {item.idEspalda}
+                                                        <Tooltip
+                                                            open={openTooltip.id === item.id && openTooltip.category === 'Espalda'}
+                                                            disableFocusListener
+                                                            disableHoverListener
+                                                            disableTouchListener
+                                                            arrow
+                                                            interactive
+                                                            title={renderPostureTooltip('Espalda', item)}
+                                                            placement="right"
+                                                        >
+                                                            <IconButton
+                                                                size="small"
+                                                                color="primary"
+                                                                onClick={() => setOpenTooltip(prev =>
+                                                                    prev.id === item.id && prev.category === 'Espalda'
+                                                                        ? { id: null, category: null }
+                                                                        : { id: item.id, category: 'Espalda' }
+                                                                )}
+                                                            >
+                                                                <Iconify icon="lets-icons:file-dock-search-light" width={20} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
+                                                </ExcelTableCell>
+                                                <ExcelTableCell align="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                                                        {item.idMiembroSuperior}
+                                                        <Tooltip
+                                                            open={openTooltip.id === item.id && openTooltip.category === 'Brazos'}
+                                                            disableFocusListener
+                                                            disableHoverListener
+                                                            disableTouchListener
+                                                            arrow
+                                                            interactive
+                                                            title={renderPostureTooltip('Brazos', item)}
+                                                            placement="right"
+                                                        >
+                                                            <IconButton
+                                                                size="small"
+                                                                color="primary"
+                                                                onClick={() => setOpenTooltip(prev =>
+                                                                    prev.id === item.id && prev.category === 'Brazos'
+                                                                        ? { id: null, category: null }
+                                                                        : { id: item.id, category: 'Brazos' }
+                                                                )}
+                                                            >
+                                                                <Iconify icon="lets-icons:file-dock-search-light" width={20} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
+                                                </ExcelTableCell>
+                                                <ExcelTableCell align="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                                                        {item.idMiembroInferiores}
+                                                        <Tooltip
+                                                            open={openTooltip.id === item.id && openTooltip.category === 'Piernas'}
+                                                            disableFocusListener
+                                                            disableHoverListener
+                                                            disableTouchListener
+                                                            arrow
+                                                            interactive
+                                                            title={renderPostureTooltip('Piernas', item)}
+                                                            placement="left"
+                                                        >
+                                                            <IconButton
+                                                                size="small"
+                                                                color="primary"
+                                                                onClick={() => setOpenTooltip(prev =>
+                                                                    prev.id === item.id && prev.category === 'Piernas'
+                                                                        ? { id: null, category: null }
+                                                                        : { id: item.id, category: 'Piernas' }
+                                                                )}
+                                                            >
+                                                                <Iconify icon="lets-icons:file-dock-search-light" width={20} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
+                                                </ExcelTableCell>
+                                                <ExcelTableCell align="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                                                        {item.idPeso}
+                                                        <Tooltip
+                                                            open={openTooltip.id === item.id && openTooltip.category === 'Fuerza'}
+                                                            disableFocusListener
+                                                            disableHoverListener
+                                                            disableTouchListener
+                                                            arrow
+                                                            interactive
+                                                            title={renderPostureTooltip('Fuerza', item)}
+                                                            placement="left"
+                                                        >
+                                                            <IconButton
+                                                                size="small"
+                                                                color="primary"
+                                                                onClick={() => setOpenTooltip(prev =>
+                                                                    prev.id === item.id && prev.category === 'Fuerza'
+                                                                        ? { id: null, category: null }
+                                                                        : { id: item.id, category: 'Fuerza' }
+                                                                )}
+                                                            >
+                                                                <Iconify icon="lets-icons:file-dock-search-light" width={20} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
+                                                </ExcelTableCell>
                                                 <ExcelTableCell align="center">{item.categoriaAccion}</ExcelTableCell>
                                             </StyledTableRow>
-                                        ))
-                                    ) : (
-                                        <StyledTableRow>
-                                            <ExcelTableCell colSpan={7} align="center">
-                                                <EmptyState seeSubtitle={false} title="No hay registros" />
-                                            </ExcelTableCell>
-                                        </StyledTableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
+                                        ))}
 
-                    <Grid item xs={12} sx={{ mt: 2 }}>
-                        <Typography variant="h4">Categoría por segmento</Typography>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <TableContainer component={Paper} sx={{ overflowX: 'auto', elevation: 0 }}>
-                            <Table sx={{ minWidth: 650 }} size="small" aria-label="tabla de categoria por segmento">
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell>Segmento</StyledTableCell>
-                                        <StyledTableCell align="center">Calificación</StyledTableCell>
-                                        <StyledTableCell align="center">Categoría De Acción</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {['Espalda', 'Miembros Superiores', 'Miembros Inferiores'].map((segmento, index) => (
-                                        <StyledTableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <StyledTableCell>{segmento}</StyledTableCell>
-                                            <StyledTableCell align="center">-</StyledTableCell>
-                                            <StyledTableCell align="center">-</StyledTableCell>
+                                        <StyledTableRow sx={{ backgroundColor: '#f9f9f9 !important' }}>
+                                            <ExcelTableCell sx={{ fontWeight: 'bold' }}>TOTAL</ExcelTableCell>
+                                            <ExcelTableCell align="center" sx={{ fontWeight: 'bold' }}>{totalTiempo || ''}</ExcelTableCell>
+                                            <ExcelTableCell align="center" sx={{ fontWeight: 'bold' }}>{totalEspalda || ''}</ExcelTableCell>
+                                            <ExcelTableCell align="center" sx={{ fontWeight: 'bold' }}>{totalMSS || ''}</ExcelTableCell>
+                                            <ExcelTableCell align="center" sx={{ fontWeight: 'bold' }}>{totalMSI || ''}</ExcelTableCell>
+                                            <ExcelTableCell align="center" sx={{ fontWeight: 'bold' }}>{totalPeso || ''}</ExcelTableCell>
+                                            <ExcelTableCell align="center" sx={{ fontWeight: 'bold' }}>{formatearResultado(totalCategoria) || ''}</ExcelTableCell>
                                         </StyledTableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
+                                    </>
+                                ) : (
+                                    <StyledTableRow>
+                                        <ExcelTableCell colSpan={7} align="center">
+                                            <EmptyState seeSubtitle={false} title="No hay registros" />
+                                        </ExcelTableCell>
+                                    </StyledTableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
-            </FormProvider>
+
+                <Grid item xs={12} sx={{ mt: 2 }}>
+                    <Typography variant="h4">Categoría por segmento</Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <TableContainer component={Paper} sx={{ overflowX: 'auto', elevation: 0 }}>
+                        <Table sx={{ minWidth: 650 }} size="small" aria-label="tabla de categoria por segmento">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Segmento</StyledTableCell>
+                                    <StyledTableCell align="center">Calificación</StyledTableCell>
+                                    <StyledTableCell align="center">Categoría De Acción</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {lsCategorySegment.length > 0 ? (
+                                    lsCategorySegment.map((item, index) => (
+                                        <StyledTableRow key={index}>
+                                            <StyledTableCell sx={{ textTransform: 'capitalize' }}>{item.nameSegmento?.toLowerCase()}</StyledTableCell>
+                                            <StyledTableCell align="center">{item.calificacion || '-'}</StyledTableCell>
+                                            <StyledTableCell align="center">{item.resultado || '-'}</StyledTableCell>
+                                        </StyledTableRow>
+                                    ))
+                                ) : (
+                                    <StyledTableRow>
+                                        <StyledTableCell colSpan={3} align="center">
+                                            <EmptyState seeSubtitle={false} title="No hay registros" />
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            </Grid>
         </SubCard>
     );
 };
-
-const STATIC_FACTORS = [
-    "Tareas al ritmo de la máquina",
-    "Se cobran incentivos",
-    "Existe como rutina horas extras",
-    "Control estricto de los tiempos de trabajo",
-    "Escasa posibilidad de toma de decisiones",
-    "Trabajo monótono"
-];
 
 export const OrganizationalFactorTable = () => {
     const { watch: watchMain } = useFormContext();
@@ -288,8 +521,24 @@ export const OrganizationalFactorTable = () => {
 
     const getData = async () => {
         try {
-            const response = await GetAllAPTHPOrganizationalFactor(idAPT);
-            setLsOrganizationalFactor(response.data.datos || []);
+            const [resCatalog, resSaved] = await Promise.all([
+                GetByTipoCatalogoCombo(CodCatalogo.APTHIGIENE_FACTOR_ORGANIZACIONAL),
+                GetAllAPTHPOrganizationalFactor(idAPT)
+            ]);
+
+            const catalogData = resCatalog.data || [];
+            const savedData = resSaved.data.datos || [];
+
+            const mergedData = catalogData.map(catItem => {
+                const existing = savedData.find(x => x.item === catItem.value);
+                if (existing) {
+                    return { ...existing, nameItem: catItem.label };
+                }
+
+                return { id: 0, item: catItem.value, nameItem: catItem.label, aplica: null };
+            }).sort((a, b) => a.item - b.item);
+
+            setLsOrganizationalFactor(mergedData);
         } catch (error) {
             toast.error("Error al cargar los factores organizacionales");
             setLsOrganizationalFactor([]);
@@ -300,17 +549,7 @@ export const OrganizationalFactorTable = () => {
         if (idAPT) getData();
     }, [idAPT]);
 
-    const mergedFactors = STATIC_FACTORS.map(staticItem => {
-        const existing = (lsOrganizationalFactor || []).find(x => x.item?.toLowerCase() === staticItem.toLowerCase());
-        if (existing) return existing;
-        return { id: 0, item: staticItem, aplica: null };
-    });
-
-    const customFactors = (lsOrganizationalFactor || []).filter(
-        existing => !STATIC_FACTORS.some(staticItem => staticItem.toLowerCase() === existing.item?.toLowerCase())
-    );
-
-    const displayFactors = [...mergedFactors, ...customFactors];
+    const displayFactors = lsOrganizationalFactor;
 
     const totalNo = displayFactors.filter(item => item.aplica != null && Number(item.aplica) === 0).length;
     const totalSi = displayFactors.filter(item => item.aplica != null && Number(item.aplica) === 1).length;
@@ -322,13 +561,13 @@ export const OrganizationalFactorTable = () => {
             return;
         }
         try {
-            /* if (row.aplica != null && Number(row.aplica) === val) {
+            if (row.aplica != null && Number(row.aplica) === val) {
                 if (row.id > 0) {
                     const res = await DeleteAPTHPOrganizationalFactor(row.id);
                     if (res.data.exito) getData();
                 }
                 return;
-            } */
+            }
 
             const payload = {
                 id: row.id || 0,
@@ -336,12 +575,13 @@ export const OrganizationalFactorTable = () => {
                 idAPT: idAPT,
                 aplica: val
             };
-            /* const response = await SaveAPTHPOrganizationalFactor(payload);
+
+            const response = await SaveAPTHPOrganizationalFactor(payload);
             if (response.data.exito) {
                 getData();
             } else {
                 toast.error(response.data.mensaje);
-            } */
+            }
         } catch (error) {
             toast.error("Error al actualizar el factor organizacional");
         }
@@ -369,7 +609,7 @@ export const OrganizationalFactorTable = () => {
                                 <>
                                     {displayFactors.map((item, index) => (
                                         <StyledTableRow key={index}>
-                                            <StyledTableCell>{item.item}</StyledTableCell>
+                                            <StyledTableCell>{UpperFirstChar(item.nameItem)}</StyledTableCell>
                                             <StyledTableCell align="center">
                                                 <Checkbox
                                                     checked={item.aplica != null && Number(item.aplica) === 0}
@@ -420,26 +660,62 @@ export const OrganizationalFactorTable = () => {
     );
 }
 
-const REFERENCE_SEGMENTS = [
-    { left: "Hombro flexo extensión", right: "Hombro abducción" },
-    { left: "Antebrazo", right: "Muñeca" },
-    { left: "Agarre prensión de herramientas", right: "Tipo de agarre" },
-    { left: "Dedos pulsaciones", right: "Dedos acción gatillo" }
-];
 
 export const TableReferenceValuesSegment = () => {
     const { watch: watchMain } = useFormContext();
     const idAPT = watchMain("idAPTHigienePlantilla");
 
     const [lsReferenceValuesSegment, setLsReferenceValuesSegment] = useState([]);
-    const [inputValues, setInputValues] = useState({});
     const [isSaving, setIsSaving] = useState(false);
 
     const getData = async () => {
         try {
             if (!idAPT) return;
-            const response = await GetAllAPTHPValorRefeSegmento(idAPT);
-            setLsReferenceValuesSegment(response.data.datos || []);
+            const [resCatalog, resSaved] = await Promise.all([
+                GetByTipoCatalogoCombo(CodCatalogo.APTHIGIENE_VALOR_REF_SEGMENTO),
+                GetAllAPTHPValorRefeSegmento(idAPT)
+            ]);
+
+            const catalogData = resCatalog.data || [];
+            const savedData = resSaved.data.datos || [];
+
+            const mergedData = catalogData.map(catItem => {
+                const existing = savedData.find(x => x.segmentoCorporal === Number(catItem.value));
+
+                let defaultValue = 0;
+                if (catItem.codigo) {
+                    const lastChar = catItem.codigo.slice(-1);
+                    defaultValue = parseInt(lastChar, 10) || 0;
+                }
+
+                if (existing) {
+                    return {
+                        id: existing.id,
+                        segmentoCorporal: Number(catItem.value),
+                        nameSegmentoCorporal: UpperFirstChar(catItem.label),
+                        valorReferencia: existing.valorReferencia,
+                        cambioRegistro: false
+                    };
+                }
+
+                return {
+                    id: 0,
+                    segmentoCorporal: Number(catItem.value),
+                    nameSegmentoCorporal: UpperFirstChar(catItem.label),
+                    valorReferencia: defaultValue,
+                    cambioRegistro: false
+                };
+            });
+
+            const pairedData = [];
+            for (let i = 0; i < mergedData.length; i += 2) {
+                pairedData.push({
+                    left: mergedData[i],
+                    right: mergedData[i + 1] || null
+                });
+            }
+
+            setLsReferenceValuesSegment(pairedData);
         } catch (error) {
             toast.error("Error al cargar los valores de referencia");
             setLsReferenceValuesSegment([]);
@@ -450,22 +726,16 @@ export const TableReferenceValuesSegment = () => {
         if (idAPT) getData();
     }, [idAPT]);
 
-    useEffect(() => {
-        const newVals = {};
-        lsReferenceValuesSegment.forEach(item => {
-            if (item.segmentoCorporal) {
-                const lowerSegment = item.segmentoCorporal.toLowerCase();
-                newVals[lowerSegment] = { id: item.id, valor: item.valorReferencia };
+    const handleInputChange = (segmentoObj, val) => {
+        setLsReferenceValuesSegment(prev => prev.map(row => {
+            const newRow = { ...row };
+            if (newRow.left && newRow.left.segmentoCorporal === segmentoObj.segmentoCorporal) {
+                newRow.left = { ...newRow.left, valorReferencia: val, cambioRegistro: true };
             }
-        });
-        setInputValues(newVals);
-    }, [lsReferenceValuesSegment]);
-
-    const handleInputChange = (segmento, val) => {
-        const lowerSegment = segmento.toLowerCase();
-        setInputValues(prev => ({
-            ...prev,
-            [lowerSegment]: { ...prev[lowerSegment], valor: val }
+            if (newRow.right && newRow.right.segmentoCorporal === segmentoObj.segmentoCorporal) {
+                newRow.right = { ...newRow.right, valorReferencia: val, cambioRegistro: true };
+            }
+            return newRow;
         }));
     };
 
@@ -474,46 +744,38 @@ export const TableReferenceValuesSegment = () => {
             toast.error("Debe guardar la plantilla principal primero.");
             return;
         }
+
         setIsSaving(true);
+
         try {
-            const allItems = REFERENCE_SEGMENTS.flatMap(row => [row.left, row.right]);
-            const promises = [];
+            const allItemsToSave = lsReferenceValuesSegment.flatMap(row => [row.left, row.right]).filter(Boolean);
+            const isUpdateSave = allItemsToSave.some(item => item.id > 0);
 
-            for (const seg of allItems) {
-                const lowerSeg = seg.toLowerCase();
-                const stateObj = inputValues[lowerSeg];
+            const itemsToSend = isUpdateSave ? allItemsToSave.filter(item => item.cambioRegistro) : allItemsToSave;
 
-                if (stateObj) {
-                    const valStr = String(stateObj.valor || '');
-                    if (valStr.trim() !== '') {
-                        const payload = {
-                            id: stateObj.id || 0,
-                            segmentoCorporal: seg,
-                            valorReferencia: Number(valStr),
-                            idAPT: idAPT
-                        };
-                        promises.push(SaveAPTHPValorRefeSegmento(payload));
-                    } else if (stateObj.id > 0) {
-                        promises.push(DeleteAPTHPValorRefeSegmento(stateObj.id));
-                    }
-                }
-            }
-
-            if (promises.length === 0) {
-                toast.error("No hay datos nuevos para guardar.");
+            if (isUpdateSave && itemsToSend.length === 0) {
+                toast.error("No hay datos nuevos o modificados para guardar.");
                 setIsSaving(false);
                 return;
             }
 
-            const results = await Promise.all(promises);
-            const hasErrors = results.some(r => r && r.data && !r.data.exito);
+            const payloadList = itemsToSend.map(item => ({
+                id: item.id || 0,
+                SegmentoCorporal: item.segmentoCorporal,
+                ValorReferencia: Number(item.valorReferencia),
+                idAPT: idAPT,
+                cambioRegistro: true
+            }));
 
-            if (hasErrors) {
+            const result = await SaveAPTHPValorRefeSegmento(payloadList);
+
+            if (!result.data.exito) {
                 toast.error("Hubo errores al guardar algunos valores.");
             } else {
                 toast.success("Valores guardados correctamente.");
             }
-            getData();
+
+            await getData();
         } catch (error) {
             toast.error("Error al guardar los valores de referencia");
         } finally {
@@ -521,19 +783,26 @@ export const TableReferenceValuesSegment = () => {
         }
     };
 
+    const allItemsRender = lsReferenceValuesSegment.flatMap(row => [row.left, row.right]).filter(Boolean);
+    const isUpdateRender = allItemsRender.some(item => item.id > 0);
+    const hasChangesRender = allItemsRender.some(item => item.cambioRegistro);
+    const isSaveDisabled = isSaving || (isUpdateRender && !hasChangesRender);
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
                 <Typography variant="h4">Valores de referencia por segmento</Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSaveAll}
-                    disabled={isSaving}
-                    sx={{ minWidth: '110px' }}
-                >
-                    {isSaving ? 'Guardando...' : 'Guardar'}
-                </Button>
+                <AnimateButton>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSaveAll}
+                        disabled={isSaveDisabled}
+                        sx={{ minWidth: '110px' }}
+                    >
+                        {isSaving ? 'Guardando...' : 'Guardar'}
+                    </Button>
+                </AnimateButton>
             </Grid>
 
             <Grid item xs={12}>
@@ -541,33 +810,59 @@ export const TableReferenceValuesSegment = () => {
                     <Table sx={{ minWidth: 650, borderCollapse: 'collapse' }} size="small">
                         <TableHead>
                             <TableRow>
-                                <ExcelTableCell width="35%" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>SEGMENTO CORPORAL</ExcelTableCell>
-                                <ExcelTableCell width="15%" align="center" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>VALOR REFERENCIA</ExcelTableCell>
-                                <ExcelTableCell width="35%" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>SEGMENTO CORPORAL</ExcelTableCell>
-                                <ExcelTableCell width="15%" align="center" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>VALOR REFERENCIA</ExcelTableCell>
+                                <ExcelTableCell width="35%" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>Segmento Corporal</ExcelTableCell>
+                                <ExcelTableCell width="15%" align="center" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>Valor Referencia</ExcelTableCell>
+                                <ExcelTableCell width="35%" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>Segmento Corporal</ExcelTableCell>
+                                <ExcelTableCell width="15%" align="center" sx={{ backgroundColor: '#e0e0e0', fontWeight: 'bold' }}>Valor Referencia</ExcelTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {REFERENCE_SEGMENTS.map((row, idx) => (
+                            {lsReferenceValuesSegment.map((row, idx) => (
                                 <TableRow key={idx}>
-                                    <ExcelTableCell sx={{ color: 'red' }}>{row.left}</ExcelTableCell>
-                                    <ExcelTableCell align="center">
-                                        <input
-                                            type="number"
-                                            style={{ width: '80px', textAlign: 'center', color: 'red', border: '1px solid #ccc', borderRadius: '4px', padding: '4px', outline: 'none' }}
-                                            value={inputValues[row.left.toLowerCase()]?.valor ?? ''}
-                                            onChange={(e) => handleInputChange(row.left, e.target.value)}
-                                        />
-                                    </ExcelTableCell>
-                                    <ExcelTableCell sx={{ color: 'red' }}>{row.right}</ExcelTableCell>
-                                    <ExcelTableCell align="center">
-                                        <input
-                                            type="number"
-                                            style={{ width: '80px', textAlign: 'center', color: 'red', border: '1px solid #ccc', borderRadius: '4px', padding: '4px', outline: 'none' }}
-                                            value={inputValues[row.right.toLowerCase()]?.valor ?? ''}
-                                            onChange={(e) => handleInputChange(row.right, e.target.value)}
-                                        />
-                                    </ExcelTableCell>
+                                    {row.left && (
+                                        <>
+                                            <ExcelTableCell>{row.left.nameSegmentoCorporal}</ExcelTableCell>
+                                            <ExcelTableCell align="center">
+                                                <StyledNumberInput
+                                                    type="number"
+                                                    min="0"
+                                                    value={row.left.valorReferencia ?? ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        if (val === '' || Number(val) >= 0) handleInputChange(row.left, val);
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (['-', 'e', '+', 'E'].includes(e.key)) e.preventDefault();
+                                                    }}
+                                                />
+                                            </ExcelTableCell>
+                                        </>
+                                    )}
+
+                                    {row.right ? (
+                                        <>
+                                            <ExcelTableCell>{row.right.nameSegmentoCorporal}</ExcelTableCell>
+                                            <ExcelTableCell align="center">
+                                                <StyledNumberInput
+                                                    type="number"
+                                                    min="0"
+                                                    value={row.right.valorReferencia ?? ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        if (val === '' || Number(val) >= 0) handleInputChange(row.right, val);
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (['-', 'e', '+', 'E'].includes(e.key)) e.preventDefault();
+                                                    }}
+                                                />
+                                            </ExcelTableCell>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ExcelTableCell />
+                                            <ExcelTableCell />
+                                        </>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -578,11 +873,87 @@ export const TableReferenceValuesSegment = () => {
     );
 };
 
+
 const validationControlMethods = yup.object().shape({
     control: yup.string().required("El control es requerido"),
-    jerarquiaControl: yup.string().required("La jerarquía del control es requerida"),
-    descripcionControl: yup.string().required("La descripción del control es requerida"),
+    tipoControl: yup.string().required("El tipo de control es requerido"),
+    observacionesUso: yup.string().required("Las observaciones sobre uso brindado es requerida"),
+    observacionesNivel: yup.string().required("Las observaciones sobre nivel de protección brindado es requerida"),
 });
+
+const AddCatalogoData = ({ getDataCombo, onClose, idTipoCatalogo, codCatalogo }) => {
+    const [nombre, setNombre] = useState('');
+    const [error, setError] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!nombre.trim()) {
+            setError(true);
+            return;
+        }
+
+        try {
+            const objCatalogo = {
+                nombre: nombre,
+                codigo: codCatalogo,
+                idTipoCatalogo: idTipoCatalogo,
+                estado: true,
+            }
+
+            const result = await InsertCatalog(objCatalogo);
+            if (result.status === 200) {
+                await getDataCombo();
+                toast.success("Registro agregado correctamente");
+                onClose();
+                setNombre('');
+            }
+        } catch (error) {
+            toast.error("Error al agregar el registro");
+        }
+    };
+
+    return (
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ width: '100%', mb: 4 }}
+        >
+            <Stack direction="row" spacing={2.5} alignItems="center">
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Nombre"
+                    value={nombre}
+                    onChange={(e) => {
+                        setNombre(e.target.value);
+                        if (error) setError(false);
+                    }}
+                    error={error}
+                    helperText={error && "El nombre es requerido"}
+                />
+
+                <AnimateButton>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disableElevation
+                        startIcon={<Add />}
+                        sx={{
+                            height: 40,
+                            px: 3,
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            borderRadius: 2
+                        }}
+                    >
+                        Agregar
+                    </Button>
+                </AnimateButton>
+            </Stack>
+        </Box>
+    );
+}
 
 export const TableControlMethods = () => {
     const { watch: watchMain } = useFormContext();
@@ -590,15 +961,34 @@ export const TableControlMethods = () => {
 
     const methods = useForm({
         resolver: yupResolver(validationControlMethods),
-        defaultValues: { isUpdateRegister: false, control: '', jerarquiaControl: '', descripcionControl: '' }
+        defaultValues: { isUpdateRegister: false, control: '', tipoControl: '', observacionesUso: '', observacionesNivel: '' }
     });
 
     const { handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue } = methods;
     const isUpdateRegister = watch('isUpdateRegister');
+
+    const [openModal, setOpenModal] = useState(false);
+    const [idTipoCatalogo, setIdTipoCatalogo] = useState(0);
+    const [codCatalogo, setCodCatalogo] = useState("");
+
+    const [lsControl, setLsControl] = useState([]);
+    const [lsTipoControl, setLsTipoControl] = useState([]);
     const [lsControlMethods, setLsControlMethods] = useState([]);
     const [selectedId, setSelectedId] = useState(null);
     const [page, setPage] = useState(0);
     const rowsPerPage = 5;
+
+    async function getCombo() {
+        const lsServerTipoControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_TIPO_CONTROL);
+        setLsTipoControl(lsServerTipoControl.data);
+
+        const lsServerControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_CONTROL);
+        setLsControl(lsServerControl.data);
+    }
+
+    useEffect(() => {
+        getCombo();
+    }, []);
 
     const getData = async () => {
         try {
@@ -619,17 +1009,17 @@ export const TableControlMethods = () => {
     };
 
     const handleClear = () => {
-        reset({ control: '', jerarquiaControl: '', descripcionControl: '', isUpdateRegister: false });
+        reset({ control: '', tipoControl: '', observacionesUso: '', observacionesNivel: '', isUpdateRegister: false });
         setSelectedId(null);
     };
 
     const handleDoubleClick = (item) => {
         setValue('control', item.control, { shouldValidate: true });
-        setValue('jerarquiaControl', item.jerarquiaControl, { shouldValidate: true });
-        setValue('descripcionControl', item.descripcionControl, { shouldValidate: true });
+        setValue('tipoControl', item.tipoControl, { shouldValidate: true });
+        setValue('observacionesUso', item.observacionesUso, { shouldValidate: true });
+        setValue('observacionesNivel', item.observacionesNivel, { shouldValidate: true });
         setValue('isUpdateRegister', true);
         setSelectedId(item.id);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleClick = async (datos) => {
@@ -641,9 +1031,10 @@ export const TableControlMethods = () => {
             };
 
             const response = await SaveAPTHPMetodoControl(payload);
+            console.log(response.data);
             if (response.data.exito) {
                 toast.success(response.data.mensaje);
-                getData();
+                await getData();
                 handleClear();
             } else {
                 toast.error(response.data.mensaje);
@@ -658,7 +1049,7 @@ export const TableControlMethods = () => {
             const response = await DeleteAPTHPMetodoControl(id);
             if (response.data.exito) {
                 toast.success(response.data.mensaje);
-                getData();
+                await getData();
                 if (selectedId === id) handleClear();
             } else {
                 toast.error(response.data.mensaje);
@@ -670,17 +1061,52 @@ export const TableControlMethods = () => {
 
     return (
         <FormProvider {...methods}>
+            <ControlModal
+                maxWidth="md"
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                title="Agregar nuevo registro"
+            >
+                <AddCatalogoData idTipoCatalogo={idTipoCatalogo} codCatalogo={codCatalogo} getDataCombo={getCombo} onClose={() => setOpenModal(false)} />
+            </ControlModal>
+
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} md={6}>
-                    <InputText name="control" label="Control" bug={errors.control} />
+                    <InputSelect
+                        options={lsControl}
+                        name="control"
+                        label="Control"
+                        defaultValue=""
+                        bug={errors.control}
+                        onAddClick={() => {
+                            setIdTipoCatalogo(CodCatalogo.IEL_CONTROL);
+                            setCodCatalogo(`IELCONT0${lsControl.length + 1}`);
+                            setOpenModal(true);
+                        }}
+                    />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                    <InputText name="jerarquiaControl" label="Jerarquía de control" bug={errors.jerarquiaControl} />
+                    <InputSelect
+                        options={lsTipoControl}
+                        name="tipoControl"
+                        label="Tipo de control"
+                        defaultValue=""
+                        bug={errors.tipoControl}
+                        onAddClick={() => {
+                            setIdTipoCatalogo(CodCatalogo.IEL_TIPO_CONTROL);
+                            setCodCatalogo(`IELTI0${lsTipoControl.length + 1}`);
+                            setOpenModal(true);
+                        }}
+                    />
                 </Grid>
 
                 <Grid item xs={12}>
-                    <InputTextEditor label="Descripción del control" name="descripcionControl" />
+                    <InputTextEditor label="Observaciones sobre uso brindado (Si aplica)" name="observacionesUso" defaultValue="" />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <InputTextEditor label="Observaciones sobre nivel de protección brindado" name="observacionesNivel" defaultValue="" />
                 </Grid>
 
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -712,8 +1138,9 @@ export const TableControlMethods = () => {
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell>Control</StyledTableCell>
-                                    <StyledTableCell align="center">Jerarquía de control</StyledTableCell>
-                                    <StyledTableCell align="center">Descripción del control</StyledTableCell>
+                                    <StyledTableCell>Tipo de control</StyledTableCell>
+                                    <StyledTableCell align="center">Observaciones sobre uso brindado (Si aplica)</StyledTableCell>
+                                    <StyledTableCell align="center">Observaciones sobre nivel de protección brindado</StyledTableCell>
                                     <StyledTableCell align="center">Acción</StyledTableCell>
                                 </TableRow>
                             </TableHead>
@@ -725,11 +1152,39 @@ export const TableControlMethods = () => {
                                             isselected={selectedId === item.id ? 1 : 0}
                                             onDoubleClick={() => handleDoubleClick(item)}
                                         >
-                                            <StyledTableCell sx={{ width: '15%' }}>{item.control}</StyledTableCell>
-                                            <StyledTableCell sx={{ width: '15%' }}>{item.jerarquiaControl}</StyledTableCell>
+                                            <StyledTableCell sx={{ width: '15%' }}>{item.nameControl}</StyledTableCell>
+                                            <StyledTableCell sx={{ width: '15%' }}>{item.nameTipoControl}</StyledTableCell>
                                             <StyledTableCell align="left">
                                                 <Box
-                                                    dangerouslySetInnerHTML={{ __html: item.descripcionControl }}
+                                                    dangerouslySetInnerHTML={{ __html: item.observacionesUso }}
+                                                    sx={{
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 3,
+                                                        WebkitBoxOrient: 'vertical',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        lineHeight: '1.5',
+                                                        fontSize: '0.875rem',
+                                                        color: 'text.secondary',
+                                                        textAlign: 'justify',
+                                                        px: 1,
+                                                        '& > *': {
+                                                            display: 'inline',
+                                                            margin: 0,
+                                                        },
+                                                        '& p, & div': {
+                                                            '&:not(:last-child):after': {
+                                                                content: '" "',
+                                                                whiteSpace: 'pre',
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </StyledTableCell>
+
+                                            <StyledTableCell align="left">
+                                                <Box
+                                                    dangerouslySetInnerHTML={{ __html: item.observacionesNivel }}
                                                     sx={{
                                                         display: '-webkit-box',
                                                         WebkitLineClamp: 3,
@@ -762,6 +1217,7 @@ export const TableControlMethods = () => {
                                                             <Edit fontSize="small" />
                                                         </IconButton>
                                                     </Tooltip>
+
                                                     <Tooltip disableInteractive placement='top' title="Eliminar">
                                                         <IconButton color="error" onClick={() => handleDelete(item.id)} size="small">
                                                             <Close fontSize="small" />
@@ -773,7 +1229,7 @@ export const TableControlMethods = () => {
                                     ))
                                 ) : (
                                     <StyledTableRow>
-                                        <StyledTableCell colSpan={4} align="center">
+                                        <StyledTableCell colSpan={5} align="center">
                                             <EmptyState seeSubtitle={false} title="No hay registros" />
                                         </StyledTableCell>
                                     </StyledTableRow>

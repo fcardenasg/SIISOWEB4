@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Typography, IconButton, Paper, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useController } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import Lottie from 'lottie-react';
 import animation from 'assets/img/animation.json';
 import { DeleteAPTHPImage, GetAllAPTHPImage, SaveAPTHPImage } from 'api/clients/APTHigienePlantillaClient';
+import { ImageInterpretationAI } from 'api/clients/ServiceIAClient';
 import toast from 'react-hot-toast';
 
-export default function ImageDropzone({ name, control, rules, objImage }) {
+export default function ImageDropzone({ name, control, rules, objImage, disabled = false, exposureType, targetInput }) {
+    const { setValue, getValues } = useFormContext();
     const {
         field: { onChange, value },
         fieldState: { error }
@@ -17,12 +19,14 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
     const [preview, setPreview] = useState(null);
     const [serverImageId, setServerImageId] = useState(null);
     const fileInputRef = useRef(null);
+    const cargoText = getValues('cargoAuto') || '';
 
     useEffect(() => {
         if (objImage?.idAPT && objImage?.idItemAcordeon && objImage?.idSegundarioModulo) {
             async function loadImage() {
                 try {
                     const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo);
+                    console.log(response.data.datos);
                     if (response.data.exito && response.data.datos?.length > 0) {
                         const imageData = response.data.datos[0];
                         setServerImageId(imageData.id);
@@ -51,16 +55,19 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
 
     const handleDragOver = (e) => {
         e.preventDefault();
+        if (disabled) return;
         setIsDragging(true);
     };
 
     const handleDragLeave = (e) => {
         e.preventDefault();
+        if (disabled) return;
         setIsDragging(false);
     };
 
     const handleDrop = (e) => {
         e.preventDefault();
+        if (disabled) return;
         setIsDragging(false);
         const files = e.dataTransfer.files;
         if (files && files.length > 0 && files[0].type.startsWith('image/')) {
@@ -69,6 +76,7 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
     };
 
     const handleFileChange = (e) => {
+        if (disabled) return;
         const files = e.target.files;
         if (files && files.length > 0) {
             handleFileUpload(files[0]);
@@ -87,6 +95,42 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
             if (response.data.exito) {
                 onChange(file);
                 toast.success("Imagen guardada correctamente");
+
+                if (exposureType && targetInput) {
+                    toast.loading("Analizando resultados con IA...", { id: "analyzing-image" });
+                    try {
+                        const promptText = `
+                            Analiza las imágenes de exposición ${exposureType} para el cargo ${cargoText?.label}. Presenta los resultados en formato de lista con viñetas o puntos, similar al siguiente ejemplo:
+
+                            - En el periodo se han realizado X mediciones
+                            - El nivel promedio es de X (nivel permitido de Y)
+                            - El índice de exposición promedio es de X (por debajo del nivel permitido / nivel permitido / por encima del nivel permitido)
+                            - El índice de riesgo (peor escenario) es de X (por debajo del nivel permitido / nivel permitido / por encima del nivel permitido)
+                            - Nota: observación general sobre las mediciones
+
+                            Evalúa cada valor técnico (niveles promedio, índices de exposición y riesgo) comparándolos con los estándares internacionales reconocidos para ${exposureType} y determina si están: por debajo
+                            del nivel permitido, en el nivel permitido, o por encima del nivel permitido. Extrae TODOS los valores numéricos visibles en las imágenes, tanto los medidos como los límites permitidos, y preséntalos con sus valores reales. 
+                            No uses variables genéricas como "X" o "Y", sino los valores exactos obtenidos de las imágenes. Incluye los datos clave: número de mediciones, niveles promedio vs límites, índices de exposición y riesgo, 
+                            comparaciones con/sin EPP, peores escenarios. Usa HTML con <ul> y <li> para las listas. Mantén el tono técnico y directo del ejemplo proporcionado.`;
+
+                        const aiFormData = new FormData();
+                        aiFormData.append('imageFile', file);
+                        aiFormData.append('prompt', promptText);
+
+                        const aiResponse = await ImageInterpretationAI(aiFormData);
+                        if (aiResponse.data?.exito) {
+                            let resultHtml = aiResponse.data.datos;
+                            resultHtml = resultHtml.replace(/```html/gi, "").replace(/```/g, "").trim();
+                            setValue(targetInput, resultHtml, { shouldValidate: true, shouldDirty: true });
+                            toast.success("Análisis de IA completado", { id: "analyzing-image" });
+                        } else {
+                            toast.error("Error al analizar la imagen con IA", { id: "analyzing-image" });
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        toast.error("Ocurrió un error en el análisis de IA", { id: "analyzing-image" });
+                    }
+                }
             } else {
                 onChange(null);
                 if (fileInputRef.current) {
@@ -105,6 +149,7 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
 
     const handleRemoveImage = async (e) => {
         e.stopPropagation();
+        if (disabled) return;
         try {
             if (serverImageId) {
                 const response = await DeleteAPTHPImage(serverImageId);
@@ -125,10 +170,10 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
     const fileName = value instanceof File ? value.name : typeof value === 'string' ? value.split('/').pop() : '';
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', opacity: disabled ? 0.6 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
             <Paper
                 variant="outlined"
-                onClick={() => !preview && fileInputRef.current?.click()}
+                onClick={() => !preview && !disabled && fileInputRef.current?.click()}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -141,7 +186,7 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
                     borderWidth: 2,
                     borderColor: isDragging ? 'primary.main' : error ? 'error.main' : '#e0e0e0',
                     backgroundColor: isDragging ? 'rgba(25, 118, 210, 0.02)' : '#fcfcfc',
-                    cursor: preview ? 'default' : 'pointer',
+                    cursor: disabled ? 'not-allowed' : preview ? 'default' : 'pointer',
                     position: 'relative',
                     overflow: 'hidden',
                     borderRadius: 4,
@@ -155,6 +200,7 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
                     hidden
                     ref={fileInputRef}
                     onChange={handleFileChange}
+                    disabled={disabled}
                 />
 
                 {preview ? (
@@ -213,26 +259,28 @@ export default function ImageDropzone({ name, control, rules, objImage }) {
                             </Typography>
                         </Box>
 
-                        <Tooltip title="Remover" placement='top' disableInteractive>
-                            <IconButton
-                                onClick={handleRemoveImage}
-                                sx={{
-                                    position: 'absolute',
-                                    top: 10,
-                                    right: 10,
-                                    backgroundColor: 'secondary.main',
-                                    color: '#fff',
-                                    '&:hover': {
-                                        backgroundColor: 'secondary.dark',
-                                        transform: 'scale(1.05)'
-                                    },
-                                    zIndex: 2
-                                }}
-                                size="small"
-                            >
-                                <CloseIcon fontSize="small" />
-                            </IconButton>
-                        </Tooltip>
+                        {!disabled && (
+                            <Tooltip title="Remover" placement='top' disableInteractive>
+                                <IconButton
+                                    onClick={handleRemoveImage}
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 10,
+                                        right: 10,
+                                        backgroundColor: 'secondary.main',
+                                        color: '#fff',
+                                        '&:hover': {
+                                            backgroundColor: 'secondary.dark',
+                                            transform: 'scale(1.05)'
+                                        },
+                                        zIndex: 2
+                                    }}
+                                    size="small"
+                                >
+                                    <CloseIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                     </Box>
                 ) : (
                     <Box

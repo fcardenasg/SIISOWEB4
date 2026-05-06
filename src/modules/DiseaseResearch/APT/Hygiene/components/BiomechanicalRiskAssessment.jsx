@@ -44,11 +44,16 @@ const PlanoRow = ({ item, nameAplica, nameObservacion }) => {
 
 const BiomechanicalRiskAssessment = () => {
     const [lsTipoTrabajo, setLsTipoTrabajo] = useState([]);
+    const [lsCargaFisicaOWAS, setLsCargaFisicaOWAS] = useState([]);
 
     useEffect(() => {
         async function getData() {
             const lsServerTipoTrabajo = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_TIPO_TRABAJO);
             setLsTipoTrabajo(lsServerTipoTrabajo.data);
+
+            const lsServerCargaFisicaOWAS = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_CARGAFISICAOWAS);
+            const dataOrdenada = lsServerCargaFisicaOWAS.data.sort((a, b) => a.value - b.value);
+            setLsCargaFisicaOWAS(dataOrdenada);
         }
 
         getData();
@@ -88,9 +93,29 @@ const BiomechanicalRiskAssessment = () => {
                 <InputText name="vcrB_Postura" label="Postura" multiline minRows={2} maxRows={4} />
             </Grid>
 
-            <Grid item xs={12}>
-                <InputText name="vcrB_CF_OWAS" label="Carga física (OWAS)" multiline minRows={2} maxRows={4} />
+            <Grid item xs={12}><Divider /></Grid>
+
+            <Grid item xs={12} sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Typography variant="h4">Carga física (OWAS)</Typography>
+                <Typography variant="body1">De acuerdo con la valoración con la metodología OWAS:</Typography>
+
+                <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+                    <Grid item xs={12} md={6}>
+                        <InputRadioGroup label="Carga física global" row name="vcrB_CF_OWAS_Global" options={lsCargaFisicaOWAS} defaultValue="" />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <InputRadioGroup label="Carga física para espalda" row name="vcrB_CF_OWAS_Espalda" options={lsCargaFisicaOWAS} defaultValue="" />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <InputRadioGroup label="Carga física para miembros superiores" row name="vcrB_CF_OWAS_MiembrosSuperiores" options={lsCargaFisicaOWAS} defaultValue="" />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <InputRadioGroup label="Carga física para miembros inferiores" row name="vcrB_CF_OWAS_MiembrosInferiores" options={lsCargaFisicaOWAS} defaultValue="" />
+                    </Grid>
+                </Grid>
             </Grid>
+
+            <Grid item xs={12}><Divider /></Grid>
 
             <Grid item xs={12}>
                 <InputText name="vcrB_CF_ANSI" label="Carga física (ANSI)" multiline minRows={2} maxRows={4} />

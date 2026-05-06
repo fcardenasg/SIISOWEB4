@@ -1,5 +1,7 @@
+import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import {
+    Divider,
     FormControl,
     FormHelperText,
     Grid,
@@ -14,7 +16,7 @@ import {
 import Label from 'components/label';
 import { Controller } from 'react-hook-form';
 
-const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWidth, clearable = false, ...others }) => {
+const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWidth, clearable = false, onAddClick, ...others }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -128,6 +130,29 @@ const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWi
                                         </Grid>
                                     </MenuItem>
                                 ))}
+
+                                {onAddClick && [
+                                    <Divider key="__divider__" />,
+                                    <MenuItem
+                                        key="__add__"
+                                        value=""
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAddClick();
+                                        }}
+                                        sx={{
+                                            color: 'primary.main',
+                                            fontWeight: 600,
+                                            fontSize: isSmall ? '0.65rem' : '0.875rem',
+                                            gap: 1,
+                                            '&:hover': { bgcolor: 'primary.lighter' }
+                                        }}
+                                    >
+                                        <AddIcon fontSize="small" />
+                                        Agregar
+                                    </MenuItem>
+                                ]}
                             </Select>
                         </>
                     );

@@ -6,6 +6,7 @@ import {
     Button,
     CardMedia,
     Chip,
+    CircularProgress,
     Divider,
     Fade,
     Grid,
@@ -16,21 +17,27 @@ import {
     TableContainer, TableHead,
     TablePagination,
     TableRow,
+    TextField,
     Tooltip,
     Typography
 } from '@mui/material';
-import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
+import { DeleteAPTHPActivity, GetAllAPTHPActivity, SaveAPTHPActivity } from 'api/clients/APTHigienePlantillaClient';
+import { GetByTipoCatalogoCombo, InsertCatalog } from 'api/clients/CatalogClient';
+import ControlModal from 'components/controllers/ControlModal';
 import { CodCatalogo } from 'components/helpers/Enums';
 import { UpperFirstChar } from 'components/helpers/Format';
 import InputCheckBox from 'components/input/InputCheckBox';
-import InputSelect from 'components/input/InputSelect';
+import Swal from 'sweetalert2';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
 import InputText from 'components/input/InputText';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
+import { ParamDelete } from 'components/alert/AlertAll';
 
 const TruncatedText = ({ text, variant = "body1", sx = {}, ...props }) => {
     const [isTruncated, setIsTruncated] = useState(false);
@@ -82,9 +89,10 @@ const modalStyle = {
 };
 
 const schema = yup.object().shape({
-    actividad: yup.string().required('La actividad es requerida'),
+    actividadAuto: yup.object().nullable().required('La actividad es requerida'),
     tiempoPromedio: yup.number().typeError('El tiempo promedio debe ser un número').required('El tiempo promedio es requerido').positive('El tiempo promedio debe ser diferente a 0'),
     descripcion: yup.string().required('La descripción es requerida'),
+    isPauseActivity: yup.boolean().default(false),
 });
 
 const ExigenciaRow = ({ index }) => {
@@ -120,44 +128,215 @@ const ExigenciaRow = ({ index }) => {
     );
 };
 
-const ActivityFormModal = ({ open, onClose, onSave }) => {
+const AddActivity = ({ registrationQuantity, getData, onClose }) => {
+    const [nombre, setNombre] = useState('');
+    const [error, setError] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!nombre.trim()) {
+            setError(true);
+            return;
+        }
+
+        try {
+            const objCatalogo = {
+                nombre: nombre,
+                codigo: `ACTSUB_0${registrationQuantity + 1}`,
+                idTipoCatalogo: CodCatalogo.APTHIGIENE_ACTIVIDAD,
+                estado: true,
+            }
+
+            const result = await InsertCatalog(objCatalogo);
+            if (result.status === 200) {
+                await getData();
+                toast.success("Actividad agregada correctamente");
+                onClose();
+                setNombre('');
+            }
+        } catch (error) {
+            toast.error("Error al agregar la actividad");
+        }
+    };
+
+    return (
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ width: '100%', mb: 4 }}
+        >
+            <Stack direction="row" spacing={2.5} alignItems="center">
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Actividad o subactividad"
+                    value={nombre}
+                    onChange={(e) => {
+                        setNombre(e.target.value);
+                        if (error) setError(false);
+                    }}
+                    error={error}
+                    helperText={error && "El nombre es requerido"}
+                />
+
+                <AnimateButton>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disableElevation
+                        startIcon={<Add />}
+                        sx={{
+                            height: 40,
+                            px: 3,
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            borderRadius: 2
+                        }}
+                    >
+                        Agregar
+                    </Button>
+                </AnimateButton>
+            </Stack>
+        </Box>
+    );
+}
+
+const ActivityFormModal = ({ open, onClose, getActividades, activityToEdit }) => {
     const methods = useForm({ resolver: yupResolver(schema) });
-    const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = methods;
+    const { control, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } = methods;
     const { fields } = useFieldArray({ control, name: "listaExigenciaBiomecanica" });
+    const { watch: watchMain } = useFormContext();
+    const idAPT = watchMain("idAPTHigienePlantilla");
 
-    useEffect(() => {
-        async function getData() {
-            try {
-                const lsServerArea = await GetByTipoCatalogoCombo(CodCatalogo.APTHIGIENE_EXIGENCIA_BIOMECANICA);
-                const sortedData = lsServerArea.data.sort((a, b) => a.value - b.value);
+    const [openModalAddActivity, setOpenModalAddActivity] = useState(false);
+    const [lsActividad, setLsActividad] = useState([]);
+    const [openPhotosGallery, setOpenPhotosGallery] = useState(null);
+    const [loadingExigencias, setLoadingExigencias] = useState(false);
 
+    const isEdit = watch('id') > 0;
+
+    const initForm = async () => {
+        try {
+            setLoadingExigencias(true);
+            const lsServerArea = await GetByTipoCatalogoCombo(CodCatalogo.APTHIGIENE_EXIGENCIA_BIOMECANICA);
+            const sortedData = lsServerArea.data.sort((a, b) => a.value - b.value);
+
+            if (activityToEdit) {
+                // Mapear exigencias existentes
+                const mappedExigencias = sortedData.map(item => {
+                    const existing = activityToEdit.listaExigenciasProcesadas?.find(e => e.idExigenciaBiomecanica === item.value);
+                    return {
+                        id: existing?.id || 0,
+                        idExigenciaBiomecanica: item.value,
+                        nameExigencia: UpperFirstChar(item.label),
+                        descripcion: existing?.descripcion || '',
+                        exigenciaAplica: existing?.exigenciaAplica || false,
+                        cambioRegistro: false
+                    };
+                });
+
+                reset({
+                    id: activityToEdit.id,
+                    actividadAuto: { value: activityToEdit.actividad, label: activityToEdit.nameActividad },
+                    tiempoPromedio: activityToEdit.tiempoPromedio,
+                    descripcion: activityToEdit.descripcion,
+                    isPauseActivity: activityToEdit.isPauseActivity || false,
+                    evidencias: [],
+                    evidenciasFotos: activityToEdit.evidenciasFotos || [],
+                    listaExigenciaBiomecanica: mappedExigencias
+                });
+            } else {
                 const initialExigencias = sortedData.map(item => ({
+                    id: 0,
                     idExigenciaBiomecanica: item.value,
                     nameExigencia: UpperFirstChar(item.label),
                     descripcion: '',
-                    exigenciaAplica: false
+                    exigenciaAplica: false,
+                    cambioRegistro: false
                 }));
 
                 reset({
-                    actividad: '',
+                    id: 0,
+                    actividadAuto: null,
                     tiempoPromedio: '',
                     descripcion: '',
+                    isPauseActivity: false,
                     evidencias: [],
+                    evidenciasFotos: [],
                     listaExigenciaBiomecanica: initialExigencias
                 });
-            } catch (error) {
-                toast.error("Error cargando las exigencias biomecánicas", error);
             }
+        } catch (error) {
+            toast.error("Error cargando las exigencias biomecánicas", error);
+        } finally {
+            setLoadingExigencias(false);
         }
+    }
 
-        if (open) getData();
-    }, [open, reset]);
+    useEffect(() => {
+        if (open) initForm();
+    }, [open, activityToEdit]);
 
-    const onSubmit = (data) => {
-        const filteredData = { ...data };
-        onSave(filteredData);
-        reset();
-        toast.success("Actividad registrada correctamente");
+    async function getDataActivity() {
+        try {
+            const lsServerActividad = await GetByTipoCatalogoCombo(CodCatalogo.APTHIGIENE_ACTIVIDAD);
+            setLsActividad(lsServerActividad.data);
+        } catch (error) {
+            toast.error("Error cargando las actividades", error);
+        }
+    }
+
+    useEffect(() => {
+        getDataActivity();
+    }, []);
+
+    const onSubmit = async (data) => {
+        const loadingToast = toast.loading(data.id > 0 ? "Actualizando actividad..." : "Guardando actividad...");
+        try {
+            const formData = new FormData();
+
+            formData.append('id', data.id || 0);
+            formData.append('idAPT', idAPT);
+            formData.append('actividad', data.actividadAuto.value);
+            formData.append('tiempoPromedio', data.tiempoPromedio);
+            formData.append('descripcion', data.descripcion);
+            formData.append('isPauseActivity', data.isPauseActivity);
+
+            const exigenciasAEnviar = data.listaExigenciaBiomecanica
+                .filter(e => e.id > 0 || e.exigenciaAplica)
+                .map(e => ({
+                    ...e,
+                    cambioRegistro: e.id > 0
+                }));
+
+            formData.append('listaExigenciaBiomecanica', JSON.stringify(exigenciasAEnviar));
+
+            (data.evidencias || []).forEach(file => {
+                formData.append('evidencias', file);
+            });
+
+            const result = await SaveAPTHPActivity(formData, true);
+            if (result.data.exito) {
+                // Notificar éxito antes de cualquier otra operación asíncrona pesada
+                toast.success(data.id > 0 ? "Actividad actualizada correctamente" : "Actividad registrada correctamente", { id: loadingToast });
+
+                // Actualizar tablas
+                await getActividades();
+                window.dispatchEvent(new CustomEvent('refresh-owas-table'));
+
+                if (data.id > 0) {
+                    onClose();
+                } else {
+                    await initForm();
+                }
+            } else {
+                toast.error(result.data.mensaje || "Error al procesar la actividad", { id: loadingToast });
+            }
+        } catch (error) {
+            console.error("Error al guardar actividad:", error);
+            toast.error("Error al procesar la actividad", { id: loadingToast });
+        }
     };
 
     const handleImageChange = (e) => {
@@ -167,91 +346,152 @@ const ActivityFormModal = ({ open, onClose, onSave }) => {
     };
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <FormProvider {...methods}>
-                <Box sx={{
-                    ...modalStyle,
-                    width: '95%',
-                    maxWidth: 1200,
-                    maxHeight: '92vh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    p: { xs: 2, md: 4 },
-                    overflow: 'hidden'
-                }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Box>
-                            <Typography variant="h4">Registrar Actividad</Typography>
-                            <Typography variant="caption" color="text.secondary">Complete los detalles técnicos para cada exigencia biomecánica</Typography>
+        <>
+            <ControlModal
+                maxWidth="md"
+                open={openModalAddActivity}
+                onClose={() => setOpenModalAddActivity(false)}
+                title="Agregar actividad o subactividad"
+            >
+                <AddActivity registrationQuantity={lsActividad.length} getData={getDataActivity} onClose={() => setOpenModalAddActivity(false)} />
+            </ControlModal>
+
+            <PhotoGalleryModal openPhotos={openPhotosGallery} setOpenPhotos={setOpenPhotosGallery} />
+            <Modal open={open} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <FormProvider {...methods}>
+                    <Box sx={{
+                        ...modalStyle,
+                        width: '95%',
+                        maxWidth: 1200,
+                        maxHeight: '92vh',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        p: { xs: 2, md: 4 },
+                        overflow: 'hidden'
+                    }}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Box>
+                                <Typography variant="h4">{isEdit ? 'Actualizar Actividad' : 'Registrar Actividad'}</Typography>
+                                <Typography variant="caption" color="text.secondary">Complete los detalles técnicos para cada exigencia biomecánica</Typography>
+                            </Box>
+
+                            <AnimateButton>
+                                <IconButton
+                                    onClick={onClose}
+                                    sx={{
+                                        bgcolor: 'primary.main',
+                                        '&:hover': { bgcolor: 'primary.dark', transform: 'rotate(90deg)' },
+                                        transition: 'all 0.3s'
+                                    }}
+                                >
+                                    <Close fontSize="small" sx={{ color: 'white' }} />
+                                </IconButton>
+                            </AnimateButton>
+                        </Stack>
+
+                        <Divider sx={{ my: 1 }} />
+
+                        <Box sx={{
+                            overflowY: 'auto',
+                            flex: 1,
+                            pr: 1,
+                            '&::-webkit-scrollbar': { width: '6px' },
+                            '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc', borderRadius: '10px' }
+                        }}>
+                            <Grid container spacing={2} sx={{ mt: 0 }}>
+                                <Grid item xs={12} md={isEdit ? 9 : 6} lg={isEdit ? 10 : 7}>
+                                    <InputSelectAutocomplete
+                                        name="actividadAuto"
+                                        label="Actividad o subactividad"
+                                        options={lsActividad}
+                                        onAddClick={() => setOpenModalAddActivity(true)}
+                                    />
+                                </Grid>
+
+                                {!isEdit && (
+                                    <Grid item xs={12} md={3} lg={3}>
+                                        <InputCheckBox name="isPauseActivity" label="¿Es una actividad de pausa?" />
+                                    </Grid>
+                                )}
+
+                                <Grid item xs={12} md={3} lg={2}>
+                                    <InputText name="tiempoPromedio" label="Tiempo (min)" type="number" bug={errors.tiempoPromedio} />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <InputText name="descripcion" label="Descripción general" multiline minRows={2} bug={errors.descripcion} />
+                                </Grid>
+
+                                <Grid item xs={12} sx={{ mt: 1 }}>
+                                    <SubCard darkTitle title="Registrar exigencias biomecánicas de la actividad">
+                                        {loadingExigencias ? (
+                                            <Stack alignItems="center" justifyContent="center" sx={{ py: 4 }}>
+                                                <CircularProgress size={30} />
+                                                <Typography variant="caption" sx={{ mt: 1 }}>Cargando exigencias...</Typography>
+                                            </Stack>
+                                        ) : (
+                                            <Grid container spacing={2}>
+                                                {fields.map((field, index) => (
+                                                    <ExigenciaRow key={field.id} index={index} />
+                                                ))}
+                                            </Grid>
+                                        )}
+                                    </SubCard>
+                                </Grid>
+                            </Grid>
                         </Box>
 
-                        <IconButton
-                            onClick={onClose}
-                            sx={{
-                                bgcolor: 'primary.main',
-                                '&:hover': { bgcolor: 'primary.dark', transform: 'rotate(90deg)' },
-                                transition: 'all 0.3s'
-                            }}
-                        >
-                            <Close fontSize="small" sx={{ color: 'white' }} />
-                        </IconButton>
-                    </Stack>
+                        <Divider sx={{ my: 2 }} />
 
-                    <Divider sx={{ my: 1 }} />
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <AnimateButton>
+                                    <Button variant="outlined" component="label" startIcon={<PhotoLibrary />} size="large">
+                                        Imágenes de referencia
+                                        <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} />
+                                    </Button>
+                                </AnimateButton>
+                                {isEdit && watch('evidenciasFotos')?.length > 0 && (
+                                    <Chip
+                                        label={`${watch('evidenciasFotos')?.length} ya subidas`}
+                                        size="large"
+                                        color="primary"
+                                        variant="outlined"
+                                        onClick={() => setOpenPhotosGallery(watch('evidenciasFotos'))}
+                                        sx={{ cursor: 'pointer' }}
+                                    />
+                                )}
+                                <Chip
+                                    label={`${watch('evidencias')?.length || 0} por subir`}
+                                    size="large"
+                                    color="secondary"
+                                    variant="soft"
+                                    onClick={() => watch('evidencias')?.length > 0 && setOpenPhotosGallery(watch('evidencias'))}
+                                    sx={{ cursor: watch('evidencias')?.length > 0 ? 'pointer' : 'default' }}
+                                />
+                            </Stack>
 
-                    <Box sx={{
-                        overflowY: 'auto',
-                        flex: 1,
-                        pr: 1,
-                        '&::-webkit-scrollbar': { width: '6px' },
-                        '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc', borderRadius: '10px' }
-                    }}>
-                        <Grid container spacing={2} sx={{ mt: 0 }}>
-                            <Grid item xs={12} md={9} lg={10}>
-                                <InputSelect options={[]} name="actividad" label="Actividad o subactividad" defaultValue="" />
-                            </Grid>
-
-                            <Grid item xs={12} md={3} lg={2}>
-                                <InputText name="tiempoPromedio" label="Tiempo (min)" type="number" bug={errors.tiempoPromedio} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <InputText name="descripcion" label="Descripción general" multiline minRows={2} bug={errors.descripcion} />
-                            </Grid>
-
-                            <Grid item xs={12} sx={{ mt: 1 }}>
-                                <SubCard darkTitle title="Registrar exigencias biomecánicas de la actividad">
-                                    <Grid container spacing={2}>
-                                        {fields.map((field, index) => (
-                                            <ExigenciaRow key={field.id} index={index} />
-                                        ))}
-                                    </Grid>
-                                </SubCard>
-                            </Grid>
-                        </Grid>
+                            <Stack direction="row" spacing={2}>
+                                <AnimateButton>
+                                    <Button variant="outlined" onClick={onClose} color="secondary" disabled={isSubmitting}>Cancelar</Button>
+                                </AnimateButton>
+                                <AnimateButton>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleSubmit(onSubmit)}
+                                        sx={{ px: 6 }}
+                                        disabled={isSubmitting}
+                                        startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                                    >
+                                        {isSubmitting ? (isEdit ? 'Actualizando...' : 'Guardando...') : (isEdit ? 'Actualizar' : 'Guardar')}
+                                    </Button>
+                                </AnimateButton>
+                            </Stack>
+                        </Stack>
                     </Box>
-
-                    <Divider sx={{ my: 2 }} />
-
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Stack direction="row" spacing={2} alignItems="center">
-                            <Button variant="outlined" component="label" startIcon={<PhotoLibrary />} size="large">
-                                Imágenes de referencia
-                                <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} />
-                            </Button>
-                            <Chip label={`${watch('evidencias')?.length || 0} imágenes`} size="large" color="secondary" variant="soft" />
-                        </Stack>
-
-                        <Stack direction="row" spacing={2}>
-                            <Button variant="outlined" onClick={onClose} color="secondary">Cancelar</Button>
-                            <Button variant="contained" onClick={handleSubmit(onSubmit)} sx={{ px: 6 }}>
-                                Guardar
-                            </Button>
-                        </Stack>
-                    </Stack>
-                </Box>
-            </FormProvider>
-        </Modal>
+                </FormProvider>
+            </Modal>
+        </>
     );
 };
 
@@ -274,7 +514,7 @@ const modalStyleDetail = {
 
 const ActivityDetailModal = ({ activity, onClose }) => {
     const isOpen = Boolean(activity);
-    const evidencias = activity?.evidencias || [];
+    const evidencias = activity?.evidenciasFotos || [];
 
     return (
         <Modal
@@ -290,16 +530,18 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                         <Stack direction="row" justifyContent="space-between" alignItems="center">
                             <Typography variant="h4">Detalle de Actividad</Typography>
 
-                            <IconButton
-                                onClick={onClose}
-                                sx={{
-                                    bgcolor: 'primary.main',
-                                    '&:hover': { bgcolor: 'primary.dark', transform: 'rotate(90deg)' },
-                                    transition: 'all 0.3s',
-                                }}
-                            >
-                                <Close fontSize="small" sx={{ color: 'white' }} />
-                            </IconButton>
+                            <AnimateButton>
+                                <IconButton
+                                    onClick={onClose}
+                                    sx={{
+                                        bgcolor: 'primary.main',
+                                        '&:hover': { bgcolor: 'primary.dark', transform: 'rotate(90deg)' },
+                                        transition: 'all 0.3s',
+                                    }}
+                                >
+                                    <Close fontSize="small" sx={{ color: 'white' }} />
+                                </IconButton>
+                            </AnimateButton>
                         </Stack>
                         <Divider sx={{ my: 2 }} />
                     </Box>
@@ -323,7 +565,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                                 transition={{ duration: 0.4 }}
                             >
                                 <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: 'primary.main' }}>
-                                    {activity?.actividad}
+                                    {UpperFirstChar(activity?.nameActividad)}
                                 </Typography>
 
                                 <Chip
@@ -342,7 +584,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                                 </Typography>
 
                                 <Stack spacing={2}>
-                                    {activity?.listaExigenciaBiomecanica?.map((ex, i) => (
+                                    {activity?.listaExigenciasProcesadas?.map((ex, i) => (
                                         <Box
                                             key={i}
                                             sx={{
@@ -359,7 +601,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                                                     {ex.nameExigencia}:
                                                 </Box>
                                                 <Box component="span" sx={{ color: 'text.secondary' }}>
-                                                    {ex.descripcionExigencia}
+                                                    {ex.descripcion}
                                                 </Box>
                                             </Typography>
                                         </Box>
@@ -368,7 +610,6 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                             </motion.div>
                         </Grid>
 
-                        {/* Columna Derecha: Evidencias */}
                         <Grid item xs={12} md={5} sx={{ p: 3, bgcolor: '#fcfcfc' }}>
                             <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
                                 Imágenes de referencia
@@ -396,8 +637,8 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                                                 position: 'relative'
                                             }}>
                                                 <img
-                                                    src={URL.createObjectURL(img)}
-                                                    alt={img.name}
+                                                    src={img.urlServidor}
+                                                    alt={img.nombre}
                                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                 />
                                                 <Box sx={{
@@ -408,7 +649,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                                                     background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
                                                 }}>
                                                     <Typography variant="caption" sx={{ color: 'white', fontWeight: 500, display: 'block', px: 1 }} noWrap>
-                                                        {img.name}
+                                                        {img.nombre || img.titulo}
                                                     </Typography>
                                                 </Box>
                                             </Box>
@@ -469,13 +710,20 @@ const PhotoGalleryModal = ({ openPhotos, setOpenPhotos }) => {
 
     const handleClose = () => {
         setOpenPhotos(null);
-
         setTimeout(() => {
             setDisplayPhotos([]);
         }, 600);
     };
 
     const photoCount = displayPhotos.length;
+
+    // Helper para obtener la URL de la imagen (servidor o local)
+    const getImageUrl = (img) => {
+        if (img instanceof File || img instanceof Blob) {
+            return URL.createObjectURL(img);
+        }
+        return img.urlServidor;
+    };
 
     return (
         <Modal
@@ -523,7 +771,7 @@ const PhotoGalleryModal = ({ openPhotos, setOpenPhotos }) => {
                             <AnimatePresence>
                                 {displayPhotos.map((img, i) => (
                                     <motion.div
-                                        key={img.url || i}
+                                        key={img.urlServidor || img.name || i}
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.3, delay: i * 0.08 }}
@@ -538,8 +786,8 @@ const PhotoGalleryModal = ({ openPhotos, setOpenPhotos }) => {
                                         }}>
                                             <CardMedia
                                                 component="img"
-                                                image={URL.createObjectURL(img)}
-                                                alt={img.name}
+                                                image={getImageUrl(img)}
+                                                alt={img.nombre || img.name || img.titulo}
                                                 sx={{
                                                     width: '100%',
                                                     height: photoCount === 1 ? 'auto' : '240px',
@@ -555,7 +803,7 @@ const PhotoGalleryModal = ({ openPhotos, setOpenPhotos }) => {
                                                 background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
                                             }}>
                                                 <Typography variant="caption" sx={{ color: 'white', fontWeight: 500, opacity: 0.9 }}>
-                                                    {img.name}
+                                                    {img.nombre || img.name || img.titulo}
                                                 </Typography>
                                             </Box>
                                         </Box>
@@ -573,12 +821,28 @@ const PhotoGalleryModal = ({ openPhotos, setOpenPhotos }) => {
 const ActivityTable = () => {
     const [openForm, setOpenForm] = useState(false);
     const [selectedActivity, setSelectedActivity] = useState(null);
+    const [activityToEdit, setActivityToEdit] = useState(null);
     const [openPhotos, setOpenPhotos] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
+    const [listaActividades, setListaActividades] = useState([]);
 
-    const { setValue, watch } = useFormContext();
-    const listaActividades = watch("listaActividades") || [];
+    const { watch } = useFormContext();
+    const idAPT = watch("idAPTHigienePlantilla");
+
+    const getActividades = useCallback(async () => {
+        try {
+            if (!idAPT) return;
+            const result = await GetAllAPTHPActivity(idAPT);
+            setListaActividades(result.data.datos || []);
+        } catch (error) {
+            toast.error("Error cargando las actividades");
+        }
+    }, [idAPT]);
+
+    useEffect(() => {
+        getActividades();
+    }, [getActividades]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -589,13 +853,49 @@ const ActivityTable = () => {
         setPage(0);
     };
 
+    const handleOpenForm = useCallback((activity = null) => {
+        setActivityToEdit(activity);
+        setOpenForm(true);
+    }, []);
+
+    const handleCloseForm = useCallback(() => {
+        setOpenForm(false);
+        setActivityToEdit(null);
+    }, []);
+
+    const handleDeleteActivity = useCallback(async (id) => {
+        try {
+            const result = await Swal.fire({
+                title: ParamDelete.title,
+                text: ParamDelete.text,
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#d33',
+            });
+
+            if (result.isConfirmed) {
+                const loadingToast = toast.loading("Eliminando actividad...");
+                const response = await DeleteAPTHPActivity(id);
+
+                if (response.data.exito) {
+                    toast.success("Actividad eliminada correctamente", { id: loadingToast });
+                    setPage(0);
+                    await getActividades();
+                    window.dispatchEvent(new CustomEvent('refresh-owas-table'));
+                } else {
+                    toast.error(response.data.mensaje || "Error al eliminar la actividad", { id: loadingToast });
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Error al procesar la eliminación");
+        }
+    }, [getActividades]);
+
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listaActividades.length) : 0;
     const currentItems = listaActividades.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
-    const handleSaveActivity = (data) => {
-        const actuales = listaActividades;
-        setValue("listaActividades", [...actuales, { ...data, id: Date.now() }]);
-    };
 
     return (
         <>
@@ -603,14 +903,16 @@ const ActivityTable = () => {
                 darkTitle
                 title="Actividades o subactividades realizadas"
                 secondary={
-                    <Button
-                        variant="contained"
-                        startIcon={<Add />}
-                        onClick={() => setOpenForm(true)}
-                        color="secondary"
-                    >
-                        Agregar Actividad
-                    </Button>
+                    <AnimateButton>
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => handleOpenForm()}
+                            color="secondary"
+                        >
+                            Agregar Actividad
+                        </Button>
+                    </AnimateButton>
                 }
             >
                 <TableContainer>
@@ -657,7 +959,7 @@ const ActivityTable = () => {
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
                                             >
                                                 <TableCell sx={{ userSelect: 'none' }}>
-                                                    <TruncatedText text={row.actividad} />
+                                                    <TruncatedText text={UpperFirstChar(row.nameActividad)} />
                                                 </TableCell>
 
                                                 <TableCell sx={{ userSelect: 'none' }}>
@@ -675,20 +977,20 @@ const ActivityTable = () => {
 
                                                 <TableCell sx={{ userSelect: 'none' }}>
                                                     <Stack spacing={0.5}>
-                                                        {row.listaExigenciaBiomecanica.slice(0, 2).map((ex, i) => (
+                                                        {row.listaExigenciasProcesadas.slice(0, 2).map((ex, i) => (
                                                             <Box key={i} sx={{ display: 'flex', gap: 0.5 }}>
                                                                 <Typography variant="caption" sx={{ fontWeight: 700, color: 'secondary.main', whiteSpace: 'nowrap' }}>
                                                                     {ex.nameExigencia}:
                                                                 </Typography>
                                                                 <Typography variant="caption" noWrap sx={{ maxWidth: 150 }}>
-                                                                    {ex.descripcionExigencia}
+                                                                    {ex.descripcion}
                                                                 </Typography>
                                                             </Box>
                                                         ))}
 
-                                                        {row.listaExigenciaBiomecanica.length > 2 && (
+                                                        {row.listaExigenciasProcesadas.length > 2 && (
                                                             <Typography variant="caption" color="text.disabled italic">
-                                                                +{row.listaExigenciaBiomecanica.length - 2} más...
+                                                                +{row.listaExigenciasProcesadas.length - 2} más...
                                                             </Typography>
                                                         )}
                                                     </Stack>
@@ -697,17 +999,17 @@ const ActivityTable = () => {
                                                 <TableCell align="center" sx={{ userSelect: 'none' }}>
                                                     <Tooltip title="Ver imágenes" placement="top" disableInteractive>
                                                         <IconButton
-                                                            color={row.evidencias?.length > 0 ? "primary" : "default"}
+                                                            color={row.evidenciasFotos?.length > 0 ? "primary" : "default"}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                setOpenPhotos(row.evidencias);
+                                                                setOpenPhotos(row.evidenciasFotos);
                                                             }}
-                                                            disabled={!row.evidencias?.length}
+                                                            disabled={!row.evidenciasFotos?.length}
                                                         >
                                                             <PhotoLibrary />
-                                                            {row.evidencias?.length > 0 && (
+                                                            {row.evidenciasFotos?.length > 0 && (
                                                                 <Typography variant="caption" sx={{ ml: 1 }}>
-                                                                    {row.evidencias.length}
+                                                                    {row.evidenciasFotos.length}
                                                                 </Typography>
                                                             )}
                                                         </IconButton>
@@ -719,7 +1021,10 @@ const ActivityTable = () => {
                                                         <Tooltip title="Actualizar" placement="top" disableInteractive>
                                                             <IconButton
                                                                 color="primary"
-                                                                onClick={() => {/* Tu método aquí */ }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleOpenForm(row);
+                                                                }}
                                                                 size="small"
                                                             >
                                                                 <Edit fontSize="small" />
@@ -729,7 +1034,7 @@ const ActivityTable = () => {
                                                         <Tooltip title="Eliminar" placement="top" disableInteractive>
                                                             <IconButton
                                                                 color="error"
-                                                                onClick={() => {/* Tu método aquí */ }}
+                                                                onClick={() => handleDeleteActivity(row.id)}
                                                                 size="small"
                                                             >
                                                                 <Close fontSize="small" />
@@ -767,7 +1072,12 @@ const ActivityTable = () => {
                 />
             </SubCard>
 
-            <ActivityFormModal open={openForm} onClose={() => setOpenForm(false)} onSave={handleSaveActivity} />
+            <ActivityFormModal
+                open={openForm}
+                onClose={handleCloseForm}
+                getActividades={getActividades}
+                activityToEdit={activityToEdit}
+            />
             <ActivityDetailModal activity={selectedActivity} onClose={() => setSelectedActivity(null)} />
             <PhotoGalleryModal openPhotos={openPhotos} setOpenPhotos={setOpenPhotos} />
         </>
