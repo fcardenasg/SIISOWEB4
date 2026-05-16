@@ -39,7 +39,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import SearchIcon from '@mui/icons-material/Search';
-import { DeleteResearchAssignment } from 'api/clients/ResearchAssignmentClient';
+import { GetAllAPTHP, DeleteAPTHP } from 'api/clients/APTHigienePlantillaClient';
 import Cargando from 'components/loading/Cargando';
 import EmptyState from 'components/loading/EmptyState';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
@@ -80,13 +80,13 @@ const headCells = [
         align: 'left'
     },
     {
-        id: 'nombreDx',
-        label: 'Diagnósticos',
+        id: 'nameCargo',
+        label: 'Cargo',
         align: 'left'
     },
     {
-        id: 'investigador',
-        label: 'Investigadores',
+        id: 'nameSede',
+        label: 'Sede',
         align: 'left'
     },
     {
@@ -222,19 +222,17 @@ const ListAPTHygiene = () => {
     async function getAll() {
         try {
             setLoading(true);
-            /* const lsServer = await GetAllResearchAssignment();
-            setTimeout(() => {
-                if (lsServer.data.exito) {
-                    setLsModelData(lsServer.data.datos);
-                    setRows(lsServer.data.datos);
-                } else {
-                    toast.error(lsServer.data.mensaje);
-                }
-            }, 1000); */
-
+            const lsServer = await GetAllAPTHP(2);
+            if (lsServer?.data?.exito) {
+                setLsModelData(lsServer.data.datos || []);
+                setRows(lsServer.data.datos || []);
+            } else {
+                toast.error(lsServer?.data?.mensaje || "Error al obtener datos");
+            }
             setLoading(false);
         } catch (error) {
             setLoading(false);
+            toast.error("Error obteniendo los registros");
         }
     }
 
@@ -249,7 +247,7 @@ const ListAPTHygiene = () => {
         if (newString) {
             const newRows = rows.filter((row) => {
                 let matches = true;
-                const properties = ['id', 'documento', 'nombreEmpleado'];
+                const properties = ['id', 'documento', 'nombreEmpleado', 'usuarioRegistro'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -317,18 +315,20 @@ const ListAPTHygiene = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteResearchAssignment(idCheck);
+                    const result = await DeleteAPTHP(idCheck, 2);
                     if (result.data.exito) {
                         toast.success(result.data.mensaje);
                         setSearch('');
                         setSelected([]);
                         getAll();
+                    } else {
+                        toast.error(result.data.mensaje);
                     }
                 } else
                     setSelected([]);
             });
         } catch (error) {
-
+            toast.error("Ocurrió un error al eliminar");
         }
     }
 
@@ -460,20 +460,12 @@ const ListAPTHygiene = () => {
                                                     onClick={(event) => handleClick(event, row.id)}
                                                     sx={{ cursor: 'pointer' }}
                                                 >
-                                                    <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
-                                                        <div>
-                                                            {row?.nombreDx.map((item, index) => (
-                                                                <div key={index}>{item}</div>
-                                                            ))}
-                                                        </div>
-                                                    }>
-                                                        <Typography
-                                                            variant="subtitle1"
-                                                            sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                        >
-                                                            <Chip label={`${row?.nombreDx?.length} Diagnóstico(s)`} size="small" chipcolor="success" />
-                                                        </Typography>
-                                                    </Tooltip>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.nameCargo}
+                                                    </Typography>
                                                 </TableCell>
 
                                                 <TableCell
@@ -483,20 +475,12 @@ const ListAPTHygiene = () => {
                                                     onClick={(event) => handleClick(event, row.id)}
                                                     sx={{ cursor: 'pointer' }}
                                                 >
-                                                    <Tooltip disableInteractive placement="top" TransitionComponent={Fade} title={
-                                                        <div>
-                                                            {row?.nombreAsesor.map((item, index) => (
-                                                                <div key={index}>{item}</div>
-                                                            ))}
-                                                        </div>
-                                                    }>
-                                                        <Typography
-                                                            variant="subtitle1"
-                                                            sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                        >
-                                                            <Chip label={`${row?.nombreInvestigador?.length} Investigador(es)`} size="small" chipcolor="success" />
-                                                        </Typography>
-                                                    </Tooltip>
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.nameSede}
+                                                    </Typography>
                                                 </TableCell>
 
                                                 <TableCell

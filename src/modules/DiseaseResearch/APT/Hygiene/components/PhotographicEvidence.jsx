@@ -25,7 +25,7 @@ const PhotographicEvidence = ({ name, objImage }) => {
     const loadImages = useCallback(async () => {
         if (!objImage?.idAPT || !objImage?.idItemAcordeon || !objImage?.idSegundarioModulo) return;
         try {
-            const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo);
+            const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo, objImage.tipoLogica);
             if (response.data.exito && response.data.datos) {
                 const newEvidences = response.data.datos.map((imageData, index) => ({
                     titulo: imageData.titulo || imageData.nombre,
@@ -66,7 +66,7 @@ const PhotographicEvidence = ({ name, objImage }) => {
                     formData.append('Titulo', titulo.trim());
                 }
 
-                const response = await SaveAPTHPImage(formData, true);
+                const response = await SaveAPTHPImage(formData, objImage.tipoLogica, true);
                 if (response.data.exito) {
                     await loadImages();
                     toast.success("Imagen guardada correctamente");
@@ -82,7 +82,7 @@ const PhotographicEvidence = ({ name, objImage }) => {
     const handleDeleteImage = async (index, field) => {
         try {
             if (field.serverId) {
-                const response = await DeleteAPTHPImage(field.serverId);
+                const response = await DeleteAPTHPImage(field.serverId, objImage.tipoLogica);
                 if (response.data.exito) {
                     toast.success("Imagen eliminada correctamente");
                     await loadImages();

@@ -222,8 +222,6 @@ const TableEmo = () => {
             setDataPDF(dataPDFTwo);
 
         } catch (err) {
-            console.log(err);
-
             toast.error("Ocurrió un error inesperado al generar el PDF");
             setOpenReport(false);
         }

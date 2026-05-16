@@ -28,6 +28,7 @@ import {
     DeleteAPTHPMetodoControl,
     DeleteAPTHPOrganizationalFactor,
     DeleteAPTHPValorRefeSegmento,
+    ActivityRecordsExist,
     GetAllAPTHPMetodoControl,
     GetAllAPTHPMetodoOWAS,
     GetAllAPTHPOrganizationalFactor,
@@ -44,14 +45,17 @@ import Iconify from 'components/iconify/iconify';
 import InputSelect from 'components/input/InputSelect';
 import InputTextEditor from 'components/input/InputTextEditor';
 import EmptyState from 'components/loading/EmptyState';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
+import CustomAlert from './CustomAlert';
 import { formatearResultado, posturasErgonomicasOWAS } from './ArrayAPT';
 import ControlModal from 'components/controllers/ControlModal';
+import AnimatedSearchBar from './AnimatedSearchBar';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -191,12 +195,18 @@ const PostureCard = ({ item, onClick }) => (
 
 export const OWASMethodTables = () => {
     const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
+
+    const categoriaCargo = watchMain("categoriaCargo");
 
     const [lsCategorySegment, setLsCategorySegment] = useState([]);
     const [lsMetodoOWAS, setLsMetodoOWAS] = useState([]);
     const [lsPosturasOWAS, setLsPosturasOWAS] = useState([]);
     const [openTooltip, setOpenTooltip] = useState({ id: null, category: null });
+    const [alert, setAlert] = useState({ open: false, message: '', severity: 'info' });
 
     const totalTiempo = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.tiempoPromedio) || 0), 0);
     const totalEspalda = lsMetodoOWAS.reduce((acc, item) => acc + (Number(item.idEspalda) || 0), 0);
@@ -207,7 +217,37 @@ export const OWASMethodTables = () => {
 
     const getData = async () => {
         try {
-            const response = await GetAllAPTHPMetodoOWAS(idAPT);
+            // Validación 1: Categoría de cargo
+            if (!categoriaCargo) {
+                setAlert({
+                    open: true,
+                    message: "Debe seleccionar una categoría de cargo (Sección de Aspectos Organacionales) para continuar",
+                    severity: "error"
+                });
+                setLsCategorySegment([]);
+                setLsMetodoOWAS([]);
+                return;
+            }
+
+            // Validación 2: Actividades registradas
+            const resActivities = await ActivityRecordsExist(idAPT, tipoLogica);
+            const existsActivities = resActivities.data.datos || false;
+
+            if (!existsActivities) {
+                setAlert({
+                    open: true,
+                    message: "No se han registrado actividades aún (Sección de Actividad Laboral, en la parte final), por favor complete ese paso primero",
+                    severity: "error"
+                });
+                setLsCategorySegment([]);
+                setLsMetodoOWAS([]);
+                return;
+            }
+
+            // Si pasa las validaciones, limpiamos la alerta
+            setAlert({ open: false, message: '', severity: 'info' });
+
+            const response = await GetAllAPTHPMetodoOWAS(idAPT, tipoLogica);
             const metodosOWAS = response.data.datos?.metodosOWAS || [];
             const categoriasSegmento = response.data.datos?.categoriasSegmento || [];
 
@@ -231,7 +271,7 @@ export const OWASMethodTables = () => {
                 idPeso: category.toLowerCase() === 'fuerza' ? postureId : null,
             };
 
-            const response = await SaveAPTHPMetodoOWAS(payload);
+            const response = await SaveAPTHPMetodoOWAS(payload, tipoLogica);
             if (response.data.exito) {
                 toast.success(`Código de postura registrado para ${category}`);
                 getData();
@@ -311,11 +351,21 @@ export const OWASMethodTables = () => {
 
     useEffect(() => {
         if (idAPT) getData();
-    }, [idAPT]);
+    }, [idAPT, categoriaCargo]);
 
     return (
         <SubCard darkTitle title="Aplicación del método OWAS">
             <Grid container spacing={2}>
+                {alert.open && (
+                    <Grid item xs={12}>
+                        <CustomAlert
+                            message={alert.message}
+                            severity={alert.severity}
+                            open={alert.open}
+                            onClose={() => setAlert({ ...alert, open: false })}
+                        />
+                    </Grid>
+                )}
                 <Grid item xs={12}>
                     <TableContainer component={Paper} sx={{ overflowX: 'auto', elevation: 0, border: '1px solid #bdbdbd', borderRadius: '4px' }}>
                         <Table sx={{ minWidth: 650, borderCollapse: 'collapse' }} size="small" aria-label="tabla de segmentos">
@@ -515,7 +565,10 @@ export const OWASMethodTables = () => {
 
 export const OrganizationalFactorTable = () => {
     const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
 
     const [lsOrganizationalFactor, setLsOrganizationalFactor] = useState([]);
 
@@ -523,7 +576,7 @@ export const OrganizationalFactorTable = () => {
         try {
             const [resCatalog, resSaved] = await Promise.all([
                 GetByTipoCatalogoCombo(CodCatalogo.APTHIGIENE_FACTOR_ORGANIZACIONAL),
-                GetAllAPTHPOrganizationalFactor(idAPT)
+                GetAllAPTHPOrganizationalFactor(idAPT, tipoLogica)
             ]);
 
             const catalogData = resCatalog.data || [];
@@ -563,7 +616,7 @@ export const OrganizationalFactorTable = () => {
         try {
             if (row.aplica != null && Number(row.aplica) === val) {
                 if (row.id > 0) {
-                    const res = await DeleteAPTHPOrganizationalFactor(row.id);
+                    const res = await DeleteAPTHPOrganizationalFactor(row.id, tipoLogica);
                     if (res.data.exito) getData();
                 }
                 return;
@@ -576,7 +629,7 @@ export const OrganizationalFactorTable = () => {
                 aplica: val
             };
 
-            const response = await SaveAPTHPOrganizationalFactor(payload);
+            const response = await SaveAPTHPOrganizationalFactor(payload, tipoLogica);
             if (response.data.exito) {
                 getData();
             } else {
@@ -660,10 +713,12 @@ export const OrganizationalFactorTable = () => {
     );
 }
 
-
 export const TableReferenceValuesSegment = () => {
     const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
 
     const [lsReferenceValuesSegment, setLsReferenceValuesSegment] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
@@ -671,12 +726,13 @@ export const TableReferenceValuesSegment = () => {
     const getData = async () => {
         try {
             if (!idAPT) return;
+
             const [resCatalog, resSaved] = await Promise.all([
                 GetByTipoCatalogoCombo(CodCatalogo.APTHIGIENE_VALOR_REF_SEGMENTO),
-                GetAllAPTHPValorRefeSegmento(idAPT)
+                GetAllAPTHPValorRefeSegmento(idAPT, tipoLogica)
             ]);
 
-            const catalogData = resCatalog.data || [];
+            const catalogData = (resCatalog.data || []).sort((a, b) => Number(a.value) - Number(b.value));
             const savedData = resSaved.data.datos || [];
 
             const mergedData = catalogData.map(catItem => {
@@ -767,12 +823,13 @@ export const TableReferenceValuesSegment = () => {
                 cambioRegistro: true
             }));
 
-            const result = await SaveAPTHPValorRefeSegmento(payloadList);
+            const result = await SaveAPTHPValorRefeSegmento(payloadList, tipoLogica);
 
             if (!result.data.exito) {
                 toast.error("Hubo errores al guardar algunos valores.");
             } else {
                 toast.success("Valores guardados correctamente.");
+                window.dispatchEvent(new CustomEvent('refresh-assessment-validations'));
             }
 
             await getData();
@@ -957,7 +1014,10 @@ const AddCatalogoData = ({ getDataCombo, onClose, idTipoCatalogo, codCatalogo })
 
 export const TableControlMethods = () => {
     const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
 
     const methods = useForm({
         resolver: yupResolver(validationControlMethods),
@@ -992,7 +1052,7 @@ export const TableControlMethods = () => {
 
     const getData = async () => {
         try {
-            const response = await GetAllAPTHPMetodoControl(idAPT);
+            const response = await GetAllAPTHPMetodoControl(idAPT, tipoLogica);
             setLsControlMethods(response.data.datos || []);
         } catch (error) {
             toast.error("Error al cargar los métodos de control");
@@ -1002,7 +1062,7 @@ export const TableControlMethods = () => {
 
     useEffect(() => {
         if (idAPT) getData();
-    }, [idAPT]);
+    }, [idAPT, tipoLogica]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -1030,8 +1090,7 @@ export const TableControlMethods = () => {
                 idAPT: idAPT
             };
 
-            const response = await SaveAPTHPMetodoControl(payload);
-            console.log(response.data);
+            const response = await SaveAPTHPMetodoControl(payload, tipoLogica);
             if (response.data.exito) {
                 toast.success(response.data.mensaje);
                 await getData();
@@ -1046,7 +1105,7 @@ export const TableControlMethods = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await DeleteAPTHPMetodoControl(id);
+            const response = await DeleteAPTHPMetodoControl(id, tipoLogica);
             if (response.data.exito) {
                 toast.success(response.data.mensaje);
                 await getData();
@@ -1071,6 +1130,12 @@ export const TableControlMethods = () => {
             </ControlModal>
 
             <Grid container spacing={2} alignItems="center">
+                {/* {tipoLogica == 1 &&
+                    <Grid item xs={12}>
+                        <AnimatedSearchBar />
+                    </Grid>
+                } */}
+
                 <Grid item xs={12} md={6}>
                     <InputSelect
                         options={lsControl}

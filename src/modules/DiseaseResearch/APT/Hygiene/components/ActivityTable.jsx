@@ -33,6 +33,7 @@ import InputText from 'components/input/InputText';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -207,7 +208,10 @@ const ActivityFormModal = ({ open, onClose, getActividades, activityToEdit }) =>
     const { control, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } = methods;
     const { fields } = useFieldArray({ control, name: "listaExigenciaBiomecanica" });
     const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
 
     const [openModalAddActivity, setOpenModalAddActivity] = useState(false);
     const [lsActividad, setLsActividad] = useState([]);
@@ -316,7 +320,7 @@ const ActivityFormModal = ({ open, onClose, getActividades, activityToEdit }) =>
                 formData.append('evidencias', file);
             });
 
-            const result = await SaveAPTHPActivity(formData, true);
+            const result = await SaveAPTHPActivity(formData, tipoLogica, true);
             if (result.data.exito) {
                 // Notificar éxito antes de cualquier otra operación asíncrona pesada
                 toast.success(data.id > 0 ? "Actividad actualizada correctamente" : "Actividad registrada correctamente", { id: loadingToast });
@@ -334,7 +338,6 @@ const ActivityFormModal = ({ open, onClose, getActividades, activityToEdit }) =>
                 toast.error(result.data.mensaje || "Error al procesar la actividad", { id: loadingToast });
             }
         } catch (error) {
-            console.error("Error al guardar actividad:", error);
             toast.error("Error al procesar la actividad", { id: loadingToast });
         }
     };
@@ -828,17 +831,20 @@ const ActivityTable = () => {
     const [listaActividades, setListaActividades] = useState([]);
 
     const { watch } = useFormContext();
-    const idAPT = watch("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watch("idAPTHigienePlantilla") || watch("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
 
     const getActividades = useCallback(async () => {
         try {
             if (!idAPT) return;
-            const result = await GetAllAPTHPActivity(idAPT);
+            const result = await GetAllAPTHPActivity(idAPT, tipoLogica);
             setListaActividades(result.data.datos || []);
         } catch (error) {
             toast.error("Error cargando las actividades");
         }
-    }, [idAPT]);
+    }, [idAPT, tipoLogica]);
 
     useEffect(() => {
         getActividades();
@@ -877,7 +883,7 @@ const ActivityTable = () => {
 
             if (result.isConfirmed) {
                 const loadingToast = toast.loading("Eliminando actividad...");
-                const response = await DeleteAPTHPActivity(id);
+                const response = await DeleteAPTHPActivity(id, tipoLogica);
 
                 if (response.data.exito) {
                     toast.success("Actividad eliminada correctamente", { id: loadingToast });
@@ -889,7 +895,6 @@ const ActivityTable = () => {
                 }
             }
         } catch (error) {
-            console.error(error);
             toast.error("Error al procesar la eliminación");
         }
     }, [getActividades]);

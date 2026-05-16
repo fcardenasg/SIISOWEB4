@@ -70,7 +70,7 @@ const TemplateHygiene = () => {
             datos.cargo = datos.cargoAuto?.value || null;
 
             const [result] = await Promise.all([
-                SaveAPTHP(datos),
+                SaveAPTHP(datos, 1),
                 new Promise(resolve => setTimeout(resolve, 1000))
             ]);
 
@@ -91,6 +91,7 @@ const TemplateHygiene = () => {
                 <StickyActionBar
                     mainTitle="Registrar plantilla de análisis de puesto de trabajo (APT)"
                     showButton={false}
+                    showButtonAction={false}
                     threshold={27}
                     othersButton={
                         <>
@@ -127,13 +128,13 @@ const TemplateHygiene = () => {
                             <CompanyInformation />
                         </Grid>
 
-                        {idAPTHigienePlantilla && (
+                        {!idAPTHigienePlantilla && (
                             <Grid item xs={12} sx={{ mt: 2 }}>
                                 <InitialInfoAlert />
                             </Grid>
                         )}
 
-                        {!idAPTHigienePlantilla &&
+                        {idAPTHigienePlantilla &&
                             ArrayAccordion.map((item, index) => (
                                 <Grid item xs={12} key={index}>
                                     <Accordion

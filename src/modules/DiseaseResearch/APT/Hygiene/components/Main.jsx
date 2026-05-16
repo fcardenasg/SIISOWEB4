@@ -1,28 +1,28 @@
-import ReactDOM from "react-dom";
-import { Alert, Divider, Grid, Box, Typography, Paper, Button } from "@mui/material";
-import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
-import { motion } from 'framer-motion';
-import Lottie from 'lottie-react';
-import animation from 'assets/img/animation.json';
+import { CacheProvider } from '@emotion/react';
+import { Button, Divider, Grid } from "@mui/material";
+import { ActivityRecordsExist, ValorRefeSegmentoRecordsExist } from "api/clients/APTHigienePlantillaClient";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
-import { GetByIdCompany, GetComboCompany } from "api/clients/CompanyClient";
+import { GetByIdCompany } from "api/clients/CompanyClient";
 import { CodCatalogo, DefaultData } from "components/helpers/Enums";
 import InputCheckBox from "components/input/InputCheckBox";
 import InputSelect from "components/input/InputSelect";
+import InputSelectAutocomplete from "components/input/InputSelectAutocomplete";
 import InputText from "components/input/InputText";
 import InputTextEditor from "components/input/InputTextEditor";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
 import { useFormContext } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 import SubCard from "ui-component/cards/SubCard";
 import ActivityTable from "./ActivityTable";
+import BiomechanicalRiskAssessment from "./BiomechanicalRiskAssessment";
+import CustomAlert from "./CustomAlert";
+import ImageDropzone from "./ImageDropzone";
 import PhotographicEvidence from "./PhotographicEvidence";
 import { OWASMethodTables, OrganizationalFactorTable, TableControlMethods, TableReferenceValuesSegment } from "./TableAPT";
-import BiomechanicalRiskAssessment from "./BiomechanicalRiskAssessment";
-import ImageDropzone from "./ImageDropzone";
-import InputSelectAutocomplete from "components/input/InputSelectAutocomplete";
-import ViewExcalidraw from "./ViewExcalidraw";
 import TableValues from "./TableValues";
+import WorkCycleDropzone from "./WorkCycleDropzone";
 
 export const CompanyInformation = ({ dataModel }) => {
     const { setValue, formState: { errors } } = useFormContext();
@@ -50,7 +50,7 @@ export const CompanyInformation = ({ dataModel }) => {
             const lsServerDepartamento = await GetByTipoCatalogoCombo(CodCatalogo.DepartEmpresa);
             setLsDepartamento(lsServerDepartamento.data);
 
-            const lsServerCargo = await GetByTipoCatalogoCombo(CodCatalogo.RosterPosition);
+            const lsServerCargo = await GetByTipoCatalogoCombo(CodCatalogo.DescripcionRosterPosition);
             setLsCargo(lsServerCargo.data);
         }
 
@@ -122,6 +122,7 @@ export const CompanyInformation = ({ dataModel }) => {
 export const OrganizationalAspects = ({ dataModel }) => {
     const [lsTurno, setLsTurno] = useState([]);
     const [lsCategoriaCargo, setLsCategoriaCargo] = useState([]);
+    const [lsJornadaTrabajo, setLsJornadaTrabajo] = useState([]);
 
     useEffect(() => {
         async function getData() {
@@ -132,7 +133,7 @@ export const OrganizationalAspects = ({ dataModel }) => {
             setLsCategoriaCargo(lsServerCategoriaCargo.data);
 
             const lsServerJornadaTrabajo = await GetByTipoCatalogoCombo(CodCatalogo.APTPH_JORNADATRABAJO);
-            setLsCategoriaCargo(lsServerJornadaTrabajo.data);
+            setLsJornadaTrabajo(lsServerJornadaTrabajo.data);
         }
 
         getData();
@@ -141,12 +142,11 @@ export const OrganizationalAspects = ({ dataModel }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
-                <InputText
+                <InputSelect
                     name="jornadaLaboralHoras"
-                    label="Jornada de trabajo (horas)"
-                    type="number"
+                    label="Jornada de trabajo"
                     defaultValue={dataModel?.jornadaLaboralHoras || null}
-                    fullWidth
+                    options={lsJornadaTrabajo}
                 />
             </Grid>
 
@@ -233,10 +233,13 @@ export const WorkActivity = ({ dataModel }) => {
 
 export const JobDescription = ({ dataModel }) => {
     const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
 
-    const disenoObjImage = { idAPT, idItemAcordeon: 3, idSegundarioModulo: 1 };
-    const mobiliariorObjImage = { idAPT, idItemAcordeon: 3, idSegundarioModulo: 2 };
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
+
+    const disenoObjImage = { idAPT, idItemAcordeon: 3, idSegundarioModulo: 1, tipoLogica };
+    const mobiliariorObjImage = { idAPT, idItemAcordeon: 3, idSegundarioModulo: 2, tipoLogica };
 
     return (
         <Grid container spacing={2}>
@@ -392,35 +395,11 @@ export const EnvironmentalAspects = ({ dataModel }) => {
 }
 
 export const WorkActivityTwo = ({ dataModel }) => {
-    const { setValue } = useFormContext();
+    const { watch: watchMain, control } = useFormContext();
+    const location = useLocation();
 
-    const handleOpenPopup = () => {
-        const width = window.screen.availWidth;
-        const height = window.screen.availHeight;
-        const popupWindow = window.open('', '_blank', `width=${width},height=${height},left=0,top=0`);
-        if (popupWindow) {
-            popupWindow.document.title = "Ciclo de trabajo";
-            popupWindow.document.body.innerHTML = '<div id="popup-root"></div>';
-            popupWindow.document.body.style.margin = '0';
-
-            const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
-            styles.forEach(styleNode => {
-                popupWindow.document.head.appendChild(styleNode.cloneNode(true));
-            });
-
-            const popupCache = createCache({
-                key: 'popup-mui-excalidraw',
-                container: popupWindow.document.head,
-            });
-
-            ReactDOM.render(
-                <CacheProvider value={popupCache}>
-                    <ViewExcalidraw />
-                </CacheProvider>,
-                popupWindow.document.getElementById('popup-root')
-            );
-        }
-    };
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
 
     return (
         <Grid container spacing={2}>
@@ -434,46 +413,19 @@ export const WorkActivityTwo = ({ dataModel }) => {
 
             <Grid item xs={12}>
                 <SubCard darkTitle title="Ciclo de trabajo">
-                    <Paper
-                        variant="outlined"
-                        onClick={handleOpenPopup}
-                        sx={{
-                            height: 400,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderStyle: 'dashed',
-                            borderWidth: 2,
-                            borderColor: '#e0e0e0',
-                            backgroundColor: '#fcfcfc',
-                            cursor: 'pointer',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            borderRadius: 4,
-                            p: 1.5,
-                            transition: 'border-color 0.2s, background-color 0.2s',
-                            '&:hover': {
-                                borderColor: 'primary.main',
-                                backgroundColor: 'rgba(25, 118, 210, 0.02)'
-                            }
-                        }}
-                    >
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                            <Box sx={{ width: 220, height: 220 }}>
-                                <Lottie
-                                    animationData={animation}
-                                    loop={true}
-                                    style={{ width: '100%', height: '100%' }}
-                                />
-                            </Box>
-                            <Typography variant="h5" color="text.primary" sx={{ mt: 2, fontWeight: 600 }}>
-                                Aún no se ha creado o cargado un ciclo de trabajo
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Haz clic aquí para abrir el área de trabajo
-                            </Typography>
-                        </Box>
-                    </Paper>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <WorkCycleDropzone name="fotoCicloTrabajo" control={control} idAPT={idAPT} tipoLogica={tipoLogica} />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <InputTextEditor
+                                label="Interpretación del ciclo de trabajo"
+                                name="interpretacionCicloTrabajo"
+                                defaultValue={dataModel?.interpretacionCicloTrabajo || null}
+                            />
+                        </Grid>
+                    </Grid>
                 </SubCard>
             </Grid>
 
@@ -486,8 +438,89 @@ export const WorkActivityTwo = ({ dataModel }) => {
 
 export const AssessmentPhysicalLoad = ({ dataModel }) => {
     const { watch: watchMain } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
+
     const valoresPopupRef = useRef(null);
+
+    const [hasActivities, setHasActivities] = useState(false);
+    const [hasReferenceValues, setHasReferenceValues] = useState(false);
+    const [alert, setAlert] = useState({ open: false, message: '', severity: 'info' });
+
+    const checkValidations = useCallback(async () => {
+        if (!idAPT) return;
+
+        try {
+            // Verificar actividades
+            const resActivities = await ActivityRecordsExist(idAPT, tipoLogica);
+            const existsActivities = resActivities.data.datos || false;
+            setHasActivities(existsActivities);
+
+            // Verificar valores de referencia
+            const resRefValues = await ValorRefeSegmentoRecordsExist(idAPT, tipoLogica);
+            const existsRefValues = resRefValues.data.datos || false;
+            setHasReferenceValues(existsRefValues);
+
+            // Determinar alerta
+            if (!existsActivities) {
+                setAlert({
+                    open: true,
+                    message: "No se han registrado actividades aún, por favor complete ese paso primero para habilitar la valoración.",
+                    severity: "warning"
+                });
+            } else if (!existsRefValues) {
+                setAlert({
+                    open: true,
+                    message: "Debe guardar los 'Valores de referencia por segmento' para habilitar las tablas de valoración.",
+                    severity: "warning"
+                });
+            } else {
+                setAlert({ open: false, message: '', severity: 'info' });
+            }
+        } catch (error) {
+            console.error("Error en validaciones de valoración:", error);
+        }
+    }, [idAPT]);
+
+    useEffect(() => {
+        checkValidations();
+    }, [checkValidations]);
+
+    // Escuchar eventos de actualización (por ejemplo, cuando se guarda una actividad o valor de referencia)
+    useEffect(() => {
+        const handleRefresh = () => checkValidations();
+        window.addEventListener('refresh-assessment-validations', handleRefresh);
+        window.addEventListener('refresh-owas-table', handleRefresh); // Reutilizar este evento si aplica
+        return () => {
+            window.removeEventListener('refresh-assessment-validations', handleRefresh);
+            window.removeEventListener('refresh-owas-table', handleRefresh);
+        };
+    }, [checkValidations]);
+
+    const closePopup = useCallback(() => {
+        if (valoresPopupRef.current && !valoresPopupRef.current.closed) {
+            valoresPopupRef.current.close();
+            valoresPopupRef.current = null;
+        }
+    }, []);
+
+    // Cerrar popup al navegar fuera o desmontar
+    useEffect(() => {
+        return () => closePopup();
+    }, [location.pathname, closePopup]);
+
+    // Escuchar expiración de JWT o cierre de sesión
+    useEffect(() => {
+        const handleStorageChange = (e) => {
+            if (e.key === 'serviceToken' && !e.newValue) {
+                closePopup();
+            }
+        };
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, [closePopup]);
 
     const handleOpenPopup = () => {
         // Si la ventana ya existe y no ha sido cerrada, solo traerla al frente
@@ -519,7 +552,7 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
 
             ReactDOM.render(
                 <CacheProvider value={popupCache}>
-                    <TableValues idAPT={idAPT} />
+                    <TableValues idAPT={idAPT} tipoLogica={tipoLogica} />
                 </CacheProvider>,
                 popupWindow.document.getElementById('popup-root-valores')
             );
@@ -551,10 +584,21 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
             <Grid item xs={12}>
                 <SubCard darkTitle title="Valoración">
                     <Grid container spacing={2}>
+                        {alert.open && (
+                            <Grid item xs={12}>
+                                <CustomAlert
+                                    message={alert.message}
+                                    severity={alert.severity}
+                                    open={alert.open}
+                                    onClose={() => setAlert({ ...alert, open: false })}
+                                />
+                            </Grid>
+                        )}
                         <Grid item xs={12}>
                             <Button
                                 variant="outlined"
                                 onClick={handleOpenPopup}
+                                disabled={!hasActivities || !hasReferenceValues}
                             >
                                 Ver tablas de valoración
                             </Button>
@@ -578,15 +622,18 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
 
 export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
     const { watch: watchMain, control } = useFormContext();
-    const idAPT = watchMain("idAPTHigienePlantilla");
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
 
     const habilitadoVibracion = watchMain("habilitadoVibracion");
     const habilitadoRuido = watchMain("habilitadoRuido");
     const habilitadoMateriaParticulado = watchMain("habilitadoMateriaParticulado");
 
-    const vibrationObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 1 };
-    const noiseObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 2 };
-    const particulateObjImage = { idAPT, idItemAcordeon: 7, idSegundarioModulo: 3 };
+    const vibrationObjImage = { idAPT, idItemAcordeon: 6, idSegundarioModulo: 1, tipoLogica };
+    const noiseObjImage = { idAPT, idItemAcordeon: 6, idSegundarioModulo: 2, tipoLogica };
+    const particulateObjImage = { idAPT, idItemAcordeon: 6, idSegundarioModulo: 3, tipoLogica };
 
     return (
         <Grid container spacing={2}>
@@ -594,7 +641,7 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                 <SubCard darkTitle title="Exposición a vibración" secondary={<InputCheckBox name="habilitadoVibracion" label="Habilitar exposición" defaultValue={false} />}>
                     {!habilitadoVibracion && (
                         <Grid item xs={12} sx={{ mb: 2 }}>
-                            <Alert severity="warning">Para registrar la exposición a vibración debe habilitarla dando en el check, de lo contrario se interpretará como no aplica.</Alert>
+                            <CustomAlert severity="warning" message="Para registrar la exposición a vibración debe habilitarla dando en el check, de lo contrario se interpretará como no aplica." />
                         </Grid>
                     )}
                     <Grid container spacing={2}>
@@ -613,7 +660,7 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                 <SubCard darkTitle title="Exposición a ruido" secondary={<InputCheckBox name="habilitadoRuido" label="Habilitar exposición" defaultValue={false} />}>
                     {!habilitadoRuido && (
                         <Grid item xs={12} sx={{ mb: 2 }}>
-                            <Alert severity="warning">Para registrar la exposición a ruido debe habilitarla dando en el check, de lo contrario se interpretará como no aplica.</Alert>
+                            <CustomAlert severity="warning" message="Para registrar la exposición a ruido debe habilitarla dando en el check, de lo contrario se interpretará como no aplica." />
                         </Grid>
                     )}
                     <Grid container spacing={2}>
@@ -632,7 +679,7 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                 <SubCard darkTitle title="Exposición a material particulado" secondary={<InputCheckBox name="habilitadoMateriaParticulado" label="Habilitar exposición" defaultValue={false} />}>
                     {!habilitadoMateriaParticulado && (
                         <Grid item xs={12} sx={{ mb: 2 }}>
-                            <Alert severity="warning">Para registrar la exposición a material particulado debe habilitarla dando en el check, de lo contrario se interpretará como no aplica.</Alert>
+                            <CustomAlert severity="warning" message="Para registrar la exposición a material particulado debe habilitarla dando en el check, de lo contrario se interpretará como no aplica." />
                         </Grid>
                     )}
                     <Grid container spacing={2}>

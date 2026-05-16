@@ -80,7 +80,7 @@ const UpdateTemplateHygiene = () => {
             try {
                 if (!id) return;
 
-                const response = await GetAPTHPById(id);
+                const response = await GetAPTHPById(id, 1);
                 if (response.data && response.data.exito) {
                     const data = response.data.datos;
 
@@ -110,7 +110,7 @@ const UpdateTemplateHygiene = () => {
             datos.cargo = datos.cargoAuto?.value || null;
 
             const [result] = await Promise.all([
-                SaveAPTHP(datos),
+                SaveAPTHP(datos, 1),
                 new Promise(resolve => setTimeout(resolve, 1000))
             ]);
 
@@ -142,6 +142,7 @@ const UpdateTemplateHygiene = () => {
                 <StickyActionBar
                     mainTitle="Actualizar plantilla de análisis de puesto de trabajo (APT)"
                     showButton={false}
+                    showButtonAction={false}
                     threshold={27}
                     othersButton={
                         <>

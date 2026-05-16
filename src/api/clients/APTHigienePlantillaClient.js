@@ -2,40 +2,44 @@ import { Url } from '../instances/AuthRoute';
 import { getData, deleteData, postData } from '../UtilInstance';
 
 // --- APTHP (Padre) ---
-export const GetAPTHPById = async (id) => await getData(`${Url.APTHigienePlantilla}/id`, { id });
-export const GetAllAPTHP = async () => await getData(Url.APTHigienePlantilla);
-export const SaveAPTHP = async (plantilla) => await postData(Url.APTHigienePlantilla, plantilla);
-export const DeleteAPTHP = async (idAPTHigienePlantilla) => await deleteData(Url.APTHigienePlantilla, { idAPTHigienePlantilla });
+export const GetAPTHPById = async (id, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/id/${tipoLogica}`, { id });
+export const GetAllAPTHP = async (tipoLogica) => await getData(`${Url.APTHigienePlantilla}/${tipoLogica}`);
+export const SaveAPTHP = async (plantilla, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/${tipoLogica}`, plantilla);
+export const DeleteAPTHP = async (idAPTHigienePlantilla, tipoLogica) => await deleteData(`${Url.APTHigienePlantilla}/${tipoLogica}`, { idAPTHigienePlantilla });
+export const InsertAPTHPBulk = async (idAPT, documento) => await getData(`${Url.APTHigienePlantilla}/APTH`, { idAPT, documento });
 
 // --- APTHP Actividad ---
-export const GetAllAPTHPActivity = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPActividad`, { idAPT });
-export const SaveAPTHPActivity = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPActividad`, obj);
-export const DeleteAPTHPActivity = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPActividad`, { id });
+export const GetAllAPTHPActivity = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPActividad/${tipoLogica}`, { idAPT });
+export const SaveAPTHPActivity = async (obj, tipoLogica, headersVali) => await postData(`${Url.APTHigienePlantilla}/APTHPActividad/${tipoLogica}`, obj, headersVali);
+export const DeleteAPTHPActivity = async (id, tipoLogica) => await deleteData(`${Url.APTHigienePlantilla}/APTHPActividad/${tipoLogica}`, { id });
+export const ActivityRecordsExist = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPActividad/Exist/${tipoLogica}`, { idAPT });
 
 // --- APTHP Factor Organizacional ---
-export const GetAllAPTHPOrganizationalFactor = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional`, { idAPT });
-export const SaveAPTHPOrganizationalFactor = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional`, obj);
-export const DeleteAPTHPOrganizationalFactor = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional`, { id });
+export const GetAllAPTHPOrganizationalFactor = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional/${tipoLogica}`, { idAPT });
+export const SaveAPTHPOrganizationalFactor = async (obj, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional/${tipoLogica}`, obj);
+export const DeleteAPTHPOrganizationalFactor = async (id, tipoLogica) => await deleteData(`${Url.APTHigienePlantilla}/APTHPFactorOrganizacional/${tipoLogica}`, { id });
 
 // --- APTHP Metodo Control ---
-export const GetAllAPTHPMetodoControl = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPMetodoControl`, { idAPT });
-export const SaveAPTHPMetodoControl = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPMetodoControl`, obj);
-export const DeleteAPTHPMetodoControl = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPMetodoControl`, { id });
+export const GetAllAPTHPMetodoControl = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPMetodoControl/${tipoLogica}`, { idAPT });
+export const SaveAPTHPMetodoControl = async (obj, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/APTHPMetodoControl/${tipoLogica}`, obj);
+export const DeleteAPTHPMetodoControl = async (id, tipoLogica) => await deleteData(`${Url.APTHigienePlantilla}/APTHPMetodoControl/${tipoLogica}`, { id });
 
 // --- APTHP Valor Refe Segmento ---
-export const GetAllAPTHPValorRefeSegmento = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPValorRefeSegmento`, { idAPT });
-export const SaveAPTHPValorRefeSegmento = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPValorRefeSegmento`, obj);
-export const DeleteAPTHPValorRefeSegmento = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPValorRefeSegmento`, { id });
+export const GetAllAPTHPValorRefeSegmento = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPValorRefeSegmento/${tipoLogica}`, { idAPT });
+export const SaveAPTHPValorRefeSegmento = async (obj, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/APTHPValorRefeSegmento/${tipoLogica}`, obj);
+export const DeleteAPTHPValorRefeSegmento = async (id, tipoLogica) => await deleteData(`${Url.APTHigienePlantilla}/APTHPValorRefeSegmento/${tipoLogica}`, { id });
+export const ValorRefeSegmentoRecordsExist = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPValorRefeSegmento/Exist/${tipoLogica}`, { idAPT });
 
 // --- APTHP Image ---
-export const GetAllAPTHPImage = async (idAPT, idItemAcordeon, idSegundarioModulo) => await getData(`${Url.APTHigienePlantilla}/APTHPImagen`, { idAPT, idItemAcordeon, idSegundarioModulo });
-export const SaveAPTHPImage = async (obj, headersVali) => await postData(`${Url.APTHigienePlantilla}/APTHPImagen`, obj, headersVali);
-export const DeleteAPTHPImage = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHPImagen`, { id });
+export const GetAllAPTHPImage = async (idAPT, idItemAcordeon, idSegundarioModulo, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPImagen/${tipoLogica}`, { idAPT, idItemAcordeon, idSegundarioModulo });
+export const SaveAPTHPImage = async (obj, tipoLogica, headersVali) => await postData(`${Url.APTHigienePlantilla}/APTHPImagen/${tipoLogica}`, obj, headersVali);
+export const DeleteAPTHPImage = async (id, tipoLogica) => await deleteData(`${Url.APTHigienePlantilla}/APTHPImagen/${tipoLogica}`, { id });
 
 // --- APTHP Metodo OWAS ---
-export const GetAllAPTHPMetodoOWAS = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPMetodoOWAS`, { idAPT });
-export const SaveAPTHPMetodoOWAS = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPMetodoOWAS`, obj);
+export const GetAllAPTHPMetodoOWAS = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPMetodoOWAS/${tipoLogica}`, { idAPT });
+export const SaveAPTHPMetodoOWAS = async (obj, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/APTHPMetodoOWAS/${tipoLogica}`, obj);
 
 // --- APTHP Valoracion ---
-export const GetDataTableAPTHPValoracion = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPValoracion-TableData`, { idAPT });
-export const SaveAPTHPValoracion = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHPValoracion`, obj);
+export const GetAllAPTHPValoracion = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPValoracion/${tipoLogica}`, { idAPT });
+export const GetDataTableAPTHPValoracion = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPValoracion-TableData/${tipoLogica}`, { idAPT });
+export const SaveAPTHPValoracion = async (obj, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/APTHPValoracion/${tipoLogica}`, obj);

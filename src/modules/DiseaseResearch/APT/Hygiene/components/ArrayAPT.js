@@ -123,8 +123,154 @@ export const posturasErgonomicasOWAS = [
     }
 ];
 
+export const valoracionMovimiento = [
+    {
+        segmento: "Hombro",
+        postura: [
+            { value: 0, label: "0° - 45°" },
+            { value: 1, label: "45° a 90°" },
+            { value: 2, label: "> 90°" },
+            { value: 1, label: "Extensión" }
+        ],
+        velocidad: [
+            { value: 1, label: "Estática" },
+            { value: 0, label: "Despacio" },
+            { value: 1, label: "Moderado" },
+            { value: 2, label: "Rápido" }
+        ],
+        frecuencia: [
+            { value: 0, label: "< 90" },
+            { value: 1, label: "90 - 150" },
+            { value: 2, label: "> 150" }
+        ],
+        duracion: [
+            { value: 0, label: "< 1 h" },
+            { value: 1, label: "1 - 4 h" },
+            { value: 2, label: "> 4 h" }
+        ],
+        fuerza: [
+            { value: 0, label: "No" },
+            { value: 1, label: "Soporta parte del cuerpo" },
+            { value: 2, label: "Aplica fuerza" }
+        ]
+    },
+    {
+        segmento: "Antebrazo",
+        tituloFuerza: "¿Ejerce fuerza?",
+        postura: [
+            { value: 0, label: "Neutro" },
+            { value: 1, label: "Parcial" },
+            { value: 2, label: "Completa" }
+        ],
+        velocidad: [
+            { value: 1, label: "Estática" },
+            { value: 0, label: "Despacio" },
+            { value: 1, label: "Moderado" },
+            { value: 2, label: "Rápido" }
+        ],
+        duracion: [
+            { value: 0, label: "< 1 h" },
+            { value: 1, label: "1 - 4 h" },
+            { value: 2, label: "> 4 h" }
+        ],
+        fuerza: [
+            { value: 0, label: "No" },
+            { value: 1, label: "Si" }
+        ]
+    },
+    {
+        segmento: "Muñeca",
+        tituloFuerza: "¿Ejerce fuerza?",
+        postura: [
+            { value: 0, label: "Neutra" },
+            { value: 1, label: "Parcial" },
+            { value: 2, label: "Parcial + dedos rectos" },
+            { value: 2, label: "Parcial + dedos flejados" },
+            { value: 2, label: "Forzada" }
+        ],
+        velocidad: [
+            { value: 1, label: "Estática" },
+            { value: 0, label: "Despacio" },
+            { value: 1, label: "Moderado" },
+            { value: 2, label: "Rápido" }
+        ],
+        frecuencia: [
+            { value: 0, label: "< 900" },
+            { value: 1, label: "900 - 1800" },
+            { value: 2, label: "> 1800" }
+        ],
+        duracion: [
+            { value: 0, label: "< 1 h" },
+            { value: 1, label: "1 - 4 h" },
+            { value: 2, label: "> 4 h" }
+        ],
+        fuerza: [
+            { value: 0, label: "No" },
+            { value: 1, label: "Si" }
+        ]
+    },
+    {
+        segmento: "Agarres",
+        tituloFuerza: "¿Ejerce fuerza?",
+        tituloPostura: "1==¿En palma o muñeca?",
+        postura: [
+            { value: 1, label: "Presión Herramienta - Si" },
+            { value: 0, label: "Presión Herramienta - No" },
+            { value: 0, label: "Tipo de Agarre - No" },
+            { value: 1, label: "Tipo de Agarre - Circular" },
+            { value: 2, label: "Tipo de Agarre - Pinza" }
+        ],
+        velocidad: [
+            { value: 1, label: "Estático" },
+            { value: 0, label: "Dinámico" }
+        ],
+        frecuencia: [
+            { value: 1, label: "Infrecuente" },
+            { value: 2, label: "Frecuente" },
+            { value: 0, label: "< 900" },
+            { value: 1, label: "900 - 1800" },
+            { value: 2, label: "> 1800" }
+        ],
+        duracion: [
+            { value: 0, label: "< 1 h" },
+            { value: 1, label: "1 - 4 h" },
+            { value: 2, label: "> 4 h" }
+        ],
+        fuerza: [
+            { value: 0, label: "No" },
+            { value: 1, label: "Si" }
+        ]
+    },
+    {
+        segmento: "Dedos",
+        postura: [
+            { value: 0, label: "Pulsaciones - Dos manos" },
+            { value: 1, label: "Pulsaciones - Una mano" },
+            { value: 0, label: "Gatillo - No" },
+            { value: 1, label: "Gatillo - Si" }
+        ],
+        frecuencia: [
+            { value: 0, label: "Pulsaciones < 15000" },
+            { value: 1, label: "Pulsaciones 15000 - 18000" },
+            { value: 2, label: "Pulsaciones > 18000" },
+            { value: 0, label: "Gatillo < 1000" },
+            { value: 1, label: "Gatillo 1000 - 2000" },
+            { value: 2, label: "Gatillo > 2000" }
+        ],
+        duracion: [
+            { value: 0, label: "< 1 h" },
+            { value: 1, label: "1 - 4 h" },
+            { value: 2, label: "> 4 h" }
+        ],
+        fuerza: [
+            { value: 0, label: "No" },
+            { value: 1, label: "Si" }
+        ]
+    }
+];
+
 export function formatearResultado(result) {
-    if (result == null || result === undefined) return '';
+    if (result == null || result === undefined || result === 0) return '';
 
     if (result <= 1) {
         return `${parseFloat(result).toFixed(2).replace(/\.?0+$/, '')} = 1 Categoría leve`;
@@ -136,97 +282,3 @@ export function formatearResultado(result) {
         return `${parseFloat(result).toFixed(2).replace(/\.?0+$/, '')} = 4 Categoría alta`;
     }
 }
-
-export const assessmentData = [
-    {
-        segmento: "HOMBRO",
-        movimiento: "FLEXIÓN EXTENSIÓN (6)",
-        tareas: [
-            { id: 1, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 2, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "HOMBRO",
-        movimiento: "ABDUCCIÓN (6)",
-        tareas: [
-            { id: 1, msd: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 } },
-            { id: 2, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 0 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "ANTEBRAZO",
-        movimiento: "PRONO-SUPINACIÓN (5)",
-        tareas: [
-            { id: 1, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 2, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 0 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "MUÑECA",
-        movimiento: "FLEXOEXTENSIÓN – DESVIACIÓN RADIAL – DESVIACIÓN CUBITAL (6)",
-        tareas: [
-            { id: 1, msd: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 }, msi: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 } },
-            { id: 2, msd: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 2.4 }, msi: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 2.4 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "AGARRE",
-        movimiento: "PRESION HERRAMIENTA (4)",
-        tareas: [
-            { id: 1, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 2, msd: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 2.4 }, msi: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 2.4 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "AGARRE",
-        movimiento: "TIPO DE AGARRE: CIRCULAR – PINZA (4)",
-        tareas: [
-            { id: 1, msd: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 }, msi: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 } },
-            { id: 2, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 1, fuerza: 0, total: 2.4 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "DEDOS",
-        movimiento: "PULSACIONES (4)",
-        tareas: [
-            { id: 1, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 2, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "DEDOS",
-        movimiento: "ACCIÓN SOBRE GATILLO (3)",
-        tareas: [
-            { id: 1, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 2, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    },
-    {
-        segmento: "CUELLO",
-        movimiento: "FLEXION – EXTENSION – ROTACION (4)",
-        // Nota: El documento indica que para Cuello es "solo uno", por lo que los valores se duplican o se maneja una sola columna según se requiera.
-        tareas: [
-            { id: 1, msd: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 }, msi: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 } },
-            { id: 2, msd: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 }, msi: { postura: 1, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 1.2 } },
-            { id: 3, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } },
-            { id: 4, msd: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 }, msi: { postura: 0, velocidad: 0, frecuencia: 0, duraciontarea: 0, fuerza: 0, total: 0 } }
-        ]
-    }
-];

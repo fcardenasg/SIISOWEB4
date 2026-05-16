@@ -221,7 +221,7 @@ const ListTemplateHygiene = () => {
     async function getAll() {
         try {
             setLoading(true);
-            const lsServer = await GetAllAPTHP();
+            const lsServer = await GetAllAPTHP(1);
             if (lsServer?.data?.exito) {
                 setLsModelData(lsServer.data.datos || []);
                 setRows(lsServer.data.datos || []);
@@ -314,7 +314,7 @@ const ListTemplateHygiene = () => {
         try {
             swal(ParamDelete).then(async (willDelete) => {
                 if (willDelete) {
-                    const result = await DeleteAPTHP(idCheck);
+                    const result = await DeleteAPTHP(idCheck, 1);
                     if (result.data.exito) {
                         toast.success(result.data.mensaje);
                         setSearch('');

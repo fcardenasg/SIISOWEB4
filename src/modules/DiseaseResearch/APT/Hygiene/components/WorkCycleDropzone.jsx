@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Box, Typography, IconButton, Paper, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useController, useFormContext } from 'react-hook-form';
@@ -7,8 +7,10 @@ import animation from 'assets/img/animation.json';
 import { DeleteAPTHPImage, GetAllAPTHPImage, SaveAPTHPImage } from 'api/clients/APTHigienePlantillaClient';
 import { ImageInterpretationAI } from 'api/clients/ServiceIAClient';
 import toast from 'react-hot-toast';
+import swal from 'sweetalert';
+import { ParamDelete } from 'components/alert/AlertAll';
 
-export default function ImageDropzone({ name, control, rules, objImage, disabled = false, exposureType, targetInput }) {
+export default function WorkCycleDropzone({ name, control, rules, idAPT, tipoLogica, disabled = false }) {
     const { setValue, getValues } = useFormContext();
     const {
         field: { onChange, value },
@@ -21,31 +23,42 @@ export default function ImageDropzone({ name, control, rules, objImage, disabled
     const fileInputRef = useRef(null);
     const cargoText = getValues('cargoAuto') || '';
 
-    useEffect(() => {
-        if (objImage?.idAPT && objImage?.idItemAcordeon && objImage?.idSegundarioModulo) {
-            async function loadImage() {
-                try {
-                    const response = await GetAllAPTHPImage(objImage.idAPT, objImage.idItemAcordeon, objImage.idSegundarioModulo, objImage.tipoLogica);
-                    if (response.data.exito) {
-                        if (response.data.datos?.length > 0) {
-                            const imageData = response.data.datos[0];
-                            setServerImageId(imageData.id);
-                            setPreview(imageData.urlServidor);
-                            onChange(imageData.urlServidor);
-                        }
-                    } else {
-                        setPreview(null);
-                        onChange(null);
-                        setServerImageId(null);
-                        toast.error(response.data.mensaje || 'No se encontró imágenes para este registro');
-                    }
-                } catch (error) {
-                    toast.error("Error cargando imagen:", error);
+    const idItemAcordeon = 44;
+    const idSegundarioModulo = null;
+
+    const fetchImageData = async () => {
+        try {
+            const params = { idAPT, idItemAcordeon };
+            if (idSegundarioModulo) params.idSegundarioModulo = idSegundarioModulo;
+
+            const response = await GetAllAPTHPImage(params.idAPT, params.idItemAcordeon, params.idSegundarioModulo, tipoLogica);
+            if (response.data.exito) {
+                if (response.data.datos?.length > 0) {
+                    const imageData = response.data.datos[0];
+                    setServerImageId(imageData.id);
+                    setPreview(imageData.urlServidor);
+                    onChange(imageData.urlServidor);
+                } else {
+                    setPreview(null);
+                    onChange(null);
+                    setServerImageId(null);
                 }
+            } else {
+                setPreview(null);
+                onChange(null);
+                setServerImageId(null);
+                toast.error(response.data.mensaje || "No se encontró imagen de ciclo de trabajo");
             }
-            loadImage();
+        } catch (error) {
+            toast.error("Error cargando imagen:", error);
         }
-    }, [objImage?.idAPT, objImage?.idItemAcordeon, objImage?.idSegundarioModulo]);
+    };
+
+    useEffect(() => {
+        if (idAPT) {
+            fetchImageData();
+        }
+    }, [idAPT]);
 
     useEffect(() => {
         if (value && value instanceof File) {
@@ -93,48 +106,50 @@ export default function ImageDropzone({ name, control, rules, objImage, disabled
         try {
             const formData = new FormData();
             formData.append('Archivo', file);
-            formData.append('IdAPT', objImage.idAPT);
-            formData.append('IdItemAcordeon', objImage.idItemAcordeon);
-            formData.append('IdSegundarioModulo', objImage.idSegundarioModulo);
+            formData.append('IdAPT', idAPT);
+            formData.append('IdItemAcordeon', idItemAcordeon);
+            if (idSegundarioModulo) formData.append('IdSegundarioModulo', idSegundarioModulo);
 
-            const response = await SaveAPTHPImage(formData, objImage.tipoLogica, true);
+            const response = await SaveAPTHPImage(formData, tipoLogica, true);
             if (response.data.exito) {
-                onChange(file);
-                toast.success("Imagen guardada correctamente");
+                await fetchImageData();
+                toast.success("Imagen de ciclo de trabajo guardada correctamente");
+                toast.loading("Analizando ciclo de trabajo con IA...", { id: "analyzing-cycle" });
 
-                if (exposureType && targetInput) {
-                    toast.loading("Analizando resultados con IA...", { id: "analyzing-image" });
-                    try {
-                        const promptText = `
-                            Analiza las imágenes de exposición ${exposureType} para el cargo ${cargoText?.label}. Presenta los resultados en formato de lista con viñetas o puntos, similar al siguiente ejemplo:
+                try {
+                    const promptText = `Actúa como un Especialista en Ingeniería de Métodos. Tu tarea es extraer y analizar los datos técnicos de la imagen adjunta para el cargo: ${cargoText?.label}.
 
-                            - En el periodo se han realizado X mediciones
-                            - El nivel promedio es de X (nivel permitido de Y)
-                            - El índice de exposición promedio es de X (por debajo del nivel permitido / nivel permitido / por encima del nivel permitido)
-                            - El índice de riesgo (peor escenario) es de X (por debajo del nivel permitido / nivel permitido / por encima del nivel permitido)
-                            - Nota: observación general sobre las mediciones
+                    REGLAS DE ORO:
+                    1. Retorna ÚNICAMENTE código HTML (sin bloques de código Markdown, sin triple comillas \`\`\`).
+                    2. NO incluyas introducciones ("Aquí tienes...", "El análisis es...") ni conclusiones.
+                    3. El nombre del cargo debe aparecer como un título <h4> en Mayúsculas Iniciales (ej: Operador De Camión).
+                    4. NO inventes valores; extrae ÚNICAMENTE los que aparecen en la imagen actual.
 
-                            Evalúa cada valor técnico (niveles promedio, índices de exposición y riesgo) comparándolos con los estándares internacionales reconocidos para ${exposureType} y determina si están: por debajo
-                            del nivel permitido, en el nivel permitido, o por encima del nivel permitido. Extrae TODOS los valores numéricos visibles en las imágenes, tanto los medidos como los límites permitidos, y preséntalos con sus valores reales. 
-                            No uses variables genéricas como "X" o "Y", sino los valores exactos obtenidos de las imágenes. Incluye los datos clave: número de mediciones, niveles promedio vs límites, índices de exposición y riesgo, 
-                            comparaciones con/sin EPP, peores escenarios. Usa HTML con <ul> y <li> para las listas. Mantén el tono técnico y directo del ejemplo proporcionado.`;
+                    CONTENIDO A GENERAR (Usa <ul> y <li>):
 
-                        const aiFormData = new FormData();
-                        aiFormData.append('imageFile', file);
-                        aiFormData.append('prompt', promptText);
+                    <h4>Interpretación del Ciclo: ${cargoText?.label?.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</h4>
+                    <ul>
+                    <li><strong>Resumen de Jornada:</strong> Describe la duración total, el tiempo de operación efectiva y el número de ciclos según los datos detectados en la imagen.</li>
+                    <li><strong>Desglose del Ciclo:</strong> Identifica el tiempo por ciclo (total) y propón una distribución técnica de sus fases (Cargue, Desplazamiento, Descargue, etc.) adaptadas a las funciones de un ${cargoText?.label}, asegurando que la suma coincida con el total de la imagen.</li>
+                    <li><strong>Tiempos Complementarios:</strong> Detalla los minutos y porcentajes destinados a inspección y pausas organizacionales según el gráfico.</li>
+                    <li><strong>Observación Técnica:</strong> Una breve frase sobre la naturaleza del ciclo (repetitivo, intermitente, etc.) basada en la secuencia visual.</li>
+                    </ul>`;
 
-                        const aiResponse = await ImageInterpretationAI(aiFormData);
-                        if (aiResponse.data?.exito) {
-                            let resultHtml = aiResponse.data.datos;
-                            resultHtml = resultHtml.replace(/```html/gi, "").replace(/```/g, "").trim();
-                            setValue(targetInput, resultHtml, { shouldValidate: true, shouldDirty: true });
-                            toast.success("Análisis de IA completado", { id: "analyzing-image" });
-                        } else {
-                            toast.error("Error al analizar la imagen con IA", { id: "analyzing-image" });
-                        }
-                    } catch (error) {
-                        toast.error("Ocurrió un error en el análisis de IA", { id: "analyzing-image" });
+                    const aiFormData = new FormData();
+                    aiFormData.append('imageFile', file);
+                    aiFormData.append('prompt', promptText);
+
+                    const aiResponse = await ImageInterpretationAI(aiFormData);
+                    if (aiResponse.data?.exito) {
+                        let resultHtml = aiResponse.data.datos;
+                        resultHtml = resultHtml.replace(/```html/gi, "").replace(/```/g, "").trim();
+                        setValue('interpretacionCicloTrabajo', resultHtml, { shouldValidate: true, shouldDirty: true });
+                        toast.success("Análisis de ciclo completado", { id: "analyzing-cycle" });
+                    } else {
+                        toast.error("Error al analizar el ciclo con IA", { id: "analyzing-cycle" });
                     }
+                } catch (error) {
+                    toast.error("Ocurrió un error en el análisis de IA", { id: "analyzing-cycle" });
                 }
             } else {
                 onChange(null);
@@ -155,20 +170,35 @@ export default function ImageDropzone({ name, control, rules, objImage, disabled
     const handleRemoveImage = async (e) => {
         e.stopPropagation();
         if (disabled) return;
+
         try {
-            if (serverImageId) {
-                const response = await DeleteAPTHPImage(serverImageId, objImage.tipoLogica);
-                if (response.data.exito) {
-                    toast.success("Imagen eliminada correctamente");
+            const willDelete = await swal(ParamDelete);
+            if (willDelete) {
+                if (serverImageId) {
+                const response = await DeleteAPTHPImage(serverImageId, tipoLogica);
+                    if (response.data.exito) {
+                        toast.success("Imagen eliminada correctamente");
+                        setServerImageId(null);
+                        setPreview(null);
+                        onChange(null);
+                        if (fileInputRef.current) {
+                            fileInputRef.current.value = '';
+                        }
+                    } else {
+                        toast.error(response.data.mensaje || "Error al eliminar la imagen de la base de datos");
+                    }
+                } else {
+                    // Si no hay ID de servidor, solo limpiamos el estado local
+                    setServerImageId(null);
+                    setPreview(null);
+                    onChange(null);
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                    }
                 }
             }
         } catch (error) {
-            toast.error("Error al eliminar la imagen");
-        }
-        setServerImageId(null);
-        onChange(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+            toast.error("Error al procesar la eliminación");
         }
     };
 
@@ -304,10 +334,10 @@ export default function ImageDropzone({ name, control, rules, objImage, disabled
                             />
                         </Box>
                         <Typography variant="h5" color="text.primary" sx={{ mt: 2, fontWeight: 600 }}>
-                            Sube tu documento o imagen
+                            Sube la imagen del ciclo de trabajo
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            Arrastra y suelta para ver todos los detalles
+                            Arrastra y suelta para analizar con IA
                         </Typography>
                     </Box>
                 )}
