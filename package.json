@@ -7,6 +7,7 @@
         "@emotion/cache": "^11.4.0",
         "@emotion/react": "^11.4.0",
         "@emotion/styled": "^11.3.0",
+        "@excalidraw/excalidraw": "^0.14.2",
         "@fullcalendar/core": "^5.6.0",
         "@fullcalendar/daygrid": "^5.6.0",
         "@fullcalendar/interaction": "^5.6.0",
@@ -28,7 +29,9 @@
         "@mui/x-date-pickers": "^5.0.0-alpha.3",
         "@pdftron/webviewer": "^11.8.0",
         "@reduxjs/toolkit": "^1.9.7",
+        "@stitches/react": "^1.2.8",
         "@tabler/icons": "1.117",
+        "@tldraw/tldraw": "^1.29.2",
         "agora-rtc-react": "^1.1.3",
         "agora-rtc-sdk-ng": "^4.14.2",
         "apexcharts": "^3.26.1",
@@ -84,6 +87,7 @@
         "remark-gfm": "^1.0.0",
         "slick-carousel": "^1.8.1",
         "sweetalert": "^2.1.2",
+        "sweetalert2": "^11.26.17",
         "yup": "^0.32.9"
     },
     "scripts": {

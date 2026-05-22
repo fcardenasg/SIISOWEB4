@@ -29,6 +29,7 @@ import useAuth from 'hooks/useAuth';
 import { DefaultValue } from 'components/helpers/Enums';
 import ChatIA from './components/Chat/ChatIA';
 import { useNavigate } from 'react-router-dom';
+import { ProgrammingActionsProvider } from './contexts/ProgrammingActionsContext';
 
 const ViewProgramming = () => {
     const theme = useTheme();
@@ -165,163 +166,164 @@ const ViewProgramming = () => {
     };
 
     return (
-        <AnimatePresence mode="wait">
-            <motion.div
-                initial={{ opacity: 0, filter: "blur(4px)" }}
-                animate={{ opacity: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, filter: "blur(4px)" }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                style={{ width: "100%" }}
-            >
-                <Box sx={{ p: 1 }}>
-                    <ChatIA setIsOpen={setIsOpen} isOpen={isOpen} setInfoEmployee={setInfoEmployee} infoEmployee={infoEmployee} />
+        <ProgrammingActionsProvider
+            onOpenChat={handleOpenChat}
+            onGoAttention={onClickGoAttention}
+        >
+            <AnimatePresence mode="wait">
+                <motion.div
+                    initial={{ opacity: 0, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, filter: "blur(4px)" }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    style={{ width: "100%" }}
+                >
+                    <Box sx={{ p: 1 }}>
+                        <ChatIA setIsOpen={setIsOpen} isOpen={isOpen} setInfoEmployee={setInfoEmployee} infoEmployee={infoEmployee} />
 
-                    <Box sx={{ pb: 2 }}>
-                        <NavigationBar title="Lista de programación" urlBack="/dashboard/drummond" />
+                        <Box sx={{ pb: 2 }}>
+                            <NavigationBar title="Lista de programación" urlBack="/dashboard/drummond" />
 
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                gap: 1.5,
-                                flexWrap: 'wrap',
-                            }}
-                        >
-                            <TextField
-                                size="small"
-                                placeholder="Buscar..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchIcon fontSize="small" color="action" />
-                                        </InputAdornment>
-                                    ),
-                                    sx: {
-                                        width: { xs: '100%', sm: 300 },
-                                        '& fieldset': {
-                                            borderColor: 'divider',
-                                        },
-                                    },
-                                }}
-                            />
-
-                            <ToggleButtonGroup
-                                value={viewMode}
-                                exclusive
-                                onChange={handleViewChange}
-                                size="small"
+                            <Box
                                 sx={{
-                                    borderRadius: 2,
-                                    border: '1px solid',
-                                    borderColor: 'divider',
-                                    bgcolor: 'background.paper',
-                                    '& .MuiToggleButton-root': {
-                                        border: 'none',
-                                        borderRadius: '6px !important',
-                                        px: 1.2,
-                                        py: 0.7,
-                                        '&:not(.Mui-selected):hover': {
-                                            bgcolor: '#E3193799',
-                                            color: 'white',
-                                        },
-                                        '&.Mui-selected': {
-                                            bgcolor: 'secondary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                bgcolor: 'secondary.main',
-                                                color: 'white',
-                                            },
-                                        },
-                                    },
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    gap: 1.5,
+                                    flexWrap: 'wrap',
                                 }}
                             >
-                                <ToggleButton value="list" aria-label="ver como lista">
-                                    <ViewListIcon fontSize="small" />
-                                </ToggleButton>
-                                <ToggleButton value="card" aria-label="ver como tarjetas">
-                                    <ViewModuleIcon fontSize="small" />
-                                </ToggleButton>
-                            </ToggleButtonGroup>
-                        </Box>
-                    </Box>
-
-                    {loading ? (
-                        <>{renderSkeletons(viewMode === 'list' ? 4 : 6)}</>
-                    ) : filteredData.length === 0 ? (
-                        <NoRecord />
-                    ) : (
-                        <>
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={`${currentPage}`}
-                                    initial={{ opacity: 0, filter: "blur(4px)" }}
-                                    animate={{ opacity: 1, filter: "blur(0px)" }}
-                                    exit={{ opacity: 0, filter: "blur(4px)" }}
-                                    transition={{ duration: 0.3, ease: "easeOut" }}
-                                    style={{ width: "100%" }}
-                                >
-                                    {viewMode === 'list' ? (
-                                        <List sx={{ p: 0 }}>
-                                            {paginatedData.map((patient, index) => (
-                                                <ViewList
-                                                    key={patient.id}
-                                                    index={index}
-                                                    dataInfo={patient}
-                                                    onClickOpenChat={handleOpenChat}
-                                                    onClickGoAttention={() => onClickGoAttention(patient)}
-                                                />
-                                            ))}
-                                        </List>
-                                    ) : (
-                                        <Grid container spacing={2.5}>
-                                            {paginatedData.map((patient, index) => (
-                                                <Grid item xs={12} sm={6} md={4} key={patient.id || index}>
-                                                    <ViewCard
-                                                        key={patient.id}
-                                                        index={index}
-                                                        dataInfo={patient}
-                                                        onClickGoAttention={() => onClickGoAttention(patient)}
-                                                        onClickOpenChat={handleOpenChat}
-                                                    />
-                                                </Grid>
-                                            ))}
-                                        </Grid>
-                                    )}
-                                </motion.div>
-                            </AnimatePresence>
-
-
-                            {totalPages > 1 && (
-                                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 2 }}>
-                                    <Pagination
-                                        count={totalPages}
-                                        page={currentPage}
-                                        onChange={handlePageChange}
-                                        color="secondary"
-                                        size={isMobile ? 'small' : 'medium'}
-                                        sx={{
-                                            '& .MuiPaginationItem-root': {
-                                                borderRadius: '8px',
-                                                fontWeight: 500,
+                                <TextField
+                                    size="small"
+                                    placeholder="Buscar..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <SearchIcon fontSize="small" color="action" />
+                                            </InputAdornment>
+                                        ),
+                                        sx: {
+                                            width: { xs: '100%', sm: 300 },
+                                            '& fieldset': {
+                                                borderColor: 'divider',
                                             },
-                                            '& .Mui-selected': {
+                                        },
+                                    }}
+                                />
+
+                                <ToggleButtonGroup
+                                    value={viewMode}
+                                    exclusive
+                                    onChange={handleViewChange}
+                                    size="small"
+                                    sx={{
+                                        borderRadius: 2,
+                                        border: '1px solid',
+                                        borderColor: 'divider',
+                                        bgcolor: 'background.paper',
+                                        '& .MuiToggleButton-root': {
+                                            border: 'none',
+                                            borderRadius: '6px !important',
+                                            px: 1.2,
+                                            py: 0.7,
+                                            '&:not(.Mui-selected):hover': {
+                                                bgcolor: '#E3193799',
+                                                color: 'white',
+                                            },
+                                            '&.Mui-selected': {
                                                 bgcolor: 'secondary.main',
                                                 color: 'white',
                                                 '&:hover': {
                                                     bgcolor: 'secondary.main',
+                                                    color: 'white',
                                                 },
                                             },
-                                        }}
-                                    />
-                                </Box>
-                            )}
-                        </>
-                    )}
-                </Box>
-            </motion.div>
-        </AnimatePresence>
+                                        },
+                                    }}
+                                >
+                                    <ToggleButton value="list" aria-label="ver como lista">
+                                        <ViewListIcon fontSize="small" />
+                                    </ToggleButton>
+                                    <ToggleButton value="card" aria-label="ver como tarjetas">
+                                        <ViewModuleIcon fontSize="small" />
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            </Box>
+                        </Box>
+
+                        {loading ? (
+                            <>{renderSkeletons(viewMode === 'list' ? 4 : 6)}</>
+                        ) : filteredData.length === 0 ? (
+                            <NoRecord />
+                        ) : (
+                            <>
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={`${currentPage}`}
+                                        initial={{ opacity: 0, filter: "blur(4px)" }}
+                                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                                        exit={{ opacity: 0, filter: "blur(4px)" }}
+                                        transition={{ duration: 0.3, ease: "easeOut" }}
+                                        style={{ width: "100%" }}
+                                    >
+                                        {viewMode === 'list' ? (
+                                            <List sx={{ p: 0 }}>
+                                                {paginatedData.map((patient, index) => (
+                                                    <ViewList
+                                                        key={patient.id}
+                                                        index={index}
+                                                        dataInfo={patient}
+                                                    />
+                                                ))}
+                                            </List>
+                                        ) : (
+                                            <Grid container spacing={2.5}>
+                                                {paginatedData.map((patient, index) => (
+                                                    <Grid item xs={12} sm={6} md={4} key={patient.id || index}>
+                                                        <ViewCard
+                                                            key={patient.id}
+                                                            index={index}
+                                                            dataInfo={patient}
+                                                        />
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+
+
+                                {totalPages > 1 && (
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 2 }}>
+                                        <Pagination
+                                            count={totalPages}
+                                            page={currentPage}
+                                            onChange={handlePageChange}
+                                            color="secondary"
+                                            size={isMobile ? 'small' : 'medium'}
+                                            sx={{
+                                                '& .MuiPaginationItem-root': {
+                                                    borderRadius: '8px',
+                                                    fontWeight: 500,
+                                                },
+                                                '& .Mui-selected': {
+                                                    bgcolor: 'secondary.main',
+                                                    color: 'white',
+                                                    '&:hover': {
+                                                        bgcolor: 'secondary.main',
+                                                    },
+                                                },
+                                            }}
+                                        />
+                                    </Box>
+                                )}
+                            </>
+                        )}
+                    </Box>
+                </motion.div>
+            </AnimatePresence>
+        </ProgrammingActionsProvider>
     );
 };
 

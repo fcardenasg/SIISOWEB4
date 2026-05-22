@@ -48,7 +48,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
       },
       viewer.current
     ).then((instance) => {
-      console.log("elemento", instance.UI);
 
       setInstance(instance);
 
@@ -332,8 +331,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
       instance.UI.importModularComponents(configUI);
 
       if (file) {
-        console.log("🔥 CARGA INICIAL DIFERIDA EN MONTAJE:", file.name);
-
         const objectUrl = URL.createObjectURL(file);
 
         instance.Core.documentViewer.loadDocument(objectUrl, {
@@ -341,9 +338,9 @@ const VisualizatorFile = ({ file, confirmExport }) => {
           officeEditor: true,
           extension: 'docx',
           enableOfficeEditing: true,
-           officeEditorOptions: {
-          initialEditMode: "editing",
-        },
+          officeEditorOptions: {
+            initialEditMode: "editing",
+          },
           type: "office",
         });
 
@@ -364,15 +361,10 @@ const VisualizatorFile = ({ file, confirmExport }) => {
         typeof instanceToDispose.dispose === "function"
       ) {
         instanceToDispose.dispose();
-        console.log("WebViewer ha sido completamente DISPUESTO (destruido).");
       } else if (instanceToDispose) {
-        console.warn(
-          "WV Instance capturada, pero dispose no es una función. Limpiando DOM."
-        );
+
       } else {
-        console.log(
-          "WV Instance no pudo ser dispuesta porque no estaba lista."
-        );
+
       }
 
       if (viewer.current) {
@@ -388,7 +380,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
   };
 
   useEffect(() => {
-    console.log("exportar");
     if (!instance) return;
 
     exportarPDF();
@@ -410,11 +401,8 @@ const VisualizatorFile = ({ file, confirmExport }) => {
   //     // 1. Accede a la instancia viva desde la referencia
   //     const instance = wvInstanceRef.current;
 
-  //     console.log("file", file);
-  //     console.log("instance", instance); // <-- Aquí debe ser el objeto WebViewer
 
   //     if (file && instance) {
-  //         console.log("🚚 CARGANDO NUEVO ARCHIVO DESDE PROP:", file.name);
 
   //         instance.Core.documentViewer.loadDocument(file, {
   //             filename: file.name,
@@ -433,7 +421,6 @@ const VisualizatorFile = ({ file, confirmExport }) => {
   //     const instance = wvInstanceRef.current;
 
   //     if (file && instance) {
-  //         console.log("🚚 CARGANDO NUEVO ARCHIVO DESDE PROP:", file.name);
 
   //         // Desestructurar Core desde la instancia
   //         const { Core } = instance;

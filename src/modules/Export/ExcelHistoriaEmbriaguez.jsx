@@ -53,7 +53,6 @@ const ExcelHistoriaEmbriaguez = ({ setSede, sede, setFechaInicio, fechaInicio, s
             }
 
             const lsServerExcel = await GetExcelHistoryDrunkenness(parametros);
-            console.log(lsServerExcel.data);
             if (lsServerExcel.data.exito) {
                 DownloadFile(lsServerExcel.data.datos.nombre, lsServerExcel.data.datos.base64);
 

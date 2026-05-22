@@ -27,14 +27,32 @@ export const CodCatalogo = {
     TIPO_SOLICITUD_DEREPETICION: 28,
     RESPONSABLE_RESPUESTA_DEREPETICION: 112,
     GRUPO_RIESGO: 249,
-    TIPO_RIESGO: 3001, /* CAMBIAR */
-    PARAMETRO_ESPIRO: 2001, /* CAMBIAR */
+    PARAMETRO_ESPIRO: 2001,
+
+    /* APT HIGIENE */
+    APTPH_CATEGORIA_CARGO: 2035,
+    APTPH_AGENTE_BIOLOGICO: 2034,
+    APTPH_AGENTE_QUIMICO: 2033,
+    APTPH_TIPO_TRABAJO: 2032,
+    APTPH_SEDE: 2031,
+    APTPH_JORNADATRABAJO: 2030,
+    APTPH_CARGAFISICAOWAS: 2029,
+    APTHIGIENE_EXIGENCIA_BIOMECANICA: 2036,
+    APTHIGIENE_ACTIVIDAD: 2028,
+    APTHIGIENE_CATEGORIAPORSEGMENTO: 2027,
+    APTHIGIENE_FACTOR_ORGANIZACIONAL: 2026,
+    APTHIGIENE_VALOR_REF_SEGMENTO: 2025,
 
     /* IEL */
-    IEL_CONTROL: 4003,
-    IEL_TIPO_CONTROL: 4004,
-    IEL_ASPCONSI: 4005,
+    TIPO_RIESGO: 2022,
+    IEL_CALIFICACION: 2016,
+    IEL_CONTROL: 2017,
+    IEL_TIPO_CONTROL: 2018,
+    IEL_ASPCONSI: 2019,
+    IEL_MOTIVODEVOLUCION: 2020,
 
+    PR_ESTADO_CASO: 2021,
+    OPCION_HABITO_INVESTIGACION: 2015,
     VentanillaTipoPeticion: 219,
     VentanillaMedioIngreso: 220,
     VentanillaEmpresaMensajeria: 226,
@@ -188,7 +206,6 @@ export const CodCatalogo = {
 
     AHC_ATENCION: 135,
     Opciones_SINO: 88,
-    OPCION_HABITO_INVESTIGACION: 3002,
     AHC_CONCEP_ACTITUD: 43,
 
     AUSLAB_INC: 198,
@@ -226,6 +243,7 @@ export const DefaultData = {
     AsesoriaPsicologica: 3909,
     ASESORIA_MEDICA: 3911,
     SinRegistro: 1,
+    EmpresaDrummond: 1401,
 }
 
 export const IdUser = {
@@ -285,7 +303,8 @@ export const Modulo = {
     Panoramadecargo: 44,
     Usuario: 45,
     Rol: 46,
-    AsignacionInvestigacion: 47
+    AsignacionInvestigacion: 47,
+    InvestigacionEnfermedadLaboral: 48,
 }
 
 export const IdTipoProveedor = {

@@ -1,21 +1,32 @@
-import { DefaultValue } from 'components/helpers/Enums'
+const cleanData = (data) => {
+    const cleaned = {};
+    Object.keys(data).forEach(key => {
+        cleaned[key] = data[key] === "" ? null : data[key];
+    });
+    return cleaned;
+};
 
-export function PostEvolutionNote(documento, fecha, idRegistroAtencion, atencion = DefaultValue.SINREGISTRO_GLOBAL, idContingencia = DefaultValue.SINREGISTRO_GLOBAL,
-    idTurno = DefaultValue.SINREGISTRO_GLOBAL, idDiaTurno = DefaultValue.SINREGISTRO_GLOBAL, nota = "", dx1 = "",
-    dx2 = "", dx3 = "", planManejo = "", idConceptoActitud = DefaultValue.SINREGISTRO_GLOBAL, idRemitido = DefaultValue.SINREGISTRO_GLOBAL,
-    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
-    return {
-        documento, fecha, idRegistroAtencion, atencion, idContingencia, idTurno, idDiaTurno, nota, dx1,
-        dx2, dx3, planManejo, idConceptoActitud, idRemitido, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
+export function MapEvolutionNote(datos, idExistente = null) {
+    const payload = {
+        documento: datos.documento,
+        fecha: datos.fecha,
+        idRegistroAtencion: datos.idRegistroAtencion,
+        atencion: datos.atencion || null,
+        idContingencia: datos.idContingencia || null,
+        idTurno: datos.idTurno || null,
+        idDiaTurno: datos.idDiaTurno || null,
+        nota: datos.nota || null,
+        dx1: datos.dx1 || null,
+        dx2: datos.dx2 || null,
+        dx3: datos.dx3 || null,
+        planManejo: datos.planManejo || null,
+        idConceptoActitud: datos.idConceptoActitud || null,
+        idRemitido: datos.idRemitido || null
     };
-}
 
-export function PutEvolutionNote(id, documento, fecha, idRegistroAtencion, atencion = DefaultValue.SINREGISTRO_GLOBAL, idContingencia = DefaultValue.SINREGISTRO_GLOBAL,
-    idTurno = DefaultValue.SINREGISTRO_GLOBAL, idDiaTurno = DefaultValue.SINREGISTRO_GLOBAL, nota = "", dx1 = "",
-    dx2 = "", dx3 = "", planManejo = "", idConceptoActitud = DefaultValue.SINREGISTRO_GLOBAL, idRemitido = DefaultValue.SINREGISTRO_GLOBAL,
-    usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico) {
-    return {
-        id, documento, fecha, idRegistroAtencion, atencion, idContingencia, idTurno, idDiaTurno, nota, dx1,
-        dx2, dx3, planManejo, idConceptoActitud, idRemitido, usuarioRegistro, fechaRegistro, usuarioModifico, fechaModifico
-    };
+    if (idExistente) {
+        payload.id = idExistente;
+    }
+
+    return cleanData(payload);
 }

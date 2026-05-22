@@ -243,11 +243,20 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                                         {!disabled &&
                                             <TextField
-                                                type="number"
+                                                type="text"
                                                 disabled={disabled}
                                                 value={documento}
-                                                onChange={onChange}
-                                                onKeyDown={handleDocumento}
+                                                onChange={(e) => {
+                                                    const value = e.target.value.replace(/[^0-9]/g, '');
+                                                    e.target.value = value;
+                                                    if (onChange) onChange(e);
+                                                }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === ' ' || e.key === '-' || e.key === '+' || e.key === 'e' || e.key === 'E') {
+                                                        e.preventDefault();
+                                                    }
+                                                    if (handleDocumento) handleDocumento(e);
+                                                }}
                                                 id="documento-input"
                                                 size="small"
                                                 label="Documento"
@@ -255,6 +264,10 @@ const ViewEmployee = ({ lsEmployee = [], title, documento, disabled = false, onC
                                                 error={!!errors?.documento}
                                                 helperText={errors?.documento?.message}
                                                 sx={{ width: '100px', mr: 2 }}
+                                                inputProps={{
+                                                    inputMode: 'numeric',
+                                                    pattern: '[0-9]*'
+                                                }}
                                             />
                                         }
 

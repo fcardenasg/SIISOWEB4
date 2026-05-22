@@ -28,7 +28,7 @@ const ValidateAction = ({ children, idModulo, idAccion }) => {
                         );
                     }
                 } catch (error) {
-                    setError('No se pudo validar');
+                    setError('');
                 } finally {
                     setLoading(false);
                 }

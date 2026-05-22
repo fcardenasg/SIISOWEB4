@@ -408,13 +408,13 @@ const AccidentRate = ({ documentoAT }) => {
                                         options={lsDx1}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoInicial}
+                                        clearable
                                     />
                                 </FormProvider>
                             </Grid>
                         </Grid>
                     </SubCard>
                 </Grid>
-
 
                 <Grid item xs={12}>
                     <SubCard darkTitle title={<Typography variant="h4">Diagnóstico Final</Typography>}>
@@ -436,6 +436,7 @@ const AccidentRate = ({ documentoAT }) => {
                                         options={lsDx2}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.diagnosticoFinal}
+                                        clearable
                                     />
                                 </FormProvider>
                             </Grid>
@@ -454,7 +455,9 @@ const AccidentRate = ({ documentoAT }) => {
                                         options={lsRemitido}
                                         size={matchesXS ? 'small' : 'medium'}
                                         bug={errors.idParaclinicos}
+                                        clearable
                                     />
+
                                 </FormProvider>
                             </Grid>
 

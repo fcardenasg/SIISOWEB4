@@ -153,7 +153,6 @@ export default function StepperExtractInformation() {
 
             const result = await ExtractInformationFromExcel(formData);
             if (result.data.exito) {
-                console.log(result.data);
                 setTimeout(() => {
                     toast.success("Información avanzada extraída correctamente");
                 }, 200);

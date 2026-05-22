@@ -88,7 +88,6 @@ const UpdateHistoricalBurdenDiseases = () => {
 
   async function getAll() {
     try {
-      console.log("id", id);
       const response = await GetByIdPDF(id);
       if (response.data.exito) {
         const { bat64, nombres,informe } = response.data.datos;
@@ -97,7 +96,6 @@ const UpdateHistoricalBurdenDiseases = () => {
         setInforme(informe);
         setTimeWait(true);
       }
-
     } catch (error) {
       dispatch({
         type: SNACKBAR_OPEN,

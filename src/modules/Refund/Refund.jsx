@@ -238,16 +238,37 @@ const Refund = () => {
         getAll();
     }, []);
 
+    const clean = (val) => (val === undefined || val === "" || val === null ? null : val);
+
     const handleClick = async (datos) => {
         try {
-            var fechaFinFormateada = fechaFin === '' ? null : fechaFin;
-
-            const DataToInsert = PostRefund(documento, datos.dx1, datos.dx2, datos.idOrigenDx1, datos.idOrigenDx2, datos.resumen,
-                datos.idEstadoEmpleado, datos.idEstadoRestriccion, datos.idTipoRestriccion, fechaInicio,
-                fechaFinFormateada, numeroDia, ordenadoPor, idMedico, datos.porcentajePCL, datos.recomendaciones,
-                datos.idConceptoReintegro, datos.inicioReubicacion, datos.finReubicacion, datos.descripcion,
-                datos.idTipoHorario, datos.idOrdenadoPorHorario, datos.fechaInicioHorario, datos.fechaFinHorario,
-                datos.idEstadoCaso, user?.nameuser, undefined, undefined, undefined);
+            const DataToInsert = {
+                documento: clean(documento),
+                dx1: clean(datos.dx1),
+                dx2: clean(datos.dx2),
+                idOrigenDx1: clean(datos.idOrigenDx1),
+                idOrigenDx2: clean(datos.idOrigenDx2),
+                resumen: clean(datos.resumen),
+                idEstadoEmpleado: clean(datos.idEstadoEmpleado),
+                idEstadoRestriccion: clean(datos.idEstadoRestriccion),
+                idTipoRestriccion: clean(datos.idTipoRestriccion),
+                fechaInicio: clean(fechaInicio),
+                fechaFin: clean(fechaFin),
+                numeroDia: clean(numeroDia),
+                idOrdenadoPor: clean(ordenadoPor),
+                idMedico: clean(idMedico),
+                porcentajePCL: clean(datos.porcentajePCL),
+                recomendaciones: clean(datos.recomendaciones),
+                idConceptoReintegro: clean(datos.idConceptoReintegro),
+                inicioReubicacion: clean(datos.inicioReubicacion),
+                finReubicacion: clean(datos.finReubicacion),
+                descripcion: clean(datos.descripcion),
+                idTipoHorario: clean(datos.idTipoHorario),
+                idOrdenadoPorHorario: clean(datos.idOrdenadoPorHorario),
+                fechaInicioHorario: clean(datos.fechaInicioHorario),
+                fechaFinHorario: clean(datos.fechaFinHorario),
+                idEstadoCaso: clean(datos.idEstadoCaso)
+            };
 
             const result = await InsertRefund(DataToInsert);
             if (result.status === 200) {

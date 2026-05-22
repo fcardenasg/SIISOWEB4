@@ -183,6 +183,12 @@ function generateReportMedicalAdviceExtendido(doc = new jsPDF(), lsDataReport = 
 export function generateReport(lsDataReport = [], lsDataUser, lsConfiguracion = false) {
     const doc = new jsPDF('p', 'mm', 'letter');
 
+    Object.keys(lsDataReport).forEach(key => {
+        if (lsDataReport[key] === null || lsDataReport[key] === undefined) {
+            lsDataReport[key] = "";
+        }
+    });
+
     doc.setFont("helvetica", "bold");
     getHeader(doc);
     generateReportMedicalAdvice(doc, lsDataReport, lsDataUser, lsConfiguracion);

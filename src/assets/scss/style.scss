@@ -133,3 +133,13 @@
         transform: translateX(10px);
     }
 }
+
+// ==============================|| SWEETALERT2 ||============================== //
+// Ensure SweetAlert2 modals appear above all application elements
+.swal2-container {
+    z-index: 9999 !important;
+}
+
+.swal2-backdrop-show {
+    z-index: 9998 !important;
+}

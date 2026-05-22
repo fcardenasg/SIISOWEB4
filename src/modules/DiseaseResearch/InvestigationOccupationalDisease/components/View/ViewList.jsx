@@ -16,20 +16,22 @@ import {
     Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { ViewFormat } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import InvestigationProgress from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/InvestigationProgress';
-import { OptionsMenuList } from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
-import { StyledChip } from 'modules/Programming/NewProgramming/components/methods';
-import { getStatusConfig } from '../methods';
+import OptionsMenu from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
 import AnimatedTimeDisplay from 'modules/Programming/NewProgramming/components/AnimatedTimeDisplay';
+import { StyledChip } from 'modules/Programming/NewProgramming/components/methods';
+import { useInvestigationActions } from '../../contexts/InvestigationActionsContext';
+import { getStatusConfig } from '../methods';
 
-const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete }) => {
+const ViewList = ({ dataInfo, index }) => {
     const theme = useTheme();
+    const { onOpenChat } = useInvestigationActions();
     const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
 
     return (
         <ListItem
+            key={index}
             sx={{
                 borderRadius: '16px',
                 border: '1px solid #f0f0f0',
@@ -43,11 +45,13 @@ const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                 },
             }}
             secondaryAction={
-                <OptionsMenuList
+                <OptionsMenu
+                    idInvestigation={dataInfo.idIEL}
                     idAsignacion={dataInfo.id}
-                    onClickGoAttention={onClickGoAttention}
-                    onClickDelete={onClickDelete}
-                />}
+                    disabledRevisar={dataInfo.estadoInvestigacion !== 3}
+                    estadoInvestigacion={dataInfo.estadoInvestigacion}
+                />
+            }
         >
             <ListItemAvatar>
                 <Avatar
@@ -58,11 +62,16 @@ const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                         height: 120,
                         mr: 2,
                         borderRadius: '12px',
-                        border: '2px solid #f8f8f8',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                        border: dataInfo.foto && '2px solid #f8f8f8',
+                        boxShadow: dataInfo.foto && '0 4px 12px rgba(0,0,0,0.08)',
+                        bgcolor: dataInfo.foto && 'grey.200',
+                        color: 'text.primary',
+                        '& .MuiAvatar-img': {
+                            display: dataInfo.foto && 'block',
+                        }
                     }}
                 >
-                    {dataInfo.nombreEmpleado.charAt(0).toUpperCase()}
+                    {!dataInfo.foto && dataInfo.nombreEmpleado.charAt(0).toUpperCase()}
                 </Avatar>
             </ListItemAvatar>
 
@@ -74,9 +83,9 @@ const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                                 {dataInfo.nombreEmpleado}
                             </Typography>
 
-                            {dataInfo.usuarioCierreAtencion &&
+                            {dataInfo.usuarioCierreInvestigacion &&
                                 <Tooltip placement="top" title="Usuario atendiendo">
-                                    <StyledChip label={dataInfo.usuarioCierreAtencion} timeColor={theme.palette.success.main} />
+                                    <StyledChip label={dataInfo.usuarioCierreInvestigacion} timeColor={theme.palette.success.main} />
                                 </Tooltip>
                             }
                         </Box>
@@ -88,9 +97,9 @@ const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                                     transform: 'scale(1.1)',
                                 }
                             }}>
-                                <Tooltip placement="top" title="Asistente de SIISO">
+                                <Tooltip disableInteractive placement="top" title="Asistente de SIISO">
                                     <IconButton
-                                        onClick={() => onClickOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
+                                        onClick={() => onOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
                                         sx={{
                                             bgcolor: 'white',
                                             boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
@@ -111,7 +120,7 @@ const ViewList = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                 secondary={
                     <Box sx={{ mt: 1.2, display: 'flex', flexDirection: 'column', gap: 1.2 }}>
                         <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-                            <strong>Fecha:</strong> {ViewFormat(dataInfo.fecha)} • <strong>C.C.</strong> {dataInfo.documento} • <strong>Edad:</strong> {dataInfo.edad} años • <strong>Sexo:</strong> {dataInfo.nombreSexo}
+                            <strong>Fecha de registro:</strong> {new Date(dataInfo.fechaRegistro).toLocaleString()} • <strong>C.C.</strong> {dataInfo.documento} • <strong>Edad:</strong> {dataInfo.edad} años • <strong>Sexo:</strong> {dataInfo.nombreSexo}
                         </Typography>
 
                         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', fontSize: '0.92rem', color: '#555' }}>

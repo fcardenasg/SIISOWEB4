@@ -137,11 +137,26 @@ const UpdatePsychologicalCounseling = () => {
         } catch (err) { }
     };
 
+    const clean = (val) => (val === undefined || val === "" || val === null ? null : val);
+
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PutMedicalAdvice(id, documento, datos.fecha, lsPsychologicalCounseling.idRegistroAtencion, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
-                undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
-                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, undefined, undefined, user?.nameuser, undefined);
+            const DataToUpdate = {
+                id,
+                idRegistroAtencion: lsPsychologicalCounseling.idRegistroAtencion,
+                documento: documento,
+                fecha: clean(datos.fecha),
+                idTipoAtencion: clean(DefaultData.AsesoriaPsicologica),
+                idSede: clean(lsEmployee.sede),
+                idEstadoCaso: clean(datos.idEstadoCaso),
+                idTipoAsesoria: clean(datos.idTipoAsesoria),
+                idMotivo: clean(datos.idMotivo),
+                idCausa: clean(datos.idCausa),
+                motivo: clean(datos.motivoConsulta),
+                recomendaciones: clean(datos.concepto),
+                pautas: clean(datos.pautasSeguir),
+                idEstadoAsesoria: clean(datos.idEstadoAsesoria)
+            };
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

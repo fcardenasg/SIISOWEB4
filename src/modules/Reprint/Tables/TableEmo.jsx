@@ -40,6 +40,7 @@ import { GetAllByDocumentWorkHistory } from 'api/clients/WorkHistoryClient';
 import { GetAllByDocumentWorkHistoryOtherCompany } from 'api/clients/WorkHistoryOtherCompany';
 import config from 'config';
 import Cargando from 'components/loading/Cargando';
+import toast from 'react-hot-toast';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -184,25 +185,46 @@ const TableEmo = () => {
     const handleClickReport = async (id, documento) => {
         try {
             setOpenReport(true);
-            const lsDataReport = await GetByIdDataReport(id);
-            const lsDataUser = await GetByMail(lsDataReport.data.usuarioRegistro);
-            var resultExpoDLTD = await GetDataExploracion(documento);
 
-            if (lsDataReport.status === 200) {
-                var lsRiesgoHLD = await GetAllRHL(documento, lsDataReport.data.idAtencion);
+            const lsDataReport = await GetByIdDataReport(id);
+
+            if (lsDataReport.status !== 200) {
+                toast.error("No se pudo obtener la información del reporte");
+                return;
             }
 
-            var lsRiesgoHLDO = await GetAllRHLOE(documento);
+            const [
+                lsDataUser,
+                resultExpoDLTD,
+                lsRiesgoHLD,
+                lsRiesgoHLDO,
+                lsServerWorkHistory,
+                lsServerWorkHistoryOtherCompany
+            ] = await Promise.all([
+                GetByMail(lsDataReport.data.usuarioRegistro),
+                GetDataExploracion(documento),
+                GetAllRHL(documento, lsDataReport.data.idAtencion),
+                GetAllRHLOE(documento),
+                GetAllByDocumentWorkHistory(0, 0, documento),
+                GetAllByDocumentWorkHistoryOtherCompany(0, 0, documento)
+            ]);
 
-            var lsServerWorkHistory = await GetAllByDocumentWorkHistory(0, 0, documento);
-            var lsServerWorkHistoryOtherCompany = await GetAllByDocumentWorkHistoryOtherCompany(0, 0, documento);
-
-            const dataPDFTwo = generateReportIndex(lsDataReport.data, lsDataUser.data, resultExpoDLTD.data,
-                lsRiesgoHLD.data, lsRiesgoHLDO.data, lsServerWorkHistory.data.entities,
-                lsServerWorkHistoryOtherCompany.data.entities);
+            const dataPDFTwo = generateReportIndex(
+                lsDataReport.data,
+                lsDataUser?.data,
+                resultExpoDLTD?.data,
+                lsRiesgoHLD?.data || [],
+                lsRiesgoHLDO?.data,
+                lsServerWorkHistory?.data?.entities || [],
+                lsServerWorkHistoryOtherCompany?.data?.entities || []
+            );
 
             setDataPDF(dataPDFTwo);
-        } catch (err) { }
+
+        } catch (err) {
+            toast.error("Ocurrió un error inesperado al generar el PDF");
+            setOpenReport(false);
+        }
     };
 
     const handleSearch = (event) => {

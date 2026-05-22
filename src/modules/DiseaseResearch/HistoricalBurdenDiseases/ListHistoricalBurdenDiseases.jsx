@@ -299,7 +299,6 @@ const ListHistoricalBurdenDiseases = () => {
   async function getAll() {
     try {
       const lsServer = await GetAllHistoricalBurdenDiseases();
-      console.log("GetAll", lsServer.data);
       if (lsServer.data.exito) {
         setInvestigation(lsServer.data.datos);
         setRows(lsServer.data.datos);
@@ -319,14 +318,11 @@ const ListHistoricalBurdenDiseases = () => {
 
   const [modalStyle] = useState(getModalStyle);
   const handleOpen = async (id) => {
-    console.log("idCheck", id);
 
     try {
       const response = await GetByIdHistoricalBurdenDiseases(id);
-      console.log("response", response.data);
       setData(response.data.datos.informe);
     } catch (error) {
-      console.log(error);
     }
   };
 

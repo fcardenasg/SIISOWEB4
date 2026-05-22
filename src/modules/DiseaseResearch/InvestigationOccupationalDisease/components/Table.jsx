@@ -1,4 +1,6 @@
-import { Checkbox, FormControlLabel, TextField } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Checkbox, FormControlLabel, TextField, Tooltip } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -6,48 +8,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
-import { GetIELHistoriaLaboralDLTD, GetIELHistoriaLaboralOtrosEmpresas } from 'api/clients/InvestigationClient';
+import { GetIELAccionPreventivaCorrectiva, GetIELCalificacion, GetIELHistoriaLaboralOtrosEmpresas } from 'api/clients/InvestigationClient';
 import { CodCatalogo } from 'components/helpers/Enums';
-import { ViewFormat } from 'components/helpers/Format';
+import { UpperFirstChar, ViewFormat } from 'components/helpers/Format';
 import EmptyState from 'components/loading/EmptyState';
 import { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 import { StyledTableCell, StyledTableRow } from './methods';
 
-export function TableDLTD({ documento }) {
-  const [listHL, setListHL] = useState([]);
-  const idIEL = useFormContext().getValues('id');
-
-  useEffect(() => {
-    async function getData() {
-      try {
-        if (documento) {
-          var statusData = idIEL ? true : false;
-          const response = await GetIELHistoriaLaboralDLTD(documento, statusData);
-          if (response.data.exito) {
-            const mappedData = (response.data.datos || []).map((item) => ({
-              id: item.id,
-              fecha: item.fecha,
-              cargo: item.nameCargo,
-              turno: item.nameTurno,
-              rotacion: item.nameRotacion,
-              anios: item.anio,
-              meses: item.meses
-            }));
-
-            setListHL(mappedData);
-          }
-        }
-      } catch (error) {
-        toast.error("Error al cargar la historia laboral DLTD");
-      }
-    }
-
-    getData();
-  }, [documento, idIEL]);
-
+export function TableDLTD({ listData }) {
   return (
     <SubCard content={false}>
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
@@ -62,8 +34,8 @@ export function TableDLTD({ documento }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listHL.length > 0 ? (
-              listHL.map((item) => (
+            {listData.length > 0 ? (
+              listData.map((item) => (
                 <StyledTableRow key={item.id}>
                   <StyledTableCell>{ViewFormat(item.fecha)}</StyledTableCell>
                   <StyledTableCell>{item.cargo}</StyledTableCell>
@@ -86,36 +58,7 @@ export function TableDLTD({ documento }) {
   );
 }
 
-export function TableOtherCompanies({ documento }) {
-  const [listHLOE, setListHLOE] = useState([]);
-  const idIEL = useFormContext().getValues('id');
-
-  useEffect(() => {
-    async function getData() {
-      try {
-        if (documento) {
-          var statusData = idIEL ? true : false;
-          const response = await GetIELHistoriaLaboralOtrosEmpresas(documento, statusData);
-          if (response.data.exito) {
-            const mappedData = response.data.datos.map((item) => ({
-              id: item.id,
-              empresa: item.empresa,
-              cargo: item.cargo,
-              anios: item.anio,
-              meses: item.meses
-            }));
-
-            setListHLOE(mappedData);
-          }
-        }
-      } catch (error) {
-        toast.error("Error al cargar la historia laboral de otras empresas");
-      }
-    }
-
-    getData();
-  }, [documento]);
-
+export function TableOtherCompanies({ listData }) {
   return (
     <SubCard content={false}>
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
@@ -128,20 +71,20 @@ export function TableOtherCompanies({ documento }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listHLOE.length > 0 ? (
-              listHLOE.map((item) => (
+            {listData.length > 0 ? (
+              listData.map((item) => (
                 <StyledTableRow key={item.id}>
                   <StyledTableCell>{item.empresa}</StyledTableCell>
                   <StyledTableCell>{item.cargo}</StyledTableCell>
                   <StyledTableCell>
-                    {`${item.anios} año(s) / ${item.meses} mes(es)`}
+                    {`${item.anio} año(s) / ${item.meses} mes(es)`}
                   </StyledTableCell>
                 </StyledTableRow>
               ))
             ) : (
               <StyledTableRow>
-                <StyledTableCell colSpan={3} align="center">
-                  No hay registros
+                <StyledTableCell colSpan={5} align="center">
+                  <EmptyState seeSubtitle={false} title="No hay registros" />
                 </StyledTableCell>
               </StyledTableRow>
             )}
@@ -152,7 +95,7 @@ export function TableOtherCompanies({ documento }) {
   );
 }
 
-export function TableControlMethods({ listMC }) {
+export function TableControlMethods({ listMC, handleDelete, disabledControl }) {
   return (
     <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
       <Table sx={{ minWidth: 650 }} aria-label="customized table">
@@ -160,8 +103,9 @@ export function TableControlMethods({ listMC }) {
           <TableRow>
             <StyledTableCell>Control</StyledTableCell>
             <StyledTableCell>Tipo de control</StyledTableCell>
-            <StyledTableCell>Observaciones sobre uso brindado</StyledTableCell>
-            <StyledTableCell>Observaciones sobre nivel de protección</StyledTableCell>
+            <StyledTableCell>Observaciones uso brindado</StyledTableCell>
+            <StyledTableCell>Observaciones nivel de protección</StyledTableCell>
+            {!disabledControl && <StyledTableCell>Acciones</StyledTableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -169,16 +113,30 @@ export function TableControlMethods({ listMC }) {
             listMC.map((row, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
-                  {row.nameControl}
+                  {UpperFirstChar(row.nameControl)}
                 </StyledTableCell>
-                <StyledTableCell>{row.nameTipoControl}</StyledTableCell>
-                <StyledTableCell>{row.observacionesUso}</StyledTableCell>
-                <StyledTableCell>{row.observacionesProteccion}</StyledTableCell>
+                <StyledTableCell>{UpperFirstChar(row.nameTipoControl)}</StyledTableCell>
+                <StyledTableCell>{row.observacionBrindado}</StyledTableCell>
+                <StyledTableCell>{row.observacionNivelProteccionBrindado}</StyledTableCell>
+                {!disabledControl &&
+                  <StyledTableCell>
+                    <AnimateButton>
+                      <Tooltip title="Eliminar" disableInteractive placement="top">
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDelete(row.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </AnimateButton>
+                  </StyledTableCell>
+                }
               </StyledTableRow>
             ))
           ) : (
             <StyledTableRow>
-              <StyledTableCell colSpan={4} align="center">
+              <StyledTableCell colSpan={5} align="center">
                 <EmptyState seeSubtitle={false} title="No hay registros" />
               </StyledTableCell>
             </StyledTableRow>
@@ -189,36 +147,57 @@ export function TableControlMethods({ listMC }) {
   );
 }
 
-export function TableDiagnosisRating({ methods }) {
-  const { control, getValues, setValue } = methods;
-  const { fields } = useFieldArray({
+export function TableDiagnosisRating({ methods, disabledControl }) {
+  const { control, setValue, getValues } = methods;
+  const idIEL = getValues('id');
+
+  const { fields, replace } = useFieldArray({
     control,
     name: "listCalificacion"
   });
 
+  const formatDate = (date) => (date ? date.split('T')[0] : null);
+  const handleFieldChange = (index, field, value) => {
+    field.onChange(value);
+    setValue(`listCalificacion.${index}.cambioRegistro`, true, {
+      shouldDirty: true
+    });
+  };
+
   useEffect(() => {
     async function getData() {
       try {
-        const response = await GetByTipoCatalogoCombo(4002);
-        const lsServerCalificacion = (response.data || []).sort((a, b) => a.value - b.value);
+        let response;
+        const statusData = Boolean(idIEL);
 
-        // 1. Usamos getValues de forma específica
-        const currentValues = getValues("listCalificacion");
-
-        // Solo inicializamos si el array está vacío o no existe
-        if (!currentValues || currentValues.length === 0) {
-          const initialRows = lsServerCalificacion.map((item) => ({
-            calificacion: item.value,
-            nombreCalificacion: item.label,
-            entidad: null,
-            fechaCalificacion: null,
-            origen: null,
-            dictamen: null
-          }));
-
-          // 2. CAMBIO CLAVE: Usar setValue en lugar de reset
-          // Esto actualiza SOLO la lista sin tocar el resto de los campos (como 'documento')
-          setValue("listCalificacion", initialRows, { shouldDirty: false, shouldValidate: false });
+        if (statusData) {
+          response = await GetIELCalificacion(idIEL);
+          if (response.data.exito) {
+            const mappedData = response.data.datos.map((item) => ({
+              calificacion: item.calificacion,
+              nombreCalificacion: item.nombreCalificacion,
+              entidad: item.entidad || null,
+              fechaCalificacion: formatDate(item.fechaCalificacion),
+              origen: item.origen || null,
+              dictamen: item.dictamen || null,
+              cambioRegistro: false
+            }));
+            replace(mappedData);
+          }
+        } else {
+          response = await GetByTipoCatalogoCombo(CodCatalogo.IEL_CALIFICACION);
+          if (response.status === 200) {
+            const mappedData = response.data.map((item) => ({
+              calificacion: item.value,
+              nombreCalificacion: item.label,
+              entidad: null,
+              fechaCalificacion: null,
+              origen: null,
+              dictamen: null,
+              cambioRegistro: false
+            })).sort((a, b) => a.calificacion - b.calificacion);
+            replace(mappedData);
+          }
         }
       } catch (error) {
         console.error("Error cargando catálogo:", error);
@@ -226,12 +205,10 @@ export function TableDiagnosisRating({ methods }) {
     }
 
     getData();
-    // 3. Limpiamos dependencias: setValue y getValues son estables, 
-    // no causarán re-renders infinitos.
-  }, [setValue, getValues]);
+  }, [idIEL, replace]);
 
   return (
-    <TableContainer component={Paper} sx={{ overflowX: 'auto', mt: 2 }}>
+    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
       <Table sx={{ minWidth: 700 }}>
         <TableHead>
           <TableRow>
@@ -244,7 +221,7 @@ export function TableDiagnosisRating({ methods }) {
         </TableHead>
         <TableBody>
           {fields.map((item, index) => (
-            <StyledTableRow key={item?.calificacion}>
+            <StyledTableRow key={item.id}>
               <StyledTableCell sx={{ textTransform: 'capitalize' }}>
                 {item?.nombreCalificacion?.toLowerCase()}
               </StyledTableCell>
@@ -254,7 +231,13 @@ export function TableDiagnosisRating({ methods }) {
                   name={`listCalificacion.${index}.entidad`}
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} fullWidth variant="standard" />
+                    <TextField
+                      {...field}
+                      fullWidth
+                      variant="standard"
+                      disabled={disabledControl}
+                      onChange={(e) => handleFieldChange(index, field, e.target.value)}
+                    />
                   )}
                 />
               </StyledTableCell>
@@ -270,6 +253,9 @@ export function TableDiagnosisRating({ methods }) {
                       variant="standard"
                       fullWidth
                       InputLabelProps={{ shrink: true }}
+                      value={field.value || null}
+                      disabled={disabledControl}
+                      onChange={(e) => handleFieldChange(index, field, e.target.value)}
                     />
                   )}
                 />
@@ -280,7 +266,13 @@ export function TableDiagnosisRating({ methods }) {
                   name={`listCalificacion.${index}.origen`}
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant="standard" fullWidth />
+                    <TextField
+                      {...field}
+                      variant="standard"
+                      fullWidth
+                      disabled={disabledControl}
+                      onChange={(e) => handleFieldChange(index, field, e.target.value)}
+                    />
                   )}
                 />
               </StyledTableCell>
@@ -290,7 +282,13 @@ export function TableDiagnosisRating({ methods }) {
                   name={`listCalificacion.${index}.dictamen`}
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant="standard" fullWidth />
+                    <TextField
+                      {...field}
+                      variant="standard"
+                      fullWidth
+                      disabled={disabledControl}
+                      onChange={(e) => handleFieldChange(index, field, e.target.value)}
+                    />
                   )}
                 />
               </StyledTableCell>
@@ -317,63 +315,84 @@ export function TableCharacterizationAbsenteeism() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {[].map((row, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell component="th" scope="row">{row.diagnostico}</StyledTableCell>
-              <StyledTableCell>{row.fecha}</StyledTableCell>
-              <StyledTableCell>{row.fuenteInformacion}</StyledTableCell>
-              <StyledTableCell>{row.origen}</StyledTableCell>
-              <StyledTableCell>{row.incapacidad}</StyledTableCell>
-              <StyledTableCell>{row.observaciones}</StyledTableCell>
+          {[].length > 0 ? (
+            [].map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell component="th" scope="row">{row.diagnostico}</StyledTableCell>
+                <StyledTableCell>{row.fecha}</StyledTableCell>
+                <StyledTableCell>{row.fuenteInformacion}</StyledTableCell>
+                <StyledTableCell>{row.origen}</StyledTableCell>
+                <StyledTableCell>{row.incapacidad}</StyledTableCell>
+                <StyledTableCell>{row.observaciones}</StyledTableCell>
+              </StyledTableRow>
+            ))
+          ) : (
+            <StyledTableRow>
+              <StyledTableCell colSpan={6} align="center">
+                <EmptyState seeSubtitle={false} title="No hay registros" />
+              </StyledTableCell>
             </StyledTableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </TableContainer>
   );
 }
 
-export function TablePreventiveActions({ methods }) {
-  // 1. Desestructuramos setValue en lugar de reset
+export function TablePreventiveActions({ methods, disabledControl }) {
   const { control, setValue, getValues } = methods;
+  const idIEL = getValues('id');
 
-  const { fields } = useFieldArray({
+  const { fields, replace } = useFieldArray({
     control,
     name: "listAspectosConsiderar"
   });
 
+  const handleFieldChange = (index, field, value) => {
+    field.onChange(value);
+    setValue(`listAspectosConsiderar.${index}.cambioRegistro`, true, {
+      shouldDirty: true
+    });
+  };
+
   useEffect(() => {
     async function getData() {
       try {
-        const response = await GetByTipoCatalogoCombo(CodCatalogo.IEL_ASPCONSI);
-        const lsServer = response.data || [];
+        let response;
+        const statusData = Boolean(idIEL);
 
-        const currentValues = getValues("listAspectosConsiderar");
-
-        // Verificamos si la lista ya tiene datos para no sobrescribir si el usuario ya escribió algo
-        if (!currentValues || currentValues.length === 0) {
-          const initialRows = lsServer.map((item) => ({
-            aspectoConsiderar: item.value,
-            nombreAspectoConsiderar: item.label,
-            opcion: false,
-            observacion: null
-          }));
-
-          // 2. Usamos setValue con la ruta específica. 
-          // Esto NO toca el 'documento' ni el 'id' del formulario.
-          setValue("listAspectosConsiderar", initialRows, {
-            shouldValidate: false,
-            shouldDirty: false // Evita que el formulario se marque como "tocado" solo por cargar el catálogo
-          });
+        if (statusData) {
+          response = await GetIELAccionPreventivaCorrectiva(idIEL);
+          if (response.data.exito) {
+            const mappedData = response.data.datos.map((item) => ({
+              id: item.id,
+              nombreAspectoConsiderar: item.nombreAspectoConsiderar,
+              opcion: item.opcion || false,
+              observacion: item.observacion || null,
+              cambioRegistro: false
+            }));
+            replace(mappedData);
+          }
+        } else {
+          response = await GetByTipoCatalogoCombo(CodCatalogo.IEL_ASPCONSI);
+          if (response.status === 200) {
+            const initialRows = response.data.map((item) => ({
+              aspectoConsiderar: item.value,
+              nombreAspectoConsiderar: item.label,
+              opcion: false,
+              observacion: null,
+              cambioRegistro: false
+            })).sort((a, b) => a.aspectoConsiderar - b.aspectoConsiderar);
+            replace(initialRows);
+          }
         }
       } catch (error) {
-        toast.error("Error al obtener las acciones preventivas");
+        toast.error("Error al obtener los aspectos a considerar");
       }
     }
 
     getData();
-    // 3. Dependencias limpias
-  }, [setValue, getValues]);
+  }, [idIEL, replace]);
 
   return (
     <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
@@ -381,28 +400,33 @@ export function TablePreventiveActions({ methods }) {
         <TableHead>
           <TableRow>
             <StyledTableCell sx={{ width: '30%' }}>Aspectos para considerar</StyledTableCell>
-            <StyledTableCell sx={{ width: '15%' }}>Si / No</StyledTableCell>
+            <StyledTableCell sx={{ width: '15%', align: 'left' }}>Si / No</StyledTableCell>
             <StyledTableCell sx={{ width: '55%' }}>Observaciones</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {fields.map((item, index) => (
             <StyledTableRow key={item.id}>
-              <StyledTableCell component="th" scope="row">
-                {item.nombreAspectoConsiderar}
+              <StyledTableCell component="th" scope="row" sx={{ py: 1 }}>
+                {UpperFirstChar(item.nombreAspectoConsiderar)}
               </StyledTableCell>
 
-              <StyledTableCell>
+              <StyledTableCell sx={{ py: 1, align: "left" }}>
                 <Controller
                   name={`listAspectosConsiderar.${index}.opcion`}
                   control={control}
                   render={({ field }) => (
                     <FormControlLabel
+                      sx={{ m: 0 }}
                       control={
                         <Checkbox
                           {...field}
+                          size="small"
                           checked={!!field.value}
-                          onChange={(e) => field.onChange(e.target.checked)}
+                          disabled={disabledControl}
+                          onChange={(e) =>
+                            handleFieldChange(index, field, e.target.checked)
+                          }
                         />
                       }
                       label={field.value ? 'Si' : 'No'}
@@ -411,18 +435,24 @@ export function TablePreventiveActions({ methods }) {
                 />
               </StyledTableCell>
 
-              <StyledTableCell>
+              <StyledTableCell sx={{ py: 1 }}>
                 <Controller
                   name={`listAspectosConsiderar.${index}.observacion`}
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
+                      value={field.value || null}
                       variant="standard"
                       fullWidth
                       multiline
+                      size="small"
                       minRows={1}
                       maxRows={4}
+                      onChange={(e) =>
+                        handleFieldChange(index, field, e.target.value)
+                      }
+                      disabled={disabledControl}
                     />
                   )}
                 />
@@ -433,4 +463,4 @@ export function TablePreventiveActions({ methods }) {
       </Table>
     </TableContainer>
   );
-};
+}

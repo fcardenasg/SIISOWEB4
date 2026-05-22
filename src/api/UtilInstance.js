@@ -9,8 +9,8 @@ export async function postData(url = '', datos = {}, headersVali = false) {
             data: datos
         };
 
-        if (headersVali) {
-            config.headers = { 'Content-Type': 'multipart/form-data' };
+        if (!headersVali) {
+            config.headers = { 'Content-Type': 'application/json' };
         }
 
         const respuesta = await axios(config);
@@ -27,15 +27,25 @@ export async function postData(url = '', datos = {}, headersVali = false) {
 
 export async function getData(url = '', parametros = {}) {
     try {
-        const urlGet = new URL(`${Url.Base}${url}`)
-        Object.keys(parametros).forEach(key => urlGet.searchParams.append(key, parametros[key]));
+        const urlGet = new URL(`${Url.Base}${url}`);
 
-        return await axios.get(urlGet)
-            .then(respuesta => {
-                if (respuesta.status !== 200) throw Error(respuesta.status);
-                return respuesta;
-            }).catch((error) => { })
-    } catch (error) { }
+        Object.keys(parametros).forEach(key => {
+            const valor = parametros[key];
+            // Solo agregamos el parámetro si no es null ni undefined
+            if (valor !== null && valor !== undefined) {
+                urlGet.searchParams.append(key, valor);
+            }
+        });
+
+        const respuesta = await axios.get(urlGet.toString());
+
+        if (respuesta.status !== 200) throw Error(respuesta.status);
+        return respuesta;
+
+    } catch (error) {
+        console.error("Error en getData:", error);
+        throw error; // Es mejor propagar el error que silenciarlo
+    }
 }
 
 export async function putData(url = '', datos = {}) {

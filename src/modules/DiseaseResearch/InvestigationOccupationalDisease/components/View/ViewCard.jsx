@@ -11,18 +11,17 @@ import {
     Card,
     CardContent,
     CardHeader,
-    Chip,
     Divider,
     Grid,
     IconButton,
     Tooltip,
     Typography
 } from '@mui/material';
-import { ViewFormat } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import InvestigationProgress from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/InvestigationProgress';
-import { OptionsMenuCard } from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
+import OptionsMenu from 'modules/DiseaseResearch/InvestigationOccupationalDisease/components/OptionsMenu';
 import { StyledChip } from 'modules/Programming/NewProgramming/components/methods';
+import { useInvestigationActions } from '../../contexts/InvestigationActionsContext';
 import { getStatusConfig } from '../methods';
 
 const variants = {
@@ -39,7 +38,8 @@ const variants = {
     }),
 };
 
-const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete }) => {
+const ViewCard = ({ dataInfo, index }) => {
+    const { onOpenChat } = useInvestigationActions();
     const statusConfig = getStatusConfig(dataInfo.estadoInvestigacion);
 
     return (
@@ -58,15 +58,23 @@ const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
             }}
         >
             <CardHeader
-                title={dataInfo.usuarioCierreAtencion && (
+                title={dataInfo.usuarioCierreInvestigacion && (
                     <Tooltip placement="top" title="Usuario atendiendo">
                         <StyledChip
-                            label={dataInfo.usuarioCierreAtencion}
+                            label={dataInfo.usuarioCierreInvestigacion}
                             timeColor="#f3e6d9"
                         />
                     </Tooltip>
                 )}
-                action={<OptionsMenuCard onClickGoAttention={onClickGoAttention} idAsignacion={dataInfo.id} onClickDelete={onClickDelete} />}
+                action={
+                    <OptionsMenu
+                        idInvestigation={dataInfo.idIEL}
+                        idAsignacion={dataInfo.id}
+                        disabledRevisar={dataInfo.estadoInvestigacion !== 3}
+                        estadoInvestigacion={dataInfo.estadoInvestigacion}
+                        variant="card"
+                    />
+                }
                 sx={{
                     backgroundColor: "primary.main",
                     color: 'white',
@@ -105,12 +113,14 @@ const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                             width: '100%',
                             height: '100%',
                             fontSize: '2rem',
-                            border: '2px solid white',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                             borderRadius: '16px',
+                            border: dataInfo.foto && '2px solid white',
+                            boxShadow: dataInfo.foto && '0 4px 12px rgba(0,0,0,0.15)',
+                            bgcolor: dataInfo.foto && 'background.paper',
+                            color: 'text.secondary',
                         }}
                     >
-                        {dataInfo.nombreEmpleado?.charAt(0)}
+                        {!dataInfo.foto && dataInfo.nombreEmpleado?.charAt(0).toUpperCase()}
                     </Avatar>
                 </Box>
 
@@ -125,9 +135,9 @@ const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                         },
                     }}
                 >
-                    <Tooltip placement="top" title="Asistente de SIISO">
+                    <Tooltip disableInteractive placement="top" title="Asistente de SIISO">
                         <IconButton
-                            onClick={() => onClickOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
+                            onClick={() => onOpenChat(true, { documento: dataInfo.documento, nameEmpleado: dataInfo.nombreEmpleado })}
                             sx={{
                                 bgcolor: 'white',
                                 boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
@@ -198,7 +208,7 @@ const ViewCard = ({ dataInfo, onClickOpenChat, onClickGoAttention, onClickDelete
                             </Typography>
                         </Box>
                         <Typography variant="body2" fontWeight="medium" noWrap>
-                            {ViewFormat(dataInfo.fecha)}
+                            {new Date(dataInfo.fechaRegistro).toLocaleString()}
                         </Typography>
                     </Grid>
 

@@ -40,10 +40,7 @@ const Company = () => {
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const methods = useForm({
-        resolver: yupResolver(validationSchema)
-    });
-
+    const methods = useForm({ resolver: yupResolver(validationSchema) });
     const { handleSubmit, reset, formState: { errors } } = methods;
 
     const handleClick = async (datos) => {

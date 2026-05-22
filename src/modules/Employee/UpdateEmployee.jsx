@@ -107,8 +107,6 @@ const UpdateEmployee = () => {
             const lsServerEmployeeId = await GetByIdEmployee(id);
             const employeeData = lsServerEmployeeId?.data.data;
 
-            console.log(lsServerEmployeeId.data);
-
             setOpenError(lsServerEmployeeId?.data.status !== 200);
             if (lsServerEmployeeId?.data.status !== 200)
                 setErrorMessage(lsServerEmployeeId?.data.message);

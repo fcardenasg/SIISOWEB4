@@ -37,11 +37,14 @@ export const Url = {
     ConvertWordToHtml: 'api/CalendarioCitas/ConvertWordToHtml',
     ConvertWordToPdf: 'api/CalendarioCitas/ConvertWordToPdf',
 
-    InvestigacionEnfermedadLaboralFile:"api/InvestigacionEnfermedadLaboralFile",   
-    GetByIdPDF:"api/InvestigacionEnfermedadLaboralFile/GetByIdPDF",
-    
-    wordtexto:"api/InvestigacionEnfermedadLaboralFile/word-texto",
-    wordopenia:"api/InvestigacionEnfermedadLaboralFile/word-openia",
+    APTHigienePlantilla: 'api/APTHigienePlantilla',
+    APTHigiene: 'api/APTHigiene',
+
+    InvestigacionEnfermedadLaboralFile: "api/InvestigacionEnfermedadLaboralFile",
+    GetByIdPDF: "api/InvestigacionEnfermedadLaboralFile/GetByIdPDF",
+
+    wordtexto: "api/InvestigacionEnfermedadLaboralFile/word-texto",
+    wordopenia: "api/InvestigacionEnfermedadLaboralFile/word-openia",
 
 
     Investigacion: 'api/InvestigacionEnfermedadLaboral',
@@ -267,6 +270,9 @@ export const Url = {
     Accidentalidad: 'api/Accidentalidad',
     AccidentalidadExcel: 'api/Accidentalidad/excel',
     AccidentalidadId: 'api/Accidentalidad/id',
+
+    PlanRehabilitacion: 'api/PlanRehabilitacion',
+    PlanRehabilitacionId: 'api/PlanRehabilitacion/id',
 
     HistoriaLaboral: 'api/HistoriaLaboral',
     HistoriaLaboralGetAllByDocument: 'api/HistoriaLaboral/GetAllByDocument',

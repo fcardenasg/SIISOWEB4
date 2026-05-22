@@ -1,36 +1,35 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
     Button,
     Grid,
     useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
-import { MessageSuccess, MessageError } from 'components/alert/AlertAll';
+import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
-import InputDatePicker from 'components/input/InputDatePicker';
-import ControlModal from 'components/controllers/ControlModal';
-import ControllerListen from 'components/controllers/ControllerListen';
-import { FormatDate } from 'components/helpers/Format'
-import InputText from 'components/input/InputText';
+import UploadIcon from '@mui/icons-material/Upload';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
-import InputSelect from 'components/input/InputSelect';
-import { Message, TitleButton, CodCatalogo, DefaultValue, Modulo, AccionMenu } from 'components/helpers/Enums';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import SubCard from 'ui-component/cards/SubCard';
-import useAuth from 'hooks/useAuth';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { PostParaclinics } from 'formatdata/ParaclinicsForm';
 import { InsertParaclinics } from 'api/clients/ParaclinicsClient';
 import { GetAllSupplier } from 'api/clients/SupplierClient';
-import Cargando from 'components/loading/Cargando';
-import MainCard from 'ui-component/cards/MainCard';
-import UploadIcon from '@mui/icons-material/Upload';
 import ViewPDF from 'components/components/ViewPDF';
+import ControllerListen from 'components/controllers/ControllerListen';
+import ControlModal from 'components/controllers/ControlModal';
+import { AccionMenu, CodCatalogo, DefaultValue, Message, Modulo, TitleButton } from 'components/helpers/Enums';
+import { FormatDate } from 'components/helpers/Format';
+import InputDatePicker from 'components/input/InputDatePicker';
+import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import { PostParaclinics } from 'formatdata/ParaclinicsForm';
+import useAuth from 'hooks/useAuth';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const Electro = () => {
     const { user } = useAuth();
@@ -139,32 +138,25 @@ const Electro = () => {
 
     const handleClick = async (datos) => {
         try {
-            var savePdf = filePdf === null ? "" : filePdf;
+            const DataToInsert = {
+                idTipoParaclinico: DefaultValue.PARACLINICO_ELECTRO,
+                documento: documento || null,
+                fecha: datos.fecha || null,
+                idMotivo: datos.idMotivo || null,
+                idConductaClasificacion: datos.idConductaClasificacion || null,
+                idConclusion: datos.idConclusion || null,
+                idProveedor: datos.idProveedor || null,
+                observacion: datos.observacion || null,
+                url: filePdf || null
+            };
 
-            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_ELECTRO, documento,
-                datos.fecha, datos.idMotivo, datos.idConductaClasificacion, datos.idConclusion, datos.idProveedor,
-                datos.observacion, DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false,
-                false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', false, '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', DefaultValue.SINREGISTRO_GLOBAL, '', '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '',
-                DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL, '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, '', false, false, false, false, false, false, false, false, false, false, false, false,
-                false, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
-
-
-            if (Object.keys(datos.length !== 0)) {
-
-                const result = await InsertParaclinics(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    reset();
-                    setFilePdf(null);
-                }
+            const result = await InsertParaclinics(DataToInsert);
+            if (result.status === 200) {
+                setOpenSuccess(true);
+                setDocumento('');
+                setLsEmployee([]);
+                reset();
+                setFilePdf(null);
             }
         } catch (error) {
             setOpenError(true);

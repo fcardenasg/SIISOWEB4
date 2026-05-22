@@ -44,7 +44,6 @@ import Cargando from 'components/loading/Cargando';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import { useBoolean } from 'hooks/use-boolean';
-import useAuth from 'hooks/useAuth';
 import toast from 'react-hot-toast';
 import MainCard from 'ui-component/cards/MainCard';
 import SubCard from 'ui-component/cards/SubCard';
@@ -105,9 +104,16 @@ const UpdateAccidentRate = () => {
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
     const { handleSubmit, setValue, watch, formState: { errors } } = methods;
-    const values = watch();
+    const urlFile = watch("url");
+    const documento = watch("documento");
+    const diagnosticoInicial = watch("diagnosticoInicial");
+    const diagnosticoInicial2 = watch("diagnosticoInicial2");
+    const diagnosticoInicial3 = watch("diagnosticoInicial3");
+    const diagnosticoFinal = watch("diagnosticoFinal");
+    const diagnosticoFinal2 = watch("diagnosticoFinal2");
+    const diagnosticoFinal3 = watch("diagnosticoFinal3");
 
-    async function downloadFileReplay() { DownloadFile(`${values.documento}accidentetrabajo${new Date().getTime()}.pdf`, values.url.replace("data:application/pdf;base64,", "")); }
+    async function downloadFileReplay() { DownloadFile(`${documento}accidentetrabajo${new Date().getTime()}.pdf`, urlFile.replace("data:application/pdf;base64,", "")); }
 
     useEffect(() => {
         async function getCombo() {
@@ -282,6 +288,26 @@ const UpdateAccidentRate = () => {
 
     const handleClick = async (datos) => {
         try {
+            datos.idClaseAT = datos.idClaseAT || null;
+            datos.idCausaAT = datos.idCausaAT || null;
+            datos.idSegmentoAgrupado = datos.idSegmentoAgrupado || null;
+            datos.idSubsegmento = datos.idSubsegmento || null;
+            datos.idSubTipoConsecuencia = datos.idSubTipoConsecuencia || null;
+            datos.diagnosticoInicial = datos.diagnosticoInicial || null;
+            datos.diagnosticoInicial2 = datos.diagnosticoInicial2 || null;
+            datos.diagnosticoInicial3 = datos.diagnosticoInicial3 || null;
+            datos.diagnosticoFinal = datos.diagnosticoFinal || null;
+            datos.diagnosticoFinal2 = datos.diagnosticoFinal2 || null;
+            datos.diagnosticoFinal3 = datos.diagnosticoFinal3 || null;
+            datos.idParaclinicos = datos.idParaclinicos || null;
+            datos.idConceptoActitudSFI = datos.idConceptoActitudSFI || null;
+            datos.idConceptoActitudSFF = datos.idConceptoActitudSFF || null;
+            datos.diasTw = datos.diasTw || null;
+            datos.diasIncapacidad = datos.diasIncapacidad || null;
+            datos.seguimiento = datos.seguimiento || null;
+            datos.idStatus = datos.idStatus || null;
+            datos.idRemitido = datos.idRemitido || null;
+
             const result = await UpdateAccidentRates(datos);
             if (result.data.exito)
                 toast.success(result.data.mensaje);
@@ -292,7 +318,51 @@ const UpdateAccidentRate = () => {
         }
     };
 
-    const isCumple = values.url ? false : true;
+    const isCumple = urlFile ? false : true;
+
+    useEffect(() => {
+        if (!diagnosticoInicial) {
+            setLsDxInicio1([]);
+            setTextDxInicio1('');
+        }
+
+        if (!diagnosticoInicial2) {
+            setLsDxInicio2([]);
+            setTextDxInicio2('');
+        }
+
+        if (!diagnosticoInicial3) {
+            setLsDxInicio3([]);
+            setTextDxInicio3('');
+        }
+
+        if (!diagnosticoFinal) {
+            setLsDxFinal1([]);
+            setTextDxFinal1('');
+        }
+
+        if (!diagnosticoFinal2) {
+            setLsDxFinal2([]);
+            setTextDxFinal2('');
+        }
+
+        if (!diagnosticoFinal3) {
+            setLsDxFinal3([]);
+            setTextDxFinal3('');
+        }
+
+        setValue('diagnosticoInicial', diagnosticoInicial);
+        setValue('diagnosticoInicial2', diagnosticoInicial2);
+        setValue('diagnosticoInicial3', diagnosticoInicial3);
+        setValue('diagnosticoFinal', diagnosticoFinal);
+        setValue('diagnosticoFinal2', diagnosticoFinal2);
+        setValue('diagnosticoFinal3', diagnosticoFinal3);
+
+    }, [
+        diagnosticoInicial, diagnosticoInicial2, diagnosticoInicial3,
+        diagnosticoFinal, diagnosticoFinal2, diagnosticoFinal3,
+        setValue
+    ]);
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Accidentedetrabajo}>
@@ -304,7 +374,7 @@ const UpdateAccidentRate = () => {
                                 title="Actualizar accidente de trabajo"
                                 disabled={true}
                                 key={lsEmployee?.documento}
-                                documento={values.documento}
+                                documento={documento}
                                 onChange={(e) => setValue('documento', e.target.value)}
                                 lsEmployee={lsEmployee}
                                 handleDocumento={handleLoadingDocument}
@@ -400,6 +470,7 @@ const UpdateAccidentRate = () => {
                                             options={lsDxInicio1}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoInicial}
+                                            clearable
                                         />
                                     </Grid>
 
@@ -421,6 +492,7 @@ const UpdateAccidentRate = () => {
                                             options={lsDxInicio2}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoInicial2}
+                                            clearable
                                         />
                                     </Grid>
 
@@ -442,6 +514,7 @@ const UpdateAccidentRate = () => {
                                             options={lsDxInicio3}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoInicial3}
+                                            clearable
                                         />
                                     </Grid>
                                 </Grid>
@@ -469,6 +542,7 @@ const UpdateAccidentRate = () => {
                                             options={lsDxFinal1}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoFinal}
+                                            clearable
                                         />
                                     </Grid>
 
@@ -490,6 +564,7 @@ const UpdateAccidentRate = () => {
                                             options={lsDxFinal2}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoFinal2}
+                                            clearable
                                         />
                                     </Grid>
 
@@ -511,6 +586,7 @@ const UpdateAccidentRate = () => {
                                             options={lsDxFinal3}
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.diagnosticoFinal3}
+                                            clearable
                                         />
                                     </Grid>
                                 </Grid>
@@ -630,8 +706,8 @@ const UpdateAccidentRate = () => {
                                     <MainCard title="Registro Fotográfico" secondary={
                                         <ChipControl
                                             size="small"
-                                            label={values.url == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
-                                            chipcolor={values.url == null ? "error" : "success"}
+                                            label={urlFile == null ? "No se ha subido ningún archivo aún.".toUpperCase() : "Archivo subido con éxito.".toUpperCase()}
+                                            chipcolor={urlFile == null ? "error" : "success"}
                                             sx={{ borderRadius: '4px', textTransform: 'capitalize' }}
                                         />
                                     }>
@@ -710,7 +786,7 @@ const UpdateAccidentRate = () => {
                     onClose={openModal.onFalse}
                     width={600}
                 >
-                    <ViewPDF dataPDF={values.url} height={570} width={550} />
+                    <ViewPDF dataPDF={urlFile} height={570} width={550} />
                 </RightDrawer>
 
                 <ControlModal

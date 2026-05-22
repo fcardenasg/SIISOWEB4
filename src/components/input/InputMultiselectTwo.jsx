@@ -1,11 +1,30 @@
 import { Box, Checkbox, Chip, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-export default function InputMultiselectTwo({ name, chip, label, options, checkbox, defaultValue = [], placeholder, helperText, ...other }) {
+export default function InputMultiselectTwo({
+    name,
+    chip,
+    label,
+    options,
+    checkbox,
+    defaultValue = [],
+    placeholder,
+    helperText,
+    showSelectAll = false,
+    ...other
+}) {
+    const checkIsAllSelected = (currentValues) => {
+        if (!options.length) return false;
+        return options.every(opt => currentValues.includes(opt.value));
+    };
+
     const renderValues = (selectedIds) => {
-        const selectedItems = Array.isArray(selectedIds)
-            ? options.filter((item) => selectedIds.includes(item.value))
-            : [];
+        const isAllSelected = checkIsAllSelected(selectedIds);
+        if (isAllSelected && showSelectAll) {
+            return chip ? <Chip size="small" label="TODOS" color="primary" /> : "TODOS";
+        }
+
+        const selectedItems = options.filter((item) => selectedIds.includes(item.value));
 
         if (!selectedItems.length && placeholder) {
             return <Box sx={{ color: 'text.disabled' }}>{placeholder}</Box>;
@@ -30,6 +49,22 @@ export default function InputMultiselectTwo({ name, chip, label, options, checkb
             defaultValue={defaultValue || []}
             render={({ field, fieldState: { error } }) => {
                 const value = Array.isArray(field.value) ? field.value : [];
+                const isAllSelected = checkIsAllSelected(value);
+
+                const handleChange = (event) => {
+                    const { value: newValue } = event.target;
+                    if (newValue.includes("all_options_selected")) {
+                        if (isAllSelected) {
+                            field.onChange([]);
+                        } else {
+                            const allIds = options.map(opt => opt.value);
+                            field.onChange(allIds);
+                        }
+                        return;
+                    }
+
+                    field.onChange(newValue);
+                };
 
                 return (
                     <FormControl fullWidth error={!!error} {...other}>
@@ -38,6 +73,7 @@ export default function InputMultiselectTwo({ name, chip, label, options, checkb
                         <Select
                             {...field}
                             value={value}
+                            onChange={handleChange}
                             multiple
                             displayEmpty={!!placeholder}
                             id={`multiple-${name}`}
@@ -45,14 +81,29 @@ export default function InputMultiselectTwo({ name, chip, label, options, checkb
                             label={label}
                             renderValue={renderValues}
                         >
+                            {showSelectAll && (
+                                <MenuItem value="all_options_selected">
+                                    {checkbox && (
+                                        <Checkbox
+                                            size="small"
+                                            checked={isAllSelected}
+                                        />
+                                    )}
+                                    <strong>TODOS</strong>
+                                </MenuItem>
+                            )}
+
                             {options.map(option => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {/* Checkbox sincronizado con el estado de selección */}
+                                <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                    disabled={isAllSelected && showSelectAll}
+                                >
                                     {checkbox && (
                                         <Checkbox
                                             size="small"
                                             disableRipple
-                                            checked={value.includes(option.value)} // Verifica si el valor está seleccionado
+                                            checked={value.includes(option.value)}
                                         />
                                     )}
                                     {option.label}
@@ -61,7 +112,9 @@ export default function InputMultiselectTwo({ name, chip, label, options, checkb
                         </Select>
 
                         {(!!error || helperText) && (
-                            <FormHelperText error={!!error}>{error ? error?.message : helperText}</FormHelperText>
+                            <FormHelperText error={!!error}>
+                                {error ? error?.message : helperText}
+                            </FormHelperText>
                         )}
                     </FormControl>
                 );

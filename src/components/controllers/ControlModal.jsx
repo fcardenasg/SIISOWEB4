@@ -1,14 +1,13 @@
-import PropTypes from "prop-types";
 import CloseIcon from "@mui/icons-material/Close";
-import { Grid, Tooltip, IconButton, Typography, Button } from "@mui/material";
-import { useTheme } from "@mui/styles";
-import AnimateButton from "ui-component/extended/AnimateButton";
+import { Grid, IconButton, Tooltip } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useTheme } from "@mui/styles";
 import { Message } from "components/helpers/Enums";
 import { UpperFirstChar } from "components/helpers/Format";
+import AnimateButton from "ui-component/extended/AnimateButton";
 
 const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
   const theme = useTheme();
@@ -53,11 +52,3 @@ const ControlModal = ({ open, onClose, maxWidth, title, children }) => {
 };
 
 export default ControlModal;
-
-ControlModal.propTypes = {
-  open: PropTypes.bool,
-  title: PropTypes.string,
-  maxWidth: PropTypes.string,
-  onClose: PropTypes.func,
-  children: PropTypes.node,
-};

@@ -40,46 +40,33 @@ const Calendar = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [date, setDate] = useState(new Date());
     const [save, setSave] = useState(false);
-
     const usuario = useAuth()
-
     const calendarRef = useRef(null);
     const matchSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
-
     const [events, setEvents] = useState([]);
 
-    console.log(usuario?.user?.id)
-
-   
     const getAll = async (filtercitas) => {
         const response = await getEvents(filtercitas);
-        console.log(response)
         setEvents(response);
     };
 
     useEffect(() => {
         if (usuario) {
-
-            const filtercitas={
-                idmedico:usuario?.user?.id.toString(),
-                fechaactual:date.toISOString()
+            const filtercitas = {
+                idmedico: usuario?.user?.id.toString(),
+                fechaactual: date.toISOString()
             }
-         
+
             getAll(filtercitas);
         }
-    }, [date,save]);
+    }, [date, save]);
 
-
-  
     const [view, setView] = useState(matchSm ? 'listWeek' : 'dayGridMonth');
-
 
     const handleDateToday = () => {
         const calendarEl = calendarRef.current;
-
         if (calendarEl) {
             const calendarApi = calendarEl.getApi();
-
             calendarApi.today();
             setDate(calendarApi.getDate());
         }
@@ -87,7 +74,6 @@ const Calendar = () => {
 
     const handleViewChange = (newView) => {
         const calendarEl = calendarRef.current;
-
         if (calendarEl) {
             const calendarApi = calendarEl.getApi();
 
@@ -96,21 +82,17 @@ const Calendar = () => {
         }
     };
 
-
     useEffect(() => {
         handleViewChange(matchSm ? 'listWeek' : 'dayGridMonth');
     }, [matchSm]);
 
     const handleDatePrev = () => {
-        console.log("ANTERIOR")
         const calendarEl = calendarRef.current;
 
         if (calendarEl) {
             const calendarApi = calendarEl.getApi();
             calendarApi.prev();
             setDate(calendarApi.getDate());
-
-           
         }
     };
 
@@ -121,14 +103,12 @@ const Calendar = () => {
             const calendarApi = calendarEl.getApi();
 
             calendarApi.next();
-            console.log(calendarApi.getDate())
             setDate(calendarApi.getDate());
         }
     };
 
 
     const handleDateClick = (arg) => {
-
         if (!ajustarFechaUTC(arg.date)) {
             setIsModalOpen(false);
             setErrorMessage("¡No se puede seleccionar una fecha anterior a la actual!")
@@ -142,7 +122,7 @@ const Calendar = () => {
     }
 
     const handleEventSelect = (arg) => {
-      
+
         if (arg.event.id) {
             const selectEvent = events.find((_event) => _event.id == arg.event.id);
             setSelectedEvent(selectEvent);
@@ -172,7 +152,6 @@ const Calendar = () => {
                 }
             });
         } catch (err) {
-            console.error(err);
         }
     };
 
@@ -186,15 +165,15 @@ const Calendar = () => {
         const fechaSeleccionada = new Date(data?.fecha);
         const fechaAjustada = new Date(fechaSeleccionada.getTime() - fechaSeleccionada.getTimezoneOffset() * 60000);
 
-        const uniqueId = Date.now(); 
+        const uniqueId = Date.now();
 
         const formtData = {
             ...data,
             fecha: fechaAjustada.toISOString(),
             usuarioregistro: usuario?.user?.nameuser,
             estado: true,
-            url: linkAgoramedico(fechaAjustada.toISOString(), data,uniqueId),
-            urlpaciente: linkAgorapaciente(fechaAjustada.toISOString(),uniqueId),
+            url: linkAgoramedico(fechaAjustada.toISOString(), data, uniqueId),
+            urlpaciente: linkAgorapaciente(fechaAjustada.toISOString(), uniqueId),
         };
 
         try {
@@ -208,7 +187,6 @@ const Calendar = () => {
                 setOpenError(true)
             }
         } catch (error) {
-            console.log("error", error)
         }
 
     };
@@ -217,7 +195,7 @@ const Calendar = () => {
         const fechaSeleccionada = new Date(data?.fecha);
         const fechaAjustada = new Date(fechaSeleccionada.getTime() - fechaSeleccionada.getTimezoneOffset() * 60000);
 
-        const uniqueId = Date.now(); 
+        const uniqueId = Date.now();
 
         const formtData = {
             ...data,
@@ -225,8 +203,8 @@ const Calendar = () => {
             fecha: fechaAjustada.toISOString(),
             usuarioedicion: usuario?.user?.nameuser,
             estado: true,
-            url: linkAgoramedico(fechaAjustada.toISOString(), data,uniqueId),
-            urlpaciente: linkAgorapaciente(fechaAjustada.toISOString(),uniqueId),
+            url: linkAgoramedico(fechaAjustada.toISOString(), data, uniqueId),
+            urlpaciente: linkAgorapaciente(fechaAjustada.toISOString(), uniqueId),
         };
 
         try {
@@ -243,7 +221,6 @@ const Calendar = () => {
         } catch (error) {
             setErrorMessage("Error al actualizar la cita")
             setOpenError(true)
-            console.log(error);
         }
     };
 
@@ -258,7 +235,7 @@ const Calendar = () => {
         });
     };
 
-    const handleAddClick = () => {     
+    const handleAddClick = () => {
         setIsModalOpen(true);
     };
 

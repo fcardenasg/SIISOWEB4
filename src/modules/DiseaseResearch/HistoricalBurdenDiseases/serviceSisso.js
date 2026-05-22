@@ -501,15 +501,11 @@ export async function fetchIA(prompt) {
       }
     );
 
-    console.log("Respuesta INFORMACION::",response.data);
     const { data } = response.data;
-    console.log("Respuesta INFORMACION DOS::",data);
     const mappingData = parseJsonSafe(data);
-    console.log(mappingData);
 
     return mappingData;
   } catch (error) {
-    console.error(error);
     return error;
   }
 }
@@ -532,7 +528,6 @@ export async function fetchIAChat(prompt) {
 
     return data;
   } catch (error) {
-    console.error(error);
     return error;
   }
 }
@@ -565,7 +560,6 @@ export function extractionDataBase(file) {
     nombre = parts[0].trim();
   }
 
-  console.log(nombre, codigofds, path);
 
   return {
     nombre,
@@ -587,7 +581,6 @@ function parseJsonSafe(data) {
 
     return JSON.parse(clean);
   } catch (error) {
-    console.error("❌ Error al parsear JSON:", error.message);
     return null;
   }
 }
@@ -603,7 +596,6 @@ export function updateStateFile(file, acceptedFiles, setAcceptedFiles) {
 }
 
 export async function extractImagesFromPdf(file, prompt) {
-  console.log("archivo:", file);
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -618,17 +610,14 @@ export async function extractImagesFromPdf(file, prompt) {
     );
 
     const { data } = response.data;
-    console.log("jean", data);
     const mappingData = parseJsonSafe(data);
 
     return mappingData;
   } catch (error) {
-    console.error("❌ Error al enviar el archivo:", error);
     throw error;
   }
 }
 export async function wordOpenIa(file, prompt) {
-  console.log("archivo:", file);
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -643,18 +632,15 @@ export async function wordOpenIa(file, prompt) {
     );
 
     const { data } = response.data;
-    console.log("jean", data);
     const mappingData = parseJsonSafe(data);
 
     return mappingData;
   } catch (error) {
-    console.error("❌ Error al enviar el archivo:", error);
     throw error;
   }
 }
 
 export async function extractWordFromText(file) {
-  console.log("archivo:", file);
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -664,12 +650,10 @@ export async function extractWordFromText(file) {
     });
 
     const { data } = response.data;
-    console.log("texto jean", data);
     const mappingData = parseJsonSafe(data);
 
     return mappingData;
   } catch (error) {
-    console.error("❌ Error al enviar el archivo:", error);
     throw error;
   }
 }
@@ -677,14 +661,13 @@ export async function extractWordFromText(file) {
 export async function onSaveMaster(data, acceptedFiles) {
   // const data = listMappingproduct.map(({ path, ...resto }) => resto);
 
-  
+
 
   try {
     const response = await axios.post(
       `${Url.Base}${Url.InvestigacionEnfermedadLaboralFile}`,
       data
     );
-    console.log(response);
     if (response.data.exito) {
       toast.success(response.data.mensaje);
       // onSaveFile(response.data.datos, acceptedFiles, user);
@@ -692,7 +675,6 @@ export async function onSaveMaster(data, acceptedFiles) {
       toast.error("Error al guardar los datos");
     }
   } catch (error) {
-    console.log(error);
     toast.error("Error al guardar los datos");
   }
 }
@@ -720,7 +702,6 @@ export const convertPdfToHtml = async (pdfFile, confirmModal) => {
 
       if (!uploadResponse) {
         confirmModal.onFalse();
-        console.error("No se pudo conectar al servidor para subir el PDF.");
         return null;
       }
 
@@ -728,14 +709,12 @@ export const convertPdfToHtml = async (pdfFile, confirmModal) => {
 
       if (!uploadResult.url) {
         confirmModal.onFalse();
-        console.error("El servidor no devolvió una URL válida.");
         return null;
       }
 
       uploadedFileUrl = uploadResult.url; // URL temporal del PDF subido
     } catch (err) {
       confirmModal.onFalse();
-      console.log(err);
     }
 
     //
@@ -773,7 +752,6 @@ export const convertPdfToHtml = async (pdfFile, confirmModal) => {
 
     return htmlText;
   } catch (error) {
-    console.error("Error al convertir PDF:", error);
     return null;
   }
 };
@@ -801,7 +779,6 @@ export const convertPdfToText = async (pdfFile, confirmModal) => {
 
       if (!uploadResponse) {
         confirmModal?.onFalse?.();
-        console.error("No se pudo conectar al servidor para subir el PDF.");
         return null;
       }
 
@@ -809,14 +786,12 @@ export const convertPdfToText = async (pdfFile, confirmModal) => {
 
       if (!uploadResult.url) {
         confirmModal?.onFalse?.();
-        console.error("El servidor no devolvió una URL válida.");
         return null;
       }
 
       uploadedFileUrl = uploadResult.url;
     } catch (err) {
       confirmModal?.onFalse?.();
-      console.error(err);
       return null;
     }
 
@@ -855,7 +830,6 @@ export const convertPdfToText = async (pdfFile, confirmModal) => {
 
     return plainText;
   } catch (error) {
-    console.error("Error al convertir PDF a texto:", error);
     return null;
   }
 };
@@ -878,7 +852,6 @@ export function fileToBase64(file) {
 }
 
 export function base64ToWord(base64String, fileName = "archivo.docx") {
-  console.log("base64String", base64String);
   // 1. separar cabecera y contenido
   const [header, base64Data] = base64String.split(",");
 
@@ -905,7 +878,6 @@ export function base64ToWord(base64String, fileName = "archivo.docx") {
 }
 
 export async function ConvertirDocxASfdt(file, prompt) {
-  console.log("archivo:", file);
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -919,18 +891,15 @@ export async function ConvertirDocxASfdt(file, prompt) {
     );
 
     const { data } = response.data;
-    console.log("jean", data);
     const mappingData = parseJsonSafe(data);
 
     return mappingData;
   } catch (error) {
-    console.error("❌ Error al enviar el archivo:", error);
     throw error;
   }
 }
 
 export async function ConvertirWordtoHtml(file, prompt) {
-  console.log("archivo:", file);
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -943,18 +912,15 @@ export async function ConvertirWordtoHtml(file, prompt) {
       }
     );
 
-    console.log("jean", response);
     const { data } = response.data;
     // const mappingData = parseJsonSafe(data);
 
     return response;
   } catch (error) {
-    console.error("❌ Error al enviar el archivo:", error);
     throw error;
   }
 }
 export async function ConvertirWordtoPdf(file, prompt) {
-  console.log("archivo:", file);
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -970,13 +936,11 @@ export async function ConvertirWordtoPdf(file, prompt) {
       }
     );
 
-    console.log("jean", response);
     // const { data } = response.data;
     // const mappingData = parseJsonSafe(data);
 
     return response;
   } catch (error) {
-    console.error("❌ Error al enviar el archivo:", error);
     throw error;
   }
 }

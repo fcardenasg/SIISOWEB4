@@ -53,6 +53,7 @@ import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import Cargando from 'components/loading/Cargando';
 import { GetAntecedente } from 'api/clients/MedicalHistoryClient';
 import Framingham from './Framingham';
+import { useFormContext } from 'react-hook-form';
 
 const DetailIcons = [
     { title: 'Plantilla de texto', icons: <ListAltSharpIcon fontSize="small" /> },
@@ -106,6 +107,9 @@ const Emo = ({
     handleTencion,
     tencion
 }) => {
+    const methods = useFormContext();
+    const { watch, setValue } = methods;
+
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -449,6 +453,32 @@ const Emo = ({
     setTimeout(() => {
         setTimeWait(true);
     }, 3000);
+
+    const dx1 = watch("dx1");
+    const dx2 = watch("dx2");
+    const dx3 = watch("dx3");
+
+    useEffect(() => {
+        if (!dx1) {
+            setLsDx1([]);
+            setTextDx1('');
+        }
+
+        if (!dx2) {
+            setLsDx2([]);
+            setTextDx2('');
+        }
+
+        if (!dx3) {
+            setLsDx3([]);
+            setTextDx3('');
+        }
+
+        setValue('dx1', dx1);
+        setValue('dx2', dx2);
+        setValue('dx3', dx3);
+
+    }, [dx1, dx2, dx3, setValue]);
 
     return (
         <Fragment>
@@ -3338,7 +3368,6 @@ const Emo = ({
 
                                         <Grid item xs={2}>
                                             <InputOnChange
-                                                clearable
                                                 label="Dx 2"
                                                 onKeyDown={handleDx2}
                                                 onChange={(e) => setTextDx2(e.target.value)}

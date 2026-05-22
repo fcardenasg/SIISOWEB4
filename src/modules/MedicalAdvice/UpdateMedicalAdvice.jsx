@@ -166,12 +166,6 @@ const UpdateMedicalAdvice = () => {
   const [searchParams] = useSearchParams();
   const idempleado = searchParams.get("id");
 
-  useEffect(() => {
-    if (idempleado) {
-      console.log("empleado", idempleado);
-    }
-  }, [idempleado]);
-
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -200,9 +194,8 @@ const UpdateMedicalAdvice = () => {
       setLsCodigoMotivo(lsServerMotivo.data);
 
       const lsServerAtencion = await GetByIdAdvice(id);
-    
-      if (lsServerAtencion.status === 200) {       
-        console.log("lsServerAtencion", lsServerAtencion.data);
+
+      if (lsServerAtencion.status === 200) {
         if (lsServerAtencion?.data && lsServerAtencion?.data?.channel) {
           setChannelCurrent({
             channel: lsServerAtencion?.data?.channel,
@@ -305,7 +298,6 @@ const UpdateMedicalAdvice = () => {
   };
 
   const handleClick = async (datos) => {
-    console.log(datos);
     const fechaCurrent = new Date(datos?.fecha).toISOString();
 
     const fechaSeleccionada = new Date(datos?.fecha);

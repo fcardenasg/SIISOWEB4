@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import {
     Table,
@@ -33,16 +33,16 @@ const CeldaSeccion = ({ title }) => (
             background: "#f7f7f7",
             width: "90px",
             borderRight: "1px solid #e0e0e0",
-            verticalAlign: 'top', // Alineación para texto largo
-            padding: '16px 8px', // Ajuste de padding
+            verticalAlign: 'top',
+            padding: '16px 8px',
         }}
     >
         <Typography sx={EstiloTitulo}>{title}</Typography>
     </TableCell>
 );
 
-export default function TableHealth() {
-    const idExfumador = 15137;
+export default function TableHealth({ dataModel, disabledControl }) {
+    const idExfumador = 11203;
     const { control } = useFormContext();
     const [lsOpcionHabito, setLsOpcionHabito] = useState([]);
     const [lsFrecuencia, setLsFrecuencia] = useState([]);
@@ -75,16 +75,16 @@ export default function TableHealth() {
                                     <Stack direction="row" spacing={.5} alignItems="center">
                                         <Typography>Fuma:</Typography>
                                         <Controller
-                                            name="HabiCigarrillo"
+                                            name="habiCigarrillo"
                                             control={control}
-                                            defaultValue={0}
+                                            defaultValue={dataModel?.habiCigarrillo}
                                             render={({ field }) => (
                                                 <RadioGroup {...field} row onChange={(e) => field.onChange(parseInt(e.target.value))}>
                                                     {lsOpcionHabito.map(option => (
                                                         <FormControlLabel
                                                             key={option.value}
                                                             value={option.value}
-                                                            control={<Radio size="small" />}
+                                                            control={<Radio size="small" disabled={disabledControl} />}
                                                             label={UpperFirstChar(option.label)}
                                                         />
                                                     ))}
@@ -96,9 +96,9 @@ export default function TableHealth() {
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <Controller
-                                        name="HabiCigarrilloTiempo"
+                                        name="habiCigarrilloTiempo"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue={dataModel?.habiCigarrilloTiempo}
                                         render={({ field }) => (
                                             <TextField
                                                 {...field}
@@ -107,7 +107,8 @@ export default function TableHealth() {
                                                 label="Tiempo acumulado (años)"
                                                 fullWidth
                                                 size="small"
-                                                onChange={(e) => field.onChange(parseInt(e.target.value) || '')}
+                                                disabled={disabledControl}
+                                                onChange={(e) => field.onChange(parseInt(e.target.value) || null)}
                                             />
                                         )}
                                     />
@@ -115,9 +116,9 @@ export default function TableHealth() {
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <Controller
-                                        name="HabiCigarrilloTabaquismo"
+                                        name="habiCigarrilloTabaquismo"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue={dataModel?.habiCigarrilloTabaquismo}
                                         render={({ field }) => (
                                             <TextField
                                                 {...field}
@@ -126,7 +127,8 @@ export default function TableHealth() {
                                                 label="Años de tabaquismo"
                                                 fullWidth
                                                 size="small"
-                                                onChange={(e) => field.onChange(parseInt(e.target.value) || '')}
+                                                disabled={disabledControl}
+                                                onChange={(e) => field.onChange(parseInt(e.target.value) || null)}
                                             />
                                         )}
                                     />
@@ -134,9 +136,9 @@ export default function TableHealth() {
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <Controller
-                                        name="HabiCigarrilloCantidad"
+                                        name="habiCigarrilloCantidad"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue={dataModel?.habiCigarrilloCantidad}
                                         render={({ field }) => (
                                             <TextField
                                                 {...field}
@@ -145,7 +147,8 @@ export default function TableHealth() {
                                                 label="Cantidad (cigarrillos por día)"
                                                 fullWidth
                                                 size="small"
-                                                onChange={(e) => field.onChange(parseInt(e.target.value) || '')}
+                                                disabled={disabledControl}
+                                                onChange={(e) => field.onChange(parseInt(e.target.value) || null)}
                                             />
                                         )}
                                     />
@@ -164,20 +167,21 @@ export default function TableHealth() {
                                     <Stack direction="row" spacing={2} alignItems="center">
                                         <Typography>Consumo:</Typography>
                                         <Controller
-                                            name="HabiAlcoholConsume"
+                                            name="habiAlcoholConsume"
                                             control={control}
-                                            defaultValue={0}
+                                            defaultValue={dataModel?.habiAlcoholConsume}
                                             render={({ field }) => (
                                                 <RadioGroup
                                                     {...field}
                                                     row
+                                                    disabled={disabledControl}
                                                     onChange={(e) => field.onChange(parseInt(e.target.value))}
                                                 >
                                                     {lsOpcionHabito.filter(option => option.value !== idExfumador).map(option => (
                                                         <FormControlLabel
                                                             key={option.value}
                                                             value={option.value}
-                                                            control={<Radio size="small" />}
+                                                            control={<Radio size="small" disabled={disabledControl} />}
                                                             label={UpperFirstChar(option.label)}
                                                         />
                                                     ))}
@@ -189,17 +193,19 @@ export default function TableHealth() {
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <InputSelect
-                                        name="HabiAlcoholFrecuencia"
+                                        defaultValue={dataModel?.habiAlcoholFrecuencia}
+                                        name="habiAlcoholFrecuencia"
                                         label="Frecuencia"
                                         options={lsFrecuencia}
+                                        disabled={disabledControl}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <Controller
-                                        name="HabiAlcoholCantidad"
+                                        name="habiAlcoholCantidad"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue={dataModel?.habiAlcoholCantidad}
                                         render={({ field }) => (
                                             <TextField
                                                 {...field}
@@ -208,7 +214,8 @@ export default function TableHealth() {
                                                 label="Cantidad"
                                                 fullWidth
                                                 size="small"
-                                                onChange={(e) => field.onChange(parseInt(e.target.value) || '')}
+                                                disabled={disabledControl}
+                                                onChange={(e) => field.onChange(parseInt(e.target.value) || null)}
                                             />
                                         )}
                                     />
@@ -216,9 +223,9 @@ export default function TableHealth() {
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <Controller
-                                        name="HabiAlcoholTipoBebida"
+                                        name="habiAlcoholTipoBebida"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue={dataModel?.habiAlcoholTipoBebida}
                                         render={({ field }) => (
                                             <TextField
                                                 {...field}
@@ -226,6 +233,7 @@ export default function TableHealth() {
                                                 label="Tipo de bebida"
                                                 fullWidth
                                                 size="small"
+                                                disabled={disabledControl}
                                             />
                                         )}
                                     />
@@ -244,20 +252,21 @@ export default function TableHealth() {
                                     <Stack direction="row" spacing={2} alignItems="center">
                                         <Typography>Práctica:</Typography>
                                         <Controller
-                                            name="HabiDeportePractica"
+                                            name="habiDeportePractica"
                                             control={control}
-                                            defaultValue={0}
+                                            defaultValue={dataModel?.habiDeportePractica}
                                             render={({ field }) => (
                                                 <RadioGroup
                                                     {...field}
                                                     row
+                                                    disabled={disabledControl}
                                                     onChange={(e) => field.onChange(parseInt(e.target.value))}
                                                 >
                                                     {lsOpcionHabito.filter(option => option.value !== idExfumador).map(option => (
                                                         <FormControlLabel
                                                             key={option.value}
                                                             value={option.value}
-                                                            control={<Radio size="small" />}
+                                                            control={<Radio size="small" disabled={disabledControl} />}
                                                             label={UpperFirstChar(option.label)}
                                                         />
                                                     ))}
@@ -269,17 +278,19 @@ export default function TableHealth() {
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <InputSelect
-                                        name="HabiDeporteFrecuencia"
+                                        name="habiDeporteFrecuencia"
                                         label="Frecuencia"
                                         options={lsFrecuencia}
+                                        defaultValue={dataModel?.habiDeporteFrecuencia}
+                                        disabled={disabledControl}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <Controller
-                                        name="HabiDeporteTiempo"
+                                        name="habiDeporteTiempo"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue={dataModel?.habiDeporteTiempo}
                                         render={({ field }) => (
                                             <TextField
                                                 {...field}
@@ -288,7 +299,8 @@ export default function TableHealth() {
                                                 label="Tiempo (minutos/horas)"
                                                 fullWidth
                                                 size="small"
-                                                onChange={(e) => field.onChange(parseInt(e.target.value) || '')}
+                                                disabled={disabledControl}
+                                                onChange={(e) => field.onChange(parseInt(e.target.value) || null)}
                                             />
                                         )}
                                     />
@@ -296,9 +308,11 @@ export default function TableHealth() {
 
                                 <Grid item xs={12} md={6} lg={2.6}>
                                     <InputSelect
-                                        name="HabiDeporteTipoActividad"
+                                        name="habiDeporteTipoActividad"
                                         label="Tipo de actividad"
                                         options={lsDeporte}
+                                        defaultValue={dataModel?.habiDeporteTipoActividad}
+                                        disabled={disabledControl}
                                     />
                                 </Grid>
                             </Grid>
@@ -311,9 +325,9 @@ export default function TableHealth() {
                         <CeldaSeccion title="Otros" />
                         <TableCell colSpan={4}>
                             <Controller
-                                name="HabiOtros"
+                                name="habiOtros"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={dataModel?.habiOtros}
                                 render={({ field }) => (
                                     <TextField
                                         {...field}
@@ -324,12 +338,12 @@ export default function TableHealth() {
                                         multiline
                                         minRows={1}
                                         maxRows={3}
+                                        disabled={disabledControl}
                                     />
                                 )}
                             />
                         </TableCell>
                     </TableRow>
-
                 </TableBody>
             </Table >
         </TableContainer >

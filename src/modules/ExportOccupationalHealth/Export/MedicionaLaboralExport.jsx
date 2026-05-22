@@ -159,11 +159,10 @@ const MedicionaLaboralExport = ({ setOpcionBusqueda, opcionBusqueda, setSede, se
                     </AnimateButton>
                 </Grid>
 
-                {
-                    loading ?
-                        <Grid item xs={12}>
-                            <LoadingGenerate title="Generando Excel..." />
-                        </Grid> : null
+                {loading ?
+                    <Grid item xs={12}>
+                        <LoadingGenerate title="Generando Excel..." />
+                    </Grid> : null
                 }
             </Grid>
         </Fragment>

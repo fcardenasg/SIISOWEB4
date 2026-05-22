@@ -285,6 +285,12 @@ function generatePage3(doc = new jsPDF(), lsDataReport = [], lsDataUser) {
 }
 
 export function generateReportRefund(lsDataReport = [], lsDataUser) {
+    Object.keys(lsDataReport).forEach(key => {
+        if (lsDataReport[key] === null || lsDataReport[key] === undefined) {
+            lsDataReport[key] = "";
+        }
+    });
+
     const doc = new jsPDF('p', 'mm', 'letter');
 
     doc.setFont("helvetica", "bold");

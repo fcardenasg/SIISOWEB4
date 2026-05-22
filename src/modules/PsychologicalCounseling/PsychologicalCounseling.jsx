@@ -1,3 +1,7 @@
+import { yupResolver } from '@hookform/resolvers/yup';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import {
     Button,
     Grid,
@@ -5,16 +9,6 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Fragment, useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
-
-import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import { GetByIdAdvice, SaveAdvice } from 'api/clients/AdviceClient';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
@@ -32,13 +26,16 @@ import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import ListPersonalNotesAll from 'components/template/ListPersonalNotesAll';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { PostMedicalAdvice } from 'formatdata/MedicalAdviceForm';
 import useAuth from 'hooks/useAuth';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from "yup";
 import { generateReportPsycho } from '../Programming/Attention/Report/Psychological';
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     idTipoAsesoria: yup.string().required(ValidationMessage.Requerido),
@@ -147,11 +144,25 @@ const PsychologicalCounseling = () => {
         } catch (err) { }
     };
 
+    const clean = (val) => (val === undefined || val === "" || val === null ? null : val);
+
     const handleClick = async (datos) => {
         try {
-            const DataToUpdate = PostMedicalAdvice(documento, datos.fecha, 0, DefaultData.AsesoriaPsicologica, lsEmployee.sede,
-                undefined, datos.idEstadoCaso, undefined, undefined, datos.idTipoAsesoria, datos.idMotivo, undefined, datos.idCausa, datos.motivoConsulta,
-                datos.concepto, datos.pautasSeguir, datos.idEstadoAsesoria, user?.nameuser, undefined, undefined, undefined);
+            const DataToUpdate = {
+                idRegistroAtencion: 0,
+                documento: documento,
+                fecha: clean(datos.fecha),
+                idTipoAtencion: clean(DefaultData.AsesoriaPsicologica),
+                idSede: clean(lsEmployee.sede),
+                idEstadoCaso: clean(datos.idEstadoCaso),
+                idTipoAsesoria: clean(datos.idTipoAsesoria),
+                idMotivo: clean(datos.idMotivo),
+                idCausa: clean(datos.idCausa),
+                motivo: clean(datos.motivoConsulta),
+                recomendaciones: clean(datos.concepto),
+                pautas: clean(datos.pautasSeguir),
+                idEstadoAsesoria: clean(datos.idEstadoAsesoria)
+            };
 
             const result = await SaveAdvice(DataToUpdate);
             if (result.status === 200) {

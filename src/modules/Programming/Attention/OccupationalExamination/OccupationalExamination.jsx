@@ -177,7 +177,7 @@ const OccupationalExamination = () => {
     const [openError, setOpenError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const [value, setValue] = useState(0);
+    const [valueTab, setValueTab] = useState(0);
     const [timeWait, setTimeWait] = useState(false);
     const [viewChart, setViewChart] = useState(false);
 
@@ -487,7 +487,10 @@ const OccupationalExamination = () => {
     const handleClick = async (datos) => {
         try {
             const DataToInset = PostOccupationalExamination(
-                id, documento, datos.fecha, atencion,
+                id || null,
+                documento,
+                datos.fecha,
+                atencion || null,
 
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
@@ -498,25 +501,62 @@ const OccupationalExamination = () => {
                 datos.anioAT, datos.especifiqueAT, datos.anio1AT, datos.especifique1AT,
 
                 estadoVacuna.tetanoIM, estadoVacuna.influenzaIM, estadoVacuna.fiebreAmarillaIM, estadoVacuna.rubeolaSarampionIM, estadoVacuna.covid19IM,
-                estadoVacuna.otrasIM, datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM,
-                datos.idRefuerzoIM, datos.anioVacuna6IM,
+                estadoVacuna.otrasIM,
+                datos.anioVacuna1IM || null,
+                datos.anioVacuna2IM || null,
+                datos.anioVacuna3IM || null,
+                datos.anioVacuna4IM || null,
+                datos.anioVacuna5IM || null,
+                datos.idRefuerzoIM || null,
+                datos.anioVacuna6IM,
 
-                datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB,
-                datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
-                datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
-                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(tipoFobia),
+                datos.fumaHB,
+                datos.cigarrillosDiasFumaHB || null,
+                datos.aniosCigaFumaHB || null,
+                datos.mesesCigaFumaHB || null,
+                datos.observacionFumaHB, datos.fumabaHB,
+                datos.cigarrillosDiasFumabaHB || null,
+                datos.aniosCigaFumabaHB || null,
+                datos.mesesCigaFumabaHB || null,
+                datos.observacionFumabaHB, datos.practicaDeporteHB,
+                datos.idFrecuenciaDeporteHB || null,
+                datos.idCualDeporteHB || null,
+                datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
+                datos.consumeBebidasAlcoholicasHB,
+                datos.idFrecuenciaBebidaAlHB || null,
+                datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(tipoFobia),
                 datos.cualFobiaHB,
 
-                datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
-                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, datos.fUPGO, datos.fURGO, datos.eTSGO, datos.cUALGO,
-                datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO, datos.ultimoAnioCitologiaGO,
-                datos.idResultadoGO, datos.observacionesGO,
+                datos.menarquiaGO || null,
+                datos.idCiclosGO || null,
+                datos.duracionGO || null,
+                datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO,
+                datos.vidaMaritalGO || null,
+                datos.vidaObstetricaGO || null,
+                datos.gGO || null,
+                datos.pGO || null,
+                datos.aGO || null,
+                datos.cSGO || null,
+                datos.vGO || null,
+                datos.fUPGO, datos.fURGO, datos.eTSGO, datos.cUALGO,
+                datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO,
+                datos.idMetodoGO || null,
+                datos.ultimoAnioCitologiaGO || null,
+                datos.idResultadoGO || null,
+                datos.observacionesGO,
 
                 datos.cabezaRS, datos.ojosRS, datos.oidosRS, datos.narizRS, datos.bocaRS, datos.gargantaRS, datos.cuellosRS, datos.cardioRS, datos.gastrointestinalRS,
                 datos.genitoUrinarioRS, datos.osteoRS, datos.neuroRS, datos.pielRS, datos.psiquiatricoRS, datos.observacionRS,
 
-                datos.tASentadoEF, datos.tAAcostadoEF, datos.pulsoEF, datos.fCEF, datos.fREF, datos.temperaturaEF, peso, talla, imc,
-                clasificacion, datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
+                datos.tASentadoEF, datos.tAAcostadoEF,
+                datos.pulsoEF || null,
+                datos.fCEF || null,
+                datos.fREF || null,
+                datos.temperaturaEF || null,
+                peso, talla, imc,
+                clasificacion,
+                datos.idBiotipoEF || null,
+                datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
                 datos.corniasEF, datos.pupilasEF, datos.reflejoFotomotorEF, datos.reflejoCornialEF, datos.fondoOjosEF, datos.inspeccionEF, datos.otoscopiaEF,
                 datos.inspeccionNarizEF, datos.rinoscopioEF, datos.labiosEF, datos.mucosaEF, datos.enciasEF, datos.paladarEF, datos.dientesEF, datos.lenguaEF,
                 datos.faringeEF, datos.amigdalasEF, datos.cuellosEF, datos.inspeccionToraxEF, datos.auscultacionCardiacaEF, datos.auscultacionRespiratoriaEF,
@@ -530,37 +570,81 @@ const OccupationalExamination = () => {
                 datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, indiceWellsEFU, datos.valorIndiceWellsEFU,
                 datos.observacionEFU,
 
-                datos.fechaRxToraxEPA, datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, datos.fechaEspirometriaEPA,
-                datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, datos.fechaAudiometriaEPA, datos.resultadoAudiometriaEPA,
-                datos.observacionesAudiometriaEPA, datos.fechaVisiometriaEPA, datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
-                datos.fechaLaboratorioClinicoEPA, datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA,
-                datos.fechaCuestionarioSintomaEPA, datos.resultadoCuestionarioSintomaEPA, datos.observacionesCuestionarioSintomaEPA,
-                datos.fechaEkgEPA, datos.resultadoEkgEPA, datos.observacionesEkgEPA, datos.fechaRnmLumbosacraEPA,
-                datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, datos.fechaRnmCervicalEPA, datos.resultadoRnmCervicalEPA,
+                datos.fechaRxToraxEPA,
+                datos.resultadoRxToraxEPA || null,
+                datos.observacionesRxToraxEPA, datos.fechaEspirometriaEPA,
+                datos.resultadoEspirometriaEPA || null,
+                datos.observacionesEspirometriaEPA, datos.fechaAudiometriaEPA,
+                datos.resultadoAudiometriaEPA || null,
+                datos.observacionesAudiometriaEPA, datos.fechaVisiometriaEPA,
+                datos.resultadoVisiometriaEPA || null,
+                datos.observacionesVisiometriaEPA,
+                datos.fechaLaboratorioClinicoEPA,
+                datos.resultadoLaboratorioClinicoEPA || null,
+                datos.observacionesLaboratorioClinicoEPA,
+                datos.fechaCuestionarioSintomaEPA,
+                datos.resultadoCuestionarioSintomaEPA || null,
+                datos.observacionesCuestionarioSintomaEPA,
+                datos.fechaEkgEPA,
+                datos.resultadoEkgEPA || null,
+                datos.observacionesEkgEPA, datos.fechaRnmLumbosacraEPA,
+                datos.resultadoRnmLumbosacraEPA || null,
+                datos.observacionesRnmLumbosacraEPA, datos.fechaRnmCervicalEPA,
+                datos.resultadoRnmCervicalEPA || null,
                 datos.observacionesRnmCervicalEPA, datos.observacionEPA,
 
-                datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
+                datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID,
+                datos.idConceptoActitudID || null,
 
-                datos.fechaConceptoNETA, datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
-                datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
+                datos.fechaConceptoNETA,
+                datos.conceptoAplazadoNETA || null,
+                datos.conceptoActitudNETA || null,
+                datos.idConceptoEspacioConfinado || null,
+                datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA,
+                datos.remitidoNETA || null,
+                datos.remididoDondeNETA || null,
 
-                datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
+                datos.idRiesgoCardiovascularNEMTA || null,
+                datos.idClasificacionNEMTA || null,
+                datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
                 datos.idEnfermedadNEMTA, datos.idHistoriaNEMTA, datos.idHipertensionNEMTA, datos.idHipertrigliceridemiaNEMTA, datos.idCifrasNEMTA,
                 datos.idDiabetesNEMTA, datos.idDislipidemiaNEMTA, datos.idDiagnosticoNEMTA, datos.idRiesgoCardiovascular1NEMTA, datos.idRiesgoCardiovascular2NEMTA,
                 datos.idHipertiroidismoNEMTA, datos.idAlteracionAuditivaNEMTA, datos.idVertigoAlteracionesNEMTA, datos.idEpilegsiaNEMTA, datos.idCegueraTemporalNEMTA,
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
-                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudNETA,
+                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA,
+                datos.conceptoActitudMedicoNEMTA || null,
 
-                datos.fechaFRA, tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.fechaLaboratorioFRA, colesterol, hdl, trigliceridos, "", glicemia,
-                fuma, datos.observacionFRA,
+                datos.fechaFRA, tencion,
+                frTencion || null,
+                "",
+                datos.idDeporteFRA || null,
+                datos.idBebidaFRA || null,
+                datos.fechaLaboratorioFRA,
+                colesterol || null,
+                hdl || null,
+                trigliceridos || null,
+                "",
+                glicemia || null,
+                fuma || null,
+                datos.observacionFRA,
 
-                frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
-                frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
+                frLdl || null,
+                relacion,
+                frEdad || null,
+                frColesterol || null,
+                frHdl || null,
+                frGlicemia || null,
+                frTencion || null,
+                frFuma || null,
+                frPuntaje || null,
+                riesgo.riesgoAbsoluto || null,
+                riesgo.riesgoRelativo, riesgo.dxRiesgo,
 
                 user?.nameuser, undefined, undefined, undefined,
 
-                datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
+                datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR,
+                datos.anosConTosSintR || null,
+                datos.esputoASintR,
                 datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,
                 datos.sibilanciasASintR, datos.sibilanciasA1SintR, datos.sibilanciasA2SintR, datos.sibilanciasA3SintR, datos.sibilanciasBSintR,
                 datos.ataquesSilbiASintR, datos.ataquesSilbiBSintR, datos.ataquesSilbiCSintR, datos.ataquesSilbiDSintR, datos.otrasEnfInhaASintR,
@@ -572,13 +656,24 @@ const OccupationalExamination = () => {
                 datos.antecedentesB5BSintR, datos.antecedentesB5CSintR, datos.otrasEnfToraxA, datos.otrasEnfToraxB,
                 datos.ciruToraxASintR, datos.ciruToraxBSintR, datos.traumaToraxASintR, datos.traumaToraxBSintR, datos.problemCoraASintR, datos.problemCoraBSintR,
                 datos.problemaCoraCSintR, datos.presionAltaASintR, datos.presionAltaBSintR, datos.historiaOcupASintR, datos.historiaOcupBSintR,
-                datos.historiaOcupB1SintR, datos.historiaOcupB2SintR, datos.historiaOcupB3SintR, datos.historiaOcupCSintR, datos.historiaOcupC1SintR,
-                datos.historiaOcupC2SintR, datos.historiaOcupC3SintR, datos.historiaOcupD1SintR, datos.historiaOcupD2SintR, datos.historiaOcupD3,
+                datos.historiaOcupB1SintR, datos.historiaOcupB2SintR,
+                datos.historiaOcupB3SintR || null,
+                datos.historiaOcupCSintR, datos.historiaOcupC1SintR,
+                datos.historiaOcupC2SintR,
+                datos.historiaOcupC3SintR || null,
+                datos.historiaOcupD1SintR, datos.historiaOcupD2SintR, datos.historiaOcupD3,
                 datos.tabaquismoASintR, datos.tabaquismoBSintR, datos.tabaquismoCSintR, datos.tabaquismoDSintR, datos.tabaquismoESintR, datos.actDeportASintR,
                 datos.actDeporA1SintR, datos.actDeporA2SintR, datos.actDeporA3SintR, datos.actDeporA4SintR, datos.recoSintR,
 
-                datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
-                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico,
+                datos.parentesco1ANFA || null,
+                datos.parentesco1ObserANFA,
+                datos.parentesco2ANFA || null,
+                datos.parentesco2ObserANFA,
+                datos.parentesco3ANFA || null,
+                datos.parentesco3ObserANFA,
+                datos.parentesco4ANFA || null,
+                datos.parentesco4ObserANFA,
+                datos.lateralidadExamenesFisico || null,
 
                 datos.vacunaBCGIM, datos.vacunaVHBIM, datos.vacunaVHCIM
             );
@@ -604,7 +699,11 @@ const OccupationalExamination = () => {
     const handleClickUpdate = async (datos) => {
         try {
             const DataToInset = PutOccupationalExamination(
-                resultData, id, documento, datos.fecha, atencion,
+                resultData,
+                id || null,
+                documento,
+                datos.fecha,
+                atencion || null,
 
                 datos.congenitosAP, datos.inmunoPrevenibleAP, datos.infecciososAP, datos.ojoAP, datos.agudezaVisualAP, datos.oidosAP, datos.nasoFaringeAP,
                 datos.cardiovascularAP, datos.pulmonarAP, datos.gastrointestinalAP, datos.gimitoUrinarioAP, datos.neurologicoAP, datos.transtornoPielAP,
@@ -615,25 +714,62 @@ const OccupationalExamination = () => {
                 datos.anioAT, datos.especifiqueAT, datos.anio1AT, datos.especifique1AT,
 
                 estadoVacuna.tetanoIM, estadoVacuna.influenzaIM, estadoVacuna.fiebreAmarillaIM, estadoVacuna.rubeolaSarampionIM, estadoVacuna.covid19IM,
-                estadoVacuna.otrasIM, datos.anioVacuna1IM, datos.anioVacuna2IM, datos.anioVacuna3IM, datos.anioVacuna4IM, datos.anioVacuna5IM,
-                datos.idRefuerzoIM, datos.anioVacuna6IM,
+                estadoVacuna.otrasIM,
+                datos.anioVacuna1IM || null,
+                datos.anioVacuna2IM || null,
+                datos.anioVacuna3IM || null,
+                datos.anioVacuna4IM || null,
+                datos.anioVacuna5IM || null,
+                datos.idRefuerzoIM || null,
+                datos.anioVacuna6IM,
 
-                datos.fumaHB, datos.cigarrillosDiasFumaHB, datos.aniosCigaFumaHB, datos.mesesCigaFumaHB, datos.observacionFumaHB, datos.fumabaHB,
-                datos.cigarrillosDiasFumabaHB, datos.aniosCigaFumabaHB, datos.mesesCigaFumabaHB, datos.observacionFumabaHB, datos.practicaDeporteHB,
-                datos.idFrecuenciaDeporteHB, datos.idCualDeporteHB, datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
-                datos.consumeBebidasAlcoholicasHB, datos.idFrecuenciaBebidaAlHB, datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(tipoFobia),
+                datos.fumaHB,
+                datos.cigarrillosDiasFumaHB || null,
+                datos.aniosCigaFumaHB || null,
+                datos.mesesCigaFumaHB || null,
+                datos.observacionFumaHB, datos.fumabaHB,
+                datos.cigarrillosDiasFumabaHB || null,
+                datos.aniosCigaFumabaHB || null,
+                datos.mesesCigaFumabaHB || null,
+                datos.observacionFumabaHB, datos.practicaDeporteHB,
+                datos.idFrecuenciaDeporteHB || null,
+                datos.idCualDeporteHB || null,
+                datos.observacionPracticaDeporHB, datos.hobbiesPasatiempoHB, datos.cualHobbiesHB,
+                datos.consumeBebidasAlcoholicasHB,
+                datos.idFrecuenciaBebidaAlHB || null,
+                datos.cualBebidasAlHB, datos.fobiasHB, JSON.stringify(tipoFobia),
                 datos.cualFobiaHB,
 
-                datos.menarquiaGO, datos.idCiclosGO, datos.duracionGO, datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO, datos.vidaMaritalGO,
-                datos.vidaObstetricaGO, datos.gGO, datos.pGO, datos.aGO, datos.cSGO, datos.vGO, datos.fUPGO, datos.fURGO, datos.eTSGO, datos.cUALGO,
-                datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO, datos.idMetodoGO, datos.ultimoAnioCitologiaGO,
-                datos.idResultadoGO, datos.observacionesGO,
+                datos.menarquiaGO || null,
+                datos.idCiclosGO || null,
+                datos.duracionGO || null,
+                datos.amenoreaGO, datos.disminureaGO, datos.leucoreaGO,
+                datos.vidaMaritalGO || null,
+                datos.vidaObstetricaGO || null,
+                datos.gGO || null,
+                datos.pGO || null,
+                datos.aGO || null,
+                datos.cSGO || null,
+                datos.vGO || null,
+                datos.fUPGO, datos.fURGO, datos.eTSGO, datos.cUALGO,
+                datos.quisteOvariosBiomasGO, datos.endometriosisGO, datos.ePIGO, datos.planificaGO,
+                datos.idMetodoGO || null,
+                datos.ultimoAnioCitologiaGO || null,
+                datos.idResultadoGO || null,
+                datos.observacionesGO,
 
                 datos.cabezaRS, datos.ojosRS, datos.oidosRS, datos.narizRS, datos.bocaRS, datos.gargantaRS, datos.cuellosRS, datos.cardioRS, datos.gastrointestinalRS,
                 datos.genitoUrinarioRS, datos.osteoRS, datos.neuroRS, datos.pielRS, datos.psiquiatricoRS, datos.observacionRS,
 
-                datos.tASentadoEF, datos.tAAcostadoEF, datos.pulsoEF, datos.fCEF, datos.fREF, datos.temperaturaEF, peso, talla, imc,
-                clasificacion, datos.idBiotipoEF, datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
+                datos.tASentadoEF, datos.tAAcostadoEF,
+                datos.pulsoEF || null,
+                datos.fCEF || null,
+                datos.fREF || null,
+                datos.temperaturaEF || null,
+                peso, talla, imc,
+                clasificacion,
+                datos.idBiotipoEF || null,
+                datos.estadoNitricionalEF, datos.pielFaneraEF, datos.craneoEF, datos.parpadoEF, datos.conjuntivasEF,
                 datos.corniasEF, datos.pupilasEF, datos.reflejoFotomotorEF, datos.reflejoCornialEF, datos.fondoOjosEF, datos.inspeccionEF, datos.otoscopiaEF,
                 datos.inspeccionNarizEF, datos.rinoscopioEF, datos.labiosEF, datos.mucosaEF, datos.enciasEF, datos.paladarEF, datos.dientesEF, datos.lenguaEF,
                 datos.faringeEF, datos.amigdalasEF, datos.cuellosEF, datos.inspeccionToraxEF, datos.auscultacionCardiacaEF, datos.auscultacionRespiratoriaEF,
@@ -647,37 +783,81 @@ const OccupationalExamination = () => {
                 datos.eversionPiesEFU, datos.sensibilidadCaraLateralEFU, datos.rOTAquileanoEFU, datos.signoLasegueEFU, indiceWellsEFU, datos.valorIndiceWellsEFU,
                 datos.observacionEFU,
 
-                datos.fechaRxToraxEPA, datos.resultadoRxToraxEPA, datos.observacionesRxToraxEPA, datos.fechaEspirometriaEPA,
-                datos.resultadoEspirometriaEPA, datos.observacionesEspirometriaEPA, datos.fechaAudiometriaEPA, datos.resultadoAudiometriaEPA,
-                datos.observacionesAudiometriaEPA, datos.fechaVisiometriaEPA, datos.resultadoVisiometriaEPA, datos.observacionesVisiometriaEPA,
-                datos.fechaLaboratorioClinicoEPA, datos.resultadoLaboratorioClinicoEPA, datos.observacionesLaboratorioClinicoEPA,
-                datos.fechaCuestionarioSintomaEPA, datos.resultadoCuestionarioSintomaEPA, datos.observacionesCuestionarioSintomaEPA,
-                datos.fechaEkgEPA, datos.resultadoEkgEPA, datos.observacionesEkgEPA, datos.fechaRnmLumbosacraEPA,
-                datos.resultadoRnmLumbosacraEPA, datos.observacionesRnmLumbosacraEPA, datos.fechaRnmCervicalEPA, datos.resultadoRnmCervicalEPA,
+                datos.fechaRxToraxEPA,
+                datos.resultadoRxToraxEPA || null,
+                datos.observacionesRxToraxEPA, datos.fechaEspirometriaEPA,
+                datos.resultadoEspirometriaEPA || null,
+                datos.observacionesEspirometriaEPA, datos.fechaAudiometriaEPA,
+                datos.resultadoAudiometriaEPA || null,
+                datos.observacionesAudiometriaEPA, datos.fechaVisiometriaEPA,
+                datos.resultadoVisiometriaEPA || null,
+                datos.observacionesVisiometriaEPA,
+                datos.fechaLaboratorioClinicoEPA,
+                datos.resultadoLaboratorioClinicoEPA || null,
+                datos.observacionesLaboratorioClinicoEPA,
+                datos.fechaCuestionarioSintomaEPA,
+                datos.resultadoCuestionarioSintomaEPA || null,
+                datos.observacionesCuestionarioSintomaEPA,
+                datos.fechaEkgEPA,
+                datos.resultadoEkgEPA || null,
+                datos.observacionesEkgEPA, datos.fechaRnmLumbosacraEPA,
+                datos.resultadoRnmLumbosacraEPA || null,
+                datos.observacionesRnmLumbosacraEPA, datos.fechaRnmCervicalEPA,
+                datos.resultadoRnmCervicalEPA || null,
                 datos.observacionesRnmCervicalEPA, datos.observacionEPA,
 
-                datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID, datos.idConceptoActitudID,
+                datos.dx1, datos.dx2, datos.dx3, datos.observacionID, datos.recomendacionesID,
+                datos.idConceptoActitudID || null,
 
-                datos.fechaConceptoNETA, datos.conceptoAplazadoNETA, datos.conceptoActitudNETA, datos.idConceptoEspacioConfinado,
-                datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA, datos.remitidoNETA, datos.remididoDondeNETA,
+                datos.fechaConceptoNETA,
+                datos.conceptoAplazadoNETA || null,
+                datos.conceptoActitudNETA || null,
+                datos.idConceptoEspacioConfinado || null,
+                datos.motivoAplazoNETA, datos.descripcionResultadoNETA, datos.recomendacionesNETA,
+                datos.remitidoNETA || null,
+                datos.remididoDondeNETA || null,
 
-                datos.idRiesgoCardiovascularNEMTA, datos.idClasificacionNEMTA, datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
+                datos.idRiesgoCardiovascularNEMTA || null,
+                datos.idClasificacionNEMTA || null,
+                datos.idMenorEdadNEMTA, datos.idMujerEmbarazadaNEMTA, datos.idArimiaNEMTA,
                 datos.idEnfermedadNEMTA, datos.idHistoriaNEMTA, datos.idHipertensionNEMTA, datos.idHipertrigliceridemiaNEMTA, datos.idCifrasNEMTA,
                 datos.idDiabetesNEMTA, datos.idDislipidemiaNEMTA, datos.idDiagnosticoNEMTA, datos.idRiesgoCardiovascular1NEMTA, datos.idRiesgoCardiovascular2NEMTA,
                 datos.idHipertiroidismoNEMTA, datos.idAlteracionAuditivaNEMTA, datos.idVertigoAlteracionesNEMTA, datos.idEpilegsiaNEMTA, datos.idCegueraTemporalNEMTA,
                 datos.idHistoriaFobiasNEMTA, datos.idTranstornoPsiquiatricoNEMTA, datos.idLimitacionesNEMTA, datos.idObesidadMorbidaNEMTA, datos.idDeformaTemporalNEMTA,
-                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA, datos.conceptoActitudNETA,
+                datos.idOtrasAlteracionesNEMTA, datos.observacionesNEMTA,
+                datos.conceptoActitudMedicoNEMTA || null,
 
-                datos.fechaFRA, tencion, frTencion, "", DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.fechaLaboratorioFRA, colesterol, hdl, trigliceridos, "", glicemia,
-                fuma, datos.observacionFRA,
+                datos.fechaFRA, tencion,
+                frTencion || null,
+                "",
+                datos.idDeporteFRA || null,
+                datos.idBebidaFRA || null,
+                datos.fechaLaboratorioFRA,
+                colesterol || null,
+                hdl || null,
+                trigliceridos || null,
+                "",
+                glicemia || null,
+                fuma || null,
+                datos.observacionFRA,
 
-                frLdl, relacion, frEdad, frColesterol, frHdl, frGlicemia,
-                frTencion, frFuma, frPuntaje, riesgo.riesgoAbsoluto, riesgo.riesgoRelativo, riesgo.dxRiesgo,
+                frLdl || null,
+                relacion,
+                frEdad || null,
+                frColesterol || null,
+                frHdl || null,
+                frGlicemia || null,
+                frTencion || null,
+                frFuma || null,
+                frPuntaje || null,
+                riesgo.riesgoAbsoluto || null,
+                riesgo.riesgoRelativo, riesgo.dxRiesgo,
 
-                undefined, undefined, user?.nameuser, undefined,
+                user?.nameuser, undefined, undefined, undefined,
 
-                datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR, datos.anosConTosSintR, datos.esputoASintR,
+                datos.tosAUsualSin, datos.tosEnLaSemanaSintR, datos.tosMananaSintR, datos.tosConsecutivaSintR,
+                datos.anosConTosSintR || null,
+                datos.esputoASintR,
                 datos.esputoBSintR, datos.esputoCSintR, datos.esputoDSintR, datos.esputoESintR, datos.episoTosEspuASintR, datos.episoTosEsputoBSintR,
                 datos.sibilanciasASintR, datos.sibilanciasA1SintR, datos.sibilanciasA2SintR, datos.sibilanciasA3SintR, datos.sibilanciasBSintR,
                 datos.ataquesSilbiASintR, datos.ataquesSilbiBSintR, datos.ataquesSilbiCSintR, datos.ataquesSilbiDSintR, datos.otrasEnfInhaASintR,
@@ -689,13 +869,24 @@ const OccupationalExamination = () => {
                 datos.antecedentesB5BSintR, datos.antecedentesB5CSintR, datos.otrasEnfToraxA, datos.otrasEnfToraxB,
                 datos.ciruToraxASintR, datos.ciruToraxBSintR, datos.traumaToraxASintR, datos.traumaToraxBSintR, datos.problemCoraASintR, datos.problemCoraBSintR,
                 datos.problemaCoraCSintR, datos.presionAltaASintR, datos.presionAltaBSintR, datos.historiaOcupASintR, datos.historiaOcupBSintR,
-                datos.historiaOcupB1SintR, datos.historiaOcupB2SintR, datos.historiaOcupB3SintR, datos.historiaOcupCSintR, datos.historiaOcupC1SintR,
-                datos.historiaOcupC2SintR, datos.historiaOcupC3SintR, datos.historiaOcupD1SintR, datos.historiaOcupD2SintR, datos.historiaOcupD3,
+                datos.historiaOcupB1SintR, datos.historiaOcupB2SintR,
+                datos.historiaOcupB3SintR || null,
+                datos.historiaOcupCSintR, datos.historiaOcupC1SintR,
+                datos.historiaOcupC2SintR,
+                datos.historiaOcupC3SintR || null,
+                datos.historiaOcupD1SintR, datos.historiaOcupD2SintR, datos.historiaOcupD3,
                 datos.tabaquismoASintR, datos.tabaquismoBSintR, datos.tabaquismoCSintR, datos.tabaquismoDSintR, datos.tabaquismoESintR, datos.actDeportASintR,
                 datos.actDeporA1SintR, datos.actDeporA2SintR, datos.actDeporA3SintR, datos.actDeporA4SintR, datos.recoSintR,
 
-                datos.parentesco1ANFA, datos.parentesco1ObserANFA, datos.parentesco2ANFA, datos.parentesco2ObserANFA, datos.parentesco3ANFA,
-                datos.parentesco3ObserANFA, datos.parentesco4ANFA, datos.parentesco4ObserANFA, datos.lateralidadExamenesFisico,
+                datos.parentesco1ANFA || null,
+                datos.parentesco1ObserANFA,
+                datos.parentesco2ANFA || null,
+                datos.parentesco2ObserANFA,
+                datos.parentesco3ANFA || null,
+                datos.parentesco3ObserANFA,
+                datos.parentesco4ANFA || null,
+                datos.parentesco4ObserANFA,
+                datos.lateralidadExamenesFisico || null,
 
                 datos.vacunaBCGIM, datos.vacunaVHBIM, datos.vacunaVHCIM
             );
@@ -913,8 +1104,8 @@ const OccupationalExamination = () => {
                         <Grid sx={{ pb: 2 }} />
 
                         <Tabs
-                            value={value}
-                            onChange={(event, newValue) => setValue(newValue)}
+                            value={valueTab}
+                            onChange={(event, newValue) => setValueTab(newValue)}
                             aria-label="simple tabs example"
                             variant="scrollable"
                             sx={{
@@ -948,7 +1139,7 @@ const OccupationalExamination = () => {
                             ))}
                         </Tabs>
 
-                        <TabPanel value={value} index={0}>
+                        <TabPanel value={valueTab} index={0}>
                             <PersonalData
                                 atencion={atencion}
                                 lsEmployee={lsEmployee}
@@ -956,7 +1147,7 @@ const OccupationalExamination = () => {
                             />
                         </TabPanel>
 
-                        <TabPanel value={value} index={1}>
+                        <TabPanel value={valueTab} index={1}>
                             <WorkHistory
                                 lsEmpleado={lsEmployee}
                                 documento={documento}
@@ -964,7 +1155,7 @@ const OccupationalExamination = () => {
                             />
                         </TabPanel>
 
-                        <TabPanel value={value} index={2}>
+                        <TabPanel value={valueTab} index={2}>
                             <StickyActionBar
                                 onClickSave={handleSubmit(handleClick)}
                                 onClickUpdate={handleSubmit(handleClickUpdate)}

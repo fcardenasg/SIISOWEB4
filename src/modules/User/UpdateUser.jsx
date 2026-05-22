@@ -273,6 +273,7 @@ const UpdateUser = () => {
                                     <Grid item xs={12}>
                                         <Card sx={{ border: (theme) => `dashed 1px ${alpha(theme.palette.grey[500], 0.3)}` }}>
                                             <UploadBox
+                                                size="80px"
                                                 name="imgfirma"
                                                 defaultValue={lsUsuario?.firma}
                                                 onDrop={handleDropFirm}

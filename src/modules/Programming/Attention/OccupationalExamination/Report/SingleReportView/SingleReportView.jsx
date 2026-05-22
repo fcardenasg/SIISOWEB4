@@ -38,6 +38,12 @@ const SingleReportView = ({ documento, resultData, atencion }) => {
             var lsRiesgoHLD = await GetAllRHL(documento, atencion);
             var lsRiesgoHLDO = await GetAllRHLOE(documento);
 
+            Object.keys(lsDataReport.data).forEach(key => {
+                if (lsDataReport.data[key] === null || lsDataReport.data[key] === undefined) {
+                    lsDataReport.data[key] = "";
+                }
+            });
+
             if (idNumber === 1) { dataPDFTwo = generateConceptoExamenOcupacional(lsDataReport.data, lsDataUser.data); }
 
             if (idNumber === 2) {

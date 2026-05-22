@@ -1,12 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import AddIcon from '@mui/icons-material/Add';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ClearIcon from '@mui/icons-material/Clear';
+import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
 import {
+    Box,
     Button,
     Divider,
     FormHelperText,
     Grid,
-    IconButton,
-    Tooltip,
+    InputAdornment,
+    Stack,
+    TextField,
+    Typography,
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -14,50 +20,43 @@ import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
 import { GetAllBySegmentoAfectado, GetAllBySubsegment, GetAllSegmentoAgrupado } from 'api/clients/OthersClients';
-import { InsertResearchAssignment } from 'api/clients/ResearchAssignmentClient';
+import { GetDataOccupationalMedicine, InsertResearchAssignment } from 'api/clients/ResearchAssignmentClient';
 import { GetAllComboAsesorInvestigacion } from 'api/clients/UserClient';
+import CustomFullScreenModal from 'components/controllers/CustomFullScreenModal';
 import {
     AccionMenu,
     CodCatalogo,
     Modulo,
-    TitleButton
+    TitleButton,
+    ValidationMessage
 } from 'components/helpers/Enums';
-import { FormatDate } from 'components/helpers/Format';
+import Iconify from 'components/iconify/iconify';
 import InputDatePick from 'components/input/InputDatePick';
-import InputDatePicker from 'components/input/InputDatePicker';
-import InputMultiselectTwo from 'components/input/InputMultiselectTwo';
 import InputOnChange from 'components/input/InputOnChange';
 import InputSelect from 'components/input/InputSelect';
+import InputText from 'components/input/InputText';
+import SelectOnChange from 'components/input/SelectOnChange';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { motion } from 'framer-motion';
 import { useBoolean } from 'hooks/use-boolean';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
-import DetailRA from './DetailRA';
-
-const buttonVariants = {
-    hover: {
-        rotate: 90,
-        transition: { duration: 0.2 },
-    },
-    tap: {
-        scale: 0.9,
-        transition: { duration: 0.2 },
-    },
-};
+import { formatDateForInput } from '../InvestigationOccupationalDisease/components/methods';
+import { ComponentNote, findBestMatch, OptionSearch, RankingAdvisors } from '../methods';
+import DetailRA from './Components/DetailRA';
+import DiagnosisDetail from './Components/DiagnosisDetail';
+import ListMedicine from './Components/ListMedicine';
+import ReviewOccupationalMedicine from './Components/ReviewOccupationalMedicine';
 
 const validationSchema = yup.object().shape({
-    fecha: yup.date().required("La fecha es requerida"),
     documento: yup.string().required("El documento es requerido"),
-    investigador: yup.array().min(1, "Debe seleccionar al menos un investigador"),
-    asesorARL: yup.array().min(1, "Debe seleccionar al menos un asesor ARL"),
     listaDetalle: yup.array().required("Se requiere al menos un diagnóstico"),
+    asesorARL: yup.string().required(ValidationMessage.Requerido)
 });
 
 const ResearchAssignment = () => {
@@ -65,10 +64,12 @@ const ResearchAssignment = () => {
     const navigate = useNavigate();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const loadingModulo = useBoolean(false);
+    const openEditOccupational = useBoolean(false);
 
+    const [medicinaLaboral, setMedicinaLaboral] = useState(null);
+    const [search, setSearch] = useState("");
     const [textDx, setTextDx] = useState("");
     const [modelEmployee, setModelEmployee] = useState([]);
-    const [lsInvestigacion, setLsInvestigacion] = useState([]);
     const [lsAsesorARL, setLsAsesorARL] = useState([]);
     const [lsDx, setLsDx] = useState([]);
 
@@ -79,12 +80,17 @@ const ResearchAssignment = () => {
     const [lsRegion, setLsRegion] = useState([]);
     const [lsResultadoOrigen, setLsResultadoOrigen] = useState([]);
     const [lsInvestigacionEL, setLsInvestigacionEL] = useState([]);
+    const [opcionBusqueda, setOpcionBusqueda] = useState(1);
 
     const [fechaEntrega, setFechaEntrega] = useState(null);
     const [fechaRevision, setFechaRevision] = useState(null);
     const [fechaVistoBueno, setFechaVistoBueno] = useState(null);
     const [fechaDictamen, setFechaDictamen] = useState(null);
-    const [fechaInvestigacion, setFechaInvestigacion] = useState(null);
+    const [fechaRadicado, setFechaRadicado] = useState(null);
+    const [lsEmotidoPor, setLsEmotidoPor] = useState([]);
+    const [lsMedicinaLaboralDx, setLsMedicinaLaboralDx] = useState([]);
+    const [lsMedicinaLaboralExp, setLsMedicinaLaboralExp] = useState([]);
+    const [selectedValues, setSelectedValues] = useState([]);
 
     const methods = useForm({ resolver: yupResolver(validationSchema) });
     const { handleSubmit, formState: { errors }, reset, watch, setError, resetField, setValue } = methods;
@@ -96,13 +102,11 @@ const ResearchAssignment = () => {
     const idSubsegmento = watch("idSubsegmento");
     const idRegion = watch("idRegion");
     const idLateralidad = watch("idLateralidad");
+    const isUpdateData = watch("isUpdateData");
 
     useEffect(() => {
         async function getCombo() {
             try {
-                const lsServerInvestigacion = await GetAllComboAsesorInvestigacion(false);
-                setLsInvestigacion(lsServerInvestigacion.data);
-
                 const lsServerAsesorARL = await GetAllComboAsesorInvestigacion(true);
                 setLsAsesorARL(lsServerAsesorARL.data);
 
@@ -111,6 +115,9 @@ const ResearchAssignment = () => {
 
                 const lsServerInvestigacionEL = await GetByTipoCatalogoCombo(CodCatalogo.MEDICINA_LABORAL_INVESTIGACION_EL);
                 setLsInvestigacionEL(lsServerInvestigacionEL.data);
+
+                const lsServerEntidadDondeEnvia = await GetByTipoCatalogoCombo(CodCatalogo.MEDLAB_ENDON_EN);
+                setLsEmotidoPor(lsServerEntidadDondeEnvia.data);
 
                 const lsServerSegAgrupado = await GetAllSegmentoAgrupado(0, 0);
                 var resultSegAgrupado = lsServerSegAgrupado.data.entities.map((item) => ({
@@ -149,6 +156,9 @@ const ResearchAssignment = () => {
             const document = event?.target.value;
             setValue("documento", document, { shouldValidate: true });
 
+            const lsServerInvestigacion = await GetAllComboAsesorInvestigacion(false);
+            setValue("investigadorEtiqueta", lsServerInvestigacion.data[0].label);
+
             if (document !== '') {
                 if (event.key === 'Enter') {
                     var lsServerEmployee = await GetByIdEmployee(document);
@@ -159,13 +169,45 @@ const ResearchAssignment = () => {
                         setModelEmployee(lsServerEmployee?.data.data);
                         toast.error(lsServerEmployee?.data.message);
                     }
+
+                    var lsServerDx = await GetDataOccupationalMedicine(document);
+                    if (lsServerDx?.data.exito) {
+                        const list = lsServerDx.data.datos;
+
+                        setLsMedicinaLaboralDx(list?.medicina);
+                        setLsMedicinaLaboralExp(list?.expertos);
+
+                        if (list?.expertos) {
+                            const targetLabel = list?.expertos?.[0]?.label;
+                            const objAsesor = findBestMatch(lsAsesorARL, targetLabel);
+                            setValue("asesorARL", objAsesor?.value, { shouldValidate: true });
+                        }
+                    }
                 } else {
                     var lsServerEmployee = await GetByIdEmployee(document);
                     if (lsServerEmployee.data.status === 200) {
                         setModelEmployee(lsServerEmployee.data.data);
                     }
+
+                    var lsServerDx = await GetDataOccupationalMedicine(document);
+                    if (lsServerDx?.data.exito) {
+                        const list = lsServerDx.data.datos;
+
+                        setLsMedicinaLaboralDx(list?.medicina);
+                        setLsMedicinaLaboralExp(list?.expertos);
+
+                        if (list?.expertos) {
+                            const targetLabel = list?.expertos?.[0]?.label;
+                            const objAsesor = findBestMatch(lsAsesorARL, targetLabel);
+                            setValue("asesorARL", objAsesor?.value, { shouldValidate: true });
+                        }
+                    }
                 }
-            } else setModelEmployee([]);
+            } else {
+                setModelEmployee([]);
+                setLsMedicinaLaboralDx([]);
+                setLsMedicinaLaboralExp([]);
+            }
         } catch (error) { }
     }
 
@@ -192,15 +234,17 @@ const ResearchAssignment = () => {
                 return;
             }
 
-            //Validar si ya existe en la lista
             const currentDetails = Array.isArray(listaDetalle) ? listaDetalle : [];
-            const isDuplicate = currentDetails.some(detail => detail.dx === dx);
-            if (isDuplicate) {
-                setError('dx', { type: 'manual', message: 'El diagnóstico ya está en la lista' });
-                return;
+
+            if (!isUpdateData) {
+                const isDuplicate = currentDetails.some(detail => detail.dx === dx);
+                if (isDuplicate) {
+                    setError('dx', { type: 'manual', message: 'El diagnóstico ya está en la lista' });
+                    return;
+                }
             }
 
-            const nombreDx = lsDx?.find(item => item.value === dx)?.label;
+            const nombreDxFull = lsDx?.find(item => item.value === dx)?.label;
             const newDetail = {
                 dx: dx || null,
                 idSegmentoAgrupado: idSegmentoAgrupado || null,
@@ -208,33 +252,34 @@ const ResearchAssignment = () => {
                 idSubsegmento: idSubsegmento || null,
                 idRegion: idRegion || null,
                 idLateralidad: idLateralidad || null,
-                nombreDx: nombreDx?.split(" - ")[1],
+                nombreDx: nombreDxFull?.includes(" - ") ? nombreDxFull.split(" - ")[1] : nombreDxFull,
                 nombreSegmentoAgrupado: lsSegmentoAgrupado?.find(item => item.value === idSegmentoAgrupado)?.label || "N/A",
                 nombreSegmentoAfectado: lsSegmentoAfectado?.find(item => item.value === idSegmentoAfectado)?.label || "N/A",
                 nombreSubsegmento: lsSubsegmento?.find(item => item.value === idSubsegmento)?.label || "N/A",
+                nombreRegion: lsRegion?.find(item => item.value === idRegion)?.label || "N/A",
+                nombreLateralidad: lsLateralidad?.find(item => item.value === idLateralidad)?.label || "N/A",
             };
 
-            const updatedDetails = [...currentDetails, newDetail];
+            let updatedDetails;
+            if (isUpdateData) {
+                updatedDetails = currentDetails.map(item => item.dx === dx ? newDetail : item);
+                toast.success("Registro actualizado correctamente");
+            } else {
+                updatedDetails = [...currentDetails, newDetail];
+                toast.success("Registro agregado correctamente");
+            }
+
             setValue('listaDetalle', updatedDetails, { shouldValidate: true });
-            toast.success("Diagnóstico agregado a la lista correctamente");
-
-            setTextDx("");
-            resetField("dx");
-            setLsDx([]);
-            resetField("idSegmentoAgrupado");
-            resetField("idSegmentoAfectado");
-            resetField("idSubsegmento");
-            resetField("idRegion");
-            resetField("idLateralidad");
+            handleClearForm();
+            setValue('isUpdateData', false);
         } catch (error) {
-
         }
     };
 
-    const handleClickRemoveDetail = async (modulo, dx) => {
+    const handleClickRemoveDetail = async (dataDx) => {
         try {
             const currentDetails = listaDetalle || [];
-            const indexToRemove = currentDetails.findIndex(detail => detail.modulo === modulo && detail.dx === dx);
+            const indexToRemove = currentDetails.findIndex(detail => detail.dx === dataDx.dx);
 
             if (indexToRemove === -1) {
                 setError('listaDetalle', { type: 'manual', message: 'El diagnóstico no está en la lista' });
@@ -249,16 +294,57 @@ const ResearchAssignment = () => {
         }
     }
 
+    const handleToggleSelection = (value) => {
+        const isSelected = selectedValues.includes(value);
+        const updatedSelection = isSelected
+            ? selectedValues.filter((item) => item !== value)
+            : [...selectedValues, value];
+
+        setSelectedValues(updatedSelection);
+
+        const insertValues = lsMedicinaLaboralDx.filter((detail) =>
+            updatedSelection.includes(detail.idMedicinaLaboral)
+        );
+
+        setValue('listaDetalle', insertValues, { shouldValidate: true });
+    };
+
+    const handleEditRow = (row) => {
+        setLsDx([{ value: row.dx, label: row.nombreDx }]);
+        setTextDx(row.dx);
+        setValue('dx', row.dx, { shouldValidate: true });
+        setValue('idSegmentoAgrupado', row.idSegmentoAgrupado);
+        setValue('idSegmentoAfectado', row.idSegmentoAfectado);
+        setValue('idSubsegmento', row.idSubsegmento);
+        setValue('idRegion', row.idRegion);
+        setValue('idLateralidad', row.idLateralidad);
+        setValue('isUpdateData', true);
+    };
+
+    const handleClearForm = () => {
+        setLsDx([]);
+        setTextDx("");
+        resetField('dx');
+        resetField('idSegmentoAgrupado');
+        resetField('idSegmentoAfectado');
+        resetField('idSubsegmento');
+        resetField('idRegion');
+        resetField('idLateralidad');
+        setValue('isUpdateData', false);
+    };
+
     const handleClick = async (datos) => {
         try {
             datos.tipoInvestigacion = datos.tipoInvestigacion || null;
             datos.resultadoOrigen = datos.resultadoOrigen || null;
+            datos.emitidoPor = datos.emitidoPor || null;
+            datos.numRadicado = datos.numRadicado || null;
 
-            datos.fechaEntrega = FormatDate(fechaEntrega);
-            datos.fechaRevision = FormatDate(fechaRevision);
-            datos.fechaVistoBueno = FormatDate(fechaVistoBueno);
-            datos.fechaDictamen = FormatDate(fechaDictamen);
-            datos.fechaInvestigacion = FormatDate(fechaInvestigacion);
+            datos.fechaEntrega = formatDateForInput(fechaEntrega);
+            datos.fechaRevision = formatDateForInput(fechaRevision);
+            datos.fechaVistoBueno = formatDateForInput(fechaVistoBueno);
+            datos.fechaDictamen = formatDateForInput(fechaDictamen);
+            datos.fechaRadicado = formatDateForInput(fechaRadicado);
 
             const result = await InsertResearchAssignment(datos);
             if (result.data.exito) {
@@ -269,7 +355,11 @@ const ResearchAssignment = () => {
                 setFechaRevision("");
                 setFechaVistoBueno("");
                 setFechaDictamen("");
-                setFechaInvestigacion("");
+                setFechaRadicado("");
+                setSelectedValues([]);
+                setLsMedicinaLaboralDx([]);
+                setLsMedicinaLaboralExp([]);
+                setSearch("");
                 reset();
             } else
                 toast.error(result.data.mensaje);
@@ -277,6 +367,70 @@ const ResearchAssignment = () => {
             toast.error(error.message || "Error al agregar la asignación de investigación");
         }
     };
+
+    const filteredDx = useMemo(() => {
+        let filteredList = lsMedicinaLaboralDx;
+
+        if (opcionBusqueda !== 1) {
+            filteredList = lsMedicinaLaboralDx.filter((item) => {
+                const investigado = item.investigado?.toUpperCase().trim();
+
+                if (opcionBusqueda === 2) return investigado === "SI";
+                if (opcionBusqueda === 3) return investigado === "NO";
+                if (opcionBusqueda === 4) return !investigado || investigado === "";
+
+                return true;
+            });
+        }
+
+        if (!search) return filteredList;
+
+        const searchTerm = search.toLowerCase().trim();
+
+        return filteredList.filter((item) => {
+            return (
+                item.dx?.toLowerCase().includes(searchTerm) ||
+                item.nombreDx?.toLowerCase().includes(searchTerm) ||
+                item.noDictamenJRC?.toLowerCase().includes(searchTerm) ||
+                item.noDictamenJNC?.toLowerCase().includes(searchTerm) ||
+                item.noDictamenAFP?.toLowerCase().includes(searchTerm)
+            );
+        });
+    }, [search, lsMedicinaLaboralDx, opcionBusqueda]);
+
+    const handleOpenEdit = (medicinaLaboral) => {
+        setMedicinaLaboral(medicinaLaboral);
+        openEditOccupational.onTrue();
+    };
+
+    async function getDataMedicinaLaboral() {
+        try {
+            if (documento) {
+                var lsServerDx = await GetDataOccupationalMedicine(documento);
+                if (lsServerDx?.data.exito) {
+                    const list = lsServerDx.data.datos;
+                    setLsMedicinaLaboralDx(list?.medicina);
+                    setLsMedicinaLaboralExp(list?.expertos);
+                    setMedicinaLaboral(prev => {
+                        const actualizado = list?.medicina.find(fil => fil.idMedicinaLaboral === prev?.idMedicinaLaboral);
+                        return actualizado ?? prev;
+                    });
+
+                    if (list?.expertos) {
+                        const targetLabel = list?.expertos?.[0]?.label;
+                        const objAsesor = findBestMatch(lsAsesorARL, targetLabel);
+                        setValue("asesorARL", objAsesor?.value, { shouldValidate: true });
+                    }
+                }
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al obtener los datos de medicina laboral");
+        }
+    }
+
+    useEffect(() => {
+        getDataMedicinaLaboral();
+    }, [documento]);
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.AsignacionInvestigacion}>
@@ -295,170 +449,282 @@ const ResearchAssignment = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <SubCard>
+                        <SubCard title="Registros de medicina laboral">
                             <Grid container spacing={2}>
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePicker
-                                        defaultValue={new Date()}
-                                        label="Fecha"
-                                        name="fecha"
+                                <Grid item xs={12}>
+                                    <ComponentNote title={
+                                        <>Seleccione los registros de medicina laboral para vincularlos a "Diagnósticos del empleado".
+                                            Puede buscar por cualquier columna, ver los expertos según el Dx o editar la información haciendo
+                                            clic en el ícono del lápiz para abrir el modal de edición.</>
+                                    } />
+                                </Grid>
+
+                                {lsMedicinaLaboralExp.length !== 0 &&
+                                    <Grid item xs={12}>
+                                        <Grid container spacing={2} alignItems="center">
+                                            <Grid item xs={12} md={3}>
+                                                <Stack direction="row" alignItems="center" spacing={2}>
+                                                    <Box
+                                                        sx={{
+                                                            width: 48,
+                                                            height: 48,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            borderRadius: '12px',
+                                                            bgcolor: 'white',
+                                                            border: '1px solid #E2E8F0',
+                                                            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+                                                            color: '#3b82f6'
+                                                        }}
+                                                    >
+                                                        <Iconify icon="solar:chart-bold-duotone" width={28} />
+                                                    </Box>
+
+                                                    <Box>
+                                                        <Typography
+                                                            variant="subtitle1"
+                                                            sx={{
+                                                                fontWeight: 800,
+                                                                lineHeight: 1.2,
+                                                                WebkitBackgroundClip: 'text',
+                                                            }}
+                                                        >
+                                                            Ranking de Asesorías
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
+                                                                color: 'text.secondary',
+                                                                fontWeight: 600,
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: 0.5,
+                                                                mt: 0.5
+                                                            }}
+                                                        >
+                                                            Asesores con mayor gestión
+                                                        </Typography>
+                                                    </Box>
+                                                </Stack>
+                                            </Grid>
+
+                                            <Grid item xs={12} md={9}
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: { xs: 'center', md: 'flex-start' }
+                                                }}
+                                            >
+                                                <RankingAdvisors data={lsMedicinaLaboralExp} />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                }
+
+                                <Grid item xs={12}><Divider sx={{ my: 0.5 }} /></Grid>
+
+                                <Grid item xs={12} md={3}>
+                                    <TextField
+                                        fullWidth
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SearchIcon fontSize="small" />
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        placeholder="Buscar por todo"
+                                        value={search}
+                                        size="small"
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={2}>
+                                    <SelectOnChange
+                                        name="idFiltrarInv"
+                                        label="Filtrar Inv."
+                                        value={opcionBusqueda}
+                                        options={OptionSearch}
+                                        onChange={(e) => setOpcionBusqueda(e.target.value)}
+                                        size="small"
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <ListMedicine
+                                        records={filteredDx}
+                                        selectedValues={selectedValues}
+                                        handleToggleSelection={handleToggleSelection}
+                                        handleOpenEdit={handleOpenEdit}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </SubCard>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <SubCard title="Diagnósticos del empleado">
+                            <Grid container spacing={2} sx={{
+                                borderColor: !!errors.listaDetalle && 'error.main',
+                                borderStyle: !!errors.listaDetalle && 'dashed',
+                                borderWidth: !!errors.listaDetalle && 1
+                            }}>
+                                <Grid item xs={12} md={4} lg={3}>
+                                    <InputOnChange
+                                        disabled={isUpdateData}
+                                        label="Buscar dx por palabras claves"
+                                        onKeyDown={handleDx}
+                                        onChange={(e) => setTextDx(e.target.value)}
+                                        value={textDx}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePick
-                                        onChange={(e) => setFechaEntrega(e.target.value)}
-                                        value={fechaEntrega}
-                                        label="Fecha de entrega"
-                                        name="fechaEntrega"
+                                <Grid item xs={12} md={6.5} lg={9}>
+                                    <InputSelect
+                                        disabled={isUpdateData}
+                                        defaultValue=""
+                                        name="dx"
+                                        label="Diagnóstico"
+                                        options={lsDx}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.dx}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idSegmentoAgrupado"
+                                        label="Segmento agrupado"
+                                        options={lsSegmentoAgrupado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idSegmentoAgrupado}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idSegmentoAfectado"
+                                        label="Segmento afectado"
+                                        options={lsSegmentoAfectado}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idSegmentoAfectado}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6}>
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idSubsegmento"
+                                        label="Subsegmento"
+                                        options={lsSubsegmento}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idSubsegmento}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePick
-                                        onChange={(e) => setFechaRevision(e.target.value)}
-                                        value={fechaRevision}
-                                        label="Fecha de revisión"
-                                        name="fechaRevision"
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idRegion"
+                                        label="Región"
+                                        options={lsRegion}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idRegion}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePick
-                                        onChange={(e) => setFechaVistoBueno(e.target.value)}
-                                        value={fechaVistoBueno}
-                                        label="Fecha de visto bueno"
-                                        name="fechaVistoBueno"
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="idLateralidad"
+                                        label="Lateralidad"
+                                        options={lsLateralidad}
                                         size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.idLateralidad}
                                     />
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={1.5}>
+                                    <AnimateButton>
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={handleClickInsertDetail}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            startIcon={isUpdateData ? <EditIcon /> : <AddCircleIcon />}
+                                        >
+                                            {isUpdateData ? 'Actualizar' : 'Agregar'}
+                                        </Button>
+                                    </AnimateButton>
+                                </Grid>
+
+                                <Grid item xs={6} md={4} lg={1.5}>
+                                    <AnimateButton>
+                                        <Button
+                                            fullWidth
+                                            disabled={!isUpdateData}
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={handleClearForm}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                            startIcon={<ClearIcon />}
+                                        >
+                                            Limpiar
+                                        </Button>
+                                    </AnimateButton>
                                 </Grid>
 
                                 <Grid item xs={12}><Divider /></Grid>
 
                                 <Grid item xs={12}>
-                                    <SubCard title="Diagnósticos del empleado (Buscados en EMO y medicina laboral)">
-                                        <Grid container spacing={2} sx={{
-                                            borderColor: !!errors.listaDetalle && 'error.main',
-                                            borderStyle: !!errors.listaDetalle && 'dashed',
-                                            borderWidth: !!errors.listaDetalle && 1
-                                        }}>
-                                            <Grid item xs={12} md={4} lg={3}>
-                                                <InputOnChange
-                                                    label="Buscar dx por palabras claves"
-                                                    onKeyDown={handleDx}
-                                                    onChange={(e) => setTextDx(e.target.value)}
-                                                    value={textDx}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                />
-                                            </Grid>
+                                    <ComponentNote
+                                        title={
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    verticalAlign: 'middle',
+                                                    gap: 0.5,
+                                                    fontSize: '0.75rem',
+                                                    ml: 0.5
+                                                }}
+                                            >
+                                                <Iconify icon="mdi:drugs" width={18} sx={{ color: "secondary.main" }} />
+                                                <span>
+                                                    Registros con este icono están <strong>vinculados a Medicina Laboral</strong>.
+                                                    Para editar cualquier registro, haga <strong>doble clic</strong> o use <strong>Limpiar</strong> para uno nuevo.
+                                                </span>
+                                            </Box>
+                                        }
+                                    />
+                                </Grid>
 
-                                            <Grid item xs={12} md={6.5} lg={8}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    name="dx"
-                                                    label="Diagnóstico"
-                                                    options={lsDx}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.dx}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={1.5} lg={1}>
-                                                <Tooltip placement="top" title="Agregar diagnóstico">
-                                                    <motion.button
-                                                        onClick={handleClickInsertDetail}
-                                                        variants={buttonVariants}
-                                                        whileHover="hover"
-                                                        whileTap="tap"
-                                                        style={{
-                                                            border: 'none',
-                                                            background: 'transparent',
-                                                            cursor: 'pointer',
-                                                            outline: 'none',
-                                                        }}
-                                                    >
-                                                        <IconButton color="secondary">
-                                                            <AddIcon />
-                                                        </IconButton>
-                                                    </motion.button>
-                                                </Tooltip>
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    name="idSegmentoAgrupado"
-                                                    label="Segmento agrupado"
-                                                    options={lsSegmentoAgrupado}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idSegmentoAgrupado}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    name="idSegmentoAfectado"
-                                                    label="Segmento afectado"
-                                                    options={lsSegmentoAfectado}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idSegmentoAfectado}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    name="idSubsegmento"
-                                                    label="Subsegmento"
-                                                    options={lsSubsegmento}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idSubsegmento}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6} lg={3}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    name="idRegion"
-                                                    label="Región"
-                                                    options={lsRegion}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idRegion}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6} lg={3}>
-                                                <InputSelect
-                                                    defaultValue=""
-                                                    name="idLateralidad"
-                                                    label="Lateralidad"
-                                                    options={lsLateralidad}
-                                                    size={matchesXS ? 'small' : 'medium'}
-                                                    bug={errors.idLateralidad}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12}>
-                                                <SubCard content={false}>
-                                                    <DetailRA
-                                                        lsData={listaDetalle}
-                                                        loadingModulo={loadingModulo}
-                                                        onDelete={handleClickRemoveDetail}
-                                                    />
-                                                </SubCard>
-                                            </Grid>
-
-                                            {!!errors.listaDetalle && <FormHelperText sx={{ margin: 1 }} error={!!errors.listaDetalle}>{errors?.listaDetalle.message}</FormHelperText>}
-                                        </Grid>
+                                <Grid item xs={12}>
+                                    <SubCard content={false}>
+                                        <DetailRA
+                                            lsData={listaDetalle}
+                                            loadingModulo={loadingModulo}
+                                            onDelete={handleClickRemoveDetail}
+                                            onEdit={handleEditRow}
+                                        />
                                     </SubCard>
                                 </Grid>
 
-                                <Grid item xs={12}><Divider /></Grid>
+                                {!!errors.listaDetalle && <FormHelperText sx={{ margin: 1 }} error={!!errors.listaDetalle}>{errors?.listaDetalle.message}</FormHelperText>}
+                            </Grid>
+                        </SubCard>
+                    </Grid>
 
+                    <Grid item xs={12}>
+                        <SubCard>
+                            <Grid container spacing={2}>
                                 <Grid item xs={12} md={6} lg={3}>
                                     <InputSelect
                                         defaultValue=""
@@ -473,7 +739,7 @@ const ResearchAssignment = () => {
                                     <InputDatePick
                                         onChange={(e) => setFechaDictamen(e.target.value)}
                                         value={fechaDictamen}
-                                        label="Fecha dictamen última instancia"
+                                        label="Fecha dictamen primera oportunidad"
                                         name="fechaDictamen"
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
@@ -482,42 +748,97 @@ const ResearchAssignment = () => {
                                 <Grid item xs={12} md={6} lg={3}>
                                     <InputSelect
                                         defaultValue=""
-                                        name="resultadoOrigen"
-                                        label="Resultado origen última instancia"
-                                        options={lsResultadoOrigen}
+                                        name="emitidoPor"
+                                        label="Emitido por"
+                                        options={lsEmotidoPor}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6} lg={3}>
-                                    <InputDatePick
-                                        onChange={(e) => setFechaInvestigacion(e.target.value)}
-                                        value={fechaInvestigacion}
-                                        label="Fecha de investigación"
-                                        name="fechaInvestigacion"
+                                    <InputSelect
+                                        defaultValue=""
+                                        name="resultadoOrigen"
+                                        label="Resultado origen"
+                                        options={lsResultadoOrigen}
                                         size={matchesXS ? 'small' : 'medium'}
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6}>
-                                    <InputMultiselectTwo
-                                        checkbox
-                                        name="investigador"
-                                        label="Investigadores"
-                                        options={lsInvestigacion}
+                                    <InputText
+                                        disabled
+                                        defaultValue=""
+                                        name="investigadorEtiqueta"
+                                        label="Investigador"
                                     />
                                 </Grid>
 
                                 <Grid item xs={12} md={6}>
-                                    <InputMultiselectTwo
-                                        checkbox
+                                    <InputSelect
+                                        defaultValue=""
                                         name="asesorARL"
                                         label="Asesor ARL"
                                         options={lsAsesorARL}
+                                        size={matchesXS ? 'small' : 'medium'}
+                                        bug={errors.asesorARL}
                                     />
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid item xs={12} sx={{ my: 1 }}><Divider /></Grid>
+
+                                <Grid item xs={12} md={6} lg={2.4}>
+                                    <InputDatePick
+                                        disabled
+                                        onChange={(e) => setFechaEntrega(e.target.value)}
+                                        value={fechaEntrega}
+                                        label="Fecha de entrega"
+                                        name="fechaEntrega"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={2.4}>
+                                    <InputDatePick
+                                        disabled
+                                        onChange={(e) => setFechaRevision(e.target.value)}
+                                        value={fechaRevision}
+                                        label="Fecha de revisión"
+                                        name="fechaRevision"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={2.4}>
+                                    <InputDatePick
+                                        disabled
+                                        onChange={(e) => setFechaVistoBueno(e.target.value)}
+                                        value={fechaVistoBueno}
+                                        label="Fecha de visto bueno"
+                                        name="fechaVistoBueno"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={2.4}>
+                                    <InputDatePick
+                                        onChange={(e) => setFechaRadicado(e.target.value)}
+                                        value={fechaRadicado}
+                                        label="Fecha de radicado"
+                                        name="fechaRadicado"
+                                        size={matchesXS ? 'small' : 'medium'}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={2.4}>
+                                    <InputText
+                                        defaultValue=""
+                                        name="numRadicado"
+                                        label="Número radicado"
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} sx={{ mt: 2 }}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={2}>
                                             <AnimateButton>
@@ -541,6 +862,25 @@ const ResearchAssignment = () => {
                     </Grid>
                 </Grid>
             </FormProvider>
+
+            <CustomFullScreenModal
+                open={openEditOccupational.value}
+                onClose={openEditOccupational.onFalse}
+            >
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <DiagnosisDetail data={medicinaLaboral} />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <ReviewOccupationalMedicine
+                            openEditOccupational={openEditOccupational}
+                            medicinaLaboral={medicinaLaboral}
+                            handleRefresh={getDataMedicinaLaboral}
+                        />
+                    </Grid>
+                </Grid>
+            </CustomFullScreenModal>
         </ValidateActionSkeleton>
     );
 };

@@ -243,11 +243,11 @@ const ListRefund = () => {
             const newRows = rows.filter((row) => {
                 let matches = true;
 
-                const properties = ['id', 'documento', 'nameEmpleado'/* , 'nameConceptoReintegro' */];
+                const properties = ['id', 'documento', 'nameEmpleado', 'nameConceptoReintegro', 'nameEstadoCaso'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
-                    if (row[property].toString().toLowerCase().includes(newString.toString().toLowerCase())) {
+                    if (row[property]?.toString().toLowerCase().includes(newString.toString().toLowerCase())) {
                         containsQuery = true;
                     }
                 });

@@ -407,7 +407,7 @@ function pageWorkerNotification(doc, lsDataReport = [], lsDataUser = []) {
   doc.text(`${lsDataReport.nameRiesgoCardiovascularNEMTA}`, 95, 58);
   doc.text(`${lsDataReport.nameClasificacionNEMTA}`, 146, 58);
 
-  doc.text(`${lsDataReport.nameConceptoActitudMedicoNEMTA}`, 89, 70);
+  doc.text(`${lsDataReport.nameConceptoActitudNETA}`, 89, 70);
   doc.text(`${lsDataReport.pesoEF}`, 69, 63);
   doc.text(`${lsDataReport.imcef}`, 86, 63);
 

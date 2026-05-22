@@ -70,7 +70,7 @@ const InvestigationProgress = ({ config, requiresStatusLabel = true }) => {
                     )}
                 </motion.div>
 
-                {[0, 50, 100].map((pos, i) => (
+                {[0, 25, 50, 75, 100].map((pos, i) => (
                     <Box
                         key={i}
                         sx={{

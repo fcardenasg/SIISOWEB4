@@ -1,45 +1,51 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import SendIcon from '@mui/icons-material/Send';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EditIcon from '@mui/icons-material/Edit';
 import {
-    Avatar,
+    Alert,
+    AlertTitle,
     Box,
     Button,
     Card,
-    CardContent,
+    CircularProgress,
     Divider,
     Grid,
-    TextField,
+    Stack,
     Typography,
     useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/styles';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetComboCompany } from 'api/clients/CompanyClient';
-import { GetByIdIELComentario, GetIELMetodoControl, InsertIELComentario, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
-import { CodCatalogo } from 'components/helpers/Enums';
+import { DeleteIELMetodoControl, GetIELFirma, GetIELHistoriaLaboralDLTD, GetIELHistoriaLaboralOtrosEmpresas, GetIELMetodoControl, InsertIELFirma, InsertIELHistoriaLaboralDLTD, InsertIELHistoriaLaboralOE, InsertIELMetodoControl } from 'api/clients/InvestigationClient';
+import { ParamDelete } from 'components/alert/AlertAll';
+import { CodCatalogo, ValidationMessage } from 'components/helpers/Enums';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import InputTextEditor from 'components/input/InputTextEditor';
-import { AnimatePresence, motion } from 'framer-motion';
-import useAuth from 'hooks/useAuth';
+import { UploadBox } from 'components/upload';
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
+import swal from 'sweetalert';
 import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
 import {
     TableCharacterizationAbsenteeism,
     TableControlMethods,
-    TableDLTD,
     TableDiagnosisRating,
+    TableDLTD,
     TableOtherCompanies,
     TablePreventiveActions
 } from './components/Table';
 import TableDiagnosis from './components/Table/TableDiagnosis';
 import TableHealth from './components/Table/TableHealth';
+import { yupResolver } from '@hookform/resolvers/yup';
+import InputSelectAutocomplete from 'components/input/InputSelectAutocomplete';
 
-export const CompanyDetails = ({ dataModel, matchesXS }) => {
+export const CompanyDetails = ({ dataModel, matchesXS, disabledControl }) => {
     const [lsSede, setLsSede] = useState([]);
     const [lsArea, setLsArea] = useState([]);
     const [lsDepartamento, setLsDepartamento] = useState([]);
@@ -70,6 +76,7 @@ export const CompanyDetails = ({ dataModel, matchesXS }) => {
                     label="Fecha de la investigación"
                     name="fechaInvestigacion"
                     defaultValue={dataModel?.fechaInvestigacion}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -80,6 +87,7 @@ export const CompanyDetails = ({ dataModel, matchesXS }) => {
                     defaultValue={dataModel?.razonSocial}
                     options={lsCompany}
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -101,6 +109,7 @@ export const CompanyDetails = ({ dataModel, matchesXS }) => {
                     name="actividadEconomica"
                     label="Actividad económica de la empresa"
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -111,6 +120,7 @@ export const CompanyDetails = ({ dataModel, matchesXS }) => {
                     defaultValue={dataModel?.sedeTrabajo}
                     options={lsSede}
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -121,6 +131,7 @@ export const CompanyDetails = ({ dataModel, matchesXS }) => {
                     defaultValue={dataModel?.departamento}
                     options={lsDepartamento}
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -131,39 +142,342 @@ export const CompanyDetails = ({ dataModel, matchesXS }) => {
                     defaultValue={dataModel?.area}
                     options={lsArea}
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
         </Grid>
     )
 }
 
-export const WorkHistoryDLTD = ({ methods, documento }) => {
+const validationWHDLTD = yup.object().shape({
+    fecha: yup.date().nullable().typeError(ValidationMessage.Requerido).required(ValidationMessage.Requerido),
+    cargoInicial: yup.object().nullable().required(ValidationMessage.Requerido),
+    turnoControl: yup.string().required(ValidationMessage.Requerido),
+    rotacion: yup.string().required(ValidationMessage.Requerido),
+    anios: yup.string().required(ValidationMessage.Requerido),
+    meses: yup.string().required(ValidationMessage.Requerido),
+});
+
+export const WorkHistoryDLTD = ({ documento, disabledControl = false, refreshDataState }) => {
+    const methodsDLTD = useForm({ resolver: yupResolver(validationWHDLTD) });
+    const { formState: { errors, isSubmitting }, handleSubmit, reset, setValue } = methodsDLTD;
+
+    const [listHL, setListHL] = useState([]);
+    const idIEL = useFormContext().getValues('id');
+
+    const [lsRosterPosition, setLsRosterPosition] = useState([]);
+    const [lsTurno, setLsTurno] = useState([]);
+
+    useEffect(() => {
+        async function getCombo() {
+            try {
+                const lsServerRosterPosition = await GetByTipoCatalogoCombo(CodCatalogo.RosterPosition);
+                setLsRosterPosition(lsServerRosterPosition.data);
+
+                const lsServerTurno = await GetByTipoCatalogoCombo(CodCatalogo.Turno);
+                setLsTurno(lsServerTurno.data);
+            } catch (error) { }
+        }
+
+        getCombo();
+    }, []);
+
+    async function getData() {
+        try {
+            if (documento) {
+                const statusData = Boolean(idIEL);
+                const response = await GetIELHistoriaLaboralDLTD(documento, statusData);
+                if (response.data.exito) {
+                    const mappedData = (response.data.datos || []).map((item) => ({
+                        id: item.id,
+                        fecha: item.fecha,
+                        cargo: item.nameCargo,
+                        turno: item.nameTurno,
+                        rotacion: item.nameRotacion,
+                        anios: item.anio,
+                        meses: item.meses
+                    }));
+
+                    setListHL(mappedData);
+                }
+            }
+        } catch (error) {
+            toast.error("Error al cargar la historia laboral DLTD");
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, [documento, idIEL]);
+
+    const handleClick = async (datos) => {
+        try {
+            datos.idInvestigacion = idIEL;
+            datos.cargo = datos.cargoInicial.label;
+            datos.turno = lsTurno.find((item) => item.value === parseInt(datos.turnoControl)).label;
+            datos.idCargo = datos.cargoInicial.value;
+
+            const result = await InsertIELHistoriaLaboralDLTD(datos);
+            if (result.data.exito) {
+                toast.success(result.data.mensaje);
+                reset();
+                setValue("fecha", "");
+
+                if (listHL.length === 0) {
+                    refreshDataState();
+                }
+
+                getData();
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al procesar la investigación");
+        }
+    }
+
     return (
-        <TableDLTD methods={methods} documento={documento} />
+        <Grid container spacing={2}>
+            {!disabledControl &&
+                <FormProvider {...methodsDLTD}>
+                    {!idIEL && (
+                        <>
+                            <Grid item xs={12}>
+                                <Alert severity="info" variant="outlined">
+                                    <AlertTitle>Acción requerida</AlertTitle>
+                                    Para comenzar a agregar historia laboral en DLTD, <strong>primero debe guardar la información general</strong> de la investigación.
+                                </Alert>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ my: 1 }}><Divider /></Grid>
+                        </>
+                    )}
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputDatePicker
+                            defaultValue=""
+                            label="Fecha de ingreso"
+                            name="fecha"
+                            size="small"
+                            bug={errors.fecha}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2.5}>
+                        <InputSelectAutocomplete
+                            defaultValue={null}
+                            name="cargoInicial"
+                            label="Cargo inicial"
+                            options={lsRosterPosition}
+                            size="small"
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputSelect
+                            name="turnoControl"
+                            label="Turno"
+                            defaultValue=""
+                            options={lsTurno}
+                            size="small"
+                            bug={errors.turnoControl}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}>
+                        <InputText
+                            name="rotacion"
+                            label="Rotación"
+                            defaultValue=""
+                            size="small"
+                            bug={errors.rotacion}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={1}>
+                        <InputText
+                            name="anios"
+                            label="Años"
+                            defaultValue=""
+                            type="number"
+                            size="small"
+                            bug={errors.anios}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={1}>
+                        <InputText
+                            name="meses"
+                            label="Meses"
+                            defaultValue=""
+                            type="number"
+                            size="small"
+                            bug={errors.meses}
+                        />
+                    </Grid>
+
+                    <Grid item xs={6} md={4} lg={1.5} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <AnimateButton>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit(handleClick)}
+                                disabled={isSubmitting || disabledControl || !idIEL}
+                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <AddCircleIcon />}
+                                sx={{ minWidth: '110px' }}
+                            >
+                                {isSubmitting ? 'Guardando...' : 'Agregar'}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                </FormProvider>
+            }
+
+            <Grid item xs={12}>
+                <TableDLTD listData={listHL} />
+            </Grid>
+        </Grid>
     )
 }
 
-{/* <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <TableDLTD methods={methods} documento={documento} />
-            </Grid>
+const validationWHDLTDOther = yup.object().shape({
+    empresa: yup.string().required(ValidationMessage.Requerido),
+    cargo: yup.string().required(ValidationMessage.Requerido),
+    anios: yup.string().required(ValidationMessage.Requerido),
+    meses: yup.string().required(ValidationMessage.Requerido),
+});
 
-            <Grid item xs={12}>
-                <Typography variant="h4">Otros cargos</Typography>
-            </Grid>
+export const WorkHistoryOtherCompanies = ({ documento, disabledControl = false, refreshDataState }) => {
+    const methodsOtherCompanies = useForm({ resolver: yupResolver(validationWHDLTDOther) });
+    const { formState: { errors, isSubmitting }, handleSubmit, reset } = methodsOtherCompanies;
 
-            <Grid item xs={12}>
-                <TableDLTD methods={methods} documento={documento} />
-            </Grid>
-        </Grid> */}
+    const [listHLOE, setListHLOE] = useState([]);
+    const idIEL = useFormContext().getValues('id');
 
-export const WorkHistoryOtherCompanies = ({ methods, documento }) => {
+    async function getData() {
+        try {
+            if (documento) {
+                const statusData = Boolean(idIEL);
+                const response = await GetIELHistoriaLaboralOtrosEmpresas(documento, statusData);
+                if (response.data.exito) {
+                    setListHLOE(response.data.datos);
+                }
+            }
+        } catch (error) {
+            toast.error("Error al cargar la historia laboral de otras empresas");
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, [documento, idIEL]);
+
+    const handleClick = async (datos) => {
+        try {
+            datos.idInvestigacion = idIEL;
+
+            const result = await InsertIELHistoriaLaboralOE(datos);
+            if (result.data.exito) {
+                toast.success(result.data.mensaje);
+                reset();
+
+                if (listHLOE.length === 0) {
+                    refreshDataState();
+                }
+
+                getData();
+            } else {
+                toast.error(result.data.mensaje);
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al procesar la investigación");
+        }
+    }
+
     return (
-        <TableOtherCompanies methods={methods} documento={documento} />
+        <Grid container spacing={2}>
+            {!disabledControl &&
+                <FormProvider {...methodsOtherCompanies}>
+                    {!idIEL && (
+                        <>
+                            <Grid item xs={12}>
+                                <Alert severity="info" variant="outlined">
+                                    <AlertTitle>Acción requerida</AlertTitle>
+                                    Para comenzar a agregar historia laboral en otras empresas, <strong>primero debe guardar la información general</strong> de la investigación.
+                                </Alert>
+                            </Grid>
+
+                            <Grid item xs={12} sx={{ my: 1 }}><Divider /></Grid>
+                        </>
+                    )}
+
+                    <Grid item xs={12} md={6} lg={3.5}>
+                        <InputText
+                            name="empresa"
+                            label="Empresa"
+                            defaultValue=""
+                            size="small"
+                            bug={errors.empresa}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={3.5}>
+                        <InputText
+                            name="cargo"
+                            label="Cargo"
+                            defaultValue=""
+                            size="small"
+                            bug={errors.cargo}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={1.5}>
+                        <InputText
+                            name="anios"
+                            label="Años"
+                            defaultValue=""
+                            type="number"
+                            size="small"
+                            bug={errors.anios}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={1.5}>
+                        <InputText
+                            name="meses"
+                            label="Meses"
+                            defaultValue=""
+                            type="number"
+                            size="small"
+                            bug={errors.meses}
+                        />
+                    </Grid>
+
+                    <Grid item xs={6} md={4} lg={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <AnimateButton>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit(handleClick)}
+                                disabled={isSubmitting || disabledControl || !idIEL}
+                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <AddCircleIcon />}
+                                sx={{ minWidth: '110px' }}
+                            >
+                                {isSubmitting ? 'Guardando...' : 'Agregar'}
+                            </Button>
+                        </AnimateButton>
+                    </Grid>
+                </FormProvider>
+            }
+
+            <Grid item xs={12}>
+                <TableOtherCompanies listData={listHLOE} />
+            </Grid>
+        </Grid>
     )
 }
 
-export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, methods }) => {
+export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, methods, disabledControl }) => {
     const [lsOpcionesSino, setLsOpcionesSino] = useState([]);
 
     useEffect(() => {
@@ -178,7 +492,9 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <TableDiagnosis methods={methods} />
+                <SubCard content={false}>
+                    <TableDiagnosis methods={methods} disabledControl={disabledControl} />
+                </SubCard>
             </Grid>
 
             <Grid item xs={12}><Divider /></Grid>
@@ -190,6 +506,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     defaultValue={dataModel?.idGeneroIncapacidad}
                     options={lsOpcionesSino}
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -199,6 +516,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     label="Días de incapacidad"
                     defaultValue={dataModel?.diasIncapacidad}
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -210,6 +528,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     rows={2}
                     defaultValue={dataModel?.observacionesIncapacidad}
                     size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -218,6 +537,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     name="numeroFurel"
                     label="FUREL #"
                     defaultValue={dataModel?.numeroFurel}
+                    disabled={disabledControl}
                     size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
@@ -227,7 +547,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     name="fechaFurel"
                     label="Fecha del FUREL"
                     defaultValue={dataModel?.fechaFurel}
-                    size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
@@ -236,14 +556,16 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     name="fechaEstructuracionOrigen"
                     label="Fecha de estructuración de origen"
                     defaultValue={dataModel?.fechaEstructuracionOrigen}
-                    size={matchesXS ? 'small' : 'medium'}
+                    disabled={disabledControl}
                 />
             </Grid>
 
             <Grid item xs={12}><Divider /></Grid>
 
             <Grid item xs={12}>
-                <TableDiagnosisRating methods={methods} />
+                <SubCard content={false}>
+                    <TableDiagnosisRating methods={methods} disabledControl={disabledControl} />
+                </SubCard>
             </Grid>
 
             <Grid item xs={12}><Divider /></Grid>
@@ -254,6 +576,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     label="Calificación PCL"
                     defaultValue={dataModel?.idCalificacionPCL}
                     options={lsOpcionesSino}
+                    disabled={disabledControl}
                     size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
@@ -263,6 +586,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     name="porcentajePCL"
                     label="% PCL"
                     defaultValue={dataModel?.porcentajePCL}
+                    disabled={disabledControl}
                     size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
@@ -272,6 +596,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     name="instancia"
                     label="Instancia"
                     defaultValue={dataModel?.instancia}
+                    disabled={disabledControl}
                     size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
@@ -281,6 +606,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     name="dictamen"
                     label="Dictamen #"
                     defaultValue={dataModel?.dictamen}
+                    disabled={disabledControl}
                     size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
@@ -291,6 +617,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     label="Calificación integral"
                     defaultValue={dataModel?.idCalificacionIntegral}
                     options={lsOpcionesSino}
+                    disabled={disabledControl}
                     size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
@@ -300,6 +627,7 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
                     name="otrasPatologias"
                     label="Otras patologías que hacen parte de la calificación de PCL"
                     defaultValue={dataModel?.otrasPatologias}
+                    disabled={disabledControl}
                     size={matchesXS ? 'small' : 'medium'}
                 />
             </Grid>
@@ -307,38 +635,37 @@ export const DataDiagnosisQualificationProcess = ({ dataModel, matchesXS, method
     )
 }
 
-export const DataExposureCompany = ({ resumenResultadosAnalisisPuesto, resumenValoracionRiesgo }) => {
+export const DataExposureCompany = ({ resumenResultadosAnalisisPuesto, resumenValoracionRiesgo, disabledControl }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Resumen de los resultados del análisis del puesto de trabajo" name="resumenResultadosAnalisisPuesto" defaultValue={resumenResultadosAnalisisPuesto} />
+                <InputTextEditor disabled={disabledControl} label="Resumen de los resultados del análisis del puesto de trabajo" name="resumenResultadosAnalisisPuesto" defaultValue={resumenResultadosAnalisisPuesto} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Resumen de la valoración del riesgo" name="resumenValoracionRiesgo" defaultValue={resumenValoracionRiesgo} />
+                <InputTextEditor disabled={disabledControl} label="Resumen de la valoración del riesgo" name="resumenValoracionRiesgo" defaultValue={resumenValoracionRiesgo} />
             </Grid>
         </Grid>
     )
 }
 
-export const AvailableControlMethods = () => {
+export const AvailableControlMethods = ({ disabledControl, methodsMain }) => {
     const theme = useTheme();
-    const { idInvestigacion } = useParams();
+    const idIEL = methodsMain.getValues('id');
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
     const [lsMetodoControl, setLsMetodoControl] = useState([]);
     const [lsControl, setLsControl] = useState([]);
     const [lsTipoControl, setLsTipoControl] = useState([]);
 
+    const isDisabled = !idIEL;
     const methods = useForm();
-    const { handleSubmit } = methods;
+    const { handleSubmit, reset } = methods;
 
     async function getData() {
         try {
-            const result = await GetIELMetodoControl(1);
+            const result = await GetIELMetodoControl(idIEL);
             if (result.data.exito) {
-                if (result.data.datos !== null) {
-                    setLsMetodoControl(result.data.datos);
-                }
+                setLsMetodoControl(result.data.datos);
             } else {
                 toast.error(result.data.mensaje);
             }
@@ -348,8 +675,10 @@ export const AvailableControlMethods = () => {
     }
 
     useEffect(() => {
-        getData();
-    }, []);
+        if (idIEL) {
+            getData();
+        }
+    }, [idIEL]);
 
     useEffect(() => {
         async function getCombo() {
@@ -369,11 +698,12 @@ export const AvailableControlMethods = () => {
 
     const handleSave = async (data) => {
         try {
-            data.idInvestigacion = parseInt(idInvestigacion);
-
+            data.idInvestigacion = parseInt(idIEL);
             const result = await InsertIELMetodoControl(data);
             if (result.data.exito) {
                 toast.success(result.data.mensaje);
+                getData();
+                reset();
             } else {
                 toast.error(result.data.mensaje);
             }
@@ -382,71 +712,111 @@ export const AvailableControlMethods = () => {
         }
     }
 
+    const handleDelete = async (idCheck) => {
+        try {
+            swal(ParamDelete).then(async (willDelete) => {
+                if (willDelete) {
+                    const result = await DeleteIELMetodoControl(idCheck);
+                    if (result.data.exito) {
+                        toast.success(result.data.mensaje);
+                        getData();
+                    } else {
+                        toast.error(result.data.mensaje);
+                    }
+                }
+            });
+        } catch (error) {
+            toast.error("Error al eliminar el método de control");
+        }
+    }
+
     return (
         <FormProvider {...methods}>
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} md={6} lg={5}>
-                    <InputSelect
-                        name="control"
-                        label="Control"
-                        defaultValue=""
-                        options={lsControl}
-                        size={matchesXS ? 'small' : 'medium'}
-                    />
-                </Grid>
+                {isDisabled && (
+                    <Grid item xs={12}>
+                        <Alert severity="info" variant="outlined">
+                            <AlertTitle>Acción requerida</AlertTitle>
+                            Para comenzar a agregar métodos de control, <strong>primero debe guardar la información general</strong> de la investigación.
+                        </Alert>
+                    </Grid>
+                )}
 
-                <Grid item xs={12} md={6} lg={5}>
-                    <InputSelect
-                        name="tipoControl"
-                        label="Tipo de control"
-                        defaultValue=""
-                        options={lsTipoControl}
-                        size={matchesXS ? 'small' : 'medium'}
-                    />
-                </Grid>
+                {!disabledControl &&
+                    <>
+                        <Grid item xs={12} md={6}>
+                            <InputSelect
+                                name="control"
+                                label="Control"
+                                defaultValue=""
+                                options={lsControl}
+                                size={matchesXS ? 'small' : 'medium'}
+                                disabled={isDisabled}
+                            />
+                        </Grid>
 
-                <Grid item xs={12} md={6} lg={2}>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit(handleSave)}
-                        size={matchesXS ? 'small' : 'medium'}
-                        startIcon={<AddCircleIcon />}
+                        <Grid item xs={12} md={6}>
+                            <InputSelect
+                                name="tipoControl"
+                                label="Tipo de control"
+                                defaultValue=""
+                                options={lsTipoControl}
+                                size={matchesXS ? 'small' : 'medium'}
+                                disabled={isDisabled}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                multiline
+                                minRows={2}
+                                maxRows={4}
+                                name="observacionBrindado"
+                                label="Observaciones sobre uso brindado"
+                                size={matchesXS ? 'small' : 'medium'}
+                                disabled={isDisabled}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <InputText
+                                defaultValue=""
+                                fullWidth
+                                multiline
+                                minRows={2}
+                                maxRows={4}
+                                name="observacionNivelProteccionBrindado"
+                                label="Observaciones sobre nivel de protección brindado"
+                                size={matchesXS ? 'small' : 'medium'}
+                                disabled={isDisabled}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} textAlign="right">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit(handleSave)}
+                                size={matchesXS ? 'small' : 'medium'}
+                                startIcon={<AddCircleIcon />}
+                                disabled={isDisabled}
+                            >
+                                Agregar
+                            </Button>
+                        </Grid>
+
+                        <Grid item xs={12}><Divider /></Grid>
+                    </>
+                }
+
+                <Grid item xs={12}>
+                    <SubCard
+                        content={false}
+                        sx={{ opacity: isDisabled ? 0.5 : 1, pointerEvents: isDisabled ? 'none' : 'auto' }}
                     >
-                        Agregar
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <InputText
-                        defaultValue=""
-                        fullWidth
-                        multiline
-                        minRows={2}
-                        maxRows={4}
-                        name="observacionBrindado"
-                        label="Observaciones sobre uso brindado"
-                        size={matchesXS ? 'small' : 'medium'}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <InputText
-                        defaultValue=""
-                        fullWidth
-                        multiline
-                        minRows={2}
-                        maxRows={4}
-                        name="observacionNivelProteccionBrindado"
-                        label="Observaciones sobre nivel de protección brindado"
-                        size={matchesXS ? 'small' : 'medium'}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <SubCard content={false}>
-                        <TableControlMethods listMC={lsMetodoControl} />
+                        <TableControlMethods listMC={lsMetodoControl} handleDelete={handleDelete} disabledControl={disabledControl} />
                     </SubCard>
                 </Grid>
             </Grid>
@@ -454,43 +824,43 @@ export const AvailableControlMethods = () => {
     )
 }
 
-export const ClinicalData = ({ datosClinicos }) => {
+export const ClinicalData = ({ datosClinicos, disabledControl }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Datos clínicos y paraclínicos" name="datosClinicos" defaultValue={datosClinicos} />
+                <InputTextEditor disabled={disabledControl} label="Datos clínicos y paraclínicos" name="datosClinicos" defaultValue={datosClinicos} />
             </Grid>
         </Grid>
     )
 }
 
-export const Background = ({ personales, otrasEnfermedadesLaborales, familiares }) => {
+export const Background = ({ dataModel, disabledControl }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Personales (enfermedades, cirugías, traumas, farmacológicos)" name="personales" defaultValue={personales} />
+                <InputTextEditor disabled={disabledControl} label="Personales (enfermedades, cirugías, traumas, farmacológicos)" name="personales" defaultValue={dataModel?.personales} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Otras enfermedades laborales calificadas o en proceso de calificación" name="otrasEnfermedadesLaborales" defaultValue={otrasEnfermedadesLaborales} />
+                <InputTextEditor disabled={disabledControl} label="Otras enfermedades laborales calificadas o en proceso de calificación" name="otrasEnfermedadesLaborales" defaultValue={dataModel?.otrasEnfermedadesLaborales} />
             </Grid>
 
             <Grid item xs={12}>
-                <TableHealth />
+                <TableHealth dataModel={dataModel} disabledControl={disabledControl} />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Familiares" name="familiares" defaultValue={familiares} />
+                <InputTextEditor disabled={disabledControl} label="Familiares" name="familiares" defaultValue={dataModel?.familiares} />
             </Grid>
         </Grid>
     )
 }
 
-export const OtherClinicalData = ({ otrosDatosClinicos }) => {
+export const OtherClinicalData = ({ otrosDatosClinicos, disabledControl }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Otros datos clínicos de interés relacionados con la patología" name="otrosDatosClinicos" defaultValue={otrosDatosClinicos} />
+                <InputTextEditor disabled={disabledControl} label="Otros datos clínicos de interés relacionados con la patología" name="otrosDatosClinicos" defaultValue={otrosDatosClinicos} />
             </Grid>
         </Grid>
     )
@@ -498,193 +868,305 @@ export const OtherClinicalData = ({ otrosDatosClinicos }) => {
 
 export const CharacterizationAbsenteeism = () => {
     return (
-        <TableCharacterizationAbsenteeism />
-    )
-}
-
-export const BiographyReview = ({ revisionBibliografia }) => {
-    return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Revisión de la bibliografía" name="revisionBibliografia" defaultValue={revisionBibliografia} />
+                <SubCard content={false}>
+                    <TableCharacterizationAbsenteeism />
+                </SubCard>
             </Grid>
         </Grid>
     )
 }
 
-export const CauseAnalysis = ({ analisisCausas }) => {
+export const BiographyReview = ({ revisionBibliografia, disabledControl }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Análisis de causas" name="analisisCausas" defaultValue={analisisCausas} />
+                <InputTextEditor disabled={disabledControl} label="Revisión de la bibliografía" name="revisionBibliografia" defaultValue={revisionBibliografia} />
             </Grid>
         </Grid>
     )
 }
 
-export const UnderlyingCauseDetected = ({ causaBasicaDetectada }) => {
+export const CauseAnalysis = ({ analisisCausas, disabledControl }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Causa básica detectada" name="causaBasicaDetectada" defaultValue={causaBasicaDetectada} />
+                <InputTextEditor disabled={disabledControl} label="Análisis de causas" name="analisisCausas" defaultValue={analisisCausas} />
             </Grid>
         </Grid>
     )
 }
 
-export const Conclusion = ({ conclusion, methods, idInvestigation }) => {
-    const { user } = useAuth();
-    const conclusionForm = methods.watch("conclusion");
-
+export const UnderlyingCauseDetected = ({ causaBasicaDetectada, disabledControl }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Conclusión" name="conclusion" defaultValue={conclusion} />
+                <InputTextEditor disabled={disabledControl} label="Causa básica detectada" name="causaBasicaDetectada" defaultValue={causaBasicaDetectada} />
             </Grid>
-
-            {idInvestigation &&
-                <Grid item xs={12} sx={{ mt: 1.5 }}>
-                    <CommentSection currentUser={user} conclusion={conclusionForm} idInvestigation={idInvestigation} />
-                </Grid>
-            }
         </Grid>
     )
 }
 
-export const PreventiveActions = ({ methods }) => {
+export const Conclusion = ({ conclusion, disabledControl }) => {
     return (
-        <TablePreventiveActions methods={methods} />
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <InputTextEditor disabled={disabledControl} label="Conclusión" name="conclusion" defaultValue={conclusion} />
+            </Grid>
+        </Grid>
+    )
+}
+
+export const PreventiveActions = ({ methods, disabledControl }) => {
+    return (
+        <SubCard content={false}>
+            <TablePreventiveActions methods={methods} disabledControl={disabledControl} />
+        </SubCard>
     );
 }
 
-export const Signatures = () => {
-    return (
-        <div>Signatures</div>
-    )
-}
+const ComponentSignatures = ({ index, title, nameCargo, numFirma, refreshData }) => {
+    const { setValue, watch } = useFormContext();
+    const [loading, setLoading] = useState(false);
+    const currentUser = watch(`listFirma.${index}`);
 
-const MotionCommentCard = motion(Card);
-const commentVariants = {
-    initial: { opacity: 0, y: 20, scale: 0.95 },
-    animate: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", damping: 10, stiffness: 100 } },
-    exit: { opacity: 0, height: 0, padding: 0, transition: { duration: 0.3 } }
-};
+    const showFirmarButton = numFirma === 1 && !currentUser?.firmado;
+    const isSigned = currentUser?.firmado;
 
-export const CommentSection = ({ currentUser, conclusion, idInvestigation }) => {
-    const [comments, setComments] = useState([]);
-    const [newCommentText, setNewCommentText] = useState('');
-
-    async function getDataComentario() {
+    const handleFirmar = async () => {
         try {
-            const listComentarios = await GetByIdIELComentario(idInvestigation);
-            if (listComentarios.data.exito)
-                setComments(listComentarios.data.datos);
-            else
-                toast.error(listComentarios.data.mensaje)
-        } catch (error) {
-            toast.error("No se pudo traer los comentarios");
-        }
-    }
-
-    useEffect(() => {
-        if (idInvestigation)
-            getDataComentario();
-    }, [idInvestigation]);
-
-    const handleSubmitComment = async (event) => {
-        try {
-            event.preventDefault();
-            if (!newCommentText.trim()) return;
-
-            const newComment = {
-                idInvestigacion: idInvestigation,
-                usuarioComento: currentUser?.id,
-                color: "#E31937",
-                comentario: newCommentText.trim(),
-                conclusion
+            setLoading(true);
+            const firmaData = {
+                id: currentUser.id,
+                idUsuario: 12
             };
 
-            const result = await InsertIELComentario(newComment);
-            if (!result.data.exito) {
-                toast.error(result.data.mensaje)
-                return;
+            const result = await InsertIELFirma(firmaData);
+            if (result.data.exito) {
+                toast.success("Firma registrada correctamente");
+                setValue(`listFirma.${index}.firmado`, true);
+                refreshData();
+            } else {
+                toast.error(result.data.mensaje);
             }
-
-            getDataComentario();
-            setNewCommentText('');
         } catch (error) {
-            toast.error("No se pudo realizar el comentario");
+            toast.error("Error al registrar la firma");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2, backgroundColor: '#fafafa' }}>
-            <Typography variant="h6" gutterBottom color="primary" sx={{ mb: 2 }}>
-                Comentarios {comments.length !== 0 && `(${comments.length})`}
-            </Typography>
+        <Box sx={{ width: '100%' }}>
+            <Card sx={{
+                p: 2.5,
+                border: '1px solid',
+                borderColor: isSigned ? 'success.light' : 'divider',
+                boxShadow: 'none',
+                position: 'relative',
+                transition: 'all 0.2s ease',
+                '&:hover': { boxShadow: '0 4px 12px rgba(0,0,0,0.05)' },
+                '&::before': isSigned ? {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: '4px',
+                    backgroundColor: 'success.main',
+                } : {}
+            }}>
+                <Grid container spacing={3} alignItems="center">
+                    <Grid item xs={12} md={3}>
+                        <Box sx={{
+                            position: 'relative',
+                            width: '100%',
+                            height: '120px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'grey.50',
+                            borderRadius: 1,
+                            border: '1px dashed',
+                            borderColor: 'divider',
+                            overflow: 'hidden'
+                        }}>
+                            {loading && (
+                                <Box sx={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    zIndex: 10,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    bgcolor: 'rgba(255,255,255,0.8)',
+                                    backdropFilter: 'blur(1px)'
+                                }}>
+                                    <CircularProgress size={24} />
+                                </Box>
+                            )}
 
-            <Box component="form" onSubmit={handleSubmitComment} sx={{ display: 'flex', mb: 3, alignItems: 'center' }}>
-                <Avatar sx={{ mr: 2, bgcolor: "secondary.main" }}>
-                    <Typography variant="h4" sx={{ color: "white" }}>{currentUser?.nameuser.charAt(0)}</Typography>
-                </Avatar>
+                            <UploadBox
+                                disabled
+                                name={`listFirma.${index}.firma`}
+                                defaultValue={currentUser?.firma || null}
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    '& img': {
+                                        objectFit: 'contain',
+                                        width: '100%',
+                                        height: '100%',
+                                        p: 1
+                                    }
+                                }}
+                                placeholder={
+                                    <Stack alignItems="center" spacing={0.5}>
+                                        <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 500 }}>
+                                            {isSigned ? 'FIRMA ELECTRÓNICA' : 'PENDIENTE'}
+                                        </Typography>
+                                    </Stack>
+                                }
+                            />
+                        </Box>
+                    </Grid>
 
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    multiline
-                    minRows={1}
-                    maxRows={5}
-                    size="small"
-                    label="Escribe un comentario..."
-                    value={newCommentText}
-                    onChange={(e) => setNewCommentText(e.target.value)}
-                    sx={{ flexGrow: 1, mr: 1 }}
-                />
-
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        endIcon={<SendIcon />}
-                        disabled={!newCommentText.trim()}
-                    >
-                        Enviar
-                    </Button>
-                </motion.div>
-            </Box>
-
-            <AnimatePresence initial={false}>
-                {comments.map((comment) => (
-                    <MotionCommentCard
-                        key={comment.id}
-                        variants={commentVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        layout
-                        sx={{ mb: 2, boxShadow: 1, borderLeft: `4px solid ${comment.color}` }}
-                    >
-                        <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <Avatar sx={{ width: 32, height: 32, mr: 1.5, bgcolor: comment.color }}>
-                                    <Typography variant="h4" sx={{ color: "white" }} >{comment?.usuarioRegistro.charAt(0)}</Typography>
-                                </Avatar>
-
-                                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mr: 1 }}>
-                                    {comment.nameUsuarioComento}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    • {comment.fechaRegistro}
-                                </Typography>
-                            </Box>
-                            <Typography variant="body2" sx={{ ml: 4.5 }}>
-                                {comment.comentario}
+                    {/* Columna Derecha - Info */}
+                    <Grid item xs={12} md={showFirmarButton ? 6 : 9}>
+                        <Stack spacing={0.5}>
+                            <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1.2 }}>
+                                {title}
                             </Typography>
-                        </CardContent>
-                    </MotionCommentCard>
-                ))}
-            </AnimatePresence>
+
+                            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.primary', lineHeight: 1.2 }}>
+                                {currentUser?.nombre || 'Pendiente de asignar'}
+                            </Typography>
+
+                            <Grid container spacing={1} sx={{ mt: 0.5 }}>
+                                {[
+                                    { label: 'Especialidad', value: currentUser?.especialidad },
+                                    { label: 'Registro', value: currentUser?.registro },
+                                    { label: 'Licencia', value: currentUser?.licencia }
+                                ].map((item, i) => (
+                                    <Grid item key={i}>
+                                        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', display: 'flex', gap: 0.5 }}>
+                                            <Box component="span" sx={{ fontWeight: 600 }}>{item.label}:</Box>
+                                            {item.value || '---'}
+                                        </Typography>
+                                    </Grid>
+                                ))}
+                            </Grid>
+
+                            <Typography sx={{
+                                fontSize: '0.75rem',
+                                color: 'text.secondary',
+                                fontStyle: 'italic',
+                                mt: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5
+                            }}>
+                                {nameCargo}
+                                {isSigned && <CheckCircleIcon sx={{ fontSize: 14, color: 'success.main' }} />}
+                            </Typography>
+                        </Stack>
+                    </Grid>
+
+                    {showFirmarButton && (
+                        <Grid item xs={12} md={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <Button
+                                variant="contained"
+                                onClick={handleFirmar}
+                                startIcon={<EditIcon />}
+                                disabled={loading}
+                                sx={{
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    fontWeight: 600,
+                                    px: 3,
+                                    boxShadow: '0 4px 10px rgba(var(--mui-palette-primary-mainChannel), 0.2)'
+                                }}
+                            >
+                                {loading ? 'Firmando...' : 'Firmar'}
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Card>
         </Box>
     );
-}
+};
+
+export const Signatures = () => {
+    const { control, getValues } = useFormContext();
+    const idIEL = getValues('id');
+
+    const { fields, replace } = useFieldArray({
+        control,
+        name: "listFirma"
+    });
+
+    const CARGOS_DEFAULT = [
+        { title: "Realizado por", nameCargo: "Gerente Salud Ocupacional Drummond Ltd", numFirma: 1 },
+        { nameCargo: "Ergonomista Drummond Ltd", numFirma: 2 },
+        { nameCargo: "Supervisor higiene industrial Drummond Ltd", numFirma: 3 },
+        { title: "Asesorado por", nameCargo: "Asesor", numFirma: 4 },
+    ];
+
+    async function getData() {
+        if (!idIEL) return;
+        try {
+            const response = await GetIELFirma(idIEL);
+            if (response.data.exito) {
+                const mappedData = CARGOS_DEFAULT.map((cargo) => {
+                    const serverData = response.data.datos.find(d => d.numFirma === cargo.numFirma);
+                    return {
+                        ...cargo,
+                        id: serverData?.id || null,
+                        idUsuario: serverData?.idUsuario || null,
+                        nombre: serverData?.nombre || null,
+                        especialidad: serverData?.especialidad || null,
+                        registro: serverData?.registro || null,
+                        licencia: serverData?.licencia || null,
+                        firma: serverData?.firma || null,
+                        firmado: serverData?.firma !== null && serverData?.firma !== undefined
+                    };
+                });
+
+                replace(mappedData);
+            }
+        } catch (error) {
+            toast.error("Error cargando firmas");
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, [idIEL, replace]);
+
+    if (!idIEL) {
+        return (
+            <Alert severity="info" variant="outlined" sx={{ width: '100%', py: 2 }}>
+                <AlertTitle sx={{ fontWeight: 'bold' }}>Acción Requerida: Guardar Investigación</AlertTitle>
+                Debe guardar primero el registro para poder habilitar la sección de firmas. Este paso es obligatorio ya que se debe digitar toda la información correctamente y dar cierre formal a la investigación para que esta pueda ser revisada y firmada por los responsables correspondientes.
+            </Alert>
+        );
+    }
+
+    return (
+        <Grid container spacing={2}>
+            {fields.map((field, index) => (
+                <Grid item xs={12} key={field.id}>
+                    <ComponentSignatures
+                        index={index}
+                        title={field.title}
+                        nameCargo={field.nameCargo}
+                        numFirma={field.numFirma}
+                        refreshData={getData}
+                    />
+                </Grid>
+            ))}
+        </Grid>
+    );
+};

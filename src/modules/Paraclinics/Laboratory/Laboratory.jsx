@@ -151,37 +151,69 @@ const Laboratory = () => {
 
     const handleClick = async (datos) => {
         try {
-            var savePdf = filePdf === null ? "" : filePdf;
+            const DataToInsert = {
+                // Identificación y Generales
+                idTipoParaclinico: DefaultValue.PARACLINICO_LABORATORIO,
+                documento: documento || null,
+                fecha: datos.fecha || null,
+                idMotivo: datos.idMotivo || null,
+                idProveedor: datos.idProveedor || null,
 
-            const DataToInsert = PostParaclinics(DefaultValue.PARACLINICO_LABORATORIO, documento,
-                datos.fecha, datos.idMotivo, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.idProveedor,
-                '', DefaultValue.SINREGISTRO_GLOBAL, datos.ojoDerecho, '',
-                datos.ojoIzquierdo, '', datos.add1, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                datos.remitidoOftalmo, datos.requiereLentes, '', DefaultValue.SINREGISTRO_GLOBAL,
-                '', '', '', '', '', DefaultValue.SINREGISTRO_GLOBAL, datos.resultadoColesterol,
-                datos.interpretacionColeste, datos.observacionColeste, datos.resultadoColesteHDL,
-                datos.interpretacionColesteHDL, datos.observacionColesteHDL, datos.dislipidemiaHDL, datos.resultadoTrigli,
-                datos.interpretacionTrigli, datos.observacionTrigli, datos.resultadoGlicemia, datos.interpretacionGlicemia,
-                datos.observacionGlicemia, datos.resultadoCreatinina, datos.interpretacionCreatinina, datos.observacionCreatinina, datos.resultadoBUN,
-                datos.interpretacionBUN, datos.observacionBUN, datos.idParcialOrina, datos.observacionParcialOrina,
-                datos.hemograma, datos.observacionHemograma, datos.gpt, datos.observacionGPT, datos.got, datos.observacionGOT, datos.bilirrubina,
-                datos.observacionBilirrubina, datos.bilirrubinaDirecta, datos.observacionBilirrubinaDirecta, false, false, false, false, false, false,
-                false, false, false, false, false, false,
-                false, false, false, '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                '', DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, false, '',
-                DefaultValue.SINREGISTRO_GLOBAL, false, '', savePdf, user?.nameuser, FormatDate(new Date()), '', FormatDate(new Date()));
+                // Oftalmología (Incluidos en tu llamada de laboratorio)
+                ojoDerecho: datos.ojoDerecho || null,
+                ojoIzquierdo: datos.ojoIzquierdo || null,
+                add1: datos.add1 || null,
+                remitidoOftalmo: datos.remitidoOftalmo || false,
+                requiereLentes: datos.requiereLentes || false,
 
-            if (Object.keys(datos.length !== 0)) {
+                // Perfil Lipídico (Colesterol y Triglicéridos)
+                resultadoColesterol: datos.resultadoColesterol || null,
+                interpretacionColeste: datos.interpretacionColeste || null,
+                observacionColeste: datos.observacionColeste || null,
+                resultadoColesteHDL: datos.resultadoColesteHDL || null,
+                interpretacionColesteHDL: datos.interpretacionColesteHDL || null,
+                observacionColesteHDL: datos.observacionColesteHDL || null,
+                dislipidemiaHDL: datos.dislipidemiaHDL || false,
+                resultadoTrigli: datos.resultadoTrigli || null,
+                interpretacionTrigli: datos.interpretacionTrigli || null,
+                observacionTrigli: datos.observacionTrigli || null,
 
-                const result = await InsertParaclinics(DataToInsert);
-                if (result.status === 200) {
-                    setOpenSuccess(true);
-                    setDocumento('');
-                    setLsEmployee([]);
-                    setFilePdf(null);
-                    reset();
-                }
+                // Glicemia, Creatinina y BUN
+                resultadoGlicemia: datos.resultadoGlicemia || null,
+                interpretacionGlicemia: datos.interpretacionGlicemia || null,
+                observacionGlicemia: datos.observacionGlicemia || null,
+                resultadoCreatinina: datos.resultadoCreatinina || null,
+                interpretacionCreatinina: datos.interpretacionCreatinina || null,
+                observacionCreatinina: datos.observacionCreatinina || null,
+                resultadoBUN: datos.resultadoBUN || null,
+                interpretacionBUN: datos.interpretacionBUN || null,
+                observacionBUN: datos.observacionBUN || null,
+
+                // Otros Laboratorios
+                idParcialOrina: datos.idParcialOrina || null,
+                observacionParcialOrina: datos.observacionParcialOrina || null,
+                hemograma: datos.hemograma || null,
+                observacionHemograma: datos.observacionHemograma || null,
+                gpt: datos.gpt || null,
+                observacionGPT: datos.observacionGPT || null,
+                got: datos.got || null,
+                observacionGOT: datos.observacionGOT || null,
+                bilirrubina: datos.bilirrubina || null,
+                observacionBilirrubina: datos.observacionBilirrubina || null,
+                bilirrubinaDirecta: datos.bilirrubinaDirecta || null,
+                observacionBilirrubinaDirecta: datos.observacionBilirrubinaDirecta || null,
+
+                // Archivo y Auditoría
+                url: filePdf || null,
+            };
+
+            const result = await InsertParaclinics(DataToInsert);
+            if (result.status === 200) {
+                setOpenSuccess(true);
+                setDocumento('');
+                setLsEmployee([]);
+                setFilePdf(null);
+                reset();
             }
         } catch (error) {
             setOpenError(true);

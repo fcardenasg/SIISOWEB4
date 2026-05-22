@@ -38,20 +38,19 @@ import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import { GetAllByCodeOrName } from 'api/clients/CIE11Client';
 import { GetByTipoCatalogoCombo } from 'api/clients/CatalogClient';
 import { GetByIdEmployee } from 'api/clients/EmployeeClient';
-import { GetByIdEvolutionNote, GetIdRegistroAtencionEvolutionNote, InsertEvolutionNote, UpdateEvolutionNotes, ValidateIdRegistroAtencionEvolutionNote } from 'api/clients/EvolutionNoteClient';
+import { GetByIdEvolutionNote, GetIdRegistroAtencionEvolutionNote, SaveEvolutionNote, ValidateIdRegistroAtencionEvolutionNote } from 'api/clients/EvolutionNoteClient';
 import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import ControllerListen from 'components/controllers/ControllerListen';
 import DetailedIcon from 'components/controllers/DetailedIcon';
 import FullScreenDialog from 'components/controllers/FullScreenDialog';
 import { CodCatalogo, DefaultValue, Message, TitleButton } from 'components/helpers/Enums';
-import { FormatDate } from 'components/helpers/Format';
 import InputDatePicker from 'components/input/InputDatePicker';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
 import ListPlantillaAll from 'components/template/ListPlantillaAll';
 import ViewEmployee from 'components/views/ViewEmployee';
-import { PostEvolutionNote, PutEvolutionNote } from 'formatdata/EvolutionNoteForm';
+import { MapEvolutionNote } from 'formatdata/EvolutionNoteForm';
 import useAuth from 'hooks/useAuth';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
@@ -330,6 +329,10 @@ const UpdateEvolutionNote = () => {
                     setLsAtencion(lsServerAtencion.data);
                 }
             }
+
+            setTimeout(() => {
+                setTimeWait(true);
+            }, 1000);
         } catch (error) { }
     }
 
@@ -339,37 +342,21 @@ const UpdateEvolutionNote = () => {
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostEvolutionNote(documento, datos.fecha, id, datos.atencion, contingencia,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, datos.dx1, datos.dx2, datos.dx3,
-                datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, user?.nameuser,
-                FormatDate(new Date()), '', FormatDate(new Date()));
+            const payload = MapEvolutionNote({
+                ...datos,
+                documento,
+                idRegistroAtencion: id,
+                idContingencia: contingencia
+            }, resultIdRegistroAtencion ? resultData : null);
 
-            const DataToUpdate = PutEvolutionNote(resultData, documento, datos.fecha, id, datos.atencion, contingencia,
-                DefaultValue.SINREGISTRO_GLOBAL, DefaultValue.SINREGISTRO_GLOBAL, datos.nota, datos.dx1, datos.dx2, datos.dx3,
-                datos.planManejo, datos.idConceptoActitud, DefaultValue.SINREGISTRO_GLOBAL, lsAtencion.usuarioRegistro,
-                lsAtencion.fechaRegistro, user?.nameuser, FormatDate(new Date()));
+            const response = await SaveEvolutionNote(payload);
+            if (response.status === 200) {
+                setResultData(response.data);
+                setOpenUpdate(true);
 
-            if (resultIdRegistroAtencion) {
-                const result1 = await UpdateEvolutionNotes(DataToUpdate);
-                if (result1.status === 200) {
-                    setResultData(result1.data.id);
-                    setOpenUpdate(true);
-
-                    const lsServerValidate = await ValidateIdRegistroAtencionEvolutionNote(id);
-                    if (lsServerValidate.status === 200) {
-                        setResultIdRegistroAtencion(lsServerValidate.data);
-                    }
-                }
-            } else {
-                const result2 = await InsertEvolutionNote(DataToInsert);
-                if (result2.status === 200) {
-                    setResultData(result2.data.id);
-                    setOpenUpdate(true);
-
-                    const lsServerValidate = await ValidateIdRegistroAtencionEvolutionNote(id);
-                    if (lsServerValidate.status === 200) {
-                        setResultIdRegistroAtencion(lsServerValidate.data);
-                    }
+                const validation = await ValidateIdRegistroAtencionEvolutionNote(id);
+                if (validation.status === 200) {
+                    setResultIdRegistroAtencion(validation.data);
                 }
             }
         } catch (error) {
@@ -377,11 +364,6 @@ const UpdateEvolutionNote = () => {
             setErrorMessage(Message.RegistroNoGuardado);
         }
     };
-
-    setTimeout(() => {
-        if (lsAtencion.length !== 0)
-            setTimeWait(true);
-    }, 1500);
 
     return (
         <Fragment>
@@ -701,7 +683,7 @@ const UpdateEvolutionNote = () => {
             }
 
             <>
-                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
+                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} message="Nota de evolución guardada correctamente" />
                 <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
 
                 <ControlModal

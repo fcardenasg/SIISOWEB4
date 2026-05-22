@@ -733,7 +733,7 @@ export function generateReportDiagnosis(
 
   if (lsDataReport.dx1 !== "") {
     doc.text(
-      `Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`,
+      `Dx1:   ${lsDataReport.dx1 || ''}   ${lsDataReport.nameDx1?.toUpperCase() || ''}`,
       7,
       80,
       { maxWidth: 200, lineHeightFactor: 1.5 }
@@ -742,7 +742,7 @@ export function generateReportDiagnosis(
 
   if (lsDataReport.dx2 !== "") {
     doc.text(
-      `Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`,
+      `Dx2:   ${lsDataReport.dx2 || ''}   ${lsDataReport.nameDx2?.toUpperCase() || ''}`,
       7,
       85,
       { maxWidth: 200, lineHeightFactor: 1.5 }
@@ -751,7 +751,7 @@ export function generateReportDiagnosis(
 
   if (lsDataReport.dx3 !== "") {
     doc.text(
-      `Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`,
+      `Dx3:   ${lsDataReport.dx3 || ''}   ${lsDataReport.nameDx3?.toUpperCase() || ''}`,
       7,
       90,
       { maxWidth: 200, lineHeightFactor: 1.5 }
@@ -1270,7 +1270,7 @@ export function generateHabitsGineco(doc = new jsPDF(), lsDataReport) {
   });
   doc.text(
     JSON.parse(lsDataReport.tipoFobiaHB).map((fobi, index) => {
-      return String(`${fobi.label.toUpperCase()}`);
+      return String(`${fobi.label?.toUpperCase() || ''}`);
     }),
     150,
     97,
@@ -1517,7 +1517,7 @@ export function generateDefinitiveDiagnosis(
 
   if (lsDataReport.dx1 !== "")
     doc.text(
-      `Dx1:   ${lsDataReport.dx1}   ${lsDataReport.nameDx1.toUpperCase()}`,
+      `Dx1:   ${lsDataReport.dx1 || ''}   ${lsDataReport.nameDx1?.toUpperCase() || ''}`,
       7,
       45,
       { maxWidth: 200, lineHeightFactor: 1.5 }
@@ -1525,7 +1525,7 @@ export function generateDefinitiveDiagnosis(
 
   if (lsDataReport.dx2 !== "")
     doc.text(
-      `Dx2:   ${lsDataReport.dx2}   ${lsDataReport.nameDx2.toUpperCase()}`,
+      `Dx2:   ${lsDataReport.dx2 || ''}   ${lsDataReport.nameDx2?.toUpperCase() || ''}`,
       7,
       50,
       { maxWidth: 200, lineHeightFactor: 1.5 }
@@ -1533,7 +1533,7 @@ export function generateDefinitiveDiagnosis(
 
   if (lsDataReport.dx3 !== "")
     doc.text(
-      `Dx3:   ${lsDataReport.dx3}   ${lsDataReport.nameDx3.toUpperCase()}`,
+      `Dx3:   ${lsDataReport.dx3 || ''}   ${lsDataReport.nameDx3?.toUpperCase() || ''}`,
       7,
       55,
       { maxWidth: 200, lineHeightFactor: 1.5 }

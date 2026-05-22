@@ -1,107 +1,165 @@
-import { Controller } from 'react-hook-form';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import {
+    Divider,
+    FormControl,
     FormHelperText,
     Grid,
-    FormControl,
-    MenuItem,
-    InputLabel,
-    Select,
-    useTheme,
-    useMediaQuery,
     IconButton,
     InputAdornment,
-    Tooltip,
+    InputLabel,
+    MenuItem,
+    Select,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import Label from 'components/label';
+import { Controller } from 'react-hook-form';
 
-const InputSelect = ({ bug, options, size, defaultValue, label, name, maxWidth, clearable = false, ...others }) => {
+const InputSelect = ({ bug, options, size, defaultValue = "", label, name, maxWidth, clearable = false, onAddClick, ...others }) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
 
+    const finalSize = size ? size : (matchesXS ? 'small' : 'medium');
+    const isSmall = finalSize === 'small';
+
     return (
-        <>
+        <FormControl
+            fullWidth
+            error={!!bug}
+            required={!!others.required}
+            variant="outlined"
+        >
             <Controller
                 name={name}
                 defaultValue={defaultValue}
-                render={({ field }) => (
-                    <FormControl fullWidth error={!!bug} required={!!bug}>
-                        <InputLabel htmlFor={`select-label-${name}`} id={`select-label-${name}`} sx={{ fontSize: 14, whiteSpace: 'normal', maxWidth: maxWidth }}>
-                            {label}
-                        </InputLabel>
+                render={({ field }) => {
+                    const hasValue = field.value !== "" && field.value !== null && field.value !== undefined;
 
-                        <Select
-                            {...field}
-                            labelId={`select-label-${name}`}
-                            id={`select-${name}`}
-                            label={label}
-                            fullWidth
-                            size={matchesXS ? 'small' : 'medium'}
-                            sx={{
-                                '& .MuiSelect-select': {
-                                    fontSize: size === 'small' && '0.65rem',
-                                    pr: clearable && field.value ? '32px' : undefined,
-                                },
-                            }}
-                            endAdornment={
-                                clearable && field.value ? (
-                                    <Tooltip placement="top" title="Limpiar" disableInteractive>
-                                        <InputAdornment position="end" sx={{
-                                            position: 'absolute',
-                                            right: 9,
-                                            top: '50%',
-                                            transform: 'translateY(-50%)',
-                                            zIndex: 1,
-                                            mr: 2.5
-                                        }}>
+                    return (
+                        <>
+                            <InputLabel
+                                id={`select-label-${name}`}
+                                shrink={hasValue || undefined}
+                                sx={{
+                                    fontSize: 14,
+                                    maxWidth: maxWidth,
+                                    backgroundColor: 'transparent',
+                                    ...(isSmall && {
+                                        '&:not(.MuiInputLabel-shrink)': {
+                                            transform: 'translate(14px, 9px) scale(1)',
+                                        },
+                                        '&.MuiInputLabel-shrink': {
+                                            transform: 'translate(14px, -9px) scale(0.75)',
+                                        }
+                                    })
+                                }}
+                            >
+                                {label}
+                            </InputLabel>
+
+                            <Select
+                                {...field}
+                                value={field.value ?? null}
+                                labelId={`select-label-${name}`}
+                                id={`select-${name}`}
+                                label={label}
+                                fullWidth
+                                size={finalSize}
+                                sx={{
+                                    '& .MuiSelect-select': {
+                                        fontSize: isSmall ? '0.65rem' : 'inherit',
+                                        pr: clearable && hasValue ? '65px !important' : 'inherit',
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    },
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                        legend: {
+                                            fontSize: '0.75em',
+                                        }
+                                    }
+                                }}
+                                endAdornment={
+                                    clearable && hasValue && (
+                                        <InputAdornment
+                                            position="end"
+                                            sx={{
+                                                position: 'absolute',
+                                                right: 28,
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                zIndex: 1,
+                                            }}
+                                        >
                                             <IconButton
-                                                aria-label="clear selection"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     field.onChange(null);
                                                 }}
-                                                edge="end"
                                                 size="small"
                                             >
-                                                <CloseIcon fontSize="small" />
+                                                <CloseIcon sx={{ fontSize: '1.2rem' }} />
                                             </IconButton>
                                         </InputAdornment>
-                                    </Tooltip>
-                                ) : null
-                            }
-                            {...others}
-                        >
-                            {options?.map((option) => (
-                                <MenuItem key={option?.value} value={option?.value} sx={{ whiteSpace: 'normal', maxWidth: maxWidth }}>
-                                    <Grid container direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                                        <Grid item sx={{ fontSize: size === 'small' && '0.65rem' }}>
-                                            {option?.label}
-                                        </Grid>
-
-                                        {(option?.codigo === 'CIE10' || option?.codigo === 'CIE11') &&
-                                            <Grid item>
-                                                <Label
-                                                    sx={{ mr: 1.5 }}
-                                                    variant="soft"
-                                                    color={option?.codigo === 'CIE10' ? "error" : "success"}
-                                                >
-                                                    {option?.codigo}
-                                                </Label>
+                                    )
+                                }
+                                {...others}
+                            >
+                                {options?.map((option) => (
+                                    <MenuItem
+                                        key={option?.value}
+                                        value={option?.value}
+                                        sx={{ whiteSpace: 'normal', maxWidth: maxWidth }}
+                                    >
+                                        <Grid container direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
+                                            <Grid item sx={{ fontSize: isSmall ? '0.65rem' : 'inherit' }}>
+                                                {option?.label}
                                             </Grid>
-                                        }
-                                    </Grid>
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                )}
+
+                                            {(option?.codigo === 'CIE10' || option?.codigo === 'CIE11') && (
+                                                <Grid item>
+                                                    <Label
+                                                        sx={{ mr: 1.5 }}
+                                                        variant="soft"
+                                                        color={option?.codigo === 'CIE10' ? "error" : "success"}
+                                                    >
+                                                        {option?.codigo}
+                                                    </Label>
+                                                </Grid>
+                                            )}
+                                        </Grid>
+                                    </MenuItem>
+                                ))}
+
+                                {onAddClick && [
+                                    <Divider key="__divider__" />,
+                                    <MenuItem
+                                        key="__add__"
+                                        value=""
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAddClick();
+                                        }}
+                                        sx={{
+                                            color: 'primary.main',
+                                            fontWeight: 600,
+                                            fontSize: isSmall ? '0.65rem' : '0.875rem',
+                                            gap: 1,
+                                            '&:hover': { bgcolor: 'primary.lighter' }
+                                        }}
+                                    >
+                                        <AddIcon fontSize="small" />
+                                        Agregar
+                                    </MenuItem>
+                                ]}
+                            </Select>
+                        </>
+                    );
+                }}
             />
-            {bug && (
-                <Grid item xs={12}>
-                    <FormHelperText error>{bug.message}</FormHelperText>
-                </Grid>
-            )}
-        </>
+            {bug && <FormHelperText error>{bug.message}</FormHelperText>}
+        </FormControl>
     );
 };
 
