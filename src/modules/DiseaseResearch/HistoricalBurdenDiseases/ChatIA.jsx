@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchIA, fetchIAChat } from "./serviceSisso";
+import { fetchIA, fetchIAChat, IAChatMessage } from "./serviceSisso";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./markdown.css";
@@ -26,17 +26,19 @@ export default function ChatIA({ informe }) {
   const sendMessage = async (text) => {
     if (!text.trim()) return;
 
-    // 1. Agregar mensaje del usuario
+
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
 
     const propmt = `${informe}\nPregunta: ${text}`;
 
     try {
-      // 2. Petición a la IA
-      const menssage = await fetchIAChat(propmt);
 
-      // 3. Agregar respuesta del asistente
+      const menssage = await fetchIAChat(propmt);
+      const menssagenuevo = await IAChatMessage(text);
+      console.log("menssagenuevo", menssagenuevo);
+
+ 
       setMessages((prev) => [
         ...prev,
         {
@@ -55,7 +57,7 @@ export default function ChatIA({ informe }) {
     }
   };
 
-  // Auto scroll al último mensaje
+
   React.useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -70,7 +72,7 @@ export default function ChatIA({ informe }) {
         bgcolor: "background.default",
       }}
     >
-      {/* MENSAJES */}
+
       <Box
         sx={{
           flex: 1,
@@ -124,7 +126,7 @@ export default function ChatIA({ informe }) {
         </Stack>
       </Box>
 
-      {/* INPUT */}
+
       <Box
         sx={{
           p: 1,

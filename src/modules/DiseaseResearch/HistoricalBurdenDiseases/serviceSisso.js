@@ -525,9 +525,8 @@ export async function fetchIAChat(prompt) {
       }
     );
 
-    console.log("Respuesta INFORMACION::",response.data);
-    const { data } = response.data;
-    console.log("Respuesta INFORMACION DOS::",data);
+   
+    const { data } = response.data;  
 
 
 
@@ -979,5 +978,35 @@ export async function ConvertirWordtoPdf(file, prompt) {
   } catch (error) {
     console.error("❌ Error al enviar el archivo:", error);
     throw error;
+  }
+}
+
+//nuevos servicios
+
+export async function IAChatMessage(prompt) {
+
+ const promptObject = {
+  sessionId: "chat-usuario-123",
+  message: prompt,
+  contextMode: null
+}
+
+  try {
+    const response = await axios.post(
+      `${Url.Base}${Url.ChatGeneral}`,
+      JSON.stringify(promptObject),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const { data } = response.data;
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
   }
 }

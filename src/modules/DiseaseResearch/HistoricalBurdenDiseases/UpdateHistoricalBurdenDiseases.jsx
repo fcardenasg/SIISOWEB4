@@ -92,13 +92,12 @@ const UpdateHistoricalBurdenDiseases = () => {
       const response = await GetByIdPDF(id);
       if (response.data.exito) {
         const { bat64, nombres,informe } = response.data.datos;
-         console.log("informe", informe);
         setFile(bat64);
         setName(nombres);
         setInforme(informe);
         setTimeWait(true);
       }
-      console.log("response", response);
+
     } catch (error) {
       dispatch({
         type: SNACKBAR_OPEN,
