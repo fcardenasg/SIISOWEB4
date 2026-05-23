@@ -586,12 +586,15 @@ function parseJsonSafe(data) {
 }
 
 export function updateStateFile(file, acceptedFiles, setAcceptedFiles) {
+  console.log("acceptedFiles", acceptedFiles);
+  console.log("file", file);
   const updatedFiles = acceptedFiles?.map((item) => {
     if (item.path === file.path) {
       item.state = true;
     }
     return item;
   });
+  console.log("updatedFiles", updatedFiles);
   setAcceptedFiles(updatedFiles);
 }
 
@@ -660,8 +663,6 @@ export async function extractWordFromText(file) {
 
 export async function onSaveMaster(data, acceptedFiles) {
   // const data = listMappingproduct.map(({ path, ...resto }) => resto);
-
-
 
   try {
     const response = await axios.post(

@@ -16,6 +16,7 @@ const ControlModalView = ({
   handleExportar,
   maxWidth,
   title,
+  subtitle,
   children,
 }) => {
   const theme = useTheme();
@@ -33,7 +34,12 @@ const ControlModalView = ({
         <Grid container>
           <Grid item xs={10}>
             <DialogTitle>
-              <Typography variant="title">{title}</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>{title}</Typography>
+              {subtitle && (
+                <Typography variant="subtitle1" color="textSecondary">
+                  {subtitle}
+                </Typography>
+              )}
             </DialogTitle>
           </Grid>
 
@@ -70,7 +76,7 @@ const ControlModalView = ({
           </Grid>
         </Grid>
 
-        <DialogContent>{children}</DialogContent>
+        <DialogContent sx={{ overflow: 'hidden' }}>{children}</DialogContent>
       </Dialog>
     </div>
   );
@@ -81,6 +87,7 @@ export default ControlModalView;
 ControlModalView.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.string,
+  subtitle: PropTypes.string,
   maxWidth: PropTypes.string,
   onClose: PropTypes.func,
   children: PropTypes.node,

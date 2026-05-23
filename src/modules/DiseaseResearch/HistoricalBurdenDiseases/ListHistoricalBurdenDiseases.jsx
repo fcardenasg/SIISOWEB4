@@ -164,6 +164,9 @@ function EnhancedTableHead({
     onRequestSort(event, property);
   };
 
+  console.log("numSelected", numSelected);
+  console.log("selected", selected);
+
   return (
     <TableHead>
       <TableRow>
@@ -257,13 +260,13 @@ const EnhancedTableToolbar = ({ numSelected, onClick }) => (
     )}
 
     {numSelected > 0 && (
-      <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.Empleado}>
-        <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
-          <IconButton size="large">
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </ValidateAction>
+      // <ValidateAction idAccion={AccionMenu.eliminar} idModulo={Modulo.EnfermedadesLaborales}>
+      <Tooltip title={TitleButton.Eliminar} onClick={onClick}>
+        <IconButton size="large">
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      // </ValidateAction>
     )}
   </Toolbar>
 );
@@ -292,38 +295,47 @@ const ListHistoricalBurdenDiseases = () => {
   const [search, setSearch] = useState("");
   const [rows, setRows] = useState([]);
   const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
 
   const [dataPDF, setDataPDF] = useState(null);
   const [openReport, setOpenReport] = useState(false);
 
   async function getAll() {
     try {
+      setLoading(true); // 1. Iniciamos la carga
       const lsServer = await GetAllHistoricalBurdenDiseases();
-      if (lsServer.data.exito) {
+      console.log("lsServer completo:", lsServer);
+
+      // Validamos que la petición sea exitosa Y que 'datos' sea un arreglo
+      if (lsServer?.data?.exito && Array.isArray(lsServer?.data?.datos)) {
+        console.log("Datos recibidos correctamente:", lsServer.data.datos);
         setInvestigation(lsServer.data.datos);
         setRows(lsServer.data.datos);
+      } else {
+        // Si exito es false (como en tu caso de 'No hay registros'), limpiamos los estados
+        console.log(
+          "El backend reportó que no hay datos o hubo un error:",
+          lsServer?.data?.mensaje,
+        );
+        setInvestigation([]);
+        setRows([]);
       }
-    } catch (error) { }
+    } catch (error) {
+      console.error("Error crítico en la petición:", error);
+      setInvestigation([]);
+      setRows([]);
+    } finally {
+      // 2. PASE LO QUE PASE, apagamos el indicador de carga aquí
+      setLoading(false);
+    }
   }
-
-  const handleClickReport = async () => {
-    // try {
-    //     setOpenReport(true);
-    //     const lsDataReport = await GetByIdEmployee(idCheck);
-    //     const lsDataUser = await GetByMail(user?.nameuser);
-    //     const dataPDFTwo = generateReportEmployee(lsDataReport?.data.data, lsDataUser.data);
-    //     setDataPDF(dataPDFTwo);
-    // } catch (err) { }
-  };
 
   const [modalStyle] = useState(getModalStyle);
   const handleOpen = async (id) => {
-
     try {
       const response = await GetByIdHistoricalBurdenDiseases(id);
       setData(response.data.datos.informe);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -390,7 +402,7 @@ const ListHistoricalBurdenDiseases = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelectedId = employee.map((n) => n.documento);
+      const newSelectedId = investigation.map((n) => n.documento);
       setSelected(newSelectedId);
       return;
     }
@@ -412,7 +424,7 @@ const ListHistoricalBurdenDiseases = () => {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
+        selected.slice(selectedIndex + 1),
       );
     }
 
@@ -429,10 +441,14 @@ const ListHistoricalBurdenDiseases = () => {
   };
 
   const handleDelete = async () => {
+    console.log(selected);
+
     try {
       swal(ParamDelete).then(async (willDelete) => {
         if (willDelete) {
-          const result = await DeleteHistoricalBurdenDiseases(idCheck);
+          console.log("idCheck", idCheck);
+          const result = await DeleteHistoricalBurdenDiseases(selected);
+          console.log("Borrar", result);
 
           if (result.status === 200) {
             setOpenDelete(true);
@@ -442,7 +458,9 @@ const ListHistoricalBurdenDiseases = () => {
           }
         } else setSelected([]);
       });
-    } catch (error) { }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const navigate = useNavigate();
@@ -509,22 +527,6 @@ const ListHistoricalBurdenDiseases = () => {
 
           <Grid item xs={12} sm={6} lg={3.5} sx={{ textAlign: "right" }}>
             <Grid container spacing={2}>
-              {/* <Grid item xs>
-                                <Tooltip title="Exportar" onClick={() => setOpenModal(true)}>
-                                    <IconButton size="large">
-                                        <IconFileExport />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid> */}
-
-              {/* <Grid item xs>
-                                <Tooltip disabled={idCheck === '' ? true : false} title="Impresión" onClick={handleClickReport}>
-                                    <IconButton size="large">
-                                        <PrintIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid> */}
-
               <ValidateAction
                 idAccion={AccionMenu.agregar}
                 idModulo={Modulo.Empleado}
@@ -557,8 +559,8 @@ const ListHistoricalBurdenDiseases = () => {
       </CardContent>
 
       <TableContainer>
-        {investigation.length === 0 ? (
-          <Cargando size={220} myy={6} />
+        {loading ? (
+          <Cargando size={140} />
         ) : (
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -574,196 +576,208 @@ const ListHistoricalBurdenDiseases = () => {
             />
             <TableBody>
               <Fragment>
-                {stableSort(investigation, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    if (typeof row === "string") return null;
+                {/* 1. SI HAY DATOS: Los mapeamos normalmente */}
+                {investigation.length > 0 ? (
+                  stableSort(investigation, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      if (typeof row === "string") return null;
 
-                    const isItemSelected = isSelected(row.id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                      const isItemSelected = isSelected(row.id);
+                      const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={index}
-                        selected={isItemSelected}
-                      >
-                        <TableCell
-                          padding="checkbox"
-                          sx={{ pl: 3 }}
-                          onClick={(event) => handleClick(event, row.id)}
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={index}
+                          selected={isItemSelected}
                         >
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                          />
-                        </TableCell>
-
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row?.id)}
-                          sx={{ cursor: "pointer" }}
-                          align="center"
-                        >
-                          <Avatar
-                            sx={{ bgcolor: ColorDrummondltd.RedDrummond }}
+                          <TableCell
+                            padding="checkbox"
+                            sx={{ pl: 3 }}
+                            onClick={(event) => handleClick(event, row.id)}
                           >
-                            <Typography sx={{ color: "white" }}>
-                              {row?.nombres[0].toUpperCase()}
-                            </Typography>
-                          </Avatar>
-                        </TableCell>
-
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row.identificacion}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row?.nombres.toUpperCase()}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row?.profesion.toUpperCase()}
-                          </Typography>
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row?.residencia.toUpperCase()}
-                          </Typography>
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          onClick={(event) => handleClick(event, row?.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "grey.600"
-                                  : "grey.900",
-                            }}
-                          >
-                            {row?.fechaInvestigacion}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell align="center" sx={{ pr: 3 }}>
-                          <Tooltip
-                            title="Detalles"
-                            onClick={() => handleOpen(row.id)}
-                          >
-                            <IconButton
-                              //   disabled={idCheck == "" ? true : false}
+                            <Checkbox
                               color="primary"
-                              size="large"
-                            >
-                              <VisibilityTwoToneIcon
-                                sx={{ fontSize: "1.3rem" }}
-                              />
-                            </IconButton>
-                          </Tooltip>
+                              checked={isItemSelected}
+                              inputProps={{
+                                "aria-labelledby": labelId,
+                              }}
+                            />
+                          </TableCell>
 
-                          <ValidateAction
-                            idAccion={AccionMenu.actualizar}
-                            idModulo={Modulo.Empleado}
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            onClick={(event) => handleClick(event, row?.id)}
+                            sx={{ cursor: "pointer" }}
+                            align="center"
                           >
-                            <Tooltip
-                              title="Ver Documento"
-                              onClick={() =>
-                                navigate(
-                                  `/UpdateHistoricalBurdenDiseases?id=${row.id}`
-                                )
-                              }
+                            <Avatar
+                              sx={{ bgcolor: ColorDrummondltd.RedDrummond }}
                             >
-                              <IconButton size="large">
-                                <DescriptionTwoToneIcon sx={{ fontSize: "1.3rem" }} />
+                              <Typography sx={{ color: "white" }}>
+                                {row?.nombres[0].toUpperCase()}
+                              </Typography>
+                            </Avatar>
+                          </TableCell>
+
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            onClick={(event) => handleClick(event, row.id)}
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                color:
+                                  theme.palette.mode === "dark"
+                                    ? "grey.600"
+                                    : "grey.900",
+                              }}
+                            >
+                              {row.identificacion}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            onClick={(event) => handleClick(event, row.id)}
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                color:
+                                  theme.palette.mode === "dark"
+                                    ? "grey.600"
+                                    : "grey.900",
+                              }}
+                            >
+                              {row?.nombres.toUpperCase()}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            onClick={(event) => handleClick(event, row.id)}
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                color:
+                                  theme.palette.mode === "dark"
+                                    ? "grey.600"
+                                    : "grey.900",
+                              }}
+                            >
+                              {row?.profesion.toUpperCase()}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            onClick={(event) => handleClick(event, row.id)}
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                color:
+                                  theme.palette.mode === "dark"
+                                    ? "grey.600"
+                                    : "grey.900",
+                              }}
+                            >
+                              {row?.residencia.toUpperCase()}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            onClick={(event) => handleClick(event, row?.id)}
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                color:
+                                  theme.palette.mode === "dark"
+                                    ? "grey.600"
+                                    : "grey.900",
+                              }}
+                            >
+                              {row?.fechaInvestigacion}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell align="center" sx={{ pr: 3 }}>
+                            <Tooltip
+                              title="Detalles"
+                              onClick={() => handleOpen(row.id)}
+                            >
+                              <IconButton color="primary" size="large">
+                                <VisibilityTwoToneIcon
+                                  sx={{ fontSize: "1.3rem" }}
+                                />
                               </IconButton>
                             </Tooltip>
-                          </ValidateAction>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+
+                            <ValidateAction
+                              idAccion={AccionMenu.actualizar}
+                              idModulo={Modulo.Empleado}
+                            >
+                              <Tooltip
+                                title="Ver Documento"
+                                onClick={() =>
+                                  navigate(
+                                    `/UpdateHistoricalBurdenDiseases?id=${row.id}`,
+                                  )
+                                }
+                              >
+                                <IconButton size="large">
+                                  <DescriptionTwoToneIcon
+                                    sx={{ fontSize: "1.3rem" }}
+                                  />
+                                </IconButton>
+                              </Tooltip>
+                            </ValidateAction>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                ) : (
+                  // 2. SI NO HAY DATOS (Arreglo vacío): Renderiza esta fila con el mensaje amigable
+                  <TableRow style={{ height: 120 }}>
+                    <TableCell colSpan={8} align="center">
+                      <Typography
+                        variant="body1"
+                        sx={{ color: "grey.500", fontWeight: 500 }}
+                      >
+                        No se encontraron registros de investigaciones.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+
                 {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={8} />
                   </TableRow>
                 )}
               </Fragment>
