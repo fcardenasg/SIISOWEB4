@@ -3,6 +3,7 @@ import { useState } from "react";
 import ExportAssignment from "./ExportAssignment";
 import ExportResearch from "./ExportResearch";
 import ExportRehabilitationPlan from "./ExportRehabilitationPlan";
+import ExportAPT from "./ExportAPT";
 
 const lsTipoBusqueda = [
     { value: 0, label: 'DOCUMENTO' },
@@ -67,6 +68,22 @@ const ExcelDiseaseResearch = ({ setOpenModal, openModal, exportBy }) => {
 
             {exportBy.url === "EXPORT_PR" &&
                 <ExportRehabilitationPlan
+                    setOpcionBusqueda={setOpcionBusqueda}
+                    opcionBusqueda={opcionBusqueda}
+                    setSede={setSede}
+                    sede={sede}
+                    setDocumento={setDocumento}
+                    documento={documento}
+                    setFechaInicio={setFechaInicio}
+                    fechaInicio={fechaInicio}
+                    setFechaFin={setFechaFin}
+                    fechaFin={fechaFin}
+                    lsBusqueda={lsTipoBusqueda}
+                />
+            }
+
+            {exportBy.url === "EXPORT_APT" &&
+                <ExportAPT
                     setOpcionBusqueda={setOpcionBusqueda}
                     opcionBusqueda={opcionBusqueda}
                     setSede={setSede}

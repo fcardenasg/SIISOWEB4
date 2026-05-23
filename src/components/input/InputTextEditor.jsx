@@ -228,10 +228,11 @@ export default function InputTextEditor({ name, label, defaultValue = "", disabl
                             <ReactQuill
                                 ref={quillRef}
                                 theme="snow"
-                                value={field.value || ""}
+                                value={field.value === '<p><br></p>' ? '' : (field.value || "")}
                                 onChange={(content) => {
-                                    field.onChange(content);
-                                    updateHasTextState(content);
+                                    const sanitizedContent = content === '<p><br></p>' ? '' : content;
+                                    field.onChange(sanitizedContent);
+                                    updateHasTextState(sanitizedContent);
                                 }}
                                 onBlur={field.onBlur}
                                 onChangeSelection={handleSelectionChange}
