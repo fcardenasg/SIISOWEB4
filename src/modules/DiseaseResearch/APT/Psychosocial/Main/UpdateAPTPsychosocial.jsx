@@ -8,7 +8,7 @@ const UpdateAPTPsychosocial = () => {
     const navigate = useNavigate();
 
     return (
-        <SubCard darkTitle title="Actualizar APT Psicosocial">
+        <SubCard darkTitle title="Actualizar APT Psicosocial 3">
             <Grid container spacing={2}>
 
 

@@ -31,6 +31,8 @@ export const Url = {
     GetOpenIAFile: 'api/CalendarioCitas/GetOpenIAFile',
     GetOpenIA: 'api/CalendarioCitas/GetOpenIA',
     GetOpenIAChat: 'api/CalendarioCitas/GetOpenIAChat',
+    ChatGeneral: 'api/CalendarioCitas/ChatGeneral',
+
     ConvertirDocxASfdt: 'api/CalendarioCitas/ConvertirDocxASfdt',
     ConvertWordToHtml: 'api/CalendarioCitas/ConvertWordToHtml',
     ConvertWordToPdf: 'api/CalendarioCitas/ConvertWordToPdf',

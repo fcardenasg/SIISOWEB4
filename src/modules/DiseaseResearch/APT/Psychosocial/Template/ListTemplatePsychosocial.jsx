@@ -336,7 +336,7 @@ const ListTemplatePsychosocial = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lsModelData.length) : 0;
 
     return (
-        <MainCard title={<>Lista de plantillas de APT Psicosocial</>} content={false}>
+        <MainCard title={<>Lista de plantillas de APT Psicosocial 4</>} content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
