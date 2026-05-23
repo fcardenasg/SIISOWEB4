@@ -4,8 +4,8 @@ import NavigationBar from 'modules/DiseaseResearch/InvestigationOccupationalDise
 import { useNavigate } from 'react-router-dom';
 
 const ArraySubmenuDiseaseResearchPsychosocial = [
-    { title: "Plantilla", subtitle: "Banco de preventivos", url: "/apt-psychosocial/template/list", icono: "fluent:calendar-template-20-regular", color: "#E31937" },
-    { title: "APT", subtitle: "Análisis de calificación", url: "/apt-psychosocial/list", icono: "hugeicons:analysis-text-link", color: "#E31937" }
+    { title: "Calificación", subtitle: "Análisis Intralaboral y Extralaboral", url: "/apt-psychosocial/template/list", icono: "fluent:calendar-template-20-regular", color: "#E31937" },
+    { title: "Tipo", subtitle: "Análisis psicosocial del puesto de trabajo", url: "/apt-psychosocial/list", icono: "hugeicons:analysis-text-link", color: "#E31937" }
 ];
 
 const SubmenuAPTPsychosocial = () => {
