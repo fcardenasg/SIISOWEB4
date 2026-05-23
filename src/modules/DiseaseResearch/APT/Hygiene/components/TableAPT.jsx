@@ -1076,8 +1076,8 @@ export const TableControlMethods = () => {
     const handleDoubleClick = (item) => {
         setValue('control', item.control, { shouldValidate: true });
         setValue('tipoControl', item.tipoControl, { shouldValidate: true });
-        setValue('observacionesUso', item.observacionesUso, { shouldValidate: true });
-        setValue('observacionesNivel', item.observacionesNivel, { shouldValidate: true });
+        setValue('observacionesUso', item.observacionesUso === '<p><br></p>' ? '' : item.observacionesUso, { shouldValidate: true });
+        setValue('observacionesNivel', item.observacionesNivel === '<p><br></p>' ? '' : item.observacionesNivel, { shouldValidate: true });
         setValue('isUpdateRegister', true);
         setSelectedId(item.id);
     };
@@ -1086,6 +1086,8 @@ export const TableControlMethods = () => {
         try {
             const payload = {
                 ...datos,
+                observacionesUso: datos.observacionesUso === '<p><br></p>' ? '' : datos.observacionesUso,
+                observacionesNivel: datos.observacionesNivel === '<p><br></p>' ? '' : datos.observacionesNivel,
                 id: isUpdateRegister ? selectedId : 0,
                 idAPT: idAPT
             };
@@ -1219,7 +1221,7 @@ export const TableControlMethods = () => {
                                         >
                                             <StyledTableCell sx={{ width: '15%' }}>{item.nameControl}</StyledTableCell>
                                             <StyledTableCell sx={{ width: '15%' }}>{item.nameTipoControl}</StyledTableCell>
-                                            <StyledTableCell align="left">
+                                            <StyledTableCell align="left" sx={{ width: '35%' }}>
                                                 <Box
                                                     dangerouslySetInnerHTML={{ __html: item.observacionesUso }}
                                                     sx={{
@@ -1247,7 +1249,7 @@ export const TableControlMethods = () => {
                                                 />
                                             </StyledTableCell>
 
-                                            <StyledTableCell align="left">
+                                            <StyledTableCell align="left" sx={{ width: '35%' }}>
                                                 <Box
                                                     dangerouslySetInnerHTML={{ __html: item.observacionesNivel }}
                                                     sx={{

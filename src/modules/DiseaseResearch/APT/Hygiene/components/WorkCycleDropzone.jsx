@@ -108,6 +108,7 @@ export default function WorkCycleDropzone({ name, control, rules, idAPT, tipoLog
             formData.append('Archivo', file);
             formData.append('IdAPT', idAPT);
             formData.append('IdItemAcordeon', idItemAcordeon);
+            formData.append('ThisRecordIsNotValidated', false);
             if (idSegundarioModulo) formData.append('IdSegundarioModulo', idSegundarioModulo);
 
             const response = await SaveAPTHPImage(formData, tipoLogica, true);

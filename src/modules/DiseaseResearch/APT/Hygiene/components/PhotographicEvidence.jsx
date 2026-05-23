@@ -61,7 +61,7 @@ const PhotographicEvidence = ({ name, objImage }) => {
                 formData.append('IdAPT', objImage.idAPT);
                 formData.append('IdItemAcordeon', objImage.idItemAcordeon);
                 formData.append('IdSegundarioModulo', objImage.idSegundarioModulo);
-                formData.append('ThisRecordIsNotValidated', objImage.thisRecordIsNotValidated === true);
+                formData.append('ThisRecordIsNotValidated', true);
                 if (titulo.trim()) {
                     formData.append('Titulo', titulo.trim());
                 }
