@@ -202,9 +202,23 @@ export const OrganizationalAspects = ({ dataModel }) => {
 
             <Grid item xs={12} md={12} lg={12}>
                 <InputText
-                    name="organizacionTrabajo"
-                    label="Organización del trabajo"
-                    defaultValue={dataModel?.organizacionTrabajo || null}
+                    name="organizacionTrabajoIndividual"
+                    label="Organización del trabajo (Individual)"
+                    defaultValue={dataModel?.organizacionTrabajoIndividual || null}
+                    fullWidth
+                    multiline
+                    minRows={3}
+                    maxRows={5}
+                    showAI
+                    showVoice
+                />
+            </Grid>
+
+            <Grid item xs={12} md={12} lg={12}>
+                <InputText
+                    name="organizacionTrabajoEquipo"
+                    label="Organización del trabajo (En equipo)"
+                    defaultValue={dataModel?.organizacionTrabajoEquipo || null}
                     fullWidth
                     multiline
                     minRows={3}
@@ -218,20 +232,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
 }
 
 export const WorkActivity = ({ dataModel }) => {
-    return (
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <InputTextEditor label="Objetivo del cargo" name="objetivoCargo" defaultValue={dataModel?.objetivoCargo || null} />
-            </Grid>
-
-            <Grid item xs={12}>
-                <InputTextEditor label="Descripción del lugar donde se realiza la labor" name="descripcionLugar" defaultValue={dataModel?.descripcionLugar || null} />
-            </Grid>
-        </Grid>
-    )
-}
-
-export const JobDescription = ({ dataModel }) => {
     const { watch: watchMain } = useFormContext();
     const location = useLocation();
 
@@ -243,6 +243,10 @@ export const JobDescription = ({ dataModel }) => {
 
     return (
         <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <InputTextEditor label="Objetivo del cargo" name="objetivoCargo" defaultValue={dataModel?.objetivoCargo || null} />
+            </Grid>
+
             <Grid item xs={12}>
                 <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" defaultValue={dataModel?.caracteristicasDisenoPuesto || null} />
             </Grid>

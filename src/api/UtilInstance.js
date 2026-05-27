@@ -21,7 +21,7 @@ export async function postData(url = '', datos = {}, headersVali = false) {
 
         return respuesta;
     } catch (error) {
-        throw error;
+        
     }
 }
 
@@ -43,8 +43,6 @@ export async function getData(url = '', parametros = {}) {
         return respuesta;
 
     } catch (error) {
-        console.error("Error en getData:", error);
-        throw error; // Es mejor propagar el error que silenciarlo
     }
 }
 

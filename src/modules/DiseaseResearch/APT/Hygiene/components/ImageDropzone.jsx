@@ -96,6 +96,7 @@ export default function ImageDropzone({ name, control, rules, objImage, disabled
             formData.append('IdAPT', objImage.idAPT);
             formData.append('IdItemAcordeon', objImage.idItemAcordeon);
             formData.append('IdSegundarioModulo', objImage.idSegundarioModulo);
+            formData.append('ThisRecordIsNotValidated', false);
 
             const response = await SaveAPTHPImage(formData, objImage.tipoLogica, true);
             if (response.data.exito) {

@@ -41,6 +41,7 @@ export const Url = {
     APTHigiene: 'api/APTHigiene',
 
     InvestigacionEnfermedadLaboralFile: "api/InvestigacionEnfermedadLaboralFile",
+    GetAllGroupedByEmpleado: "api/InvestigacionEnfermedadLaboralFile/GetAllGroupedByEmpleado",
     GetByIdPDF: "api/InvestigacionEnfermedadLaboralFile/GetByIdPDF",
 
     wordtexto: "api/InvestigacionEnfermedadLaboralFile/word-texto",
