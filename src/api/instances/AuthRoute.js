@@ -217,6 +217,8 @@ export const Url = {
 
     AsignacionInvestigacion: 'api/AsignacionInvestigacion',
 
+    APTCalificacion: 'api/APTCalificacion',
+
     Asesorias: 'api/Asesorias',
     AsesoriasExcel: 'api/Asesorias/excel',
     AsesoriasAll: 'api/Asesorias/all',
