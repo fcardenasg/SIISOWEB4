@@ -7,11 +7,12 @@ import {
     Button,
     CardContent,
     Checkbox,
-    Fade,
     Grid,
     IconButton,
     InputAdornment,
     ListItemText,
+    Menu,
+    MenuItem,
     Table,
     TableBody,
     TableCell,
@@ -32,17 +33,22 @@ import { ParamDelete } from 'components/alert/AlertAll';
 import { AccionMenu, Modulo, TitleButton } from 'components/helpers/Enums';
 import swal from 'sweetalert';
 import MainCard from 'ui-component/cards/MainCard';
-import Chip from 'ui-component/extended/Chip';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import PrintIcon from '@mui/icons-material/Print';
 import SearchIcon from '@mui/icons-material/Search';
-import { GetAllAPTHP, DeleteAPTHP } from 'api/clients/APTHigienePlantillaClient';
+import { DeleteAPTHP, GetAllAPTHP } from 'api/clients/APTHigienePlantillaClient';
+import { Url } from 'api/instances/AuthRoute';
+import axios from 'axios';
+import FullScreenModal from 'components/controllers/FullScreenModal';
 import Cargando from 'components/loading/Cargando';
 import EmptyState from 'components/loading/EmptyState';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
+import { useBoolean } from 'hooks/use-boolean';
 import toast from 'react-hot-toast';
 
 function descendingComparator(a, b, orderBy) {
@@ -219,6 +225,70 @@ const ListAPTHygiene = () => {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [reportUrl, setReportUrl] = useState('');
+    const openReport = useBoolean(false);
+    const loadingReport = useBoolean(false);
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [menuRow, setMenuRow] = useState(null);
+    const openMenu = Boolean(anchorEl);
+
+    const handleOpenMenu = (event, row) => {
+        setAnchorEl(event.currentTarget);
+        setMenuRow(row);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+        setMenuRow(null);
+    };
+
+    async function handleReport(id) {
+        if (!id) return;
+        loadingReport.onTrue();
+        openReport.onTrue();
+
+        try {
+            const response = await axios.get(`${Url.Base}${Url.APTHigienePlantilla}/report/${id}/2`, {
+                responseType: 'blob',
+                headers: {
+                    'Accept': 'application/pdf'
+                }
+            });
+
+            if (response.data.type !== 'application/pdf') {
+                throw new Error('El archivo recibido no es un PDF válido.');
+            }
+
+            const url = URL.createObjectURL(response.data);
+            setReportUrl(url);
+        } catch (err) {
+            if (err.response?.data instanceof Blob && err.response.data.type === 'application/json') {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const errorData = JSON.parse(reader.result);
+                    toast.error(errorData.message || 'Error al generar el reporte');
+                    openReport.onFalse();
+                };
+
+                reader.readAsText(err.response.data);
+            } else {
+                toast.error(err.message || 'No se pudo cargar el reporte.');
+                openReport.onFalse();
+            }
+        } finally {
+            setTimeout(() => {
+                loadingReport.onFalse();
+            }, 500);
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            if (reportUrl) URL.revokeObjectURL(reportUrl);
+        };
+    }, [reportUrl]);
+
     async function getAll() {
         try {
             setLoading(true);
@@ -337,6 +407,41 @@ const ListAPTHygiene = () => {
 
     return (
         <MainCard title={<><Typography variant="h4">Lista de APT Higiene</Typography></>} content={false}>
+            {openReport.value &&
+                <FullScreenModal onClose={openReport.onFalse} loading={loadingReport.value}>
+                    <iframe
+                        src={`${reportUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                        className="pdf-report-frame"
+                        title="Visualizador de Reporte"
+                        loading="lazy"
+                    />
+                </FullScreenModal>
+            }
+
+            <Menu
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleCloseMenu}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+            >
+                <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.AsignacionInvestigacion}>
+                    <MenuItem onClick={() => { navigate(`/apt-hygiene/update/${menuRow?.id}`); handleCloseMenu(); }}>
+                        <EditTwoToneIcon sx={{ mr: 1, fontSize: '1.2rem' }} /> Actualizar
+                    </MenuItem>
+                </ValidateAction>
+
+                <MenuItem onClick={() => { handleReport(menuRow?.id); handleCloseMenu(); }}>
+                    <PrintIcon sx={{ mr: 1, fontSize: '1.2rem' }} /> Imprimir
+                </MenuItem>
+            </Menu>
+
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -503,13 +608,9 @@ const ListAPTHygiene = () => {
                                                 </TableCell>
 
                                                 <TableCell align="center">
-                                                    <ValidateAction idAccion={AccionMenu.actualizar} idModulo={Modulo.AsignacionInvestigacion}>
-                                                        <Tooltip disableInteractive placement="top" title="Actualizar" onClick={() => navigate(`/apt-hygiene/update/${row.id}`)}>
-                                                            <IconButton size="large">
-                                                                <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </ValidateAction>
+                                                    <IconButton size="large" onClick={(event) => handleOpenMenu(event, row)}>
+                                                        <MoreVertIcon sx={{ fontSize: '1.3rem' }} />
+                                                    </IconButton>
                                                 </TableCell>
                                             </TableRow>
                                         );
