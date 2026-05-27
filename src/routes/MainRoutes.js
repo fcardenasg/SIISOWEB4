@@ -274,9 +274,9 @@ const ListAPTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/
 const APTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Main/APTPsychosocial')));
 const UpdateAPTPsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Main/UpdateAPTPsychosocial')));
 
-const ListTemplatePsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Template/ListTemplatePsychosocial')));
-const TemplatePsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Template/TemplatePsychosocial')));
-const UpdateTemplatePsychosocial = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Template/UpdateTemplatePsychosocial')));
+const ListQualification = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Qualification/ListQualification')));
+const APTQualification = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Qualification/APTQualification')));
+const UpdateAPTQualification = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Psychosocial/Qualification/UpdateAPTQualification')));
 
 const ListAPTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Main/ListAPTHygiene')));
 const APTHygiene = Loadable(lazy(() => import('modules/DiseaseResearch/APT/Hygiene/Main/APTHygiene')));
@@ -1201,16 +1201,16 @@ const MainRoutes = {
         },
         /* APT - Psychosocial - Template */
         {
-            path: '/apt-psychosocial/template/list',
-            element: <ListTemplatePsychosocial />
+            path: '/apt-qualification/list',
+            element: <ListQualification />
         },
         {
-            path: '/apt-psychosocial/template/add',
-            element: <TemplatePsychosocial />
+            path: '/apt-qualification/add',
+            element: <APTQualification />
         },
         {
-            path: '/apt-psychosocial/template/update/:id',
-            element: <UpdateTemplatePsychosocial />
+            path: '/apt-qualification/update/:id',
+            element: <UpdateAPTQualification />
         },
         /* APT - Psychosocial */
         {
