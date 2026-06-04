@@ -3,7 +3,7 @@ import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import { Url } from "api/instances/AuthRoute";
 import axios from "axios";
-import { MessageError } from "components/alert/AlertAll";
+import toast from 'react-hot-toast';
 import { ArrayTodaSede } from "components/Arrays";
 import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
 import InputDatePick from "components/input/InputDatePick";
@@ -17,6 +17,7 @@ import { DownloadFileBlob } from "../methods";
 const lsTipoLogica = [
     { value: 1, label: 'Plantilla de Higiene'.toUpperCase() },
     { value: 2, label: 'Higiene'.toUpperCase() },
+    { value: 3, label: 'Calificación'.toUpperCase() },
 ]
 
 const ExportAPT = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede,
@@ -26,9 +27,8 @@ const ExportAPT = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede,
 
     const [lsSede, setLsSede] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [openError, setOpenError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [tipoLogica, setTipoLogica] = useState(2);
+
+    const [tipoLogica, setTipoLogica] = useState('');
 
     useEffect(() => {
         if (tipoLogica === 1 && opcionBusqueda === 0)
@@ -49,6 +49,16 @@ const ExportAPT = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede,
 
     async function getDataForExport() {
         try {
+            if (tipoLogica === '' || tipoLogica === null || tipoLogica === undefined) {
+                toast.error('Debe elegir un Tipo de APT para poder generar el Excel');
+                return;
+            }
+
+            if (opcionBusqueda === 0 && (!documento || documento.trim() === '')) {
+                toast.error('Debe digitar el Documento para poder generar el Excel');
+                return;
+            }
+
             setLoading(true);
 
             const parametros = {
@@ -69,7 +79,7 @@ const ExportAPT = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede,
             );
 
             if (response.data) {
-                DownloadFileBlob(response.data, tipoLogica === 1 ? 'PlantillaHigiene' : 'Higiene');
+                DownloadFileBlob(response.data, tipoLogica === 1 ? 'PlantillaHigiene' : tipoLogica === 2 ? 'Higiene' : 'Calificacion');
             }
 
             setLoading(false);
@@ -77,19 +87,18 @@ const ExportAPT = ({ setOpcionBusqueda, opcionBusqueda, setSede, sede,
         } catch (error) {
             console.error("Error exportando excel:", error);
             setLoading(false);
-            setOpenError(true);
-            setErrorMessage(Message.ErrorExcel || "Error al generar el archivo Excel");
+            toast.error(Message.ErrorExcel || "Error al generar el archivo Excel");
         }
     }
 
     return (
         <Fragment>
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <SelectOnChange
                         name="tipoLogica"
-                        label="Tipo de Reporte"
+                        label="Tipo de APT"
                         value={tipoLogica}
                         options={lsTipoLogica}
                         onChange={(e) => setTipoLogica(e.target.value)}

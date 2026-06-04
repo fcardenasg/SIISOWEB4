@@ -21,21 +21,20 @@ import * as yup from 'yup';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetComboRol } from 'api/clients/RolClient';
 import { GetByIdUser, UpdateUsers } from 'api/clients/UserClient';
-import { MessageError, MessageUpdate } from 'components/alert/AlertAll';
 import { AccionMenu, CodCatalogo, IdUser, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import Cargando from 'components/loading/Cargando';
 import { UploadBox } from 'components/upload';
-import { PutUser } from 'formatdata/UserForm';
+import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
+import useAuth from 'hooks/useAuth';
 import Lottie from 'lottie-react';
+import toast from 'react-hot-toast';
 import MainCard from 'ui-component/cards/MainCard';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ListActionMenu from './ListActionMenu';
-import useAuth from 'hooks/useAuth';
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().required(ValidationMessage.Requerido),
@@ -60,9 +59,6 @@ const UpdateUser = () => {
 
     const [lsUsuario, setLsUsuario] = useState([]);
     const [timeWait, setTimeWait] = useState(false);
-    const [openUpdate, setOpenUpdate] = useState(false);
-    const [openError, setOpenError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
 
     const [lsEspecialidad, setLsEspecialidad] = useState([]);
     const [lsArea, setLsArea] = useState([]);
@@ -123,36 +119,29 @@ const UpdateUser = () => {
             const reader = new FileReader();
             reader.readAsDataURL(archivo);
             reader.onloadend = (event) => {
-                setValue('imgfirma', event.target.result, { shouldValidate: true });
+                setValue('firma', event.target.result, { shouldValidate: true });
             }
         }
     }, [setValue]);
 
     const handleRemoveFile = useCallback(() => {
-        setValue('imgfirma', null);
+        setValue('firma', null);
     }, [setValue]);
 
     const handleClick = async (datos) => {
         try {
-            var resert = datos.checkResetearPass ? "yes" : "";
+            datos.id = id;
+            datos.password = datos.checkResetearPass ? "yes" : "";
 
-            const DataToUpdate = PutUser(id, datos.documento, datos.nombreUsuario, resert, datos.nombre, datos.telefono, datos.idArea,
-                datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia, datos.tarjetaProfesional,
-                datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro, datos.respondeVentanillaUnica,
-                datos.registraTaxi, datos.puedeAdministrarPermisos, datos.medicoRegistroAtencion, datos.asesorARL, datos.investigador);
-
-            const result = await UpdateUsers(DataToUpdate);
-            if (result.status === 200) {
-                if (result.data.message === "") {
-                    setOpenUpdate(true);
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(result.data.message);
-                }
+            const result = await UpdateUsers(datos);
+            if (!result.data.exito) {
+                toast.error(result.data.mensaje);
+                return;
             }
+
+            toast.success(result.data.mensaje);
         } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            toast.error(Message.RegistroNoGuardado);
         }
     };
 
@@ -164,9 +153,6 @@ const UpdateUser = () => {
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.actualizar} idModulo={Modulo.Usuario}>
             <MainCard title="Actualizar información del usuarios">
-                <MessageUpdate open={openUpdate} onClose={() => setOpenUpdate(false)} />
-                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
                 {timeWait ?
                     <FormProvider {...methods}>
                         <Grid container spacing={2}>
@@ -274,7 +260,7 @@ const UpdateUser = () => {
                                         <Card sx={{ border: (theme) => `dashed 1px ${alpha(theme.palette.grey[500], 0.3)}` }}>
                                             <UploadBox
                                                 size="80px"
-                                                name="imgfirma"
+                                                name="firma"
                                                 defaultValue={lsUsuario?.firma}
                                                 onDrop={handleDropFirm}
                                                 placeholder={
@@ -391,24 +377,6 @@ const UpdateUser = () => {
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} md={4}>
-                                            <InputCheckBox
-                                                name="asesorARL"
-                                                defaultValue={lsUsuario?.asesorARL}
-                                                label="¿Es asesor ARL?"
-                                                size={30}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={4}>
-                                            <InputCheckBox
-                                                name="investigador"
-                                                defaultValue={lsUsuario?.investigador}
-                                                label="¿Es investigador?"
-                                                size={30}
-                                            />
-                                        </Grid>
-
                                         {user?.id == IdUser.fcardenas &&
                                             <Grid item xs={12} md={6} lg={4}>
                                                 <InputCheckBox
@@ -419,6 +387,57 @@ const UpdateUser = () => {
                                                 />
                                             </Grid>
                                         }
+
+                                        <Grid item xs={12}><Divider sx={{ my: 1 }} /></Grid>
+
+                                        <Grid item xs={12}>
+                                            <Typography variant="h5" sx={{ color: theme.palette.primary.main }}>Permisos para el Módulo de Investigación y APT</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={12} md={4}>
+                                            <InputCheckBox
+                                                name="asesorARL"
+                                                defaultValue={lsUsuario?.asesorARL}
+                                                label="¿Es Asesor ARL?"
+                                                size={30}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={4}>
+                                            <InputCheckBox
+                                                name="investigador"
+                                                defaultValue={lsUsuario?.investigador}
+                                                label="¿Es Investigador?"
+                                                size={30}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputCheckBox
+                                                name="aptAsesorHigiene"
+                                                defaultValue={lsUsuario?.aptAsesorHigiene}
+                                                label="¿Es Asesor Seguros Bolívar APT Higiene?"
+                                                size={30}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputCheckBox
+                                                name="aptSupervisorHigiene"
+                                                defaultValue={lsUsuario?.aptSupervisorHigiene}
+                                                label="¿Es Supervisor Corporativo Higiene Industrial?"
+                                                size={30}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <InputCheckBox
+                                                name="aptHigienistaErgonomista"
+                                                defaultValue={lsUsuario?.aptHigienistaErgonomista}
+                                                label="¿Es Higienista Industrial y ergónoma?"
+                                                size={30}
+                                            />
+                                        </Grid>
 
                                         {user?.puedeAdministrarPermisos == true && <>
                                             <Grid item xs={12} sx={{ my: 2 }}><Divider /></Grid>

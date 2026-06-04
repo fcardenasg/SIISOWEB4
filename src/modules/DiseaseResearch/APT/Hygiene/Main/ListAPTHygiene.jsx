@@ -45,6 +45,7 @@ import { DeleteAPTHP, GetAllAPTHP } from 'api/clients/APTHigienePlantillaClient'
 import { Url } from 'api/instances/AuthRoute';
 import axios from 'axios';
 import FullScreenModal from 'components/controllers/FullScreenModal';
+import Iconify from 'components/iconify/iconify';
 import Cargando from 'components/loading/Cargando';
 import EmptyState from 'components/loading/EmptyState';
 import ValidateAction from 'components/ValidateAction/ValidateAction';
@@ -75,6 +76,11 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
+    {
+        id: 'apthAprobado',
+        label: '',
+        align: 'center'
+    },
     {
         id: 'documento',
         label: 'Documento',
@@ -437,7 +443,7 @@ const ListAPTHygiene = () => {
                     </MenuItem>
                 </ValidateAction>
 
-                <MenuItem onClick={() => { handleReport(menuRow?.id); handleCloseMenu(); }}>
+                <MenuItem onClick={() => { handleReport(menuRow?.id); handleCloseMenu(); }} disabled={!menuRow?.apthAprobado}>
                     <PrintIcon sx={{ mr: 1, fontSize: '1.2rem' }} /> Imprimir
                 </MenuItem>
             </Menu>
@@ -526,6 +532,22 @@ const ListAPTHygiene = () => {
                                                             'aria-labelledby': labelId
                                                         }}
                                                     />
+                                                </TableCell>
+
+                                                <TableCell align="center" onClick={(event) => handleClick(event, row.id)} sx={{ cursor: 'pointer' }}>
+                                                    {row.apthAprobado ? (
+                                                        <Tooltip title="Aprobado">
+                                                            <Box component="span" sx={{ display: 'inline-flex' }}>
+                                                                <Iconify icon="heroicons:check-badge" width={24} sx={{ color: 'success.main' }} />
+                                                            </Box>
+                                                        </Tooltip>
+                                                    ) : (
+                                                        <Tooltip title="No aprobado">
+                                                            <Box component="span" sx={{ display: 'inline-flex' }}>
+                                                                <Iconify icon="heroicons:x-circle" width={24} sx={{ color: 'error.main' }} />
+                                                            </Box>
+                                                        </Tooltip>
+                                                    )}
                                                 </TableCell>
 
                                                 <TableCell

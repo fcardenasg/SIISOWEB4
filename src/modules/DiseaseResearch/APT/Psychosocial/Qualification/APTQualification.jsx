@@ -1,765 +1,291 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-
+import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
+import { Provider } from 'react-redux';
+import { store } from 'store';
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
-    Button,
-    Divider,
-    Grid,
-    Box,
-    Card,
-    CardContent,
-    Stack,
-    Alert,
-    Typography
-} from '@mui/material';
-
-import {
+    ArrowBack,
     Assessment,
     BusinessCenter,
     Description,
     LocalHospital,
+    OpenInNew,
     Person,
     Save,
     SupervisorAccount,
-    ArrowBack
-} from '@mui/icons-material';
-
+} from "@mui/icons-material";
 import {
-    useEffect,
-    useState
-} from 'react';
-
-import {
-    FormProvider,
-    useForm
-} from 'react-hook-form';
-
-import toast from 'react-hot-toast';
-
-import {
-    useNavigate
-} from 'react-router-dom';
-
-import * as yup from 'yup';
-
-import { useTheme } from '@mui/material/styles';
-
-import AnimateButton from 'ui-component/extended/AnimateButton';
-
-import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
-
+    Alert,
+    Box,
+    Button,
+    CircularProgress,
+    Divider,
+    Grid,
+    Stack,
+} from "@mui/material";
+import { ComboEvaluador, SaveAPTCalificacion } from "api/clients/APTRatingClient";
+import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
+import { GetComboCompany } from "api/clients/CompanyClient";
+import { GetByIdEmployee } from "api/clients/EmployeeClient";
+import StickyActionBar from "components/StickyActionBar/StickyActionBar";
+import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
 import {
     AccionMenu,
-    Modulo,
     CodCatalogo,
-    TitleButton
-} from 'components/helpers/Enums';
-
-import InputDatePicker from 'components/input/InputDatePicker';
-import InputSelect from 'components/input/InputSelect';
-import InputText from 'components/input/InputText';
-
-import DiagnosisAPT from './Components/DiagnosisAPT';
-import DetailFuentes from './Components/DetailFuentes';
-import DetailAgentes from './Components/DetailAgentes';
-
-import {
-    InsertAPTCalificacion
-} from 'api/clients/APTRatingClient';
-
-import {
-    GetByTipoCatalogoCombo
-} from 'api/clients/CatalogClient';
-
-import ViewEmployee from 'components/views/ViewEmployee';
-
-import {
-    GetByIdEmployee
-} from 'api/clients/EmployeeClient';
-
-import {
-    ComboEmpresaAPT
-} from 'api/clients/APTRatingClient';
-
-const SectionCard = ({ icon: Icon, title, subtitle, children }) => (
-    <Card
-        sx={{
-            borderRadius: 3,
-            border: '1px solid',
-            borderColor: 'divider',
-            boxShadow: '0 12px 32px rgba(15, 23, 42, 0.06)',
-            backgroundColor: 'rgba(255,255,255,0.96)',
-            paddingRight:4
-        }}
-    >
-        <CardContent
-            sx={{
-                px: 3.5,
-                py: 3
-            }}
-        >
-            <Stack spacing={2}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <Box
-                        sx={{
-                            width: 42,
-                            height: 42,
-                            borderRadius: 2,
-                            display: 'grid',
-                            placeItems: 'center',
-                            bgcolor: 'rgba(25, 118, 210, 0.08)',
-                            color: 'primary.main'
-                        }}
-                    >
-                        <Icon fontSize="small" />
-                    </Box>
-                    <Box>
-                        <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 700 }}>
-                            {title}
-                        </Typography>
-                        {subtitle && (
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                                {subtitle}
-                            </Typography>
-                        )}
-                    </Box>
-                </Stack>
-                {children}
-            </Stack>
-        </CardContent>
-    </Card>
-);
-
-const ResultCard = ({ icon: Icon, title, value }) => (
-    <Card
-        sx={{
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'divider',
-            boxShadow: 'none',
-            backgroundColor: 'transparent'
-        }}
-    >
-        <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box
-                sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    display: 'grid',
-                    placeItems: 'center',
-                    bgcolor: 'rgba(25, 118, 210, 0.08)',
-                    color: 'primary.main'
-                }}
-            >
-                <Icon fontSize="small" />
-            </Box>
-            <Box>
-                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                    {title}
-                </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 700, opacity: 0.85 }}>
-                    {value ?? '-'}
-                </Typography>
-            </Box>
-        </CardContent>
-    </Card>
-);
+    Modulo
+} from "components/helpers/Enums";
+import InputDatePicker from "components/input/InputDatePicker";
+import InputSelect from "components/input/InputSelect";
+import InputText from "components/input/InputText";
+import ViewEmployee from "components/views/ViewEmployee";
+import { useCallback, useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import * as yup from "yup";
+import DetailAgentes from "./Components/DetailAgentes";
+import DetailFuentes from "./Components/DetailFuentes";
+import DiagnosisAPT from "./Components/DiagnosisAPT";
+import TableFactors, { TableResultFactors } from "./Components/TableFactors";
+import SubCard from "ui-component/cards/SubCard";
+import InputSelectAutocomplete from "components/input/InputSelectAutocomplete";
+import SectionCard from "./Components/SectionCard";
 
 const validationSchema = yup.object().shape({
-
-    fecha: yup
-        .date()
-        .required('La fecha es requerida'),
-
-    documento: yup
-        .string()
-        .required('El documento es requerido')
-
-   
+    fecha: yup.date().required("La fecha es requerida"),
+    documento: yup.string().required("El documento es requerido"),
 });
 
 const APTQualification = () => {
-
     const navigate = useNavigate();
-    const theme = useTheme();
+    const agentesPopupRef = useRef(null);
 
-    const [modelEmployee, setModelEmployee] =
-    useState([]);
-
-    // =========================
-    // COMBOS
-    // =========================
-
-    const [company, setCompany] =
-        useState([]);
-
-    const [lsFuentes, setLsFuentes] =
-        useState([]);
-
-    const [lsParentesco, setLsParentesco] =
-        useState([]);
-
-    const [lsGrupoCondicion, setLsGrupoCondicion] =
-        useState([]);
-
-    const [lsCondicion, setLsCondicion] =
-        useState([]);
-
-    const [lsExposicion, setLsExposicion] =
-        useState([]);
-
-    const [lsFrecuencia, setLsFrecuencia] =
-        useState([]);
-
-    const [lsIntensidad, setLsIntensidad] =
-        useState([]);
-
-    const [lsTipo, setLsTipo] =
-        useState([]);
-
-    const [lsCargo, setLsCargo] =
-        useState([]);
-
-    const [lsArea, setLsArea] =
-        useState([]);
-
-    const [lsPuestoTrabajo, setLsPuestoTrabajo] =
-        useState([]);
-
-    // =========================
-    // DETALLES
-    // =========================
-
-    const [detalleFuentes, setDetalleFuentes] =
-        useState([]);
-
-    const [detalleAgentes, setDetalleAgentes] =
-        useState([]);
-
-    // =========================
-    // DX
-    // =========================
-
-    const [dx1, setDx1] =
-        useState(null);
-
-    const [dx2, setDx2] =
-        useState(null);
-
-    const [dx3, setDx3] =
-        useState(null);
-
-    // =========================
-    // FORM
-    // =========================
+    const [modelEmployee, setModelEmployee] = useState([]);
+    const [company, setCompany] = useState([]);
+    const [lsCargo, setLsCargo] = useState([]);
+    const [lsArea, setLsArea] = useState([]);
+    const [lsEvaluador, setLsEvaluador] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const methods = useForm({
+        resolver: yupResolver(validationSchema),
 
-        resolver:
-            yupResolver(validationSchema),
-
-       defaultValues: {
-
-    fecha: new Date(),
-
-    documento: '',
-
-    idEmpresa: '',
-
-    idPuestoTrabajo: null,
-
-    fechaIngresoEmpresa: null,
-
-    fechaIngresoPuesto: null,
-
-    direccionCorrespondencia: '',
-
-    telefono: '',
-
-    documentoEvaluador: '',
-
-    acercadePeriodo: '',
-
-    expectativasProceso: '',
-
-    antecedentesOcupacionales: '',
-
-    aspectosOrganizacionales: '',
-
-    fechaCargo: null,
-
-    idCargo: null,
-
-    idArea: null,
-
-    mision: '',
-
-    proceso: '',
-
-    caracteristicas: '',
-
-    descripcionAgentes: '',
-
-    aspectosIndividuales: '',
-
-    totalIntralaboral: null,
-
-    promedioIntralaboral: null,
-
-    totalExtralaboral: null,
-
-    promedioExtralaboral: null,
-
-    promedioTotalExtralaboral: null,
-
-    promedioTotalIntralaboral: null,
-
-    condicionesIndividuo: ''
-}
+        defaultValues: {
+            fecha: new Date(),
+            documento: "",
+            idEmpresaAuto: null,
+            idPuestoTrabajoAuto: null,
+            fechaIngresoEmpresa: null,
+            fechaIngresoPuesto: null,
+            direccionCorrespondencia: "",
+            telefono: "",
+            documentoEvaluador: "",
+            acercaPeriodo: "",
+            expectativasProceso: "",
+            antecedentesOcupacionales: "",
+            aspectosOrganizacionales: "",
+            fechaCargo: null,
+            idCargoAuto: null,
+            idAreaAuto: null,
+            mision: "",
+            proceso: "",
+            caracteristicas: "",
+            descripcionAgentes: "",
+            aspectosIndividuales: "",
+            condicionesIndividuo: "",
+            dx1: "",
+            dx2: "",
+            dx3: "",
+        },
     });
 
-            const {
-                handleSubmit,
-                reset,
-                watch,
-                setValue,
-                formState: { errors }
-            } = methods;
+    const {
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { errors },
+    } = methods;
 
-            const documento =
-                watch('documento');
-    // =========================
-    // LOAD DATA
-    // =========================
+    const documento = watch("documento");
+    const idAPTCalificacion = watch("idAPTCalificacion");
 
     useEffect(() => {
-
-        async function getAll() {
-
+        async function initializeData() {
             try {
+                const empresa = await GetComboCompany();
+                setCompany(empresa.data);
 
-                // =========================
-                // EMPRESAS
-                // =========================
+                const catalogConfigs = [
+                    { method: CodCatalogo.DescripcionRosterPosition, setter: setLsCargo },
+                    { method: CodCatalogo.Area, setter: setLsArea }
+                ];
 
-                    const empresa =
-    await ComboEmpresaAPT();
-
-console.log(
-    'EMPRESAS',
-    empresa
-);
-
-const empresas =
-    empresa?.data?.data || [];
-
-const resultEmpresa =
-    empresas.map((item) => ({
-
-        value:
-            item.codigo,
-
-        label:
-            item.label
-    }));
-
-setCompany(
-    resultEmpresa
-);
-                // =========================
-                // CATALOGOS
-                // =========================
-
-                const fuentes =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_FUENTES
-                    );
-
-                const parentesco =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_PARENTESCO
-                    );
-
-                const grupo =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_GRUPO_CONDICION
-                    );
-
-                const condicion =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_CONDICION
-                    );
-
-                const exposicion =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_EXPOSICION
-                    );
-
-                const frecuencia =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_FRECUENCIA
-                    );
-
-                const intensidad =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_INTENSIDAD
-                    );
-
-                const tipo =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_TIPO
-                    );
-
-                const cargo =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_CARGO
-                    );
-
-                const area =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_AREA
-                    );
-
-                const puesto =
-                    await GetByTipoCatalogoCombo(
-                        CodCatalogo.APT_PUESTO_TRABAJO
-                    );
-
-                setLsFuentes(
-                    fuentes.data || []
+                const catalogResults = await Promise.all(
+                    catalogConfigs.map(config =>
+                        GetByTipoCatalogoCombo(config.method)
+                    )
                 );
 
-                setLsParentesco(
-                    parentesco.data || []
-                );
+                catalogResults.forEach((result, index) => {
+                    catalogConfigs[index].setter(result.data || []);
+                });
 
-                setLsGrupoCondicion(
-                    grupo.data || []
-                );
-
-                setLsCondicion(
-                    condicion.data || []
-                );
-
-                setLsExposicion(
-                    exposicion.data || []
-                );
-
-                setLsFrecuencia(
-                    frecuencia.data || []
-                );
-
-                setLsIntensidad(
-                    intensidad.data || []
-                );
-
-                setLsTipo(
-                    tipo.data || []
-                );
-
-                setLsCargo(
-                    cargo.data || []
-                );
-
-                setLsArea(
-                    area.data || []
-                );
-
-                setLsPuestoTrabajo(
-                    puesto.data || []
-                );
-
+                const lsServerEvaluador = await ComboEvaluador();
+                var mapEvaluador = lsServerEvaluador.data.datos.map(eva => ({
+                    ...eva,
+                    value: eva.documento,
+                    label: eva.nombre,
+                }));
+                setLsEvaluador(mapEvaluador);
             } catch (error) {
-
-                console.log(error);
-
-                toast.error(
-                    'Error cargando datos'
-                );
+                toast.error("Error cargando datos");
             }
         }
 
-        getAll();
-
+        initializeData();
     }, []);
 
-    // =========================
-    // SAVE
-    // =========================
-
-  const handleSave = async (data) => {
-
-    try {
-
-        const payload = {
-
-            // =====================
-            // CAMPOS FORM
-            // =====================
-
-            Fecha:
-                data.fecha,
-
-            Documento:
-                data.documento,
-
-            IdEmpresa:
-                data.idEmpresa,
-
-            IdPuestoTrabajo:
-                data.idPuestoTrabajo,
-
-            FechaIngresoEmpresa:
-                data.fechaIngresoEmpresa,
-
-            FechaIngresoPuesto:
-                data.fechaIngresoPuesto,
-
-            DireccionCorrespondencia:
-                data.direccionCorrespondencia,
-
-            Telefono:
-                data.telefono,
-
-            DocumentoEvaluador:
-                data.documentoEvaluador,
-
-            AcercadePeriodo:
-                data.acercadePeriodo,
-
-            ExpectativasProceso:
-                data.expectativasProceso,
-
-            AntecedentesOcupacionales:
-                data.antecedentesOcupacionales,
-
-            AspectosOrganizacionales:
-                data.aspectosOrganizacionales,
-
-            FechaCargo:
-                data.fechaCargo,
-
-            IdCargo:
-                data.idCargo,
-
-            IdArea:
-                data.idArea,
-
-            Mision:
-                data.mision,
-
-            Proceso:
-                data.proceso,
-
-            Caracteristicas:
-                data.caracteristicas,
-
-            DescripcionAgentes:
-                data.descripcionAgentes,
-
-            AspectosIndividuales:
-                data.aspectosIndividuales,
-
-            TotalIntralaboral:
-                data.totalIntralaboral,
-
-            PromedioIntralaboral:
-                data.promedioIntralaboral,
-
-            TotalExtralaboral:
-                data.totalExtralaboral,
-
-            PromedioExtralaboral:
-                data.promedioExtralaboral,
-
-            PromedioTotalExtralaboral:
-                data.promedioTotalExtralaboral,
-
-            PromedioTotalIntralaboral:
-                data.promedioTotalIntralaboral,
-
-            CondicionesIndividuo:
-                data.condicionesIndividuo,
-
-            // =====================
-            // DX
-            // =====================
-
-            DX1:
-                dx1?.value || null,
-
-            DX2:
-                dx2?.value || null,
-
-            DX3:
-                dx3?.value || null,
-
-            // =====================
-            // DETALLES
-            // =====================
-
-            ListaFuentes:
-                detalleFuentes || [],
-
-            ListaAgentes:
-                detalleAgentes || [],
-
-            UsuarioRegistro:
-                localStorage.getItem('user')
-                || 'ADMIN'
-        };
-
-        console.log(
-            'PAYLOAD',
-            payload
-        );
-
-        const result =
-            await InsertAPTCalificacion(
-                payload
-            );
-
-        console.log(
-            'RESULT',
-            result
-        );
-
-        if (
-            result?.data?.success
-        ) {
-
-            toast.success(
-                'Registro guardado correctamente'
-            );
-
-            reset();
-
-            setDetalleFuentes([]);
-
-            setDetalleAgentes([]);
-
-            setDx1(null);
-
-            setDx2(null);
-
-            setDx3(null);
-
-        } else {
-
-            toast.error(
-                result?.data?.message ||
-                'No se pudo guardar'
-            );
-        }
-
-    } catch (error) {
-
-        console.log(error);
-
-        toast.error(
-            'Error al guardar'
-        );
-    }
-};
-
-const handleDocumento = async (event) => {
-
-    try {
-
-        const document =
-            event?.target?.value;
-
-        setValue(
-            'documento',
-            document
-        );
-
-        if (document !== '') {
-
-            const response =
-                await GetByIdEmployee(
-                    document
-                );
-
-            if (
-                response?.data?.status === 200
-            ) {
-
-                const employee =
-                    response.data.data;
-
-                setModelEmployee(
-                    employee
-                );
-
-                // ====================
-                // AUTOCARGAR DATOS
-                // ====================
-
-                setValue(
-                    'telefono',
-                    employee?.telefono
-                    || ''
-                );
-
-                setValue(
-                    'direccionCorrespondencia',
-                    employee?.direccion
-                    || ''
-                );
-
-                setValue(
-                    'idEmpresa',
-                    employee?.empresa
-                    || ''
-                );
-
+    const handleSave = async (data) => {
+        try {
+            setIsSubmitting(true);
+            const payload = {
+                id: idAPTCalificacion || 0,
+                documento: data.documento,
+                fecha: data.fecha || null,
+
+                idEmpresa: data.idEmpresaAuto?.value || null,
+                idPuestoTrabajo: data.idPuestoTrabajoAuto?.value || null,
+
+                fechaIngresoEmpresa: data.fechaIngresoEmpresa || null,
+                fechaIngresoPuesto: data.fechaIngresoPuesto || null,
+                direccionCorrespondencia: data.direccionCorrespondencia || null,
+                telefono: data.telefono || null,
+                documentoEvaluador: data.documentoEvaluador || null,
+                acercaPeriodo: data.acercaPeriodo || null,
+                expectativasProceso: data.expectativasProceso || null,
+                antecedentesOcupacionales: data.antecedentesOcupacionales || null,
+                aspectosOrganizacionales: data.aspectosOrganizacionales || null,
+                fechaCargo: data.fechaCargo || null,
+
+                idCargo: data.idCargoAuto?.value || null,
+                idArea: data.idAreaAuto?.value || null,
+
+                mision: data.mision || null,
+                proceso: data.proceso || null,
+                caracteristicas: data.caracteristicas || null,
+                descripcionAgentes: data.descripcionAgentes || null,
+                aspectosIndividuales: data.aspectosIndividuales || null,
+                CondicionesIndividuo: data.condicionesIndividuo || null,
+
+                dX1: data.dx1 || null,
+                dX2: data.dx2 || null,
+                dX3: data.dx3 || null
+            };
+
+            const result = await SaveAPTCalificacion(payload);
+            if (result.data.exito) {
+                setValue("idAPTCalificacion", result.data.datos);
+                toast.success(result.data.mensaje);
             } else {
-
-                setModelEmployee([]);
+                toast.error(result.data.mensaje || "No se pudo guardar");
             }
-
-        } else {
-
-            setModelEmployee([]);
+        } catch (error) {
+            toast.error("Error al guardar");
+        } finally {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setIsSubmitting(false);
         }
+    };
 
-    } catch (error) {
+    const handleDocumento = async (event) => {
+        try {
+            const document = event?.target?.value;
+            setValue("documento", document);
 
-        console.log(error);
+            if (event?.target.value !== '') {
+                if (event.key === 'Enter') {
+                    var responseEmployee = await GetByIdEmployee(event?.target.value);
+                    if (responseEmployee?.status === 200) {
+                        if (responseEmployee?.data.status !== 200)
+                            toast.error(responseEmployee?.data.message);
+
+                        const employee = responseEmployee.data.data;
+                        setModelEmployee(employee);
+                        setValue("telefono", employee?.celular);
+                        setValue("direccionCorrespondencia", employee.direccionResidencia);
+                        setValue("idEmpresaAuto", { value: employee.empresa, label: employee.nameCompany });
+                        setValue("idPuestoTrabajoAuto", { value: employee.rosterPosition, label: employee.nameRosterPosition });
+                        setValue("idCargoAuto", { value: employee.rosterPosition, label: employee.nameRosterPosition });
+                        setValue("idAreaAuto", { value: employee.area, label: employee.nameArea });
+                    }
+                }
+            } else setModelEmployee([]);
+        } catch (error) { }
     }
-};
 
-    const fieldSx = {
-        '& .MuiInputBase-root': {
-            minHeight: 56,
-            borderRadius: 2
-        },
-        '& .MuiInputLabel-root': {
-            fontSize: '0.95rem'
-        },
-        '& .MuiSelect-select': {
-            minHeight: 24
+    const handleEvaluador = async (event) => {
+        try {
+            setValue("documentoEvaluador", event.target.value);
+
+            const listEvaluador = lsEvaluador;
+            const dataEvalu = listEvaluador.find(fi => fi.value == event.target.value);
+            setValue("evaluadorDocumento", dataEvalu.documento);
+            setValue("evaluadorProfesion", dataEvalu.profesion);
+            setValue("evaluadorPostgrado", dataEvalu.nameEspecialidad);
+            setValue("evaluadorTarjetaPro", dataEvalu.tarjetaProfesional);
+            setValue("evaluadorNumLicencia", dataEvalu.licencia);
+        } catch (error) {
+
         }
     };
 
-    const textareaSx = {
-        '& .MuiInputBase-root': {
-            minHeight: 160,
-            borderRadius: 2
-        },
-        '& .MuiInputBase-inputMultiline': {
-            minHeight: 120
+    const closeAgentesPopup = useCallback(() => {
+        if (agentesPopupRef.current && !agentesPopupRef.current.closed) {
+            agentesPopupRef.current.close();
+            agentesPopupRef.current = null;
         }
-    };
+    }, []);
 
-    const compactTextareaSx = {
-        '& .MuiInputBase-root': {
-            minHeight: 130,
-            borderRadius: 2
-        },
-        '& .MuiInputBase-inputMultiline': {
-            minHeight: 96
+    useEffect(() => {
+        return () => closeAgentesPopup();
+    }, [closeAgentesPopup]);
+
+    const handleOpenAgentesPopup = () => {
+        if (agentesPopupRef.current && !agentesPopupRef.current.closed) {
+            agentesPopupRef.current.focus();
+            return;
+        }
+
+        const width = window.screen.availWidth;
+        const height = window.screen.availHeight;
+        const popupWindow = window.open('', '_blank', `width=${width},height=${height},left=0,top=0`);
+
+        if (popupWindow) {
+            agentesPopupRef.current = popupWindow;
+            popupWindow.document.title = "Agentes de Riesgo";
+            popupWindow.document.body.innerHTML = '<div id="popup-root-agentes"></div>';
+            popupWindow.document.body.style.margin = '0';
+
+            const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+            styles.forEach(styleNode => {
+                popupWindow.document.head.appendChild(styleNode.cloneNode(true));
+            });
+
+            const popupCache = createCache({
+                key: 'popup-mui-agentes',
+                container: popupWindow.document.head,
+            });
+
+            ReactDOM.render(
+                <Provider store={store}>
+                    <CacheProvider value={popupCache}>
+                        <DetailAgentes idAPTCalificacion={idAPTCalificacion} />
+                    </CacheProvider>
+                </Provider>,
+                popupWindow.document.getElementById('popup-root-agentes')
+            );
         }
     };
 
@@ -769,415 +295,412 @@ const handleDocumento = async (event) => {
             idModulo={Modulo.APTCalificacion}
         >
             <FormProvider {...methods}>
-                <Box sx={{ width: '100%', pb: 6 }}>
-                    <Card
-                        sx={{
-                            mb: 3,
-                            overflow: 'hidden',
-                            borderRadius: 3,
-                            backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                            color: 'text.primary',
-                            boxShadow: theme.shadows[4]
-                        }}
-                    >
-                     
-                    </Card>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <ViewEmployee
+                            errors={errors}
+                            title="Registrar APT Calificación"
+                            key={modelEmployee?.documento}
+                            documento={documento}
+                            onChange={(e) => setValue("documento", e.target.value)}
+                            lsEmployee={modelEmployee}
+                            handleDocumento={handleDocumento}
+                            handleEnter={handleDocumento}
+                        />
+                    </Grid>
 
-                    <Stack spacing={3}>
-                        <SectionCard
-                            icon={Person}
-                            title="Calificación APT"
-                            subtitle="Análisis de factores de riesgo psicosocial a nivel intra y extralaboral"
-                        >
-                            <Grid container spacing={2.5} sx={{ paddingRight: 3 }}>
-                                <Grid item xs={12}>
-                                    <ViewEmployee
-                                        errors={errors}
-                                        title="Empleado y contacto"
-                                        key={modelEmployee?.documento}
-                                        documento={documento}
-                                        onChange={(e) =>
-                                            setValue('documento', e.target.value)
-                                        }
-                                        lsEmployee={modelEmployee}
-                                        handleDocumento={handleDocumento}
-                                        handleEnter={handleDocumento}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={4}>
-                                    <InputDatePicker
-                                        name="fecha"
-                                        label="Fecha"
-                                        bug={errors.fecha}
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={4}>
-                                    <InputText
-                                        name="telefono"
-                                        label="Teléfono"
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={4}>
-                                    <InputText
-                                        name="direccionCorrespondencia"
-                                        label="Dirección"
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </SectionCard>
-
-                        <SectionCard
-                            icon={BusinessCenter}
-                            title="Información laboral"
-                            subtitle="Datos de empresa, puesto y fechas de ingreso."
-                        >
-                            <Grid container spacing={2.5}>
-                                <Grid item xs={12} md={6}>
-                                    <InputSelect
-                                        defaultValue=""
-                                        name="idEmpresa"
-                                        label="Empresa"
-                                        options={company}
-                                        bug={errors.idEmpresa}
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputSelect
-                                        name="idPuestoTrabajo"
-                                        label="Puesto Trabajo"
-                                        options={lsPuestoTrabajo}
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputDatePicker
-                                        name="fechaIngresoEmpresa"
-                                        label="Ingreso Empresa"
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputDatePicker
-                                        name="fechaIngresoPuesto"
-                                        label="Ingreso Puesto"
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </SectionCard>
-
-                        <SectionCard
-                            icon={LocalHospital}
-                            title="Diagnóstico"
-                            subtitle="Selecciona uno o varios diagnósticos clínicos asociados al caso."
-                        >
-                            <DiagnosisAPT
-                                dx1={dx1}
-                                dx2={dx2}
-                                dx3={dx3}
-                                setDx1={setDx1}
-                                setDx2={setDx2}
-                                setDx3={setDx3}
-                            />
-                        </SectionCard>
-
-                        <SectionCard
-                            icon={SupervisorAccount}
-                            title="Evaluador"
-                            subtitle="Registra la persona responsable y el cargo de evaluación."
-                        >
-                            <Grid container spacing={2.5}>
-                                <Grid item xs={12} md={6}>
-                                    <InputText
-                                        name="documentoEvaluador"
-                                        label="Documento Evaluador"
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputDatePicker
-                                        name="fechaCargo"
-                                        label="Fecha Cargo"
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputSelect
-                                        name="idCargo"
-                                        label="Cargo"
-                                        options={lsCargo}
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <InputSelect
-                                        name="idArea"
-                                        label="Área"
-                                        options={lsArea}
-                                        sx={fieldSx}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </SectionCard>
-
-                        <SectionCard
-                            icon={Description}
-                            title="Narrativa y contexto"
-                            subtitle="Describe el periodo, expectativas, antecedentes y aspectos organizacionales."
-                        >
-                            <Grid container spacing={2.5}>
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="acercadePeriodo"
-                                        label="Acerca del Período"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="expectativasProceso"
-                                        label="Expectativas del Proceso"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="antecedentesOcupacionales"
-                                        label="Antecedentes Ocupacionales"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="aspectosOrganizacionales"
-                                        label="Aspectos Organizacionales"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="mision"
-                                        label="Misión"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="proceso"
-                                        label="Proceso"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="caracteristicas"
-                                        label="Características"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="descripcionAgentes"
-                                        label="Descripción Agentes"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={3}
-                                        name="aspectosIndividuales"
-                                        label="Aspectos Individuales"
-                                        sx={compactTextareaSx}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </SectionCard>
-
-                        <SectionCard
-                            icon={Description}
-                            title="Fuentes y agentes"
-                            subtitle="Registra fuentes y agentes con una edición más visual y compacta."
-                        >
-                            <Stack spacing={2.5}>
-                                <DetailFuentes
-                                    lsFuentes={lsFuentes}
-                                    lsParentesco={lsParentesco}
-                                    data={detalleFuentes}
-                                    setData={setDetalleFuentes}
-                                />
-                                <DetailAgentes
-                                    lsGrupoCondicion={lsGrupoCondicion}
-                                    lsCondicion={lsCondicion}
-                                    lsExposicion={lsExposicion}
-                                    lsFrecuencia={lsFrecuencia}
-                                    lsIntensidad={lsIntensidad}
-                                    lsTipo={lsTipo}
-                                    data={detalleAgentes}
-                                    setData={setDetalleAgentes}
-                                />
-                            </Stack>
-                        </SectionCard>
-
-                        <SectionCard
-                            icon={Assessment}
-                            title="Resultados"
-                            subtitle="Captura los valores de evaluación y condiciones finales del individuo."
-                        >
-                            <Grid container spacing={2.5}>
-                                <Grid item xs={12}>
-                                    <Grid container spacing={2.5}>
-                                        <Grid item xs={12} md={4}>
-                                            <ResultCard
-                                                icon={Assessment}
-                                                title="Total Intralaboral"
-                                                value={watch('totalIntralaboral')}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={4}>
-                                            <ResultCard
-                                                icon={Assessment}
-                                                title="Promedio Intralaboral"
-                                                value={watch('promedioIntralaboral')}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={4}>
-                                            <ResultCard
-                                                icon={Assessment}
-                                                title="Promedio Total Intralaboral"
-                                                value={watch('promedioTotalIntralaboral')}
-                                            />
-                                        </Grid>
+                    <Grid item xs={12}>
+                        <StickyActionBar
+                            mainTitle="Acciones"
+                            showButton={false}
+                            showButtonAction={false}
+                            othersButton={
+                                <>
+                                    <Grid item xs={6} md={4} lg={2.5}>
+                                        <AnimateButton>
+                                            <Button
+                                                fullWidth
+                                                variant="outlined"
+                                                startIcon={<ArrowBack />}
+                                                onClick={() => navigate("/apt-qualification/list")}
+                                                sx={{ borderRadius: 2 }}
+                                            >
+                                                Cerrar
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
-                                </Grid>
 
-                                <Grid item xs={12}>
-                                    <Grid container spacing={2.5}>
-                                        <Grid item xs={12} md={4}>
-                                            <ResultCard
-                                                icon={BusinessCenter}
-                                                title="Total Extralaboral"
-                                                value={watch('totalExtralaboral')}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={4}>
-                                            <ResultCard
-                                                icon={BusinessCenter}
-                                                title="Promedio Extralaboral"
-                                                value={watch('promedioExtralaboral')}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={4}>
-                                            <ResultCard
-                                                icon={BusinessCenter}
-                                                title="Promedio Total Extralaboral"
-                                                value={watch('promedioTotalExtralaboral')}
-                                            />
-                                        </Grid>
+                                    <Grid item xs={6} md={4} lg={2.5}>
+                                        <AnimateButton>
+                                            <Button
+                                                fullWidth
+                                                variant="contained"
+                                                onClick={handleSubmit(handleSave)}
+                                                disabled={isSubmitting}
+                                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <Save />}
+                                            >
+                                                {isSubmitting
+                                                    ? "Guardando..."
+                                                    : (idAPTCalificacion ? "Actualizar" : "Guardar")
+                                                }
+                                            </Button>
+                                        </AnimateButton>
                                     </Grid>
-                                </Grid>
+                                </>
+                            }
+                        >
+                            <Box sx={{ width: "100%" }}>
+                                <Stack spacing={3}>
+                                    <SectionCard
+                                        icon={Person}
+                                        title="Información del empleado"
+                                        subtitle="Análisis de factores de riesgo psicosocial a nivel intra y extralaboral"
+                                    >
+                                        <Grid container spacing={2.5} sx={{ paddingRight: 3 }}>
+                                            <Grid item xs={12} md={4}>
+                                                <InputDatePicker
+                                                    name="fecha"
+                                                    label="Fecha"
+                                                    bug={errors.fecha}
+                                                />
+                                            </Grid>
 
-                                <Grid item xs={12}>
-                                    <InputText
-                                        multiline
-                                        rows={5}
-                                        name="condicionesIndividuo"
-                                        label="Condiciones Individuo"
-                                        sx={textareaSx}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </SectionCard>
-                    </Stack>
+                                            <Grid item xs={12} md={4}>
+                                                <InputText name="telefono" label="Teléfono" />
+                                            </Grid>
 
-                    <Card sx={{ mt: 3, borderRadius: 3 }}>
-                        <CardContent sx={{ p: 3 }}>
-                            <Stack
-                                direction={{ xs: 'column', md: 'row' }}
-                                justifyContent="space-between"
-                                alignItems={{ xs: 'stretch', md: 'center' }}
-                                spacing={2}
-                            >
-                                <Box>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                        Listo para guardar
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Revisa cada sección y guarda el registro cuando estés listo.
-                                    </Typography>
-                                </Box>
-                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                                    <AnimateButton>
-                                        <Button
-                                            variant="outlined"
-                                            startIcon={<ArrowBack />}
-                                            onClick={() => navigate('/apt-qualification/list')}
-                                            sx={{ borderRadius: 2, px: 2.5, py: 1 }}
-                                        >
-                                            Cancelar
-                                        </Button>
-                                    </AnimateButton>
-                                    <AnimateButton>
-                                        <Button
-                                            variant="contained"
-                                            startIcon={<Save />}
-                                            onClick={handleSubmit(handleSave)}
-                                            sx={{
-                                                borderRadius: 2,
-                                                px: 2.5,
-                                                py: 1,
-                                                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
-                                            }}
-                                        >
-                                            Guardar
-                                        </Button>
-                                    </AnimateButton>
+                                            <Grid item xs={12} md={4}>
+                                                <InputText
+                                                    name="direccionCorrespondencia"
+                                                    label="Dirección"
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </SectionCard>
+
+                                    <SectionCard
+                                        icon={BusinessCenter}
+                                        title="Información laboral"
+                                        subtitle="Datos de empresa, puesto y fechas de ingreso."
+                                    >
+                                        <Grid container spacing={2.5}>
+                                            <Grid item xs={12} md={6}>
+                                                <InputSelectAutocomplete
+                                                    name="idEmpresaAuto"
+                                                    label="Empresa"
+                                                    options={company}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <InputSelectAutocomplete
+                                                    name="idPuestoTrabajoAuto"
+                                                    label="Puesto de Trabajo"
+                                                    options={lsCargo}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <InputDatePicker
+                                                    name="fechaIngresoEmpresa"
+                                                    label="Ingreso Empresa"
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <InputDatePicker
+                                                    name="fechaIngresoPuesto"
+                                                    label="Ingreso Puesto"
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </SectionCard>
+
+                                    <SectionCard
+                                        icon={LocalHospital}
+                                        title="Diagnóstico"
+                                        subtitle="Selecciona uno o varios diagnósticos clínicos asociados al caso."
+                                    >
+                                        <DiagnosisAPT />
+                                    </SectionCard>
+
+                                    <SectionCard
+                                        icon={SupervisorAccount}
+                                        title="Evaluador"
+                                        subtitle="Datos de la persona responsable de la evaluación."
+                                    >
+                                        <Grid container spacing={2.5}>
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputSelect
+                                                    name="documentoEvaluador"
+                                                    label="Evaluador"
+                                                    options={lsEvaluador}
+                                                    onChange={handleEvaluador}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputText
+                                                    name="evaluadorDocumento"
+                                                    label="Documento del Evaluador"
+                                                    disabled
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputText
+                                                    name="evaluadorProfesion"
+                                                    label="Profesión"
+                                                    disabled
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputText
+                                                    name="evaluadorPostgrado"
+                                                    label="Postgrado"
+                                                    disabled
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputText
+                                                    name="evaluadorTarjetaPro"
+                                                    label="No. Tarjeta profesional"
+                                                    disabled
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6} lg={4}>
+                                                <InputText
+                                                    name="evaluadorNumLicencia"
+                                                    label="No. De licencia en salud ocupacional"
+                                                    disabled
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </SectionCard>
+
+                                    <SectionCard
+                                        icon={Description}
+                                        title="Narrativa y contexto"
+                                        subtitle="Describe el periodo, expectativas, antecedentes y aspectos organizacionales."
+                                    >
+                                        <Grid container spacing={2.5}>
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    multiline
+                                                    minRows={4}
+                                                    name="acercaPeriodo"
+                                                    label="Acerca del Período"
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    multiline
+                                                    minRows={4}
+                                                    name="expectativasProceso"
+                                                    label="Expectativas del Proceso"
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    multiline
+                                                    minRows={4}
+                                                    name="antecedentesOcupacionales"
+                                                    label="Antecedentes Ocupacionales"
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    multiline
+                                                    minRows={4}
+                                                    name="aspectosOrganizacionales"
+                                                    label="Aspectos Organizacionales"
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <SubCard title="Factores de Riesgo Psicosocial a Nivel Intra y Extralaboral" darkTitle>
+                                                    <Grid container spacing={2.5}>
+                                                        <Grid item xs={12} md={6} lg={4}>
+                                                            <InputDatePicker
+                                                                name="fechaCargo"
+                                                                label="Fecha Cargo"
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item xs={12} md={6} lg={4}>
+                                                            <InputSelectAutocomplete
+                                                                name="idCargoAuto"
+                                                                label="Cargo"
+                                                                options={lsCargo}
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item xs={12} md={6} lg={4}>
+                                                            <InputSelectAutocomplete
+                                                                name="idAreaAuto"
+                                                                label="Área"
+                                                                options={lsArea}
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item xs={12}>
+                                                            <InputText
+                                                                multiline
+                                                                minRows={4}
+                                                                name="mision"
+                                                                label="Misión u objetivos del cargo"
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item xs={12}>
+                                                            <InputText
+                                                                multiline
+                                                                minRows={4}
+                                                                name="proceso"
+                                                                label="Descripción del proceso"
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item xs={12}>
+                                                            <InputText
+                                                                multiline
+                                                                minRows={4}
+                                                                name="caracteristicas"
+                                                                label="Características del puesto de trabajo"
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
+                                                </SubCard>
+                                            </Grid>
+                                        </Grid>
+                                    </SectionCard>
+
+                                    <SectionCard
+                                        icon={Description}
+                                        title="Fuentes y agentes"
+                                        subtitle="Registra fuentes y agentes con una edición más visual y compacta."
+                                    >
+                                        <Grid container spacing={2.5}>
+                                            <Grid item xs={12}>
+                                                <DetailFuentes />
+                                            </Grid>
+
+                                            <Grid item xs={12} sx={{ my: 1.5 }}>
+                                                <Divider />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                {!idAPTCalificacion && (
+                                                    <Box>
+                                                        <Alert severity="warning" variant="outlined" sx={{ borderRadius: "8px" }}>
+                                                            Debe guardar la calificación principal primero para poder registrar los agentes de riesgo.
+                                                        </Alert>
+                                                    </Box>
+                                                )}
+                                            </Grid>
+
+                                            <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'left' }}>
+                                                <AnimateButton>
+                                                    <Button
+                                                        variant="contained"
+                                                        onClick={handleOpenAgentesPopup}
+                                                        disabled={!idAPTCalificacion}
+                                                        startIcon={<OpenInNew sx={{ fontSize: '1.1rem' }} />}
+                                                        sx={{
+                                                            borderRadius: '8px',
+                                                            px: 3,
+                                                            py: 1.2,
+                                                            fontWeight: 500,
+                                                            letterSpacing: '0.02em',
+                                                            textTransform: 'none',
+                                                            fontSize: '0.875rem',
+                                                            transformOrigin: 'center',
+                                                            background: (t) => !idAPTCalificacion
+                                                                ? undefined
+                                                                : `linear-gradient(135deg, ${t.palette.primary.main} 0%, ${t.palette.primary.dark} 100%)`,
+                                                            boxShadow: (t) => idAPTCalificacion
+                                                                ? `0 4px 12px rgba(0, 0, 0, 0.08)`
+                                                                : 'none',
+                                                            transition: 'all 0.2s ease-in-out',
+                                                            '&:hover': {
+                                                                background: (t) => !idAPTCalificacion
+                                                                    ? undefined
+                                                                    : `linear-gradient(135deg, ${t.palette.primary.dark} 0%, ${t.palette.primary.main} 100%)`,
+                                                                boxShadow: (t) => idAPTCalificacion
+                                                                    ? `0 6px 16px rgba(0, 0, 0, 0.12)`
+                                                                    : 'none',
+                                                                transform: idAPTCalificacion ? 'translateY(-1px)' : 'none',
+                                                            },
+                                                            '&.Mui-disabled': {
+                                                                background: (t) => t.palette.action.disabledBackground,
+                                                                color: (t) => t.palette.action.disabled,
+                                                            }
+                                                        }}
+                                                    >
+                                                        Ver agentes de riesgo
+                                                    </Button>
+                                                </AnimateButton>
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    multiline
+                                                    minRows={4}
+                                                    name="descripcionAgentes"
+                                                    label="Descripción Agentes"
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    multiline
+                                                    minRows={4}
+                                                    name="aspectosIndividuales"
+                                                    label="Aspectos Individuales"
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </SectionCard>
+
+                                    <SectionCard
+                                        icon={Assessment}
+                                        title="Resultados"
+                                        subtitle="Captura los valores de evaluación y condiciones finales del individuo."
+                                    >
+                                        <Grid container spacing={2.5}>
+                                            <Grid item xs={12} md={6}>
+                                                <TableFactors idAPTCalificacion={idAPTCalificacion} tipo={1} tipoFactor="Intralaboral" />
+                                            </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <TableFactors idAPTCalificacion={idAPTCalificacion} tipo={2} tipoFactor="Extralaboral" />
+                                            </Grid>
+
+                                            <Grid item xs={12} sx={{ mb: 2 }}>
+                                                <TableResultFactors />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <InputText
+                                                    multiline
+                                                    minRows={4}
+                                                    name="condicionesIndividuo"
+                                                    label="Condiciones Individuo"
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </SectionCard>
                                 </Stack>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-                </Box>
+                            </Box>
+                        </StickyActionBar>
+                    </Grid>
+                </Grid>
             </FormProvider>
         </ValidateActionSkeleton>
     );

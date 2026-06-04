@@ -21,6 +21,7 @@ export const DeleteAPTHPOrganizationalFactor = async (id, tipoLogica) => await d
 
 // --- APTHP Metodo Control ---
 export const GetAllAPTHPMetodoControl = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPMetodoControl/${tipoLogica}`, { idAPT });
+export const GetAllComboAPTHPMetodoControl = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHPMetodoControl/Combo`, { idAPT });
 export const SaveAPTHPMetodoControl = async (obj, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/APTHPMetodoControl/${tipoLogica}`, obj);
 export const DeleteAPTHPMetodoControl = async (id, tipoLogica) => await deleteData(`${Url.APTHigienePlantilla}/APTHPMetodoControl/${tipoLogica}`, { id });
 
@@ -43,3 +44,12 @@ export const SaveAPTHPMetodoOWAS = async (obj, tipoLogica) => await postData(`${
 export const GetAllAPTHPValoracion = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPValoracion/${tipoLogica}`, { idAPT });
 export const GetDataTableAPTHPValoracion = async (idAPT, tipoLogica) => await getData(`${Url.APTHigienePlantilla}/APTHPValoracion-TableData/${tipoLogica}`, { idAPT });
 export const SaveAPTHPValoracion = async (obj, tipoLogica) => await postData(`${Url.APTHigienePlantilla}/APTHPValoracion/${tipoLogica}`, obj);
+
+/* --- APTHP Firma --- */
+export const GetAllAPTHFirma = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/APTHFirma`, { idAPT });
+export const SaveAPTHFirma = async (obj) => await postData(`${Url.APTHigienePlantilla}/APTHFirma`, obj);
+export const DeleteAPTHFirma = async (id) => await deleteData(`${Url.APTHigienePlantilla}/APTHFirma`, { id });
+
+/* Aprobar */
+export const GetApproveAPTHygiene = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/Aprobar/Lista`, { idAPT });
+export const ApproveAPTHygiene = async (idAPT) => await getData(`${Url.APTHigienePlantilla}/Aprobar`, { idAPT });

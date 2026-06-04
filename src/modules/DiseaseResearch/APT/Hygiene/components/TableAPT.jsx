@@ -25,10 +25,9 @@ import {
     Typography
 } from '@mui/material';
 import {
+    ActivityRecordsExist,
     DeleteAPTHPMetodoControl,
     DeleteAPTHPOrganizationalFactor,
-    DeleteAPTHPValorRefeSegmento,
-    ActivityRecordsExist,
     GetAllAPTHPMetodoControl,
     GetAllAPTHPMetodoOWAS,
     GetAllAPTHPOrganizationalFactor,
@@ -39,25 +38,24 @@ import {
     SaveAPTHPValorRefeSegmento
 } from 'api/clients/APTHigienePlantillaClient';
 import { GetByTipoCatalogoCombo, InsertCatalog } from 'api/clients/CatalogClient';
+import ControlModal from 'components/controllers/ControlModal';
 import { CodCatalogo } from 'components/helpers/Enums';
 import { UpperFirstChar } from 'components/helpers/Format';
 import Iconify from 'components/iconify/iconify';
 import InputSelect from 'components/input/InputSelect';
 import InputTextEditor from 'components/input/InputTextEditor';
 import EmptyState from 'components/loading/EmptyState';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as yup from 'yup';
-import CustomAlert from './CustomAlert';
 import { formatearResultado, posturasErgonomicasOWAS } from './ArrayAPT';
-import ControlModal from 'components/controllers/ControlModal';
-import AnimatedSearchBar from './AnimatedSearchBar';
+import CustomAlert from './CustomAlert';
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: '#E0E0E0',
         color: theme.palette.common.black,
@@ -73,7 +71,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme, isselected }) => ({
+export const StyledTableRow = styled(TableRow)(({ theme, isselected }) => ({
     backgroundColor: isselected ? '#bbdefb !important' : 'inherit',
     borderLeft: isselected && `5px solid ${theme.palette.primary.main}`,
     transition: 'all 0.2s ease',
@@ -929,395 +927,4 @@ export const TableReferenceValuesSegment = () => {
         </Grid>
     );
 };
-
-
-const validationControlMethods = yup.object().shape({
-    control: yup.string().required("El control es requerido"),
-    tipoControl: yup.string().required("El tipo de control es requerido"),
-    observacionesUso: yup.string().required("Las observaciones sobre uso brindado es requerida"),
-    observacionesNivel: yup.string().required("Las observaciones sobre nivel de protección brindado es requerida"),
-});
-
-const AddCatalogoData = ({ getDataCombo, onClose, idTipoCatalogo, codCatalogo }) => {
-    const [nombre, setNombre] = useState('');
-    const [error, setError] = useState(false);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!nombre.trim()) {
-            setError(true);
-            return;
-        }
-
-        try {
-            const objCatalogo = {
-                nombre: nombre,
-                codigo: codCatalogo,
-                idTipoCatalogo: idTipoCatalogo,
-                estado: true,
-            }
-
-            const result = await InsertCatalog(objCatalogo);
-            if (result.status === 200) {
-                await getDataCombo();
-                toast.success("Registro agregado correctamente");
-                onClose();
-                setNombre('');
-            }
-        } catch (error) {
-            toast.error("Error al agregar el registro");
-        }
-    };
-
-    return (
-        <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ width: '100%', mb: 4 }}
-        >
-            <Stack direction="row" spacing={2.5} alignItems="center">
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Nombre"
-                    value={nombre}
-                    onChange={(e) => {
-                        setNombre(e.target.value);
-                        if (error) setError(false);
-                    }}
-                    error={error}
-                    helperText={error && "El nombre es requerido"}
-                />
-
-                <AnimateButton>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        disableElevation
-                        startIcon={<Add />}
-                        sx={{
-                            height: 40,
-                            px: 3,
-                            textTransform: 'none',
-                            fontWeight: 'bold',
-                            borderRadius: 2
-                        }}
-                    >
-                        Agregar
-                    </Button>
-                </AnimateButton>
-            </Stack>
-        </Box>
-    );
-}
-
-export const TableControlMethods = () => {
-    const { watch: watchMain } = useFormContext();
-    const location = useLocation();
-
-    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
-    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
-
-    const methods = useForm({
-        resolver: yupResolver(validationControlMethods),
-        defaultValues: { isUpdateRegister: false, control: '', tipoControl: '', observacionesUso: '', observacionesNivel: '' }
-    });
-
-    const { handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue } = methods;
-    const isUpdateRegister = watch('isUpdateRegister');
-
-    const [openModal, setOpenModal] = useState(false);
-    const [idTipoCatalogo, setIdTipoCatalogo] = useState(0);
-    const [codCatalogo, setCodCatalogo] = useState("");
-
-    const [lsControl, setLsControl] = useState([]);
-    const [lsTipoControl, setLsTipoControl] = useState([]);
-    const [lsControlMethods, setLsControlMethods] = useState([]);
-    const [selectedId, setSelectedId] = useState(null);
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 5;
-
-    async function getCombo() {
-        const lsServerTipoControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_TIPO_CONTROL);
-        setLsTipoControl(lsServerTipoControl.data);
-
-        const lsServerControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_CONTROL);
-        setLsControl(lsServerControl.data);
-    }
-
-    useEffect(() => {
-        getCombo();
-    }, []);
-
-    const getData = async () => {
-        try {
-            const response = await GetAllAPTHPMetodoControl(idAPT, tipoLogica);
-            setLsControlMethods(response.data.datos || []);
-        } catch (error) {
-            toast.error("Error al cargar los métodos de control");
-            setLsControlMethods([]);
-        }
-    };
-
-    useEffect(() => {
-        if (idAPT) getData();
-    }, [idAPT, tipoLogica]);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleClear = () => {
-        reset({ control: '', tipoControl: '', observacionesUso: '', observacionesNivel: '', isUpdateRegister: false });
-        setSelectedId(null);
-    };
-
-    const handleDoubleClick = (item) => {
-        setValue('control', item.control, { shouldValidate: true });
-        setValue('tipoControl', item.tipoControl, { shouldValidate: true });
-        setValue('observacionesUso', item.observacionesUso === '<p><br></p>' ? '' : item.observacionesUso, { shouldValidate: true });
-        setValue('observacionesNivel', item.observacionesNivel === '<p><br></p>' ? '' : item.observacionesNivel, { shouldValidate: true });
-        setValue('isUpdateRegister', true);
-        setSelectedId(item.id);
-    };
-
-    const handleClick = async (datos) => {
-        try {
-            const payload = {
-                ...datos,
-                observacionesUso: datos.observacionesUso === '<p><br></p>' ? '' : datos.observacionesUso,
-                observacionesNivel: datos.observacionesNivel === '<p><br></p>' ? '' : datos.observacionesNivel,
-                id: isUpdateRegister ? selectedId : 0,
-                idAPT: idAPT
-            };
-
-            const response = await SaveAPTHPMetodoControl(payload, tipoLogica);
-            if (response.data.exito) {
-                toast.success(response.data.mensaje);
-                await getData();
-                handleClear();
-            } else {
-                toast.error(response.data.mensaje);
-            }
-        } catch (error) {
-            toast.error("Error al guardar el método de control");
-        }
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            const response = await DeleteAPTHPMetodoControl(id, tipoLogica);
-            if (response.data.exito) {
-                toast.success(response.data.mensaje);
-                await getData();
-                if (selectedId === id) handleClear();
-            } else {
-                toast.error(response.data.mensaje);
-            }
-        } catch (error) {
-            toast.error("Error al eliminar el método de control");
-        }
-    };
-
-    return (
-        <FormProvider {...methods}>
-            <ControlModal
-                maxWidth="md"
-                open={openModal}
-                onClose={() => setOpenModal(false)}
-                title="Agregar nuevo registro"
-            >
-                <AddCatalogoData idTipoCatalogo={idTipoCatalogo} codCatalogo={codCatalogo} getDataCombo={getCombo} onClose={() => setOpenModal(false)} />
-            </ControlModal>
-
-            <Grid container spacing={2} alignItems="center">
-                {/* {tipoLogica == 1 &&
-                    <Grid item xs={12}>
-                        <AnimatedSearchBar />
-                    </Grid>
-                } */}
-
-                <Grid item xs={12} md={6}>
-                    <InputSelect
-                        options={lsControl}
-                        name="control"
-                        label="Control"
-                        defaultValue=""
-                        bug={errors.control}
-                        onAddClick={() => {
-                            setIdTipoCatalogo(CodCatalogo.IEL_CONTROL);
-                            setCodCatalogo(`IELCONT0${lsControl.length + 1}`);
-                            setOpenModal(true);
-                        }}
-                    />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                    <InputSelect
-                        options={lsTipoControl}
-                        name="tipoControl"
-                        label="Tipo de control"
-                        defaultValue=""
-                        bug={errors.tipoControl}
-                        onAddClick={() => {
-                            setIdTipoCatalogo(CodCatalogo.IEL_TIPO_CONTROL);
-                            setCodCatalogo(`IELTI0${lsTipoControl.length + 1}`);
-                            setOpenModal(true);
-                        }}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <InputTextEditor label="Observaciones sobre uso brindado (Si aplica)" name="observacionesUso" defaultValue="" />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <InputTextEditor label="Observaciones sobre nivel de protección brindado" name="observacionesNivel" defaultValue="" />
-                </Grid>
-
-                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Stack direction="row" spacing={1}>
-                        <AnimateButton>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleSubmit(handleClick)}
-                                disabled={isSubmitting}
-                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : isUpdateRegister ? <Edit /> : <AddCircle />}
-                                sx={{ minWidth: '110px' }}
-                            >
-                                {isSubmitting ? 'Guardando...' : isUpdateRegister ? 'Actualizar' : 'Agregar'}
-                            </Button>
-                        </AnimateButton>
-
-                        <AnimateButton>
-                            <Button disabled={!(isUpdateRegister || watch('control'))} variant="outlined" onClick={handleClear} startIcon={<ClearAll />}>
-                                Limpiar
-                            </Button>
-                        </AnimateButton>
-                    </Stack>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <TableContainer component={Paper} sx={{ overflowX: 'auto', elevation: 0, border: '1px solid #e0e0e0', borderRadius: '12px' }}>
-                        <Table sx={{ minWidth: 650 }} size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell>Control</StyledTableCell>
-                                    <StyledTableCell>Tipo de control</StyledTableCell>
-                                    <StyledTableCell align="center">Observaciones sobre uso brindado (Si aplica)</StyledTableCell>
-                                    <StyledTableCell align="center">Observaciones sobre nivel de protección brindado</StyledTableCell>
-                                    <StyledTableCell align="center">Acción</StyledTableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {Array.isArray(lsControlMethods) && lsControlMethods.length > 0 ? (
-                                    lsControlMethods.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
-                                        <StyledTableRow
-                                            key={item.id}
-                                            isselected={selectedId === item.id ? 1 : 0}
-                                            onDoubleClick={() => handleDoubleClick(item)}
-                                        >
-                                            <StyledTableCell sx={{ width: '15%' }}>{item.nameControl}</StyledTableCell>
-                                            <StyledTableCell sx={{ width: '15%' }}>{item.nameTipoControl}</StyledTableCell>
-                                            <StyledTableCell align="left" sx={{ width: '35%' }}>
-                                                <Box
-                                                    dangerouslySetInnerHTML={{ __html: item.observacionesUso }}
-                                                    sx={{
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 3,
-                                                        WebkitBoxOrient: 'vertical',
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                        lineHeight: '1.5',
-                                                        fontSize: '0.875rem',
-                                                        color: 'text.secondary',
-                                                        textAlign: 'justify',
-                                                        px: 1,
-                                                        '& > *': {
-                                                            display: 'inline',
-                                                            margin: 0,
-                                                        },
-                                                        '& p, & div': {
-                                                            '&:not(:last-child):after': {
-                                                                content: '" "',
-                                                                whiteSpace: 'pre',
-                                                            }
-                                                        }
-                                                    }}
-                                                />
-                                            </StyledTableCell>
-
-                                            <StyledTableCell align="left" sx={{ width: '35%' }}>
-                                                <Box
-                                                    dangerouslySetInnerHTML={{ __html: item.observacionesNivel }}
-                                                    sx={{
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 3,
-                                                        WebkitBoxOrient: 'vertical',
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                        lineHeight: '1.5',
-                                                        fontSize: '0.875rem',
-                                                        color: 'text.secondary',
-                                                        textAlign: 'justify',
-                                                        px: 1,
-                                                        '& > *': {
-                                                            display: 'inline',
-                                                            margin: 0,
-                                                        },
-                                                        '& p, & div': {
-                                                            '&:not(:last-child):after': {
-                                                                content: '" "',
-                                                                whiteSpace: 'pre',
-                                                            }
-                                                        }
-                                                    }}
-                                                />
-                                            </StyledTableCell>
-
-                                            <StyledTableCell align="center">
-                                                <Stack direction="row" spacing={1.5} justifyContent="center">
-                                                    <Tooltip disableInteractive placement='top' title="Actualizar">
-                                                        <IconButton color="primary" onClick={() => handleDoubleClick(item)} size="small">
-                                                            <Edit fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
-
-                                                    <Tooltip disableInteractive placement='top' title="Eliminar">
-                                                        <IconButton color="error" onClick={() => handleDelete(item.id)} size="small">
-                                                            <Close fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Stack>
-                                            </StyledTableCell>
-                                        </StyledTableRow>
-                                    ))
-                                ) : (
-                                    <StyledTableRow>
-                                        <StyledTableCell colSpan={5} align="center">
-                                            <EmptyState seeSubtitle={false} title="No hay registros" />
-                                        </StyledTableCell>
-                                    </StyledTableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-
-                        {lsControlMethods.length > 5 &&
-                            <TablePagination
-                                rowsPerPageOptions={[]}
-                                component="div"
-                                count={lsControlMethods.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                labelDisplayedRows={({ from, to, count }) => `${from} - ${to} de ${count}`}
-                            />
-                        }
-                    </TableContainer>
-                </Grid>
-            </Grid>
-        </FormProvider>
-    );
-};
+

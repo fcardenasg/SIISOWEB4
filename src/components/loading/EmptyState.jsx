@@ -14,7 +14,7 @@ export default function EmptyState({ seeSubtitle = true, title = "No se encontra
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                py: 7,
+                py: 5,
                 textAlign: "center",
                 overflow: "hidden"
             }}
@@ -31,8 +31,8 @@ export default function EmptyState({ seeSubtitle = true, title = "No se encontra
             >
                 <Icon
                     icon="solar:folder-broken"
-                    width={85}
-                    height={85}
+                    width={70}
+                    height={70}
                     style={{ opacity: 0.55, color: "#9e9e9e" }}
                 />
             </motion.div>

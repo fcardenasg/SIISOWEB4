@@ -15,6 +15,7 @@ export const GetAllComboAsesorInvestigacion = async (isInvestigation) => await g
 export const GetAllComboVentanilla = async () => await getData(Url.UsuariosVentanilla);
 export const GetAllComboRegTaxi = async () => await getData(Url.UsuariosRegTaxi);
 export const GetAllComboByIdRol = async (idRol) => await getData(Url.UsuariosRol, { idRol });
+export const GetAllComboAsesorAptHigiene = async () => await getData(`${Url.Usuarios}/combo-asesor-apthigiene`);
 
 /* Permisos */
 export const InsertPermisosUser = async (idUsuario) => await getData(Url.UsuariosInsertPermiso, { idUsuario });

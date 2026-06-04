@@ -230,27 +230,25 @@ export const CodCatalogo = {
     MEDLAB_INS_ORIGEN: 197,
 
     LISTA_CHEKEO_REINTEGRO: 159,
-
     TODAS_ASESORIAS: 137,
     LATERALIDAD: 82,
-
     SITUACION_EMPLEADO: 214,
     VISTO_BUENO: 215,
 
-  
-  /*  APTCalificacion */
 
-   APT_FUENTES: 16,
-APT_PARENTESCO: 16,
-APT_GRUPO_CONDICION: 16,
-APT_CONDICION: 16,
-APT_EXPOSICION: 16,
-APT_FRECUENCIA: 16,
-APT_INTENSIDAD: 16,
-APT_TIPO: 16,
-APT_CARGO: 16,
-APT_AREA: 16,
-APT_PUESTO_TRABAJO: 16,
+    /*  APTCalificacion */
+    APTPSICO_FUENTES: 2040,
+    APTPSICO_PARENTESCO: 2041,
+
+    APT_GRUPO_CONDICION: 16,
+    APT_CONDICION: 16,
+    APT_EXPOSICION: 16,
+    APT_FRECUENCIA: 16,
+    APT_INTENSIDAD: 16,
+    APT_TIPO: 16,
+    APT_CARGO: 16,
+    APT_AREA: 16,
+    APT_PUESTO_TRABAJO: 16,
 
 }
 
@@ -321,7 +319,7 @@ export const Modulo = {
     Rol: 46,
     AsignacionInvestigacion: 47,
     InvestigacionEnfermedadLaboral: 48,
-     APTCalificacion: 49,
+    APTCalificacion: 49,
 }
 
 export const IdTipoProveedor = {

@@ -3,7 +3,7 @@ import { Button, Grid, useMediaQuery } from "@mui/material";
 import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
 import { Url } from "api/instances/AuthRoute";
 import axios from "axios";
-import { MessageError } from "components/alert/AlertAll";
+import toast from 'react-hot-toast';
 import { ArrayTodaSede } from "components/Arrays";
 import { CodCatalogo, Message, TitleButton } from "components/helpers/Enums";
 import InputDatePick from "components/input/InputDatePick";
@@ -21,8 +21,7 @@ const ExportRehabilitationPlan = ({ setOpcionBusqueda, opcionBusqueda, setSede, 
 
     const [lsSede, setLsSede] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [openError, setOpenError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+
 
     useEffect(() => {
         async function getAll() {
@@ -38,6 +37,11 @@ const ExportRehabilitationPlan = ({ setOpcionBusqueda, opcionBusqueda, setSede, 
 
     async function getDataForExport() {
         try {
+            if (opcionBusqueda === 0 && (!documento || documento.trim() === '')) {
+                toast.error('Debe digitar el Documento para poder generar el Excel');
+                return;
+            }
+
             setLoading(true);
 
             const parametros = {
@@ -66,14 +70,13 @@ const ExportRehabilitationPlan = ({ setOpcionBusqueda, opcionBusqueda, setSede, 
         } catch (error) {
             console.error("Error exportando excel:", error);
             setLoading(false);
-            setOpenError(true);
-            setErrorMessage(Message.ErrorExcel || "Error al generar el archivo Excel");
+            toast.error(Message.ErrorExcel || "Error al generar el archivo Excel");
         }
     }
 
     return (
         <Fragment>
-            <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
+
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <SelectOnChange

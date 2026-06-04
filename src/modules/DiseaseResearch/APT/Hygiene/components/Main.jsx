@@ -1,30 +1,38 @@
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
-import { Button, Divider, Grid } from "@mui/material";
-import { ActivityRecordsExist, ValorRefeSegmentoRecordsExist } from "api/clients/APTHigienePlantillaClient";
-import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Add, AddCircle, ClearAll, Close, Edit } from '@mui/icons-material';
+import { Box, Button, CircularProgress, Divider, Grid, IconButton, Paper, Stack, Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, TextField, Tooltip } from "@mui/material";
+import { ActivityRecordsExist, DeleteAPTHPMetodoControl, GetAllAPTHPMetodoControl, SaveAPTHPMetodoControl, ValorRefeSegmentoRecordsExist } from "api/clients/APTHigienePlantillaClient";
+import { GetByTipoCatalogoCombo, InsertCatalog } from "api/clients/CatalogClient";
 import { GetByIdCompany } from "api/clients/CompanyClient";
+import ControlModal from 'components/controllers/ControlModal';
 import { CodCatalogo, DefaultData } from "components/helpers/Enums";
 import InputCheckBox from "components/input/InputCheckBox";
 import InputSelect from "components/input/InputSelect";
 import InputSelectAutocomplete from "components/input/InputSelectAutocomplete";
 import InputText from "components/input/InputText";
 import InputTextEditor from "components/input/InputTextEditor";
+import EmptyState from 'components/loading/EmptyState';
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { useFormContext } from "react-hook-form";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import toast from 'react-hot-toast';
 import { useLocation } from "react-router-dom";
 import SubCard from "ui-component/cards/SubCard";
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import * as yup from 'yup';
 import ActivityTable from "./ActivityTable";
+import AnimatedSearchBar from './AnimatedSearchBar';
 import BiomechanicalRiskAssessment from "./BiomechanicalRiskAssessment";
 import CustomAlert from "./CustomAlert";
 import ImageDropzone from "./ImageDropzone";
 import PhotographicEvidence from "./PhotographicEvidence";
-import { OWASMethodTables, OrganizationalFactorTable, TableControlMethods, TableReferenceValuesSegment } from "./TableAPT";
+import { OWASMethodTables, OrganizationalFactorTable, StyledTableCell, StyledTableRow, TableReferenceValuesSegment } from "./TableAPT";
 import TableValues from "./TableValues";
 import WorkCycleDropzone from "./WorkCycleDropzone";
 
-export const CompanyInformation = ({ dataModel }) => {
+export const CompanyInformation = () => {
     const { setValue, formState: { errors } } = useFormContext();
 
     const [lsCompany, setLsCompany] = useState([]);
@@ -64,7 +72,6 @@ export const CompanyInformation = ({ dataModel }) => {
                     disabled
                     name="empresa"
                     label="Empresa"
-                    defaultValue={dataModel?.empresa}
                     options={lsCompany}
                 />
             </Grid>
@@ -72,7 +79,6 @@ export const CompanyInformation = ({ dataModel }) => {
             <Grid item xs={12} md={6} lg={4}>
                 <InputText
                     disabled
-                    defaultValue={dataModel?.actividadEconomica}
                     fullWidth
                     name="actividadEconomica"
                     label="Actividad económica"
@@ -83,7 +89,6 @@ export const CompanyInformation = ({ dataModel }) => {
                 <InputSelect
                     name="sede"
                     label="Sede"
-                    defaultValue={dataModel?.sede || ""}
                     options={lsSede}
                     bug={errors.sede}
                 />
@@ -91,7 +96,6 @@ export const CompanyInformation = ({ dataModel }) => {
 
             <Grid item xs={12} md={6} lg={4}>
                 <InputSelectAutocomplete
-                    defaultValue={dataModel?.departamento}
                     name="departamentoAuto"
                     label="Departamento"
                     options={lsDepartamento}
@@ -100,7 +104,6 @@ export const CompanyInformation = ({ dataModel }) => {
 
             <Grid item xs={12} md={6} lg={4}>
                 <InputSelectAutocomplete
-                    defaultValue={dataModel?.area}
                     name="areaAuto"
                     label="Área"
                     options={lsArea}
@@ -109,7 +112,6 @@ export const CompanyInformation = ({ dataModel }) => {
 
             <Grid item xs={12} md={6} lg={4}>
                 <InputSelectAutocomplete
-                    defaultValue={dataModel?.cargo}
                     name="cargoAuto"
                     label="Cargo"
                     options={lsCargo}
@@ -119,7 +121,7 @@ export const CompanyInformation = ({ dataModel }) => {
     )
 }
 
-export const OrganizationalAspects = ({ dataModel }) => {
+export const OrganizationalAspects = () => {
     const [lsTurno, setLsTurno] = useState([]);
     const [lsCategoriaCargo, setLsCategoriaCargo] = useState([]);
     const [lsJornadaTrabajo, setLsJornadaTrabajo] = useState([]);
@@ -145,7 +147,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="jornadaLaboralHoras"
                     label="Jornada de trabajo"
-                    defaultValue={dataModel?.jornadaLaboralHoras || null}
                     options={lsJornadaTrabajo}
                 />
             </Grid>
@@ -154,7 +155,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="turno"
                     label="Turno"
-                    defaultValue={dataModel?.turno || null}
                     options={lsTurno}
                 />
             </Grid>
@@ -163,7 +163,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputText
                     name="rotaciones"
                     label="Rotaciones"
-                    defaultValue={dataModel?.rotaciones || null}
                     fullWidth
                 />
             </Grid>
@@ -172,7 +171,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputText
                     name="ritmoTrabajo"
                     label="Ritmo de trabajo"
-                    defaultValue={dataModel?.ritmoTrabajo || null}
                     fullWidth
                 />
             </Grid>
@@ -181,7 +179,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputText
                     name="tiempoPausa"
                     label="Tiempos de pausa"
-                    defaultValue={dataModel?.tiempoPausa || null}
                     fullWidth
                     multiline
                     minRows={3}
@@ -195,7 +192,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="categoriaCargo"
                     label="Categoría del cargo"
-                    defaultValue={dataModel?.categoriaCargo || null}
                     options={lsCategoriaCargo}
                 />
             </Grid>
@@ -204,7 +200,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputText
                     name="organizacionTrabajoIndividual"
                     label="Organización del trabajo (Individual)"
-                    defaultValue={dataModel?.organizacionTrabajoIndividual || null}
                     fullWidth
                     multiline
                     minRows={3}
@@ -218,7 +213,6 @@ export const OrganizationalAspects = ({ dataModel }) => {
                 <InputText
                     name="organizacionTrabajoEquipo"
                     label="Organización del trabajo (En equipo)"
-                    defaultValue={dataModel?.organizacionTrabajoEquipo || null}
                     fullWidth
                     multiline
                     minRows={3}
@@ -231,7 +225,7 @@ export const OrganizationalAspects = ({ dataModel }) => {
     )
 }
 
-export const WorkActivity = ({ dataModel }) => {
+export const WorkActivity = () => {
     const { watch: watchMain } = useFormContext();
     const location = useLocation();
 
@@ -244,11 +238,11 @@ export const WorkActivity = ({ dataModel }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Objetivo del cargo" name="objetivoCargo" defaultValue={dataModel?.objetivoCargo || null} />
+                <InputTextEditor label="Objetivo del cargo" name="objetivoCargo" />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" defaultValue={dataModel?.caracteristicasDisenoPuesto || null} />
+                <InputTextEditor label="Características de diseño del puesto de trabajo" name="caracteristicasDisenoPuesto" />
             </Grid>
 
             <Grid item xs={12}>
@@ -258,7 +252,7 @@ export const WorkActivity = ({ dataModel }) => {
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Mobiliario" name="mobiliario" defaultValue={dataModel?.mobiliario || null} />
+                <InputTextEditor label="Mobiliario" name="mobiliario" />
             </Grid>
 
             <Grid item xs={12}>
@@ -268,21 +262,21 @@ export const WorkActivity = ({ dataModel }) => {
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Herramientas, equipos y materiales" name="herramientasEquipos" defaultValue={dataModel?.herramientasEquipos || null} />
+                <InputTextEditor label="Herramientas, equipos y materiales" name="herramientasEquipos" />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Ayudas mecánicas" name="ayudasMecanicas" defaultValue={dataModel?.ayudasMecanicas || null} />
+                <InputTextEditor label="Ayudas mecánicas" name="ayudasMecanicas" />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Elementos de confort" name="elementosConfort" defaultValue={dataModel?.elementosConfort || null} />
+                <InputTextEditor label="Elementos de confort" name="elementosConfort" />
             </Grid>
         </Grid>
     )
 }
 
-export const EnvironmentalAspects = ({ dataModel }) => {
+export const EnvironmentalAspects = () => {
     const [lsAgenteBiologico, setLsAgenteBiologico] = useState([]);
     const [lsAgenteQuimico, setLsAgenteQuimico] = useState([]);
 
@@ -306,7 +300,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Condiciones de orden y aseo"
                     multiline
                     rows={2}
-                    defaultValue={dataModel?.condicionesOrdenAseo || null}
                     fullWidth
                 />
             </Grid>
@@ -315,7 +308,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="agentesBiologicos"
                     label="Agentes biológicos"
-                    defaultValue={dataModel?.agentesBiologicos || null}
                     options={lsAgenteBiologico}
                 />
             </Grid>
@@ -324,7 +316,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                 <InputSelect
                     name="agentesQuimicos"
                     label="Agentes químicos"
-                    defaultValue={dataModel?.agentesQuimicos || null}
                     options={lsAgenteQuimico}
                 />
             </Grid>
@@ -335,7 +326,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Iluminación"
                     multiline
                     rows={2}
-                    defaultValue={dataModel?.iluminacion || null}
                     fullWidth
                 />
             </Grid>
@@ -346,7 +336,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Material particulado"
                     multiline
                     rows={2}
-                    defaultValue={dataModel?.materialParticulado || null}
                     fullWidth
                 />
             </Grid>
@@ -357,7 +346,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Ruido"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.ruido || null}
                     fullWidth
                 />
             </Grid>
@@ -368,7 +356,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Temperatura"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.temperatura || null}
                     fullWidth
                 />
             </Grid>
@@ -379,7 +366,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Ventilación"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.ventilacion || null}
                     fullWidth
                 />
             </Grid>
@@ -390,7 +376,6 @@ export const EnvironmentalAspects = ({ dataModel }) => {
                     label="Vibración"
                     multiline
                     rows={3}
-                    defaultValue={dataModel?.vibracion || null}
                     fullWidth
                 />
             </Grid>
@@ -398,7 +383,7 @@ export const EnvironmentalAspects = ({ dataModel }) => {
     )
 }
 
-export const WorkActivityTwo = ({ dataModel }) => {
+export const WorkActivityTwo = () => {
     const { watch: watchMain, control } = useFormContext();
     const location = useLocation();
 
@@ -408,11 +393,11 @@ export const WorkActivityTwo = ({ dataModel }) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Descripción general del cargo" name="descripcionGeneralCargo" defaultValue={dataModel?.descripcionGeneralCargo || null} />
+                <InputTextEditor label="Descripción general del cargo" name="descripcionGeneralCargo" />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Rotaciones establecidas para el cargo" name="rotacionesCargo" defaultValue={dataModel?.rotacionesCargo || null} />
+                <InputTextEditor label="Rotaciones establecidas para el cargo" name="rotacionesCargo" />
             </Grid>
 
             <Grid item xs={12}>
@@ -426,7 +411,6 @@ export const WorkActivityTwo = ({ dataModel }) => {
                             <InputTextEditor
                                 label="Interpretación del ciclo de trabajo"
                                 name="interpretacionCicloTrabajo"
-                                defaultValue={dataModel?.interpretacionCicloTrabajo || null}
                             />
                         </Grid>
                     </Grid>
@@ -440,7 +424,7 @@ export const WorkActivityTwo = ({ dataModel }) => {
     )
 }
 
-export const AssessmentPhysicalLoad = ({ dataModel }) => {
+export const AssessmentPhysicalLoad = () => {
     const { watch: watchMain } = useFormContext();
     const location = useLocation();
 
@@ -510,12 +494,10 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
         }
     }, []);
 
-    // Cerrar popup al navegar fuera o desmontar
     useEffect(() => {
         return () => closePopup();
     }, [location.pathname, closePopup]);
 
-    // Escuchar expiración de JWT o cierre de sesión
     useEffect(() => {
         const handleStorageChange = (e) => {
             if (e.key === 'serviceToken' && !e.newValue) {
@@ -527,7 +509,6 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
     }, [closePopup]);
 
     const handleOpenPopup = () => {
-        // Si la ventana ya existe y no ha sido cerrada, solo traerla al frente
         if (valoresPopupRef.current && !valoresPopupRef.current.closed) {
             valoresPopupRef.current.focus();
             return;
@@ -542,13 +523,11 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
             popupWindow.document.body.innerHTML = '<div id="popup-root-valores"></div>';
             popupWindow.document.body.style.margin = '0';
 
-            // Copiar los estilos del documento principal a la nueva ventana para los estilos globales base
             const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
             styles.forEach(styleNode => {
                 popupWindow.document.head.appendChild(styleNode.cloneNode(true));
             });
 
-            // Crear un caché de Emotion específico para la nueva ventana, para que Material UI inyecte los estilos dinámicos aquí
             const popupCache = createCache({
                 key: 'popup-mui',
                 container: popupWindow.document.head,
@@ -609,7 +588,7 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <InputTextEditor label="Observación de los resultados" name="observacionResultadosValoracion" defaultValue={dataModel?.observacionResultados || null} />
+                            <InputTextEditor label="Observación de los resultados" name="observacionResultadosValoracion" />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -624,7 +603,7 @@ export const AssessmentPhysicalLoad = ({ dataModel }) => {
     )
 }
 
-export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
+export const ApplicableEnvironmentalMeasurements = () => {
     const { watch: watchMain, control } = useFormContext();
     const location = useLocation();
 
@@ -654,7 +633,7 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="interpretacionVibracion" defaultValue={dataModel?.interpretacionVibracion || null} disabled={!habilitadoVibracion} />
+                            <InputTextEditor label="Interpretación" name="interpretacionVibracion" disabled={!habilitadoVibracion} />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -673,7 +652,7 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="interpretacionRuido" defaultValue={dataModel?.interpretacionRuido || null} disabled={!habilitadoRuido} />
+                            <InputTextEditor label="Interpretación" name="interpretacionRuido" disabled={!habilitadoRuido} />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -692,7 +671,7 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <InputTextEditor label="Interpretación" name="interpretacionMaterialParticulado" defaultValue={dataModel?.interpretacionMaterialParticulado || null} disabled={!habilitadoMateriaParticulado} />
+                            <InputTextEditor label="Interpretación" name="interpretacionMaterialParticulado" disabled={!habilitadoMateriaParticulado} />
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -701,21 +680,412 @@ export const ApplicableEnvironmentalMeasurements = ({ dataModel }) => {
     )
 }
 
-export const AvailableControlMethods = () => {
+const AddCatalogoData = ({ getDataCombo, onClose, idTipoCatalogo, codCatalogo }) => {
+    const [nombre, setNombre] = useState('');
+    const [error, setError] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!nombre.trim()) {
+            setError(true);
+            return;
+        }
+
+        try {
+            const objCatalogo = {
+                nombre: nombre,
+                codigo: codCatalogo,
+                idTipoCatalogo: idTipoCatalogo,
+                estado: true,
+            }
+
+            const result = await InsertCatalog(objCatalogo);
+            if (result.status === 200) {
+                await getDataCombo();
+                toast.success("Registro agregado correctamente");
+                onClose();
+                setNombre('');
+            }
+        } catch (error) {
+            toast.error("Error al agregar el registro");
+        }
+    };
+
     return (
-        <TableControlMethods />
-    )
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ width: '100%', mb: 4 }}
+        >
+            <Stack direction="row" spacing={2.5} alignItems="center">
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Nombre"
+                    value={nombre}
+                    onChange={(e) => {
+                        setNombre(e.target.value);
+                        if (error) setError(false);
+                    }}
+                    error={error}
+                    helperText={error && "El nombre es requerido"}
+                />
+
+                <AnimateButton>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disableElevation
+                        startIcon={<Add />}
+                        sx={{
+                            height: 40,
+                            px: 3,
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            borderRadius: 2
+                        }}
+                    >
+                        Agregar
+                    </Button>
+                </AnimateButton>
+            </Stack>
+        </Box>
+    );
 }
 
-export const ConclusionAndSource = ({ dataModel }) => {
+const validationControlMethods = yup.object().shape({
+    control: yup.string().required("El control es requerido"),
+    tipoControl: yup.string().required("El tipo de control es requerido"),
+    observacionesUso: yup.string().required("Las observaciones sobre uso brindado es requerida"),
+    observacionesNivel: yup.string().required("Las observaciones sobre nivel de protección brindado es requerida"),
+});
+
+export const AvailableControlMethods = () => {
+    const { watch: watchMain } = useFormContext();
+    const location = useLocation();
+
+    const idAPT = watchMain("idAPTHigienePlantilla") || watchMain("idAPTHigiene");
+    const tipoLogica = location.pathname.toLowerCase().includes('template') ? 1 : 2;
+
+    const methods = useForm({
+        resolver: yupResolver(validationControlMethods),
+        defaultValues: { isUpdateRegister: false, control: '', tipoControl: '', observacionesUso: '', observacionesNivel: '' }
+    });
+
+    const { handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue } = methods;
+    const isUpdateRegister = watch('isUpdateRegister');
+
+    const [openModal, setOpenModal] = useState(false);
+    const [idTipoCatalogo, setIdTipoCatalogo] = useState(0);
+    const [codCatalogo, setCodCatalogo] = useState("");
+
+    const [lsControl, setLsControl] = useState([]);
+    const [lsTipoControl, setLsTipoControl] = useState([]);
+    const [lsControlMethods, setLsControlMethods] = useState([]);
+    const [selectedId, setSelectedId] = useState(null);
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 5;
+
+    async function getCombo() {
+        const lsServerTipoControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_TIPO_CONTROL);
+        setLsTipoControl(lsServerTipoControl.data);
+
+        const lsServerControl = await GetByTipoCatalogoCombo(CodCatalogo.IEL_CONTROL);
+        setLsControl(lsServerControl.data);
+    }
+
+    useEffect(() => {
+        getCombo();
+    }, []);
+
+    const getData = async () => {
+        try {
+            const response = await GetAllAPTHPMetodoControl(idAPT, tipoLogica);
+            setLsControlMethods(response.data.datos || []);
+        } catch (error) {
+            toast.error("Error al cargar los métodos de control");
+            setLsControlMethods([]);
+        }
+    };
+
+    useEffect(() => {
+        if (idAPT) getData();
+    }, [idAPT, tipoLogica]);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleClear = () => {
+        reset({ control: '', tipoControl: '', observacionesUso: '', observacionesNivel: '', isUpdateRegister: false });
+        setSelectedId(null);
+    };
+
+    const handleDoubleClick = (item) => {
+        setValue('control', item.control, { shouldValidate: true });
+        setValue('tipoControl', item.tipoControl, { shouldValidate: true });
+        setValue('observacionesUso', item.observacionesUso === '<p><br></p>' ? '' : item.observacionesUso, { shouldValidate: true });
+        setValue('observacionesNivel', item.observacionesNivel === '<p><br></p>' ? '' : item.observacionesNivel, { shouldValidate: true });
+        setValue('isUpdateRegister', true);
+        setSelectedId(item.id);
+    };
+
+    const handleClick = async (datos) => {
+        try {
+            const payload = {
+                ...datos,
+                observacionesUso: datos.observacionesUso === '<p><br></p>' ? '' : datos.observacionesUso,
+                observacionesNivel: datos.observacionesNivel === '<p><br></p>' ? '' : datos.observacionesNivel,
+                id: isUpdateRegister ? selectedId : 0,
+                idAPT: idAPT
+            };
+
+            const response = await SaveAPTHPMetodoControl(payload, tipoLogica);
+            if (response.data.exito) {
+                toast.success(response.data.mensaje);
+                await getData();
+                handleClear();
+            } else {
+                toast.error(response.data.mensaje);
+            }
+        } catch (error) {
+            toast.error("Error al guardar el método de control");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await DeleteAPTHPMetodoControl(id, tipoLogica);
+            if (response.data.exito) {
+                toast.success(response.data.mensaje);
+                await getData();
+                if (selectedId === id) handleClear();
+            } else {
+                toast.error(response.data.mensaje);
+            }
+        } catch (error) {
+            toast.error("Error al eliminar el método de control");
+        }
+    };
+
+    const handleSelectMethod = (data) => {
+        console.log(data);
+    }
+
+    return (
+        <FormProvider {...methods}>
+            <ControlModal
+                maxWidth="md"
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                title="Agregar nuevo registro"
+            >
+                <AddCatalogoData idTipoCatalogo={idTipoCatalogo} codCatalogo={codCatalogo} getDataCombo={getCombo} onClose={() => setOpenModal(false)} />
+            </ControlModal>
+
+            <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} md={6} lg={5}>
+                    <AnimatedSearchBar idAPT={idAPT} onSelect={handleSelectMethod} />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Divider sx={{ my: 1.5 }} />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <InputSelect
+                        options={lsControl}
+                        name="control"
+                        label="Control"
+                        defaultValue=""
+                        bug={errors.control}
+                        onAddClick={() => {
+                            setIdTipoCatalogo(CodCatalogo.IEL_CONTROL);
+                            setCodCatalogo(`IELCONT0${lsControl.length + 1}`);
+                            setOpenModal(true);
+                        }}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <InputSelect
+                        options={lsTipoControl}
+                        name="tipoControl"
+                        label="Tipo de control"
+                        defaultValue=""
+                        bug={errors.tipoControl}
+                        onAddClick={() => {
+                            setIdTipoCatalogo(CodCatalogo.IEL_TIPO_CONTROL);
+                            setCodCatalogo(`IELTI0${lsTipoControl.length + 1}`);
+                            setOpenModal(true);
+                        }}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <InputTextEditor label="Observaciones sobre uso brindado (Si aplica)" name="observacionesUso" defaultValue="" />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <InputTextEditor label="Observaciones sobre nivel de protección brindado" name="observacionesNivel" defaultValue="" />
+                </Grid>
+
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Stack direction="row" spacing={1}>
+                        <AnimateButton>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit(handleClick)}
+                                disabled={isSubmitting}
+                                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : isUpdateRegister ? <Edit /> : <AddCircle />}
+                                sx={{ minWidth: '110px' }}
+                            >
+                                {isSubmitting ? 'Guardando...' : isUpdateRegister ? 'Actualizar' : 'Agregar'}
+                            </Button>
+                        </AnimateButton>
+
+                        <AnimateButton>
+                            <Button disabled={!(isUpdateRegister || watch('control'))} variant="outlined" onClick={handleClear} startIcon={<ClearAll />}>
+                                Limpiar
+                            </Button>
+                        </AnimateButton>
+                    </Stack>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <TableContainer component={Paper} sx={{ overflowX: 'auto', elevation: 0, border: '1px solid #e0e0e0', borderRadius: '12px' }}>
+                        <Table sx={{ minWidth: 650 }} size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Control</StyledTableCell>
+                                    <StyledTableCell>Tipo de control</StyledTableCell>
+                                    <StyledTableCell align="center">Observaciones sobre uso brindado (Si aplica)</StyledTableCell>
+                                    <StyledTableCell align="center">Observaciones sobre nivel de protección brindado</StyledTableCell>
+                                    <StyledTableCell align="center">Acción</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {Array.isArray(lsControlMethods) && lsControlMethods.length > 0 ? (
+                                    lsControlMethods.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
+                                        <StyledTableRow
+                                            key={item.id}
+                                            isselected={selectedId === item.id ? 1 : 0}
+                                            onDoubleClick={() => handleDoubleClick(item)}
+                                        >
+                                            <StyledTableCell sx={{ width: '15%' }}>{item.nameControl}</StyledTableCell>
+                                            <StyledTableCell sx={{ width: '15%' }}>{item.nameTipoControl}</StyledTableCell>
+                                            <StyledTableCell align="left" sx={{ width: '35%' }}>
+                                                <Box
+                                                    dangerouslySetInnerHTML={{ __html: item.observacionesUso }}
+                                                    sx={{
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 3,
+                                                        WebkitBoxOrient: 'vertical',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        lineHeight: '1.5',
+                                                        fontSize: '0.875rem',
+                                                        color: 'text.secondary',
+                                                        textAlign: 'justify',
+                                                        px: 1,
+                                                        '& > *': {
+                                                            display: 'inline',
+                                                            margin: 0,
+                                                        },
+                                                        '& p, & div': {
+                                                            '&:not(:last-child):after': {
+                                                                content: '" "',
+                                                                whiteSpace: 'pre',
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </StyledTableCell>
+
+                                            <StyledTableCell align="left" sx={{ width: '35%' }}>
+                                                <Box
+                                                    dangerouslySetInnerHTML={{ __html: item.observacionesNivel }}
+                                                    sx={{
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 3,
+                                                        WebkitBoxOrient: 'vertical',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        lineHeight: '1.5',
+                                                        fontSize: '0.875rem',
+                                                        color: 'text.secondary',
+                                                        textAlign: 'justify',
+                                                        px: 1,
+                                                        '& > *': {
+                                                            display: 'inline',
+                                                            margin: 0,
+                                                        },
+                                                        '& p, & div': {
+                                                            '&:not(:last-child):after': {
+                                                                content: '" "',
+                                                                whiteSpace: 'pre',
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </StyledTableCell>
+
+                                            <StyledTableCell align="center">
+                                                <Stack direction="row" spacing={1.5} justifyContent="center">
+                                                    <Tooltip disableInteractive placement='top' title="Actualizar">
+                                                        <IconButton color="primary" onClick={() => handleDoubleClick(item)} size="small">
+                                                            <Edit fontSize="small" />
+                                                        </IconButton>
+                                                    </Tooltip>
+
+                                                    <Tooltip disableInteractive placement='top' title="Eliminar">
+                                                        <IconButton color="error" onClick={() => handleDelete(item.id)} size="small">
+                                                            <Close fontSize="small" />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Stack>
+                                            </StyledTableCell>
+                                        </StyledTableRow>
+                                    ))
+                                ) : (
+                                    <StyledTableRow>
+                                        <StyledTableCell colSpan={5} align="center">
+                                            <EmptyState seeSubtitle={false} title="No hay registros" />
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+
+                        {lsControlMethods.length > 5 &&
+                            <TablePagination
+                                rowsPerPageOptions={[]}
+                                component="div"
+                                count={lsControlMethods.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                labelDisplayedRows={({ from, to, count }) => `${from} - ${to} de ${count}`}
+                            />
+                        }
+                    </TableContainer>
+                </Grid>
+            </Grid>
+        </FormProvider>
+    );
+};
+
+export const ConclusionAndSource = () => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <InputTextEditor label="Conclusiones" name="conclusion" defaultValue={dataModel?.conclusion || null} />
+                <InputTextEditor label="Conclusiones" name="conclusion" />
             </Grid>
 
             <Grid item xs={12}>
-                <InputTextEditor label="Fuentes de información" name="fuenteInformacion" defaultValue={dataModel?.fuenteInformacion || null} />
+                <InputTextEditor label="Fuentes de información" name="fuenteInformacion" />
             </Grid>
         </Grid>
     )

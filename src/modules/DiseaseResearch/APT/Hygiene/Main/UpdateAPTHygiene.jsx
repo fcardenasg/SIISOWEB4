@@ -1,21 +1,22 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, CircularProgress, Grid, Skeleton, Typography } from "@mui/material";
-import { GetAPTHPById as GetAPTHygieneById, SaveAPTHP as SaveAPTHygiene } from "api/clients/APTHigienePlantillaClient";
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { GetAPTHPById as GetAPTHygieneById, SaveAPTHP as SaveAPTHygiene, ApproveAPTHygiene, GetApproveAPTHygiene } from "api/clients/APTHigienePlantillaClient";
 import { GetByIdEmployee } from "api/clients/EmployeeClient";
 import Accordion from 'components/accordion/Accordion';
 import { AccionMenu, Modulo } from "components/helpers/Enums";
 import Iconify from "components/iconify/iconify";
+import Cargando from 'components/loading/Cargando';
 import StickyActionBar from "components/StickyActionBar/StickyActionBar";
 import ValidateActionSkeleton from "components/ValidateAction/ValidateActionSkeleton";
 import ViewEmployee from "components/views/ViewEmployee";
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AnimateButton from "ui-component/extended/AnimateButton";
 import * as yup from 'yup';
-import Cargando from 'components/loading/Cargando';
 
+import APTHSignature from '../components/APTHSignature';
 import {
     ApplicableEnvironmentalMeasurements,
     AssessmentPhysicalLoad,
@@ -27,6 +28,7 @@ import {
     WorkActivity,
     WorkActivityTwo
 } from "../components/Main";
+import ApproveAPTHButton from '../components/ApproveAPTHButton';
 
 const validationSchema = yup.object().shape({
     documento: yup.string().nullable().required('El documento es requerido'),
@@ -41,6 +43,7 @@ const UpdateAPTHygiene = () => {
     const navigate = useNavigate();
     const [loadingData, setLoadingData] = useState(true);
     const [modelEmployee, setModelEmployee] = useState([]);
+    const [approving, setApproving] = useState(false);
 
     const methods = useForm({
         resolver: yupResolver(validationSchema),
@@ -51,6 +54,9 @@ const UpdateAPTHygiene = () => {
 
     const { handleSubmit, formState: { isSubmitting, errors }, setValue, reset, watch } = methods;
     const documento = watch("documento");
+    const apthAprobado = watch("apthAprobado");
+    const apthAprobadoFecha = watch("apthAprobadoFecha");
+    const nameAPTHAprobadoUsuario = watch("nameAPTHAprobadoUsuario");
 
     const ArrayAccordion = [
         {
@@ -111,6 +117,7 @@ const UpdateAPTHygiene = () => {
                 const response = await GetAPTHygieneById(id, 2);
                 if (response.data.exito) {
                     const data = response.data.datos;
+                    console.log(data);
 
                     if (data) {
                         data.idAPTHigiene = data.idAPTHigiene || data.id || id;
@@ -120,8 +127,6 @@ const UpdateAPTHygiene = () => {
                             await handleLoadingDocument(data.documento);
                         }
 
-                        // Agregamos un retraso adicional de 1 segundo para que la carga se sienta profesional
-                        // y dé tiempo a que la información del empleado se visualice correctamente.
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     }
                 } else {
@@ -152,11 +157,42 @@ const UpdateAPTHygiene = () => {
 
             if (result.data.exito) {
                 toast.success("APT actualizado con éxito");
+                const approveResult = await GetApproveAPTHygiene(id);
+                if (approveResult.data.exito && approveResult.data?.datos) {
+                    const approveData = approveResult.data.datos;
+                    if (approveData) {
+                        setValue("apthAprobado", approveData.apthAprobado);
+                        setValue("apthAprobadoFecha", approveData.apthAprobadoFecha);
+                        setValue("nameAPTHAprobadoUsuario", approveData.nameAPTHAprobadoUsuario);
+                    }
+                }
             } else {
                 toast.error(result.data.mensaje);
             }
         } catch (error) {
             toast.error(error.message || "Error al actualizar el APT de higiene");
+        }
+    };
+
+    const handleApprove = async () => {
+        try {
+            setApproving(true);
+            const result = await ApproveAPTHygiene(id);
+            if (result.data.exito) {
+                toast.success("APT aprobado con éxito");
+                const response = await GetAPTHygieneById(id, 2);
+                if (response.data.exito && response.data.datos) {
+                    const data = response.data.datos;
+                    data.idAPTHigiene = data.idAPTHigiene || data.id || id;
+                    reset(data);
+                }
+            } else {
+                toast.error(result.data.mensaje || "Error al aprobar el APT");
+            }
+        } catch (error) {
+            toast.error(error.message || "Error al aprobar el APT");
+        } finally {
+            setApproving(false);
         }
     };
 
@@ -249,6 +285,35 @@ const UpdateAPTHygiene = () => {
                                         </Accordion>
                                     </Grid>
                                 ))}
+
+                                <Grid item xs={12} sx={{ mt: 2 }}>
+                                    <APTHSignature />
+                                </Grid>
+
+                                <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <ApproveAPTHButton
+                                        onClick={handleApprove}
+                                        loading={approving}
+                                        approved={apthAprobado}
+                                        disabled={apthAprobado}
+                                    />
+                                    {apthAprobado && (
+                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                            {nameAPTHAprobadoUsuario && (
+                                                <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
+                                                    Aprobado por: {nameAPTHAprobadoUsuario.toLowerCase()}
+                                                </Typography>
+                                            )}
+                                            {apthAprobadoFecha && (
+                                                <Typography variant="body2" color="textSecondary">
+                                                    Fecha: {new Date(apthAprobadoFecha).toLocaleDateString('es-CO', {
+                                                        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                                                    })}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    )}
+                                </Grid>
                             </Grid>
                         </StickyActionBar>
                     </Grid>

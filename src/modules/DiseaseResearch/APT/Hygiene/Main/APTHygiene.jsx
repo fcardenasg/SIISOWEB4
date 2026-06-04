@@ -274,7 +274,7 @@ const APTHygiene = () => {
                                                 <Alert
                                                     severity="success"
                                                     variant="filled"
-                                                    icon={<Iconify icon="solar:clipboard-check-bold-duotone" width={30} />}
+                                                    icon={<Iconify icon="solar:clipboard-check-bold-duotone" width={30} sx={{ color: "white" }} />}
                                                     sx={{ borderRadius: 2, boxShadow: 2 }}
                                                 >
                                                     <AlertTitle sx={{ fontSize: '1.1rem', fontWeight: 700 }}>¡Plantilla de Higiene Localizada!</AlertTitle>

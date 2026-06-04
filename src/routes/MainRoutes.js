@@ -1199,7 +1199,7 @@ const MainRoutes = {
             path: '/apt-hygiene/template/update/:id',
             element: <UpdateTemplateHygiene />
         },
-        /* APT - Psychosocial - Template */
+        /* APT - Psychosocial - Calificación */
         {
             path: '/apt-qualification/list',
             element: <ListQualification />

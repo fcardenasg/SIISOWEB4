@@ -1,498 +1,391 @@
-import PropTypes from 'prop-types';
-
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
-    Button,
-    Grid,
-    IconButton,
-    MenuItem,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-    Tooltip,
-    Card,
-    CardContent,
-    Box,
-    Typography,
-    Chip,
-    Stack
-} from '@mui/material';
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import InputDatePicker from "components/input/InputDatePicker";
+import InputSelect from "components/input/InputSelect";
+import InputText from "components/input/InputText";
+import EmptyState from "components/loading/EmptyState";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { DeleteFuenteAPT, GetAllFuentesAPT, SaveFuenteAPT } from "api/clients/APTRatingClient";
+import AnimateButton from "ui-component/extended/AnimateButton";
+import { CodCatalogo } from "components/helpers/Enums";
+import { GetByTipoCatalogoCombo } from "api/clients/CatalogClient";
+import swal from "sweetalert";
+import { ParamDelete } from "components/alert/AlertAll";
+import { FormatDate } from "components/helpers/Format";
 
-import { useTheme } from '@mui/material/styles';
+const validationSchema = yup.object().shape({
+  idFuentes: yup.string().required("La fuente es requerida"),
+  idParentesco: yup.string().required("El parentesco es requerido"),
+  descripcion: yup.string().required("La descripción es requerida"),
+  lugar: yup.string().required("El lugar es requerido"),
+  fecha: yup.string().required("La fecha es requerida").nullable(),
+});
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#E0E0E0",
+    color: theme.palette.common.black,
+    fontWeight: "bold",
+    padding: "8px 12px",
+    userSelect: "none",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    padding: "6px 12px",
+    userSelect: "none",
+    cursor: "default",
+  },
+}));
 
-import { useState } from 'react';
+const StyledTableRow = styled(TableRow)(({ theme, isselected }) => ({
+  backgroundColor: isselected ? "#bbdefb !important" : "inherit",
+  borderLeft: isselected && `5px solid ${theme.palette.primary.main}`,
+  transition: "all 0.2s ease",
 
-import SubCard from 'ui-component/cards/SubCard';
+  "&:nth-of-type(odd)": {
+    backgroundColor: isselected ? "#bbdefb !important" : theme.palette.action.hover,
+  },
+  "&:hover": {
+    backgroundColor: isselected ? "#bbdefb !important" : "#f5f5f5",
+    cursor: "pointer",
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
-const DetailFuentes = ({
-    lsFuentes = [],
-    lsParentesco = [],
-    data = [],
-    setData
-}) => {
+const DetailFuentes = () => {
+  const { watch: watchForm } = useFormContext();
+  const idAPTCalificacion = watchForm("idAPTCalificacion");
 
-    const [detalle, setDetalle] = useState({
+  const [lsFuentes, setLsFuentes] = useState([]);
+  const [lsParentesco, setLsParentesco] = useState([]);
 
-        idFuentes: '',
+  const [data, setData] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-        idParentesco: '',
+  const methods = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      idFuentes: "",
+      idParentesco: "",
+      descripcion: "",
+      lugar: "",
+      fecha: "",
+      isUpdateRegister: false
+    }
+  });
 
-        descripcion: '',
+  const { handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue, getValues } = methods;
+  const isUpdateRegister = watch('isUpdateRegister');
 
-        lugar: '',
+  useEffect(() => {
+    if (idAPTCalificacion) {
+      loadFuentes();
+    }
+  }, [idAPTCalificacion]);
 
-        fecha: ''
+  useEffect(() => {
+    async function getData() {
+      const lsServerFuente = await GetByTipoCatalogoCombo(CodCatalogo.APTPSICO_FUENTES);
+      setLsFuentes(lsServerFuente.data);
+
+      const lsServerParentesco = await GetByTipoCatalogoCombo(CodCatalogo.APTPSICO_PARENTESCO);
+      setLsParentesco(lsServerParentesco.data);
+    }
+
+    getData();
+  }, []);
+
+  const loadFuentes = async () => {
+    try {
+      setLoading(true);
+      const response = await GetAllFuentesAPT(idAPTCalificacion);
+      if (response.data.exito) {
+        setData(response.data.datos || []);
+      }
+    } catch (error) {
+      console.error("Error al cargar fuentes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClear = () => {
+    reset({
+      idFuentes: "",
+      idParentesco: "",
+      descripcion: "",
+      lugar: "",
+      fecha: "",
+      isUpdateRegister: false
     });
+    setSelectedId(null);
+  };
 
-    const [indexEdit, setIndexEdit] =
-        useState(-1);
+  const handleDoubleClick = (item) => {
+    setValue('idFuentes', item.idFuentes, { shouldValidate: true });
+    setValue('idParentesco', item.idParentesco, { shouldValidate: true });
+    setValue('descripcion', item.descripcion, { shouldValidate: true });
+    setValue('lugar', item.lugar, { shouldValidate: true });
+    setValue('fecha', FormatDate(item.fecha), { shouldValidate: true });
+    setValue('isUpdateRegister', true);
+    setSelectedId(item.id);
+  };
 
-    // =========================
-    // CHANGE
-    // =========================
+  const handleClick = async (datos) => {
+    try {
+      setLoading(true);
 
-    const handleChange = (
-        e
-    ) => {
+      const fuenteData = {
+        ...datos,
+        idAPTCalificacion: idAPTCalificacion,
+        id: selectedId || 0
+      };
 
-        setDetalle({
+      const response = await SaveFuenteAPT(fuenteData);
 
-            ...detalle,
+      if (response.data.exito) {
+        await loadFuentes();
+        handleClear();
+      }
+    } catch (error) {
+      console.error("Error al guardar fuente:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            [e.target.name]:
-                e.target.value
-        });
-    };
+  const handleDelete = async (idDetalleFuente) => {
+    try {
+      swal(ParamDelete).then(async (willDelete) => {
+        if (willDelete) {
+          try {
+            setLoading(true);
+            const response = await DeleteFuenteAPT(idDetalleFuente);
 
-    // =========================
-    // ADD
-    // =========================
-
-    const handleAdd = () => {
-
-        if (
-            detalle.idFuentes === '' ||
-            detalle.idParentesco === ''
-        ) {
-
-            return;
+            if (response?.data?.exito) {
+              await loadFuentes();
+              if (selectedId === idDetalleFuente) {
+                handleClear();
+              }
+            }
+          } catch (error) {
+            console.error("Error al eliminar fuente:", error);
+          } finally {
+            setLoading(false);
+          }
         }
+      });
+    } catch (error) {
+      console.error("Error al mostrar alerta de eliminación:", error);
+    }
+  };
 
-        const fuente =
-            lsFuentes.find(
-                x =>
-                    Number(x.value) ===
-                    Number(detalle.idFuentes)
-            );
+  const isFormDisabled = !idAPTCalificacion || loading || isSubmitting;
 
-        const parentesco =
-            lsParentesco.find(
-                x =>
-                    Number(x.value) ===
-                    Number(detalle.idParentesco)
-            );
+  return (
+    <FormProvider {...methods}>
+      <Box>
+        <Card sx={{ mb: 3, border: "1px solid #e0e0e0", borderRadius: "12px" }}>
+          <CardContent sx={{ p: 3 }}>
+            <Typography variant="h6" sx={{ mb: 3, fontWeight: 700, fontSize: "1.1rem" }}>
+              Detalle de Fuentes
+            </Typography>
 
-        const item = {
-
-            ...detalle,
-
-            nombreFuente:
-                fuente?.label || '',
-
-            nombreParentesco:
-                parentesco?.label || ''
-        };
-
-        if (indexEdit >= 0) {
-
-            const update = [...data];
-
-            update[indexEdit] = item;
-
-            setData(update);
-
-            setIndexEdit(-1);
-
-        } else {
-
-            setData([
-                ...data,
-                item
-            ]);
-        }
-
-        setDetalle({
-
-            idFuentes: '',
-
-            idParentesco: '',
-
-            descripcion: '',
-
-            lugar: '',
-
-            fecha: ''
-        });
-    };
-
-    // =========================
-    // DELETE
-    // =========================
-
-    const handleDelete = (
-        index
-    ) => {
-
-        const update = [...data];
-
-        update.splice(index, 1);
-
-        setData(update);
-    };
-
-    // =========================
-    // EDIT
-    // =========================
-
-    const handleEdit = (
-        item,
-        index
-    ) => {
-
-        setDetalle({
-
-            idFuentes:
-                item.idFuentes,
-
-            idParentesco:
-                item.idParentesco,
-
-            descripcion:
-                item.descripcion,
-
-            lugar:
-                item.lugar,
-
-            fecha:
-                item.fecha
-        });
-
-        setIndexEdit(index);
-    };
-
-    return (
-        <Box>
-            <Card sx={{ mb: 3 }}>
-                <CardContent>
-                    <Typography 
-                        variant="h6" 
-                        sx={{ mb: 3, fontWeight: 600 }}
-                    >
-                        📍 Detalle de Fuentes
-                    </Typography>
-
-                    <Grid
-                        container
-                        spacing={2}
-                    >
-                        {/* FUENTE */}
-                        <Grid item xs={12} md={4}>
-                            <TextField
-                                select
-                                fullWidth
-                                label="Fuente"
-                                name="idFuentes"
-                                value={
-                                    detalle.idFuentes
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                variant="outlined"
-                                size="small"
-                            >
-                                {lsFuentes.map(
-                                    (
-                                        option
-                                    ) => (
-                                        <MenuItem
-                                            key={
-                                                option.value
-                                            }
-                                            value={
-                                                option.value
-                                            }
-                                        >
-                                            {
-                                                option.label
-                                            }
-                                        </MenuItem>
-                                    )
-                                )}
-                            </TextField>
-                        </Grid>
-
-                        {/* PARENTESCO */}
-                        <Grid item xs={12} md={4}>
-                            <TextField
-                                select
-                                fullWidth
-                                label="Parentesco"
-                                name="idParentesco"
-                                value={
-                                    detalle.idParentesco
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                variant="outlined"
-                                size="small"
-                            >
-                                {lsParentesco.map(
-                                    (
-                                        option
-                                    ) => (
-                                        <MenuItem
-                                            key={
-                                                option.value
-                                            }
-                                            value={
-                                                option.value
-                                            }
-                                        >
-                                            {
-                                                option.label
-                                            }
-                                        </MenuItem>
-                                    )
-                                )}
-                            </TextField>
-                        </Grid>
-
-                        {/* DESCRIPCION */}
-                        <Grid item xs={12} md={4}>
-                            <TextField
-                                fullWidth
-                                label="Descripción"
-                                name="descripcion"
-                                value={
-                                    detalle.descripcion
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                variant="outlined"
-                                size="small"
-                            />
-                        </Grid>
-
-                        {/* LUGAR */}
-                        <Grid item xs={12} md={4}>
-                            <TextField
-                                fullWidth
-                                label="Lugar"
-                                name="lugar"
-                                value={
-                                    detalle.lugar
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                variant="outlined"
-                                size="small"
-                            />
-                        </Grid>
-
-                        {/* FECHA */}
-                        <Grid item xs={12} md={4}>
-                            <TextField
-                                fullWidth
-                                type="date"
-                                name="fecha"
-                                value={
-                                    detalle.fecha
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                InputLabelProps={{
-                                    shrink: true
-                                }}
-                                variant="outlined"
-                                size="small"
-                            />
-                        </Grid>
-
-                        {/* BOTON AGREGAR */}
-                        <Grid item xs={12} md={4}>
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                onClick={
-                                    handleAdd
-                                }
-                                startIcon={<AddCircleIcon />}
-                                sx={{
-                                    height: '40px',
-                                    fontWeight: 600
-                                }}
-                            >
-                                {indexEdit >= 0 ? 'Actualizar' : 'Agregar'}
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </CardContent>
-            </Card>
-
-            {/* TABLA */}
-            {data.length > 0 && (
-                <Card>
-                    <CardContent>
-                        <Typography 
-                            variant="subtitle2" 
-                            sx={{ mb: 2, fontWeight: 600 }}
-                        >
-                            Registros ({data.length})
-                        </Typography>
-                        <TableContainer>
-                            <Table 
-                                size="small"
-                                sx={{
-                                    '& thead': {
-                                        backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                                    },
-                                    '& tbody tr:hover': {
-                                        backgroundColor: 'rgba(0, 0, 0, 0.02)'
-                                    }
-                                }}
-                            >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell sx={{ fontWeight: 600 }}>
-                                            Fuente
-                                        </TableCell>
-                                        <TableCell sx={{ fontWeight: 600 }}>
-                                            Parentesco
-                                        </TableCell>
-                                        <TableCell sx={{ fontWeight: 600 }}>
-                                            Descripción
-                                        </TableCell>
-                                        <TableCell sx={{ fontWeight: 600 }}>
-                                            Lugar
-                                        </TableCell>
-                                        <TableCell sx={{ fontWeight: 600 }}>
-                                            Fecha
-                                        </TableCell>
-                                        <TableCell 
-                                            align="center"
-                                            sx={{ fontWeight: 600 }}
-                                        >
-                                            Acciones
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-
-                                <TableBody>
-                                    {data.map(
-                                        (
-                                            item,
-                                            index
-                                        ) => (
-                                            <TableRow
-                                                key={index}
-                                                sx={{
-                                                    transition: 'all 0.3s'
-                                                }}
-                                            >
-                                                <TableCell>
-                                                    {
-                                                        item.nombreFuente
-                                                    }
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {
-                                                        item.nombreParentesco
-                                                    }
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {
-                                                        item.descripcion
-                                                    }
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {
-                                                        item.lugar
-                                                    }
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {
-                                                        item.fecha
-                                                    }
-                                                </TableCell>
-
-                                                <TableCell 
-                                                    align="center"
-                                                >
-                                                    <Stack 
-                                                        direction="row" 
-                                                        spacing={0}
-                                                        justifyContent="center"
-                                                    >
-                                                        <Tooltip title="Editar">
-                                                            <IconButton
-                                                                color="primary"
-                                                                size="small"
-                                                                onClick={() =>
-                                                                    handleEdit(
-                                                                        item,
-                                                                        index
-                                                                    )
-                                                                }
-                                                            >
-                                                                <EditIcon fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
-
-                                                        <Tooltip title="Eliminar">
-                                                            <IconButton
-                                                                color="error"
-                                                                size="small"
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        index
-                                                                    )
-                                                                }
-                                                            >
-                                                                <DeleteIcon fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Stack>
-                                                </TableCell>
-
-                                            </TableRow>
-                                        )
-                                    )}
-                                </TableBody>
-
-                            </Table>
-                        </TableContainer>
-                    </CardContent>
-                </Card>
+            {!idAPTCalificacion && (
+              <Box sx={{ mb: 3.5 }}>
+                <Alert severity="warning" variant="outlined" sx={{ borderRadius: "8px" }}>
+                  Debe guardar la calificación principal primero para poder registrar fuentes de información.
+                </Alert>
+              </Box>
             )}
-        </Box>
-    );
-}
+
+            <Grid container spacing={2.5}>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputSelect
+                  options={lsFuentes}
+                  name="idFuentes"
+                  label="Fuente"
+                  disabled={isFormDisabled}
+                  bug={errors.idFuentes}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={4}>
+                <InputSelect
+                  options={lsParentesco}
+                  name="idParentesco"
+                  label="Parentesco"
+                  disabled={isFormDisabled}
+                  bug={errors.idParentesco}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={4}>
+                <InputText
+                  name="descripcion"
+                  label="Descripción"
+                  disabled={isFormDisabled}
+                  bug={errors.descripcion}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={4}>
+                <InputText
+                  name="lugar"
+                  label="Lugar"
+                  disabled={isFormDisabled}
+                  bug={errors.lugar}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={4}>
+                <InputDatePicker
+                  name="fecha"
+                  label="Fecha"
+                  disabled={isFormDisabled}
+                  bug={errors.fecha}
+                />
+              </Grid>
+
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Stack direction="row" spacing={1.5}>
+                  <AnimateButton>
+                    <Button
+                      variant="contained"
+                      onClick={handleSubmit(handleClick)}
+                      disabled={isFormDisabled}
+                      startIcon={selectedId !== null ? <EditIcon /> : <AddCircleIcon />}
+                      sx={{
+                        height: "40px",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        px: 3,
+                        borderRadius: 2,
+                      }}
+                    >
+                      {isSubmitting ? "Guardando..." : (selectedId !== null ? "Actualizar" : "Agregar")}
+                    </Button>
+                  </AnimateButton>
+
+                  <AnimateButton>
+                    <Button
+                      variant="outlined"
+                      onClick={handleClear}
+                      disabled={isFormDisabled}
+                      startIcon={<ClearAllIcon />}
+                      sx={{
+                        height: "40px",
+                        textTransform: "none",
+                        px: 3,
+                        borderRadius: 2,
+                      }}
+                    >
+                      Limpiar
+                    </Button>
+                  </AnimateButton>
+                </Stack>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ border: "1px solid #e0e0e0", borderRadius: "12px", overflow: "hidden" }}>
+          <TableContainer component={Paper} sx={{ elevation: 0 }}>
+            <Table sx={{ minWidth: 650 }} size="medium">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Fuente</StyledTableCell>
+                  <StyledTableCell>Parentesco</StyledTableCell>
+                  <StyledTableCell>Descripción</StyledTableCell>
+                  <StyledTableCell>Lugar</StyledTableCell>
+                  <StyledTableCell>Fecha</StyledTableCell>
+                  <StyledTableCell align="center">Acciones</StyledTableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {data.length > 0 ? (
+                  data.map((item) => (
+                    <StyledTableRow
+                      key={item.id}
+                      isselected={selectedId === item.id ? 1 : 0}
+                      onDoubleClick={() => !isFormDisabled && handleDoubleClick(item)}
+                    >
+                      <StyledTableCell>{item.nombreFuente}</StyledTableCell>
+                      <StyledTableCell>{item.nombreParentesco}</StyledTableCell>
+                      <StyledTableCell>{item.descripcion}</StyledTableCell>
+                      <StyledTableCell>{item.lugar}</StyledTableCell>
+                      <StyledTableCell>{item.fecha ? new Date(item.fecha).toLocaleDateString() : ''}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Stack direction="row" spacing={1} justifyContent="center">
+                          <Tooltip disableInteractive placement="top" title="Actualizar">
+                            <IconButton
+                              color="primary"
+                              size="small"
+                              onClick={() => handleDoubleClick(item)}
+                              disabled={isFormDisabled}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+
+                          <Tooltip disableInteractive placement="top" title="Eliminar">
+                            <IconButton
+                              color="error"
+                              size="small"
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isFormDisabled}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))
+                ) : (
+                  <StyledTableRow>
+                    <StyledTableCell colSpan={6} align="center">
+                      <EmptyState seeSubtitle={false} title="No hay registros" />
+                    </StyledTableCell>
+                  </StyledTableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
+      </Box>
+    </FormProvider>
+  );
+};
 
 export default DetailFuentes;

@@ -1,367 +1,107 @@
-import {
-    Grid,
-    Paper,
-    Typography
-} from '@mui/material';
+import { Grid, Paper, Typography } from "@mui/material";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import InputOnChange from "components/input/InputOnChange";
+import InputSelect from "components/input/InputSelect";
+import { GetAllByCodeOrName } from "api/clients/CIE11Client";
+import { useFormContext } from "react-hook-form";
 
-import {
-    useState
-} from 'react';
+const DiagnosisAPT = ({ }) => {
+    const { watch } = useFormContext();
 
-import InputOnChange from 'components/input/InputOnChange';
-import InputSelect from 'components/input/InputSelect';
+    const dx1 = watch("dx1");
+    const dx2 = watch("dx2");
+    const dx3 = watch("dx3");
+    const listDx1 = watch("listDx1");
+    const listDx2 = watch("listDx2");
+    const listDx3 = watch("listDx3");
 
-import {
-    GetAllByCodeOrName
-} from 'api/clients/CIE11Client';
+    const [textDx1, setTextDx1] = useState(dx1 || "");
+    const [textDx2, setTextDx2] = useState(dx2 || "");
+    const [textDx3, setTextDx3] = useState(dx3 || "");
+    const [lsDx1, setLsDx1] = useState(listDx1 || []);
+    const [lsDx2, setLsDx2] = useState(listDx2 || []);
+    const [lsDx3, setLsDx3] = useState(listDx3 || []);
 
-const DiagnosisAPT = ({
-    dx1,
-    dx2,
-    dx3,
-    setDx1,
-    setDx2,
-    setDx3
-}) => {
+    const handleDx = async (event, dxType) => {
+        const value = event.target.value;
 
-    // =========================
-    // STATES
-    // =========================
+        if (dxType === 1) setTextDx1(value);
+        else if (dxType === 2) setTextDx2(value);
+        else if (dxType === 3) setTextDx3(value);
 
-    const [textDx1, setTextDx1] =
-        useState('');
-
-    const [textDx2, setTextDx2] =
-        useState('');
-
-    const [textDx3, setTextDx3] =
-        useState('');
-
-    const [lsDx1, setLsDx1] =
-        useState([]);
-
-    const [lsDx2, setLsDx2] =
-        useState([]);
-
-    const [lsDx3, setLsDx3] =
-        useState([]);
-
-    // =========================
-    // SEARCH DX1
-    // =========================
-
-    const handleDx1 = async () => {
-
-        try {
-
-            const result =
-                await GetAllByCodeOrName(
-                    textDx1
-                );
-
-            const data =
-                result?.data?.data || [];
-
-            setLsDx1(
-
-                data.map(item => ({
-
-                    value:
-                        item.codigo,
-
-                    label:
-                        `${item.codigo} - ${item.descripcion}`,
-
-                    codigo:
-                        item.codigo,
-
-                    descripcion:
-                        item.descripcion
-                }))
-            );
-
-        } catch (error) {
-
-            console.log(error);
-        }
-    };
-
-    // =========================
-    // SEARCH DX2
-    // =========================
-
-    const handleDx2 = async () => {
-
-        try {
-
-            const result =
-                await GetAllByCodeOrName(
-                    textDx2
-                );
-
-            const data =
-                result?.data?.data || [];
-
-            setLsDx2(
-
-                data.map(item => ({
-
-                    value:
-                        item.codigo,
-
-                    label:
-                        `${item.codigo} - ${item.descripcion}`,
-
-                    codigo:
-                        item.codigo,
-
-                    descripcion:
-                        item.descripcion
-                }))
-            );
-
-        } catch (error) {
-
-            console.log(error);
-        }
-    };
-
-    // =========================
-    // SEARCH DX3
-    // =========================
-
-    const handleDx3 = async () => {
-
-        try {
-
-            const result =
-                await GetAllByCodeOrName(
-                    textDx3
-                );
-
-            const data =
-                result?.data?.data || [];
-
-            setLsDx3(
-
-                data.map(item => ({
-
-                    value:
-                        item.codigo,
-
-                    label:
-                        `${item.codigo} - ${item.descripcion}`,
-
-                    codigo:
-                        item.codigo,
-
-                    descripcion:
-                        item.descripcion
-                }))
-            );
-
-        } catch (error) {
-
-            console.log(error);
+        if (event.key === 'Enter' && value.trim()) {
+            try {
+                const { data } = await GetAllByCodeOrName(value.trim());
+                switch (dxType) {
+                    case 1: setLsDx1(data); break;
+                    case 2: setLsDx2(data); break;
+                    case 3: setLsDx3(data); break;
+                    default: break;
+                }
+            } catch {
+                toast.error('Error al buscar el diagnóstico');
+            }
+        } else if (event.key === 'Enter') {
+            toast.error('Ingrese un código o nombre de diagnóstico');
         }
     };
 
     return (
-
-        <Grid
-            container
-            spacing={2}
-        >
-
-            {/* ========================= */}
-            {/* DX1 */}
-            {/* ========================= */}
-
-            <Grid item xs={12}>
-
-                <Paper
-                    elevation={1}
-                    sx={{
-                        p: 2
-                    }}
-                >
-
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            mb: 2
-                        }}
-                    >
-                        DX1
-                    </Typography>
-
-                    <Grid
-                        container
-                        spacing={2}
-                    >
-
-                        <Grid item xs={12} md={3}>
-
-                            <InputOnChange
-                                label="Buscar DX1"
-                                onChange={(e) =>
-                                    setTextDx1(
-                                        e.target.value
-                                    )
-                                }
-                                onBlur={handleDx1}
-                                value={textDx1}
-                            />
-
-                        </Grid>
-
-                        <Grid item xs={12} md={9}>
-
-                                                <InputSelect
-                            defaultValue=""
-                            name="dx1Temp"
-                            label="Diagnóstico DX1"
-                            options={lsDx1}
-                            value={dx1}
-                            onChange={(e) =>
-                                setDx1(e)
-                            }
-                        />
-
-                        </Grid>
-
-                    </Grid>
-
-                </Paper>
-
+        <Grid container spacing={2}>
+            <Grid item xs={12} md={2.5}>
+                <InputOnChange
+                    label="Buscar DX1"
+                    onChange={(e) => setTextDx1(e.target.value)}
+                    onKeyDown={(e) => handleDx(e, 1)}
+                    value={textDx1}
+                />
             </Grid>
 
-            {/* ========================= */}
-            {/* DX2 */}
-            {/* ========================= */}
-
-            <Grid item xs={12}>
-
-                <Paper
-                    elevation={1}
-                    sx={{
-                        p: 2
-                    }}
-                >
-
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            mb: 2
-                        }}
-                    >
-                        DX2
-                    </Typography>
-
-                    <Grid
-                        container
-                        spacing={2}
-                    >
-
-                        <Grid item xs={12} md={3}>
-
-                            <InputOnChange
-                                label="Buscar DX2"
-                                onChange={(e) =>
-                                    setTextDx2(
-                                        e.target.value
-                                    )
-                                }
-                                onBlur={handleDx2}
-                                value={textDx2}
-                            />
-
-                        </Grid>
-
-                        <Grid item xs={12} md={9}>
-
-                                            <InputSelect
-                        defaultValue=""
-                        name="dx2Temp"
-                        label="Diagnóstico DX2"
-                        options={lsDx2}
-                        value={dx2}
-                        onChange={(e) =>
-                            setDx2(e)
-                        }
-                    />
-
-                        </Grid>
-
-                    </Grid>
-
-                </Paper>
-
+            <Grid item xs={12} md={9.5}>
+                <InputSelect
+                    defaultValue=""
+                    name="dx1"
+                    label="Diagnóstico DX1"
+                    options={lsDx1}
+                />
             </Grid>
 
-            {/* ========================= */}
-            {/* DX3 */}
-            {/* ========================= */}
-
-            <Grid item xs={12}>
-
-                <Paper
-                    elevation={1}
-                    sx={{
-                        p: 2
-                    }}
-                >
-
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            mb: 2
-                        }}
-                    >
-                        DX3
-                    </Typography>
-
-                    <Grid
-                        container
-                        spacing={2}
-                    >
-
-                        <Grid item xs={12} md={3}>
-
-                            <InputOnChange
-                                label="Buscar DX3"
-                                onChange={(e) =>
-                                    setTextDx3(
-                                        e.target.value
-                                    )
-                                }
-                                onBlur={handleDx3}
-                                value={textDx3}
-                            />
-
-                        </Grid>
-
-                        <Grid item xs={12} md={9}>
-
-                                                <InputSelect
-                            defaultValue=""
-                            name="dx3Temp"
-                            label="Diagnóstico DX3"
-                            options={lsDx3}
-                            value={dx3}
-                            onChange={(e) =>
-                                setDx3(e)
-                            }
-                        />
-
-                        </Grid>
-
-                    </Grid>
-
-                </Paper>
-
+            <Grid item xs={12} md={2.5}>
+                <InputOnChange
+                    label="Buscar DX2"
+                    onChange={(e) => setTextDx2(e.target.value)}
+                    onKeyDown={(e) => handleDx(e, 2)}
+                    value={textDx2}
+                />
             </Grid>
 
+            <Grid item xs={12} md={9.5}>
+                <InputSelect
+                    defaultValue=""
+                    name="dx2"
+                    label="Diagnóstico DX2"
+                    options={lsDx2}
+                />
+            </Grid>
+
+            <Grid item xs={12} md={2.5}>
+                <InputOnChange
+                    label="Buscar DX3"
+                    onChange={(e) => setTextDx3(e.target.value)}
+                    onKeyDown={(e) => handleDx(e, 3)}
+                    value={textDx3}
+                />
+            </Grid>
+
+            <Grid item xs={12} md={9.5}>
+                <InputSelect
+                    defaultValue=""
+                    name="dx3"
+                    label="Diagnóstico DX3"
+                    options={lsDx3}
+                />
+            </Grid>
         </Grid>
     );
 };

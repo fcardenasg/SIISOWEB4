@@ -20,7 +20,6 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import 'assets/scss/otherstyles.scss';
 
 const TableValues = ({ idAPT, tipoLogica }) => {
-    // Persistencia de idAPT y tipoLogica en sessionStorage para soportar F5 en la ventana emergente
     const [effectiveIdAPT, setEffectiveIdAPT] = useState(() => {
         if (idAPT) {
             sessionStorage.setItem('current_idAPT', idAPT);

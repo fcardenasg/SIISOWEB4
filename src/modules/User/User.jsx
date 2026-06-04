@@ -2,6 +2,7 @@ import {
     Box,
     Button,
     Card,
+    Divider,
     Grid,
     Stack,
     Typography,
@@ -20,16 +21,15 @@ import * as yup from 'yup';
 import { GetAllByTipoCatalogo } from 'api/clients/CatalogClient';
 import { GetComboRol } from 'api/clients/RolClient';
 import { InsertUser } from 'api/clients/UserClient';
-import { MessageError, MessageSuccess } from 'components/alert/AlertAll';
 import { AccionMenu, CodCatalogo, IdUser, Message, Modulo, TitleButton, ValidationMessage } from 'components/helpers/Enums';
 import InputCheckBox from 'components/input/InputCheckBox';
 import InputSelect from 'components/input/InputSelect';
 import InputText from 'components/input/InputText';
 import { UploadBox } from 'components/upload';
 import ValidateActionSkeleton from 'components/ValidateAction/ValidateActionSkeleton';
-import { PostUser } from 'formatdata/UserForm';
 import useAuth from 'hooks/useAuth';
 import Lottie from 'lottie-react';
+import toast from 'react-hot-toast';
 import MainCard from 'ui-component/cards/MainCard';
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -53,10 +53,6 @@ const User = () => {
     const theme = useTheme();
     const { user } = useAuth();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));
-
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [openError, setOpenError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
 
     const [lsEspecialidad, setLsEspecialidad] = useState([]);
     const [lsRolUser, setLsRolUser] = useState([]);
@@ -111,45 +107,33 @@ const User = () => {
             const reader = new FileReader();
             reader.readAsDataURL(archivo);
             reader.onloadend = (event) => {
-                setValue('imgfirma', event.target.result, { shouldValidate: true });
+                setValue('firma', event.target.result, { shouldValidate: true });
             }
         }
     }, [setValue]);
 
     const handleRemoveFile = useCallback(() => {
-        setValue('imgfirma', null);
+        setValue('firma', null);
     }, [setValue]);
 
     const handleClick = async (datos) => {
         try {
-            const DataToInsert = PostUser(datos.documento, datos.nombreUsuario, datos.nombreUsuario, datos.nombre, datos.telefono,
-                datos.idArea, datos.correo, datos.idRol, datos.especialidad, datos.registroMedico, datos.licencia,
-                datos.tarjetaProfesional, datos.imgfirma, datos.estado, datos.idSede, datos.respondeReintegro,
-                datos.respondeVentanillaUnica, datos.registraTaxi, datos.puedeAdministrarPermisos,
-                datos.medicoRegistroAtencion, datos.asesorARL, datos.investigador);
-
-            const result = await InsertUser(DataToInsert);
-            if (result.status === 200) {
-                if (result.data.message === "") {
-                    reset();
-                    setOpenSuccess(true);
-                } else {
-                    setOpenError(true);
-                    setErrorMessage(result.data.message);
-                }
+            const result = await InsertUser(datos);
+            if (!result.data.exito) {
+                toast.error(result.data.mensaje);
+                return;
             }
+
+            reset();
+            toast.success(result.data.mensaje);
         } catch (error) {
-            setOpenError(true);
-            setErrorMessage(Message.RegistroNoGuardado);
+            toast.error(Message.RegistroNoGuardado);
         }
     };
 
     return (
         <ValidateActionSkeleton idAccion={AccionMenu.agregar} idModulo={Modulo.Usuario}>
             <MainCard title="Registrar información del usuario">
-                <MessageSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-                <MessageError error={errorMessage} open={openError} onClose={() => setOpenError(false)} />
-
                 <FormProvider {...methods}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={12} lg={9}>
@@ -258,7 +242,7 @@ const User = () => {
                                     <Card sx={{ border: (theme) => `dashed 1px ${alpha(theme.palette.grey[500], 0.3)}` }}>
                                         <UploadBox
                                             size="80px"
-                                            name="imgfirma"
+                                            name="firma"
                                             defaultValue={null}
                                             onDrop={handleDropFirm}
                                             placeholder={
@@ -360,6 +344,23 @@ const User = () => {
                                         />
                                     </Grid>
 
+                                    {user?.id == IdUser.fcardenas &&
+                                        <Grid item xs={12} md={4}>
+                                            <InputCheckBox
+                                                name="puedeAdministrarPermisos"
+                                                defaultValue={false}
+                                                label="¿Administra los permisos de usuarios?"
+                                                size={30}
+                                            />
+                                        </Grid>
+                                    }
+
+                                    <Grid item xs={12}><Divider sx={{ my: 1 }} /></Grid>
+
+                                    <Grid item xs={12}>
+                                        <Typography variant="h5" sx={{ color: theme.palette.primary.main }}>Permisos para el Módulo de Investigación y APT</Typography>
+                                    </Grid>
+
                                     <Grid item xs={12} md={4}>
                                         <InputCheckBox
                                             name="asesorARL"
@@ -378,16 +379,32 @@ const User = () => {
                                         />
                                     </Grid>
 
-                                    {user?.id == IdUser.fcardenas &&
-                                        <Grid item xs={12} md={4}>
-                                            <InputCheckBox
-                                                name="puedeAdministrarPermisos"
-                                                defaultValue={false}
-                                                label="¿Administra los permisos de usuarios?"
-                                                size={30}
-                                            />
-                                        </Grid>
-                                    }
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputCheckBox
+                                            name="aptAsesorHigiene"
+                                            defaultValue={false}
+                                            label="¿Es Asesor Seguros Bolívar APT Higiene?"
+                                            size={30}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputCheckBox
+                                            name="aptSupervisorHigiene"
+                                            defaultValue={false}
+                                            label="¿Es Supervisor Corporativo Higiene Industrial?"
+                                            size={30}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={4}>
+                                        <InputCheckBox
+                                            name="aptHigienistaErgonomista"
+                                            defaultValue={false}
+                                            label="¿Es Higienista Industrial y ergónoma?"
+                                            size={30}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </SubCard>
                         </Grid>

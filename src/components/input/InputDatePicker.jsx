@@ -23,7 +23,7 @@ const InputDatePicker = ({ label, name, defaultValue, noWriting = false, size, b
                         id="fecha"
                         label={label}
                         type="date"
-                        size={size ?? matchesXS ? 'small' : 'medium'}
+                        size={size ? size : matchesXS ? 'small' : 'medium'}
                         InputLabelProps={{
                             shrink: true,
                             className: bug ? 'required-label' : '',

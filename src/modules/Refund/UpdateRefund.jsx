@@ -52,7 +52,6 @@ const DetailIcons = [
 ]
 
 const Refund = () => {
-    const { user } = useAuth();
     const { id } = useParams();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -283,6 +282,7 @@ const Refund = () => {
                 idOrigenDx1: clean(datos.idOrigenDx1),
                 idOrigenDx2: clean(datos.idOrigenDx2),
                 resumen: clean(datos.resumen),
+                ultimaFechaPruebaTrabajo: clean(datos.ultimaFechaPruebaTrabajo),
                 idEstadoEmpleado: clean(datos.idEstadoEmpleado),
                 idEstadoRestriccion: clean(datos.idEstadoRestriccion),
                 idTipoRestriccion: clean(datos.idTipoRestriccion),
@@ -368,34 +368,34 @@ const Refund = () => {
                 <ListPlantillaAll />
             </FullScreenDialog>
 
-            {timeWait ?
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <ViewEmployee
-                            title="Actualizar reintegro"
-                            disabled={true}
-                            key={lsEmployee.documento}
-                            documento={documento}
-                            onChange={(e) => setDocumento(e.target.value)}
-                            lsEmployee={lsEmployee}
-                            handleDocumento={handleLoadingDocument}
-                        />
-                    </Grid>
+            <FormProvider {...methods}>
+                {timeWait ?
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <ViewEmployee
+                                title="Actualizar reintegro"
+                                disabled={true}
+                                key={lsEmployee.documento}
+                                documento={documento}
+                                onChange={(e) => setDocumento(e.target.value)}
+                                lsEmployee={lsEmployee}
+                                handleDocumento={handleLoadingDocument}
+                            />
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Descripción Patológica</Typography>}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <InputOnChange
-                                        label="Dx 1"
-                                        onKeyDown={handleDx1}
-                                        onChange={(e) => setTextDx1(e?.target.value)}
-                                        value={textDx1}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <FormProvider {...methods}>
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">Descripción Patológica</Typography>}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 1"
+                                            onKeyDown={handleDx1}
+                                            onChange={(e) => setTextDx1(e?.target.value)}
+                                            value={textDx1}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
                                         <InputSelect
                                             name="dx1"
                                             label="Diagnóstico 1"
@@ -404,11 +404,9 @@ const Refund = () => {
                                             bug={errors.dx1}
                                             defaultValue={lsRefund.dx1}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={4}>
                                         <InputSelect
                                             name="idOrigenDx1"
                                             label="Origen"
@@ -417,20 +415,18 @@ const Refund = () => {
                                             bug={errors.idOrigenDx1}
                                             defaultValue={lsRefund.idOrigenDx1}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={2}>
-                                    <InputOnChange
-                                        label="Dx 2"
-                                        onKeyDown={handleDx2}
-                                        onChange={(e) => setTextDx2(e?.target.value)}
-                                        value={textDx2}
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2}>
+                                        <InputOnChange
+                                            label="Dx 2"
+                                            onKeyDown={handleDx2}
+                                            onChange={(e) => setTextDx2(e?.target.value)}
+                                            value={textDx2}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
                                         <InputSelect
                                             name="dx2"
                                             label="Diagnóstico 2"
@@ -439,11 +435,9 @@ const Refund = () => {
                                             bug={errors.dx2}
                                             defaultValue={lsRefund.dx2}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={4}>
                                         <InputSelect
                                             name="idOrigenDx2"
                                             label="Origen"
@@ -452,11 +446,9 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idOrigenDx2}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12}>
                                         <InputText
                                             defaultValue={lsRefund.resumen}
                                             fullWidth
@@ -467,11 +459,9 @@ const Refund = () => {
                                             rows={4}
                                             bug={errors.resumen}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2.4}>
                                         <InputSelect
                                             name="idEstadoEmpleado"
                                             label="Estado del Empleado"
@@ -480,11 +470,9 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idEstadoEmpleado}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2.4}>
                                         <InputSelect
                                             name="idEstadoRestriccion"
                                             label="Estado de Restricción"
@@ -493,11 +481,9 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idEstadoRestriccion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2.4}>
                                         <InputSelect
                                             name="idTipoRestriccion"
                                             label="Tipo de Restricción"
@@ -506,50 +492,48 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idTipoRestriccion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <InputDatePick
-                                        label="Inicio de Restricción"
-                                        value={fechaInicio}
-                                        onChange={(e) => {
-                                            setFechaInicio(e.target.value);
-                                            if (fechaFin) {
-                                                var result = NumeroDias(e.target.value, fechaFin);
-                                                setNumeroDia(result);
-                                            }
-                                        }}
-                                    />
-                                </Grid>
+                                    <Grid item xs={2.4}>
+                                        <InputDatePick
+                                            label="Inicio de Restricción"
+                                            value={fechaInicio}
+                                            onChange={(e) => {
+                                                setFechaInicio(e.target.value);
+                                                if (fechaFin) {
+                                                    var result = NumeroDias(e.target.value, fechaFin);
+                                                    setNumeroDia(result);
+                                                }
+                                            }}
+                                        />
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <InputDatePick
-                                        label="Fin de Restricción"
-                                        value={fechaFin}
-                                        onChange={(e) => {
-                                            setFechaFin(e.target.value);
-                                            if (fechaInicio) {
-                                                var result = NumeroDias(fechaInicio, e.target.value);
-                                                setNumeroDia(result);
-                                            }
-                                        }}
-                                    />
-                                </Grid>
+                                    <Grid item xs={2.4}>
+                                        <InputDatePick
+                                            label="Fin de Restricción"
+                                            value={fechaFin}
+                                            onChange={(e) => {
+                                                setFechaFin(e.target.value);
+                                                if (fechaInicio) {
+                                                    var result = NumeroDias(fechaInicio, e.target.value);
+                                                    setNumeroDia(result);
+                                                }
+                                            }}
+                                        />
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <InputOnChange
-                                        label="# Días Restringido"
-                                        value={numeroDia}
-                                        onChange={(e) => setNumeroDia(e?.target.value)}
-                                        disabled
-                                        type="number"
-                                        size={matchesXS ? 'small' : 'medium'}
-                                    />
-                                </Grid>
+                                    <Grid item xs={2.4}>
+                                        <InputOnChange
+                                            label="# Días Restringido"
+                                            value={numeroDia}
+                                            onChange={(e) => setNumeroDia(e?.target.value)}
+                                            disabled
+                                            type="number"
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2.4}>
                                         <SelectOnChange
                                             name="idOrdenadoPor"
                                             label="Ordenado Por"
@@ -564,11 +548,9 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idOrdenadoPor}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2.4}>
                                         <SelectOnChange
                                             name="idMedico"
                                             label="Médico"
@@ -578,11 +560,9 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             disabled={ordenadoPor === DefaultValue.OrdenadoPor_Reintegro_MedicoDLTD && ordenadoPor !== '' ? false : true}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={2.4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2.4}>
                                         <InputText
                                             type="number"
                                             defaultValue={lsRefund.porcentajePCL}
@@ -592,11 +572,18 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.porcentajePCL}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={2.4}>
+                                        <InputDatePicker
+                                            label="Última fecha de prueba de trabajo"
+                                            name="ultimaFechaPruebaTrabajo"
+                                            defaultValue={lsRefund?.ultimaFechaPruebaTrabajo}
+                                            size={matchesXS ? 'small' : 'medium'}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
                                         <InputText
                                             type="number"
                                             multiline
@@ -608,17 +595,15 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.recomendaciones}
                                         />
-                                    </FormProvider>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                            </SubCard>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle>
-                            <Grid container spacing={2}>
-                                <Grid item xs={8}>
-                                    <FormProvider {...methods}>
+                        <Grid item xs={12}>
+                            <SubCard darkTitle>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={8}>
                                         <InputSelect
                                             name="idConceptoReintegro"
                                             label="Concepto de Aptitud"
@@ -627,37 +612,31 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idConceptoReintegro}
                                         />
-                                    </FormProvider>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                            </SubCard>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Datos de Reubicación</Typography>}>
-                            <Grid container spacing={3}>
-                                <Grid item xs={6}>
-                                    <FormProvider {...methods}>
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">Datos de Reubicación</Typography>}>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
                                         <InputDatePicker
                                             label="Inicio de Reubicación"
                                             name="inicioReubicacion"
                                             defaultValue={lsRefund.inicioReubicacion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={6}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={6}>
                                         <InputDatePicker
                                             label="Fin de Reubicación"
                                             name="finReubicacion"
                                             defaultValue={lsRefund.finReubicacion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={12}>
                                         <InputText
                                             defaultValue={lsRefund.descripcion}
                                             fullWidth
@@ -668,28 +647,26 @@ const Refund = () => {
                                             rows={4}
                                             bug={errors.descripcion}
                                         />
-                                    </FormProvider>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
-                                    <DetailedIcon
-                                        title={DetailIcons[0].title}
-                                        onClick={() => setOpenTemplate(true)}
-                                        icons={DetailIcons[0].icons}
-                                    />
+                                    <Grid container spacing={2} justifyContent="left" alignItems="center" sx={{ pt: 2 }}>
+                                        <DetailedIcon
+                                            title={DetailIcons[0].title}
+                                            onClick={() => setOpenTemplate(true)}
+                                            icons={DetailIcons[0].icons}
+                                        />
 
-                                    <DetailedIcon
-                                        title={DetailIcons[1].title}
-                                        onClick={() => setOpen(true)}
-                                        icons={DetailIcons[1].icons}
-                                    />
-                                </Grid>
+                                        <DetailedIcon
+                                            title={DetailIcons[1].title}
+                                            onClick={() => setOpen(true)}
+                                            icons={DetailIcons[1].icons}
+                                        />
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <SubCard darkTitle title={<Typography variant="h4">Sin Horario Extendido</Typography>}>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={3}>
-                                                <FormProvider {...methods}>
+                                    <Grid item xs={12}>
+                                        <SubCard darkTitle title={<Typography variant="h4">Sin Horario Extendido</Typography>}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={3}>
                                                     <InputSelect
                                                         name="idTipoHorario"
                                                         label="Tipo"
@@ -698,11 +675,9 @@ const Refund = () => {
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         bug={errors.idTipoHorario}
                                                     />
-                                                </FormProvider>
-                                            </Grid>
+                                                </Grid>
 
-                                            <Grid item xs={3}>
-                                                <FormProvider {...methods}>
+                                                <Grid item xs={3}>
                                                     <InputSelect
                                                         name="idOrdenadoPorHorario"
                                                         label="Ordenada Por"
@@ -711,35 +686,29 @@ const Refund = () => {
                                                         size={matchesXS ? 'small' : 'medium'}
                                                         bug={errors.idOrdenadoPorHorario}
                                                     />
-                                                </FormProvider>
-                                            </Grid>
+                                                </Grid>
 
-                                            <Grid item xs={3}>
-                                                <FormProvider {...methods}>
+                                                <Grid item xs={3}>
                                                     <InputDatePicker
                                                         label="Fecha Inicio"
                                                         name="fechaInicioHorario"
                                                         defaultValue={lsRefund.fechaInicioHorario}
                                                     />
-                                                </FormProvider>
-                                            </Grid>
+                                                </Grid>
 
-                                            <Grid item xs={3}>
-                                                <FormProvider {...methods}>
+                                                <Grid item xs={3}>
                                                     <InputDatePicker
                                                         label="Fecha Fin"
                                                         name="fechaFinHorario"
                                                         defaultValue={lsRefund.fechaFinHorario}
                                                     />
-                                                </FormProvider>
+                                                </Grid>
+
                                             </Grid>
+                                        </SubCard>
+                                    </Grid>
 
-                                        </Grid>
-                                    </SubCard>
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                    <FormProvider {...methods}>
+                                    <Grid item xs={4}>
                                         <InputSelect
                                             name="idEstadoCaso"
                                             label="Estado del Caso"
@@ -748,56 +717,56 @@ const Refund = () => {
                                             size={matchesXS ? 'small' : 'medium'}
                                             bug={errors.idEstadoCaso}
                                         />
-                                    </FormProvider>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
+                            </SubCard>
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <SubCard darkTitle title={<Typography variant="h4">Lista de Chequeo</Typography>}>
+                        <Grid item xs={12}>
+                            <SubCard darkTitle title={<Typography variant="h4">Lista de Chequeo</Typography>}>
 
-                            <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
-                                <CheckListRefund idReintegro={id} />
-                            </Transitions>
+                                <Transitions type="collapse" in={viewListRefund} position="top-left" direction="up">
+                                    <CheckListRefund idReintegro={id} />
+                                </Transitions>
 
-                            <Grid container spacing={2} sx={{ pt: 4 }}>
-                                <Grid item xs={6} md={3}>
-                                    <AnimateButton>
-                                        <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
-                                            {TitleButton.Actualizar}
-                                        </Button>
-                                    </AnimateButton>
+                                <Grid container spacing={2} sx={{ pt: 4 }}>
+                                    <Grid item xs={6} md={3}>
+                                        <AnimateButton>
+                                            <Button variant="contained" fullWidth onClick={handleSubmit(handleClick)}>
+                                                {TitleButton.Actualizar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={3}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={handleClickReport}>
+                                                {TitleButton.Imprimir}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={3}>
+                                        <AnimateButton>
+                                            <Button disabled={lsRefund.tieneListaChequeo} variant="outlined" fullWidth onClick={handleClickGenerateListChekeo}>
+                                                Generar Lista Chequeo
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={3}>
+                                        <AnimateButton>
+                                            <Button variant="outlined" fullWidth onClick={() => navigate("/refund/list")}>
+                                                {TitleButton.Cancelar}
+                                            </Button>
+                                        </AnimateButton>
+                                    </Grid>
                                 </Grid>
-
-                                <Grid item xs={6} md={3}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={handleClickReport}>
-                                            {TitleButton.Imprimir}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={6} md={3}>
-                                    <AnimateButton>
-                                        <Button disabled={lsRefund.tieneListaChequeo} variant="outlined" fullWidth onClick={handleClickGenerateListChekeo}>
-                                            Generar Lista Chequeo
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-
-                                <Grid item xs={6} md={3}>
-                                    <AnimateButton>
-                                        <Button variant="outlined" fullWidth onClick={() => navigate("/refund/list")}>
-                                            {TitleButton.Cancelar}
-                                        </Button>
-                                    </AnimateButton>
-                                </Grid>
-                            </Grid>
-                        </SubCard>
-                    </Grid>
-                </Grid> : <Cargando />
-            }
+                            </SubCard>
+                        </Grid>
+                    </Grid> : <Cargando />
+                }
+            </FormProvider>
         </ValidateActionSkeleton>
     );
 };
