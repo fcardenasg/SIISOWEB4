@@ -12,6 +12,7 @@ import { store, persister } from 'store';
 
 // style + assets
 import 'assets/scss/style.scss';
+import './tailwind.css';
 import config from 'config';
 
 ReactDOM.render(
