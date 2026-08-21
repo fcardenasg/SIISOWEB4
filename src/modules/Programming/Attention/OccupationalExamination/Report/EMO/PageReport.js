@@ -843,7 +843,7 @@ export function generateClinicHistoryOtherCompany(doc = new jsPDF(), lsDataRepor
   doc.text(`${lsDataReport.documento}`, 32, 43);
   doc.text(`${lsDataReport.nameGenero}`, 26, 48);
   doc.text(`${ViewFormat(lsDataReport.fechaNacimiento)}`, 51, 53);
-  doc.text(`${DefaultValue.EMO_ATENCION_CONTRO == lsDataReport.idAtencion ? "N/A" : lsDataReport.nameTurno}`, 22, 58);
+  doc.text(`${DefaultValue.EMO_ATENCION_INGRESO == lsDataReport.idAtencion ? "N/A" : lsDataReport.nameTurno}`, 22, 58);
   doc.text(`${lsDataReport.celularEmpleado}`, 30, 63);
   doc.text(`${lsDataReport.correoEmpleado}`, 21, 68);
   doc.text(`${lsDataReport.nameDptoNacimiento}`, 49, 73);

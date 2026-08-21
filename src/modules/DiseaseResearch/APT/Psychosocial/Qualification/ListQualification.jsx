@@ -308,6 +308,7 @@ const ListAPTCalificacion = () => {
       if (reportUrl) URL.revokeObjectURL(reportUrl);
     };
   }, [reportUrl]);
+
   const [rows, setRows] = useState([]);
   const [idCheck, setIdCheck] = useState("");
   const [order, setOrder] = useState("desc");
